@@ -31,3 +31,4 @@ class NotImplementedError extends QJSError
 module.exports =
   QSJError: QJSError
   ArgumentError: ArgumentError
+  NotImplementedError: NotImplementedError

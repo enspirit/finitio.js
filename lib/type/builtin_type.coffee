@@ -7,9 +7,6 @@ class BuiltinType extends Type
     super(@name)
 
   from_q: (value, handler) ->
-    unless handler?
-      handler = new Handler
-
-    unless 
+    throw new Errors.NotImplementedError(this, "from_q")
 
 module.exports = BuiltinType

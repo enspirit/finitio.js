@@ -6,7 +6,7 @@ Errors = require './errors'
 class Type
 
   constructor: (@name)->
-    if not @name? or @name not instanceof String
+    if not @name? or typeof(@name) isnt "string"
       throw new Errors.ArgumentError("String expected, got", @name)
 
   name: (value) ->
