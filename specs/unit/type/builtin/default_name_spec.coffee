@@ -1,7 +1,7 @@
 BuiltinType = require '../../../../lib/type/builtin_type'
 should      = require 'should'
 
-describe 'BuiltinType#default_name', ->
+describe 'BuiltinType#defaultName', ->
 
   type = new BuiltinType(Number, "num")
 

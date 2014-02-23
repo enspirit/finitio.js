@@ -30,21 +30,21 @@ class FromQHelper
       else
         throw err
 
-  try: (type, value) ->
+  try: (type, value, callback) ->
     try
       callback()
     catch err
       if err instanceof TypeError
-        $failed(type, value, err)
+        @failed(type, value, err)
       else
         throw err
 
-  $failed: (type, value, cause) ->
+  failed: (type, value, cause) ->
     cause ?= null
     msg = @defaultErrorMessage(type, value)
     throw new TypeError(msg, cause, @location())
   
-  $fail: (msg, cause) ->
+  fail: (msg, cause) ->
     cause ?= null 
     throw new TypeError(msg, cause, @location())
   

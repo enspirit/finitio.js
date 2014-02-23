@@ -3,9 +3,10 @@ _            = require('underscore')
 
 SpecHelpers = 
   
-  numType: ->
-    new BuiltinType(Number, 'numType')
-
+  # Builtins
+  numType:    new BuiltinType(Number, 'numType')
+  boolType:   new BuiltinType(Boolean, 'boolType')
+  stringType: new BuiltinType(String, 'stringType')
 
 #
 module.exports = {}
