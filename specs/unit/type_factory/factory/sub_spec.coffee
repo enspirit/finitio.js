@@ -18,11 +18,11 @@ describe 'TypeFactory#sub_type', ->
       subject.superType.ruby_type.should.be.an.instanceof(Number)
 
     it 'should have the correct constraint', ->
-      subject.from_q(10).should.equal(10)
+      subject.fromQ(10).should.equal(10)
 
       lambda = (i) ->
         ->
-          subject.from_q(i)
+          subject.fromQ(i)
 
       expect(lambda(12)).toThrow()
       expect(lambda(-1)).toThrow()
@@ -38,10 +38,10 @@ describe 'TypeFactory#sub_type', ->
     subject.should.be.an.instanceof(SubType)
 
     it 'should have the correct constraint', ->
-      subject.from_q('abc').should.equal('abc')
+      subject.fromQ('abc').should.equal('abc')
 
       lambda = ->
-        subject.from_q('123')
+        subject.fromQ('123')
 
       expect(lambda).toTrow()
 

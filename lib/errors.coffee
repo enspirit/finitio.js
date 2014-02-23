@@ -1,27 +1,35 @@
 #
 class QJSError extends Error
   
-  constructor: (@message) ->
-    @name = @constructor.name
+  constructor: (@message, @cause) ->
+    super(@message)
+    @cause ?= ""
 
 #
 class ArgumentError extends QJSError
   
-  constructor: (msg, arg) ->
+  constructor: (@message, @arg) ->
     
     if arguments.length == 2
       
       clazz =
-        if typeof arg == "undefined"
+        if typeof @arg == "undefined"
           "undefined"
-        else if arg == null
+        else if @arg == null
           "null"
         else 
-          arg.constructor.name
+          @arg.constructor.name
       
-      msg += " " + clazz
+      @message += " " + clazz
     
-    super msg
+    super(@message)
+
+#
+class TypeError extends QJSError
+  constructor: (@message, @cause, @location) ->
+    super(@message, @cause)
+    @location ?= ""
+
 #
 class NotImplementedError extends QJSError
   
@@ -32,3 +40,4 @@ module.exports =
   QSJError: QJSError
   ArgumentError: ArgumentError
   NotImplementedError: NotImplementedError
+  TypeError: TypeError

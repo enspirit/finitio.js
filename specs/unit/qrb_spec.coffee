@@ -13,10 +13,10 @@ describe 'Qrb', ->
       i >= 0
 
     t.should.be.a Qjs.SubType
-    t.from_q(12).should.equal(12)
+    t.fromQ(12).should.equal(12)
     
     lambda = ->
-      t.from_q(-12)
+      t.fromQ(-12)
 
     expect(lambda).toThrow()
 

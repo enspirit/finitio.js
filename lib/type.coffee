@@ -1,4 +1,7 @@
-Errors = require './errors'
+{ArgumentError, NotImplementedError} = require './errors'
+
+Function::property = (prop, desc) ->
+  Object.defineProperty @prototype, prop, desc
 
 #
 # 'Abstract' class for Q types
@@ -6,16 +9,12 @@ Errors = require './errors'
 class Type
 
   constructor: (@name)->
-    if not @name? or typeof(@name) isnt "string"
-      throw new Errors.ArgumentError("String expected, got", @name)
+    if @name? and typeof(@name) isnt "string"
+      throw new ArgumentError("String expected, got", @name)
 
-  name: (value) ->
-    if value?
-      @name = value
-    else
-      @name | this.default_name()
+    @name ?= @defaultName()
 
   fromQ: ->
-    throw new Errors.NotImplementedError(this, "up")
+    throw new NotImplementedError(this, "up")
 
 module.exports = Type
