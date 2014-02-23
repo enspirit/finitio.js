@@ -4,7 +4,7 @@ TypeFactory = require './type/factory'
 ## base module
 class Qjs
 
-  @VERSION: "0.0.0"
+  @VERSION: "0.0.1"
 
   @DSL_METHODS: [
     'attribute',
