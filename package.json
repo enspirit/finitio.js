@@ -1,0 +1,25 @@
+{
+  "name": "qjs",
+  "version": "0.0.1",
+  "description": "Q - in JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./node_modules/jasmine-node/bin/jasmine-node specs"
+  },
+  "author": "Louis Lambeau <louislambeau@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "coffee-script": "~1.7.1",
+    "underscore": "~1.6.0"
+  },
+  "devDependencies:": {
+    "jasmine-node": "~1.13.1",
+    "cucumber": "~0.3.3"
+  },
+  "devDependencies": {
+    "should": "~3.1.2",
+    "grunt": "~0.4.2",
+    "grunt-jasmine-node": "~0.1.0",
+    "grunt-cucumber": "~0.2.3"
+  }
+}
