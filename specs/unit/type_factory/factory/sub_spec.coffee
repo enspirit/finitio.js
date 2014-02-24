@@ -15,7 +15,7 @@ describe 'TypeFactory#sub_type', ->
 
     it 'shoudl have the BuiltinType(Number) super type', ->
       subject.superType.should.be.an.instanceof(BuiltinType)
-      subject.superType.ruby_type.should.be.an.instanceof(Number)
+      subject.superType.jsType.should.be.an.instanceof(Number)
 
     it 'should have the correct constraint', ->
       subject.fromQ(10).should.equal(10)
