@@ -5,7 +5,7 @@ class CollectionType
 
   constructor: (@elmType, @name) ->
     unless @elmType instanceof Type
-      throw new Errors.ArgumentError("Qrb.Type expected, got", @elmType)
+      throw new Errors.ArgumentError("Qjs.Type expected, got", @elmType)
       super(@name)
 
   equals: (other) =>

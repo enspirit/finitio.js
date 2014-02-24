@@ -2,7 +2,7 @@ Qjs      = require '../../lib/qjs'
 {errors} = Qjs
 should   = require 'should'
 
-describe 'Qrb', ->
+describe 'Qjs', ->
 
   it "should have a version number", ->
     (typeof Qjs.VERSION).should.not.equal('undefined')

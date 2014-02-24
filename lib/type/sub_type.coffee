@@ -1,7 +1,7 @@
-_                                    = require 'underscore'
-Type                                 = require '../type'
-Handler                              = require '../support/from_q_helper'
-{ArgumentError, NotImplementedError} = require '../errors'
+_               = require 'underscore'
+Type            = require '../type'
+Handler         = require '../support/from_q_helper'
+{ArgumentError} = require '../errors'
 
 # Extend underscore with the string helpers
 _.str = require 'underscore.string'

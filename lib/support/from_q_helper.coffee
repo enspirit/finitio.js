@@ -21,9 +21,13 @@ class FromQHelper
       res
 
   justTry: (rescueOn, callback) ->
+    unless callback?
+      [callback, rescueOn] = [rescueOn, callback]
+
     rescueOn = TypeError unless rescueOn?
+
     try
-      [true, callback()]
+      return [true, callback()]
     catch err
       if err instanceof rescueOn
         return [false, null] 
