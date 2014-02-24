@@ -33,7 +33,13 @@ class SubType extends Type
     
     # Check each constraint in turn
     _.each @constraints, (constraint, name) =>
-      return if constraint(uped)
+      if typeof constraint is "function"
+        return if constraint(uped)
+
+      # Unfortunately no magic '===' ruby operator here
+      if constraint? and constraint.constructor == RegExp
+        return if constraint.test(uped)
+
       msg = handler.defaultErrorMessage(this, value)
       msg += " (not #{name})" unless @isDefaultConstraint(name)
       handler.fail(msg)

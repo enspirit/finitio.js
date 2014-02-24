@@ -1,5 +1,6 @@
-Type           = require '../type'
-Handler        = require '../support/from_q_helper'
+Type                  = require '../type'
+Handler               = require '../support/from_q_helper'
+{NotImplementedError} = require '../errors'
 
 class TupleType extends Type
   

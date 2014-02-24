@@ -5,7 +5,7 @@ SubType     = require '../../../../lib/type/sub_type'
 {numType}   = require '../../spec_helpers'
 should      = require 'should'
 
-describe 'TypeFactory#sub_type', ->
+describe 'TypeFactory#subtype', ->
 
   factory = new TypeFactory
 
@@ -13,9 +13,9 @@ describe 'TypeFactory#sub_type', ->
     subject = factory.type Number, (i) ->
       i >= 0 && i <= 10
 
-    it 'shoudl have the BuiltinType(Number) super type', ->
+    it 'should have the BuiltinType(Number) super type', ->
       subject.superType.should.be.an.instanceof(BuiltinType)
-      subject.superType.jsType.should.be.an.instanceof(Number)
+      subject.superType.jsType.should.equal(Number)
 
     it 'should have the correct constraint', ->
       subject.fromQ(10).should.equal(10)
@@ -42,10 +42,10 @@ describe 'TypeFactory#sub_type', ->
 
       lambda = ->
         subject.fromQ('123')
-
-      expect(lambda).toTrow()
+        
+      expect(lambda).toThrow()
 
       try 
         lambda()
       catch e
-        expect(e).to.be.an.instanceof(TypeError)
+        e.should.be.an.instanceof(TypeError)

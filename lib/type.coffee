@@ -1,8 +1,5 @@
 {ArgumentError, NotImplementedError} = require './errors'
 
-Function::property = (prop, desc) ->
-  Object.defineProperty @prototype, prop, desc
-
 #
 # 'Abstract' class for Q types
 #
