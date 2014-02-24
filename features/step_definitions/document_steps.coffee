@@ -1,9 +1,9 @@
-Qrb = require '../../lib/qjs'
+Qjs = require '../../lib/qjs'
 
 module.exports = ->
 
   this.Given /^the document has been defined as follows:$/, (str, callback) =>
-    @schema = Qrb.parse_schema(str)
+    @schema = Qjs.parse_schema(str)
     callback()
   
   this.Given /^I use the document schema to validate the following JSON doc:$/, (str, callback) ->

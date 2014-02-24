@@ -1,10 +1,10 @@
-Qrb    = require '../../lib/qjs'
+Qjs    = require '../../lib/qjs'
 should = require 'should'
 
 module.exports = ->
   
   this.Given /^the Realm is$/, (source, callback) =>
-    @realm ?= Qrb.parse_realm(source)
+    @realm ?= Qjs.parse_realm(source)
 
     callback()
   
@@ -25,10 +25,10 @@ module.exports = ->
   this.Then /^the result should be a (.*?) native representation$/, (type, callback) =>
     type = @realm.fetch(type)
     
-    if type instanceof Qrb.TupleType
+    if type instanceof Qjs.TupleType
       @result.constructor.should.equal Object
     
-    else if type instanceof Qrb.RelationType
+    else if type instanceof Qjs.RelationType
       @result.constructor.should.equal Array
       @result.forEach (t) ->
         t.constructor.should.equal Object
@@ -38,7 +38,7 @@ module.exports = ->
     callback()
 
   this.Then /^it should be a TypeError as:$/, (table, callback) ->
-    @result.should.be.an.instanceof Qrb.TypeError
+    @result.should.be.an.instanceof Qjs.TypeError
 
     callback.pending()
     
