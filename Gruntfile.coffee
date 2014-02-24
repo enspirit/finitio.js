@@ -11,6 +11,7 @@ module.exports = (grunt) ->
       source: 'lib/'
       extensions: 'coffee'
       useCoffee: true
+      useHelpers: true
 
     cucumberjs:
       src: './features'
@@ -18,5 +19,7 @@ module.exports = (grunt) ->
   #
   grunt.registerTask 'default', ['test']
   grunt.registerTask 'test', ['jasmine_node', 'cucumberjs']
+  grunt.registerTask 'test-unit', ['jasmine_node']
+  
   grunt.loadNpmTasks 'grunt-jasmine-node'
   grunt.loadNpmTasks 'grunt-cucumber'

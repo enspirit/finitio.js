@@ -1,5 +1,8 @@
-Qjs      = require '../../lib/qjs'
-{errors} = Qjs
+Qjs         = require '../../lib/qjs'
+Type        = require '../../lib/type'
+SubType     = require '../../lib/type/sub_type'
+{TypeError} = require '../../lib/errors'
+
 should   = require 'should'
 
 describe 'Qjs', ->
@@ -12,7 +15,9 @@ describe 'Qjs', ->
     t = Qjs.type Number, (i) ->
       i >= 0
 
-    t.should.be.a Qjs.SubType
+    console.log(t)
+    
+    t.should.be.an.instanceof SubType
     t.fromQ(12).should.equal(12)
     
     lambda = ->
@@ -23,5 +28,4 @@ describe 'Qjs', ->
     try
       lambda()
     catch e
-      expect(e).to.be.an.instanceof(errors.TypeError)
-    
+      e.should.be.an.instanceof(TypeError)

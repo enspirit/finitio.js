@@ -21,16 +21,12 @@ class Qjs
     'type'
   ]
 
-  @DEFAULT_FACTORY: new TypeFactory()
+  @DEFAULT_FACTORY: new TypeFactory
 
 ## DSL methods
 for method in Qjs.DSL_METHODS
-  Qjs[method] = (args...) ->
-    Qjs.DEFAULT_FACTORY[method](args)
-
-##
-Qjs.Errors    = require './errors'
-Qjs.Type      = require './type'
+  if Qjs.DEFAULT_FACTORY[method]
+    Qjs[method] = Qjs.DEFAULT_FACTORY[method].bind(Qjs.DEFAULT_FACTORY)
 
 ##
 module.exports = Qjs
