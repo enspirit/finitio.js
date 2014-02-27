@@ -13,7 +13,7 @@ module.exports = ->
     json = JSON.parse(json)
     
     try
-      @result = types.from_q(json)
+      @result = types.dress(json)
     catch e
       @result = e
 

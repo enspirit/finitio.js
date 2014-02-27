@@ -1,5 +1,5 @@
 {NotImplementedError} = require '../errors'
-FromQHelper           = require '../support/from_q_helper'
+DressHelper           = require '../support/dress_helper'
 Type                  = require '../type'
 _                     = require 'underscore'
 
@@ -9,8 +9,8 @@ class BuiltinType extends Type
   constructor: (@jsType, @name) ->
     super(@name)
 
-  fromQ: (value, helper) ->
-    helper ?= new FromQHelper
+  dress: (value, helper) ->
+    helper ?= new DressHelper
     helper.failed(this, value) unless value.constructor == @jsType
     value
 

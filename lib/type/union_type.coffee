@@ -1,6 +1,6 @@
 _               = require 'underscore'
 Type            = require '../type'
-Handler         = require '../support/from_q_helper'
+DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'
 
 # Extend underscore with the string helpers
@@ -17,23 +17,23 @@ class UnionType extends Type
 
     super(@name)
 
-  # Invoke `from_q` on each candidate type in turn. Return the value
+  # Invoke `dress` on each candidate type in turn. Return the value
   # returned by the first one that does not fail. Fail with an TypeError if no
   # candidate succeeds at tranforming `value`.
-  fromQ: (value, handler) ->
-    handler ?= new Handler
+  dress: (value, helper) ->
+    helper ?= new DressHelper
     
     # Do nothing on TypeError as the next candidate could be the good one!
     match = _.find @candidates, (c) ->
-      [success, uped] = handler.justTry ->
-        c.fromQ(value, handler)
+      [success, uped] = helper.justTry ->
+        c.dress(value, helper)
 
       return success
 
-    return match.fromQ(value, handler) if match?
+    return match.dress(value, helper) if match?
     
     # No one succeed, just fail
-    handler.failed(this, value)
+    helper.failed(this, value)
   
   defaultName: ->
     _.map(@candidates, (c) -> c.name).join('|')

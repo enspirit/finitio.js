@@ -1,5 +1,5 @@
 Type                  = require '../type'
-Handler               = require '../support/from_q_helper'
+DressHelper           = require '../support/dress_helper'
 {NotImplementedError} = require '../errors'
 
 class TupleType extends Type
@@ -7,7 +7,7 @@ class TupleType extends Type
   constructor: ->
     throw new Errors.NotImplementedError(this, "constructor")
 
-  from_q: (value, handler) ->
-    throw new Errors.NotImplementedError(this, "from_q")
+  dress: (value, helper) ->
+    throw new Errors.NotImplementedError(this, "dress")
 
 module.exports = TupleType

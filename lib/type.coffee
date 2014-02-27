@@ -11,7 +11,7 @@ class Type
 
     @name ?= @defaultName()
 
-  fromQ: ->
+  dress: ->
     throw new NotImplementedError(this, "up")
 
 module.exports = Type

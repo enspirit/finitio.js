@@ -17,8 +17,8 @@ module.exports = (grunt) ->
       src: './features'
       
   #
-  grunt.registerTask 'default', ['test']
-  grunt.registerTask 'test', ['jasmine_node', 'cucumberjs']
+  grunt.registerTask 'default', ['test-unit']
+  #grunt.registerTask 'test', ['jasmine_node', 'cucumberjs']
   grunt.registerTask 'test-unit', ['jasmine_node']
   
   grunt.loadNpmTasks 'grunt-jasmine-node'

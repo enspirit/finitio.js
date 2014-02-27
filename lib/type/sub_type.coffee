@@ -1,6 +1,6 @@
 _               = require 'underscore'
 Type            = require '../type'
-Handler         = require '../support/from_q_helper'
+DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'
 
 # Extend underscore with the string helpers
@@ -24,12 +24,12 @@ class SubType extends Type
 
   # Check that `value` can be uped through the supertype, then verify all
   # constraints. Raise an error if anything goes wrong.
-  fromQ: (value, handler) ->
-    handler ?= new Handler
-    # Check that the supertype is able to 'from_q' the value.
+  dress: (value, helper) ->
+    helper ?= new DressHelper
+    # Check that the supertype is able to 'dress' the value.
     # Rewrite and set cause to any encountered TypeError.
-    uped = handler.try this, value, =>
-      @superType.fromQ(value, handler)
+    uped = helper.try this, value, =>
+      @superType.dress(value, helper)
     
     # Check each constraint in turn
     _.each @constraints, (constraint, name) =>
@@ -40,9 +40,9 @@ class SubType extends Type
       if constraint? and constraint.constructor == RegExp
         return if constraint.test(uped)
 
-      msg = handler.defaultErrorMessage(this, value)
+      msg = helper.defaultErrorMessage(this, value)
       msg += " (not #{name})" unless @isDefaultConstraint(name)
-      handler.fail(msg)
+      helper.fail(msg)
 
     # seems good, return the uped value
     uped

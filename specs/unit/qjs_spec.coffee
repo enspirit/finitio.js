@@ -15,13 +15,11 @@ describe 'Qjs', ->
     t = Qjs.type Number, (i) ->
       i >= 0
 
-    console.log(t)
-    
     t.should.be.an.instanceof SubType
-    t.fromQ(12).should.equal(12)
+    t.dress(12).should.equal(12)
     
     lambda = ->
-      t.fromQ(-12)
+      t.dress(-12)
 
     expect(lambda).toThrow()
 

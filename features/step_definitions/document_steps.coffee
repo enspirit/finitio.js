@@ -9,6 +9,6 @@ module.exports = ->
   this.Given /^I use the document schema to validate the following JSON doc:$/, (str, callback) ->
     doc = JSON.parse(str)
     try
-      @result = @schema.from_q(doc)
+      @result = @schema.dress(doc)
     catch err
       @result = err

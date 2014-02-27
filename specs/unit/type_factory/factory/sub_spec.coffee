@@ -18,11 +18,11 @@ describe 'TypeFactory#subtype', ->
       subject.superType.jsType.should.equal(Number)
 
     it 'should have the correct constraint', ->
-      subject.fromQ(10).should.equal(10)
+      subject.dress(10).should.equal(10)
 
       lambda = (i) ->
         ->
-          subject.fromQ(i)
+          subject.dress(i)
 
       expect(lambda(12)).toThrow()
       expect(lambda(-1)).toThrow()
@@ -38,10 +38,10 @@ describe 'TypeFactory#subtype', ->
     subject.should.be.an.instanceof(SubType)
 
     it 'should have the correct constraint', ->
-      subject.fromQ('abc').should.equal('abc')
+      subject.dress('abc').should.equal('abc')
 
       lambda = ->
-        subject.fromQ('123')
+        subject.dress('123')
         
       expect(lambda).toThrow()
 
