@@ -35,6 +35,10 @@ class UnionType extends Type
     # No one succeed, just fail
     helper.failed(this, value)
   
+  include: (value) ->
+    found = _.find @candidates, (c) -> c.include(value)
+    found?
+  
   defaultName: ->
     _.map(@candidates, (c) -> c.name).join('|')
 

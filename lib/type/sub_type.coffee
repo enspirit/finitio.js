@@ -50,6 +50,9 @@ class SubType extends Type
   defaultName: ->
     _.str.capitalize(_.keys(@constraints)[0])
 
+  include: (value) ->
+    @superType.include(value) && _.every(@constraints, (c, n) -> c(value))    
+
   equals: (other) ->
     return false unless other instanceof SubType
     other.superType == @superType and 

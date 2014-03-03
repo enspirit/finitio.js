@@ -7,8 +7,8 @@ class DressHelper
     @stack = []
   
   iterate: (value, callback) ->
-    _.each value, (elm, index) ->
-      deeper index, ->
+    _.each value, (elm, index) =>
+      @deeper index, ->
         callback(elm, index)
 
   deeper: (location, callback) ->

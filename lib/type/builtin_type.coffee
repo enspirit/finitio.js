@@ -16,6 +16,9 @@ class BuiltinType extends Type
 
   defaultName: ->
     @jsType.name
+
+  include: (value) ->
+    value.constructor == @jsType
     
   equals: (other) =>
     return false unless other instanceof BuiltinType
