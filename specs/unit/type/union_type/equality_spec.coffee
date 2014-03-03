@@ -17,5 +17,5 @@ describe "UnionType#equality", ->
     uType.equals(uType4).should.be.false
     uType.equals(intType).should.be.false
 
-  it 'should be a total function, with nil for non types', ->
+  it 'should be a total function, with null for non types', ->
     uType.equals(12).should.be.false

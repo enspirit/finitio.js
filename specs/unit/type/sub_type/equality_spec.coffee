@@ -20,5 +20,5 @@ describe 'SubType#equals', ->
     type.equals(type4).should.be.false
     type.equals(type5).should.be.false
   
-  it 'should be a total function, with nil for non types', ->
+  it 'should be a total function, with null for non types', ->
     type.equals(12).should.be.false

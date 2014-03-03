@@ -101,7 +101,7 @@ class TypeFactory
     new SubType(superType, _constraints, _name)
 
   union: (args...) ->
-    [candidates, _name] = [[], nil]
+    [candidates, _name] = [[], null]
     
     _.each args, (arg) ->
       if arg.constructor == Array

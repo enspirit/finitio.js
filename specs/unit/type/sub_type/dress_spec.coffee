@@ -45,7 +45,7 @@ describe "SubType#dress", ->
         subject.message.should.equal("Invalid value `-12` for byte")
 
       it "should have no cause", ->
-        subject.cause.should.equal('')
+        should.equal(subject.cause, null)
       
       it "should have an empty location", ->
         subject.location.should.equal('')
@@ -58,7 +58,7 @@ describe "SubType#dress", ->
         subject.message.should.equal("Invalid value `1000` for byte (not small)")
 
       it "should have no cause", ->
-        subject.cause.should.equal('')
+        should.equal(subject.cause, null)
 
       it "should have an empty location", ->
         subject.location.should.equal('')

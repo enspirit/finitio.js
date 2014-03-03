@@ -3,7 +3,11 @@ class QJSError extends Error
   
   constructor: (@message, @cause) ->
     super(@message)
-    @cause ?= ""
+
+# 
+class KeyError extends QJSError
+  constructor: (@message) ->
+    super(@message)
 
 #
 class ArgumentError extends QJSError
@@ -41,3 +45,4 @@ module.exports =
   ArgumentError: ArgumentError
   NotImplementedError: NotImplementedError
   TypeError: TypeError
+  KeyError: KeyError

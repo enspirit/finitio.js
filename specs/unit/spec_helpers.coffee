@@ -19,10 +19,12 @@ floatType = new SubType(numType, {
     hasDot:     (i) -> i.toString().indexOf('.') != -1
   }, 'floatType')
 
+byteType = new SubType(intType, byte: (i) -> i>=0 && i<=255 )
 
 module.exports =
   numType: numType
   boolType: boolType
   stringType: stringType
   intType: intType
-  floatType: floatType
+  floatType: floatType,
+  byteType: byteType

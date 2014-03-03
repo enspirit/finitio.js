@@ -14,4 +14,7 @@ class Type
   dress: ->
     throw new NotImplementedError(this, "up")
 
+  toString: ->
+    @name.toString()
+
 module.exports = Type

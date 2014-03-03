@@ -12,13 +12,18 @@ class DressHelper
         callback(elm, index)
 
   deeper: (location, callback) ->
+    _err = null
     try
       @stack.push(location.toString())
       res = callback()
     catch err
+      _err = err
     finally
-      @stack.pop
-      res
+      @stack.pop()
+      if _err == null
+        res
+      else
+        throw _err
 
   justTry: (rescueOn, callback) ->
     unless callback?

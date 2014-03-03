@@ -26,7 +26,7 @@ describe "UnionType#dress", ->
       subject.message.should.equal("Invalid value `foo` for union")
 
     it 'should have no cause', ->
-      subject.cause.should.equal('')
+      should.equal(subject.cause, null)
 
     it 'should have an empty location', ->
       subject.location.should.equal('')
