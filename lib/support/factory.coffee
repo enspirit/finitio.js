@@ -130,6 +130,9 @@ class TypeFactory
     _name = @name(_name)
     new BuiltinType(primitive, _name)
 
+  adt: (primitive, contracts, name) ->
+    throw new NotImplementedError("Factory#adt")
+
   #### Sub and union
 
   subtype: (superType, _constraints, _name, callback) ->

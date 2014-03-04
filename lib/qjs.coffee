@@ -25,8 +25,7 @@ class Qjs
 
 ## DSL methods
 for method in Qjs.DSL_METHODS
-  if Qjs.DEFAULT_FACTORY[method]
-    Qjs[method] = Qjs.DEFAULT_FACTORY[method].bind(Qjs.DEFAULT_FACTORY)
+  Qjs[method] = Qjs.DEFAULT_FACTORY[method].bind(Qjs.DEFAULT_FACTORY)
 
 ##
 module.exports = Qjs
