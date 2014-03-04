@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "Louis Lambeau <louislambeau@gmail.com>",
   "license": "MIT",
-  "scripts":{
+  "scripts": {
     "test": "grunt test"
   },
   "dependencies": {
@@ -18,6 +18,7 @@
     "grunt": "~0.4.2",
     "grunt-jasmine-node": "~0.1.0",
     "grunt-cucumber": "~0.2.3",
-    "pegjs": "~0.8.0"
+    "pegjs": "~0.8.0",
+    "grunt-peg": "~1.2.0"
   }
 }
