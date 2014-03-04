@@ -15,6 +15,15 @@ module.exports = (grunt) ->
 
     cucumberjs:
       src: './features'
+
+    browserify:
+      dist:
+        files:
+          'build/q.js': ['index.coffee']
+        options:
+          alias:      ['./lib/qjs:qjs']
+          transform:  ['coffeeify']
+          extensions: ['.coffee']
       
   #
   grunt.registerTask 'default', ['test']
@@ -23,3 +32,4 @@ module.exports = (grunt) ->
   
   grunt.loadNpmTasks 'grunt-jasmine-node'
   grunt.loadNpmTasks 'grunt-cucumber'
+  grunt.loadNpmTasks 'grunt-browserify'
