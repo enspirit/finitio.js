@@ -8,6 +8,7 @@ Heading        = require './heading'
 ## Types
 BuiltinType    = require '../type/builtin_type'
 SeqType        = require '../type/seq_type'
+SetType        = require '../type/set_type'
 SubType        = require '../type/sub_type'
 TupleType      = require '../type/tuple_type'
 UnionType      = require '../type/union_type'
@@ -162,11 +163,18 @@ class TypeFactory
     new UnionType(candidates, _name)
 
   #### Collections
+
   seq: (elmType, name) ->
     elmType = @type(elmType)
     name    = @name(name)
 
     new SeqType(elmType, name)
+
+  set: (elmType, name) ->
+    elmType = @type(elmType)
+    name    = @name(name)
+
+    new SetType(elmType, name)
  
  #### Tuples and relations
 
