@@ -45,7 +45,7 @@ class Heading
     valid = _.every @attributes, (attr, name) ->
       other_attr = other.attributes[name]
       attr.equals(attr)
-    
+
     valid
 
 

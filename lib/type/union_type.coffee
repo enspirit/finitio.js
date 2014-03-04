@@ -22,7 +22,7 @@ class UnionType extends Type
   # candidate succeeds at tranforming `value`.
   dress: (value, helper) ->
     helper ?= new DressHelper
-    
+
     # Do nothing on TypeError as the next candidate could be the good one!
     match = _.find @candidates, (c) ->
       [success, uped] = helper.justTry ->
@@ -31,14 +31,14 @@ class UnionType extends Type
       return success
 
     return match.dress(value, helper) if match?
-    
+
     # No one succeed, just fail
     helper.failed(this, value)
-  
+
   include: (value) ->
     found = _.find @candidates, (c) -> c.include(value)
     found?
-  
+
   defaultName: ->
     _.map(@candidates, (c) -> c.name).join('|')
 
@@ -48,7 +48,7 @@ class UnionType extends Type
     ## ... but _.isEqual doesn't work for [1, 2] == [2, 1]
     unless _.isEqual(_.difference(other.candidates, @candidates), [])
       return false
-    
+
     unless _.isEqual(_.difference(@candidates, other.candidates), [])
       return false
 

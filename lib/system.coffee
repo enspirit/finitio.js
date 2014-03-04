@@ -28,26 +28,26 @@ class System
   addType: (type) ->
     unless type instanceof Type
       throw new ArgumentError("Qjs.Type expected, got", type)
-    
+
     if @types[type.name]?
       throw new Error("Duplicate type name `#{type.name}`")
 
     @types[type.name] = type
     this[type.name] = type
-  
+
   getType: (name) ->
     @types[name]
-  
+
   fetch: (name, callback) ->
     return @types[name] if @types[name]?
 
     unless callback?
       throw new KeyError("No type found: #{name}")
-    
+
     callback()
 
   # TODO: dress: (*args, &bl)
-  
+
   # TODO: parse: (source)
 
   clone: ->

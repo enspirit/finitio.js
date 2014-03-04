@@ -7,7 +7,7 @@ should      = require 'should'
 describe "TupleType#include", ->
 
   heading = new Heading([new Attribute('a', intType)])
-  
+
   type = new TupleType(heading)
 
   subject = (arg) -> type.include(arg)

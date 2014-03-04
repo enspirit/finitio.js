@@ -18,9 +18,9 @@ describe "UnionType#constructor", ->
 
     it 'should throw an error', ->
       expect(lambda).toThrow()
-  
+
     it 'should throw an ArgumentError', ->
-      try 
+      try
         lambda()
       catch e
         e.should.be.an.instanceof(ArgumentError)

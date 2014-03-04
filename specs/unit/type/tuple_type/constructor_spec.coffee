@@ -10,7 +10,7 @@ should      = require 'should'
 describe "TupleType#constructor", ->
 
   heading = new Heading([new Attribute('a', intType)])
-  
+
   describe 'with a valid heading', ->
     subject = new TupleType(heading)
 
@@ -21,9 +21,9 @@ describe "TupleType#constructor", ->
 
   describe 'with an invalid heading', ->
     subject = try
-        new TupleType("foo")
-      catch e
-        e
+      new TupleType("foo")
+    catch e
+      e
 
     it 'should raise an error', ->
       subject.should.be.an.instanceof ArgumentError

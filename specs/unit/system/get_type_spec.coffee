@@ -10,7 +10,7 @@ describe "System#[]", ->
   beforeEach ->
     system = new System
     system.addType(numType)
-  
+
   subject = (name) -> system[name]
 
   describe 'with an existing type name', ->

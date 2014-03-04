@@ -3,13 +3,13 @@ SubType     = require '../../../../lib/type/sub_type'
 should      = require 'should'
 
 describe "SubType#dress", ->
-  
+
   _default = (i) -> i > 0
   _small   = (i) -> i < 255
 
   type = new SubType(numType, {default: _default, small: _small}, "byte")
 
-  factor = (arg) -> 
+  factor = (arg) ->
     type.dress(arg)
 
   describe 'with a valid Number', ->
@@ -46,7 +46,7 @@ describe "SubType#dress", ->
 
       it "should have no cause", ->
         should.equal(subject.cause, null)
-      
+
       it "should have an empty location", ->
         subject.location.should.equal('')
 
@@ -55,7 +55,8 @@ describe "SubType#dress", ->
 
       it 'should raise an Error', ->
         subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `1000` for byte (not small)")
+        subject.message.should.equal \
+          "Invalid value `1000` for byte (not small)"
 
       it "should have no cause", ->
         should.equal(subject.cause, null)

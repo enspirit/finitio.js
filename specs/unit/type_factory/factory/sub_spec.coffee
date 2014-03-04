@@ -31,7 +31,7 @@ describe 'TypeFactory#subtype', ->
         lambda(12)
       catch e
         expect(e).to.be.an.instanceof(TypeError)
-      
+
   describe 'when used with a regexp', ->
     subject = factory.type /[a-z]+/
 
@@ -42,7 +42,7 @@ describe 'TypeFactory#subtype', ->
 
       lambda = ->
         subject.dress('123')
-        
+
       expect(lambda).toThrow()
 
       try

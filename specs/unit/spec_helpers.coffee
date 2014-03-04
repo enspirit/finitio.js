@@ -9,15 +9,15 @@ boolType   = new BuiltinType(Boolean, 'boolType')
 stringType = new BuiltinType(String, 'stringType')
 
 # SubType
-intType = new SubType(numType, {
-    noDecimal: (i) -> i % 1 == 0
-    noDot:     (i) -> i.toString().indexOf('.') == -1
-  }, 'intType')
+intType = new SubType numType, {
+  noDecimal: (i) -> i % 1 == 0
+  noDot:     (i) -> i.toString().indexOf('.') == -1
+  }, 'intType'
 
-floatType = new SubType(numType, {
-    hasDecimal: (i) -> i % 1 != 0
-    hasDot:     (i) -> i.toString().indexOf('.') != -1
-  }, 'floatType')
+floatType = new SubType numType, {
+  hasDecimal: (i) -> i % 1 != 0
+  hasDot:     (i) -> i.toString().indexOf('.') != -1
+  }, 'floatType'
 
 byteType = new SubType(intType, byte: (i) -> i>=0 && i<=255 )
 

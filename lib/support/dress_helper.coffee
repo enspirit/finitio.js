@@ -5,7 +5,7 @@ class DressHelper
 
   constructor: ->
     @stack = []
-  
+
   iterate: (value, callback) ->
     _.each value, (elm, index) =>
       @deeper index, ->
@@ -52,18 +52,18 @@ class DressHelper
     cause ?= null
     msg = @defaultErrorMessage(type, value)
     throw new TypeError(msg, cause, @location())
-  
+
   fail: (msg, cause) ->
     cause ?= null
     throw new TypeError(msg, cause, @location())
-  
+
   defaultErrorMessage: (type, value) ->
     [ value_s, type_s ] = [ _valueToString(value), _typeToString(type) ]
     "Invalid value `#{value_s}` for #{type_s}"
 
   location: ->
     @stack.join('/')
-  
+
 
 # "private methods"
 # (= utility functions only visible in the scope of this module)

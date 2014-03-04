@@ -31,7 +31,7 @@ class SubType extends Type
     # Rewrite and set cause to any encountered TypeError.
     uped = helper.try this, value, =>
       @superType.dress(value, helper)
-    
+
     # Check each constraint in turn
     _.each @constraints, (constraint, name) =>
       if typeof constraint is "function"
@@ -47,7 +47,7 @@ class SubType extends Type
 
     # seems good, return the uped value
     uped
-  
+
   defaultName: ->
     _.str.capitalize(_.keys(@constraints)[0])
 

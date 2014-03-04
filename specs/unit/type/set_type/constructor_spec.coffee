@@ -7,7 +7,7 @@ should          = require 'should'
 describe "SetType#initialize", ->
 
   subject = new SetType(intType)
-  
+
   describe 'with valid arguments', ->
     subject.should.be.an.instanceof SetType
 
@@ -21,9 +21,9 @@ describe "SetType#initialize", ->
       expect(lambda).toThrow
 
       err = try
-          lambda()
-        catch e 
-          e
-      
+        lambda()
+      catch e
+        e
+
       err.should.be.an.instanceof ArgumentError
       err.message.should.equal('Qjs.Type expected, got String')

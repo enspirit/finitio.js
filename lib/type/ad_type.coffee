@@ -9,7 +9,7 @@ class AdType extends Type
   constructor: (@jsType, @contracts, @name) ->
     unless @jsType instanceof Function
       throw new ArgumentError("Constructor (function) expected, got", @jsType)
-    
+
     unless typeof @contracts is "object"
       throw new ArgumentError("Hash expected, got", @contracts)
 
@@ -18,7 +18,7 @@ class AdType extends Type
         v.length == 2 and
         v[0] instanceof Type and
         v[1] instanceof Function)
-    
+
     unless invalid.length == 0
       throw new ArgumentError("Invalid contracts `#{invalid}`")
 
@@ -26,16 +26,16 @@ class AdType extends Type
 
   contractNames: ->
     _.keys(@contracts)
-  
+
   defaultName: ->
     @jsType.name
 
   include: (value) ->
     value.constructor == @jsType
-  
+
   dress: (value, helper) ->
     helper ?= new DressHelper
-    
+
     # Up should be idempotent with respect to the ADT
     return value if value instanceof @jsType
 
@@ -56,7 +56,7 @@ class AdType extends Type
       # Seems nice, just try to get one stage higher now
       [success, uped] = helper.justTry Error, ->
         upper(uped)
-      
+
       return uped if success
 
     # No one succeeded, just fail

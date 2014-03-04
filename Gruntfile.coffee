@@ -26,7 +26,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'default',      ['build_parser', 'test']
   grunt.registerTask 'test',         ['jasmine_node']
   grunt.registerTask 'lint',         ['coffeelint']
-  
+
   grunt.registerTask 'build_parser', ->
     shell.exec 'pegjs --allowed-start-rules type lib/syntax/parser.pegjs lib/syntax/parser.js'
 

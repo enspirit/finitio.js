@@ -19,7 +19,7 @@ class BuiltinType extends Type
 
   include: (value) ->
     value.constructor == @jsType
-    
+
   equals: (other) =>
     return false unless other instanceof BuiltinType
     other.jsType == @jsType

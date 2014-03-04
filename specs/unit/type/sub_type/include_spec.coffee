@@ -4,8 +4,8 @@ should  = require 'should'
 describe "SubType#include", ->
 
   type = new SubType(intType, {
-      default: (i) -> i>0
-      small: (i) -> i<255
+    default: (i) -> i>0
+    small: (i) -> i<255
     }, "byte")
 
   subject = (arg) -> type.include(arg)

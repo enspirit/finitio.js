@@ -30,13 +30,13 @@ describe 'System#fetch', ->
         lambda()
       catch e
         e
-      
+
       err.should.be.an.instanceof KeyError
       err.message.should.match /noSuchOne/
 
   describe 'with a non existing type name and a callback', ->
-    lambda = -> 
+    lambda = ->
       system.fetch("noSuchOne", -> "bar")
-    
+
     it 'should call the callback', ->
       lambda().should.equal("bar")

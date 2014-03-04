@@ -12,7 +12,7 @@ describe "SetType#equality", ->
 
   it 'should apply structural equality', ->
     type.equals(type2).should.be.true
-  
+
   it 'should apply distinguish different types', ->
     type.equals(type3).should.be.false
 

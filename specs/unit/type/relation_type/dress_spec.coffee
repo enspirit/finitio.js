@@ -12,7 +12,7 @@ describe "RelationType#dress", ->
       new Attribute('g', byteType),
       new Attribute('b', byteType)
     ])
-  
+
   type = new RelationType(heading, "colors")
 
   factor = (arg) -> type.dress(arg)
@@ -22,12 +22,12 @@ describe "RelationType#dress", ->
         { "r": 12, "g": 13, "b": 255 },
         { "r": 12, "g": 15, "b": 198 }
       ]
-    
+
     expected = [
         { r: 12, g: 13, b: 255 },
         { r: 12, g: 15, b: 198 }
       ]
-    
+
     it 'should coerce to an array of tuples', ->
       _.isEqual(subject, expected).should.be.true
 
@@ -65,7 +65,8 @@ describe "RelationType#dress", ->
 
       it 'should raise a TypeError', ->
         subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `foo` for {r: Byte, g: Byte, b: Byte}")
+        subject.message.should.equal \
+          "Invalid value `foo` for {r: Byte, g: Byte, b: Byte}"
 
       it 'should have no cause', ->
         should.equal(subject.cause, null)
@@ -78,7 +79,7 @@ describe "RelationType#dress", ->
           { "r": 12, "g": 13, "b": 255 },
           { "r": 12, "g": 13 }
         ]
-      
+
       it 'should raise a TypeError', ->
         subject.should.be.an.instanceof(TypeError)
         subject.message.should.equal("Missing attribute `b`")

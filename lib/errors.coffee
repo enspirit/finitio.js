@@ -1,6 +1,6 @@
 #
 class QJSError extends Error
-  
+
   constructor: (@message, @cause) ->
     super(@message)
 
@@ -11,11 +11,11 @@ class KeyError extends QJSError
 
 #
 class ArgumentError extends QJSError
-  
+
   constructor: (@message, @arg) ->
-    
+
     if arguments.length == 2
-      
+
       clazz =
         if typeof @arg == "undefined"
           "undefined"
@@ -23,9 +23,9 @@ class ArgumentError extends QJSError
           "null"
         else
           @arg.constructor.name
-      
+
       @message += " " + clazz
-    
+
     super(@message)
 
 #
@@ -36,7 +36,7 @@ class TypeError extends QJSError
 
 #
 class NotImplementedError extends QJSError
-  
+
   constructor: (clazz, method) ->
     super "Missing #{clazz.constructor.name}##{method}"
 

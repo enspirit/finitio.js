@@ -19,19 +19,19 @@ class Attribute
     unless @type instanceof Type
       throw new ArgumentError("Type expected for attribute domain, got", @type)
 
-  
+
   # TODO: remove this, it's totally unnecessary for the JavaScript version of Q
   #
   fetchOn: (arg, callback) ->
     unless typeof arg == "object"
       throw new ArgumentError("Object expected, got", arg)
-    
+
     unless arg[@name]?
       if callback?
         return callback()
       else
         throw new KeyError("Key `#{@name}` not found")
-    
+
     return arg[@name]
 
   toName: ->
@@ -40,6 +40,6 @@ class Attribute
   equals: (other) ->
     return null unless other instanceof Attribute
     @name==other.name and @type.equals(other.type)
-  
+
 #
 module.exports = Attribute

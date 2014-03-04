@@ -15,10 +15,10 @@ describe 'SubType#equals', ->
   it 'should apply structural equality', ->
     type.equals(type2).should.be.true
     type.equals(type3).should.be.true
-  
+
   it 'should apply distinguish different types', ->
     type.equals(type4).should.be.false
     type.equals(type5).should.be.false
-  
+
   it 'should be a total function, with null for non types', ->
     type.equals(12).should.be.false

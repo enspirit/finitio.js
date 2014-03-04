@@ -41,6 +41,6 @@ describe "SeqType#dress", ->
     it 'should raise an error', ->
       subject.should.be.an.instanceof(TypeError)
       subject.message.should.equal("Invalid value `-12` for Byte")
-    
+
     it 'should have correct location', ->
       subject.location.should.equal("2")

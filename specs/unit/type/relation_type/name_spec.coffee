@@ -7,7 +7,7 @@ should      = require 'should'
 describe "RelationType#name", ->
 
   heading = new Heading([new Attribute('a', byteType)])
-  
+
   subject = (type) -> type.name
 
   describe 'when not provided', ->

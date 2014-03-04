@@ -48,7 +48,7 @@ class TypeFactory
 
     else if typeof(t) == "object"
       @tuple(t, name)
-      
+
     else
       fail("Unable to factor a Qjs.Type from `#{t}`")
 
@@ -93,21 +93,21 @@ class TypeFactory
 
   attribute: (name, type) ->
     new Attribute(name, @type(type))
-  
+
   attributes: (attributes) ->
     unless typeof attributes is "object"
       fail("Hash expected, got ", attributes)
-  
+
     attr = []
     _.each attributes, (type, name) =>
       attr.push @attribute(name, type)
 
     attr
-    
+
   heading: (heading) ->
     return heading if heading instanceof Heading
     return heading.heading if heading.heading?
-    
+
     if typeof(heading) is "object"
       new Heading(@attributes(heading))
     else
@@ -116,7 +116,7 @@ class TypeFactory
   contracts: (contracts) ->
     unless typeof contracts is "object"
       fail("Hash expected, got", contracts)
-    
+
     invalid = _.keys contracts, (k) -> k instanceof String
     if invalid.length > 0
       fail("Invalid contract names `#{invalid}`")
@@ -144,7 +144,7 @@ class TypeFactory
     unless callback?
       if typeof _constraints == "function"
         [callback, _constraints] = [_constraints, callback]
-    
+
     superType    = @type(superType)
     _constraints = @constraints(_constraints, callback)
     _name        = @name(_name)
@@ -153,11 +153,11 @@ class TypeFactory
 
   union: (args...) ->
     [candidates, _name] = [[], null]
-    
+
     _.each args, (arg) ->
       if arg.constructor == Array
         candidates = _.map arg, (t) -> @type(t)
-      
+
       if arg.constructor == String
         _name = @name(_name)
 
@@ -179,7 +179,7 @@ class TypeFactory
     name    = @name(name)
 
     new SetType(elmType, name)
- 
+
  #### Tuples and relations
 
   tuple: (heading, name) ->
@@ -187,7 +187,7 @@ class TypeFactory
     name    = @name(name)
 
     new TupleType(heading, name)
-  
+
   relation: (heading, name) ->
     heading = @heading(heading)
     name    = @name(name)

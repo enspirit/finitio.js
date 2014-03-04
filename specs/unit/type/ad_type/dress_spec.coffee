@@ -6,12 +6,11 @@ should         = require 'should'
 describe "AdType#dress", ->
 
   type = new AdType(Date, {
-      timestamp:  [intType,    (i) -> i*2   ]
-      utc_string: [stringType, (s) -> "foo" ]
-    })
-  
+    timestamp:  [intType,    (i) -> i*2   ]
+    utc_string: [stringType, (s) -> "foo" ]})
+
   subject = (arg) -> type.dress(arg)
-  
+
   describe 'with a date', ->
     d = new Date()
     subject(d).should.equal(d)
@@ -32,18 +31,19 @@ describe "AdType#dress", ->
         lambda()
       catch e
         e
-      
+
       err.should.be.an.instanceof TypeError
       err.message.should.equal "Invalid value `[]` for Date"
 
   describe 'when the upper raises an error', ->
-    type = new AdType(Date, timestamp: [ intType, (t) -> throw new ArgumentError ])
-    
+    type = new AdType(Date,
+      timestamp: [intType, (t) -> throw new ArgumentError])
+
     it 'should hide the error', ->
 
       err = try
-        type.dress(12) 
-      catch e 
+        type.dress(12)
+      catch e
         e
 
       err.should.be.an.instanceof TypeError
