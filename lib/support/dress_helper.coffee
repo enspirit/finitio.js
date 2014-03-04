@@ -72,6 +72,7 @@ _valueToString = (value) ->
   return 'null' if value == null
   s = value.toString()
   s = "#{s.substring(0, 25)}..." if s.length>25
+  s = "[#{s}]" if value instanceof Array
   s
 
 _typeToString = (type) ->
