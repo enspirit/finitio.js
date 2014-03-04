@@ -112,12 +112,12 @@ describe "RelationType#dress", ->
           { "r": 12, "g": 13, "b": 255 }
         ]
 
-      xit 'should raise a TypeError', ->
+      it 'should raise a TypeError', ->
         subject.should.be.an.instanceof(TypeError)
         subject.message.should.equal("Duplicate tuple")
 
-      xit 'should have no cause', ->
+      it 'should have no cause', ->
         should.equal(subject.cause, null)
 
-      xit 'should have the correct location', ->
+      it 'should have the correct location', ->
         subject.location.should.equal('2')

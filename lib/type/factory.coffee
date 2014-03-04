@@ -3,7 +3,6 @@ _                     = require 'underscore'
 
 ## Types
 BuiltinType    = require '../type/builtin_type'
-CollectionType = require '../type/collection_type'
 SeqType        = require '../type/seq_type'
 SubType        = require '../type/sub_type'
 TupleType      = require '../type/tuple_type'

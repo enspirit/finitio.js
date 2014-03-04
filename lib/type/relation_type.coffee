@@ -36,14 +36,17 @@ class RelationType extends Type
       helper.failed(this, value)
 
     # Up every tuple and keep results in a "Set"
-    set = []
+    set = {}
     helper.iterate value, (tuple, index) =>
       tuple = @tupleType.dress(tuple, helper)
-      ## TODO: helper.fail("Duplicate tuple") if set[tuple]?
-      set.push(tuple)
+      ## TODO: what a terrible way of 'hashing'
+      ## shall we invent a real 'Set' class and hash objects?
+      key = JSON.stringify(tuple)
+      helper.fail("Duplicate tuple") if set[key]?
+      set[key] = tuple
 
     # Return built tuples
-    set
+    _.values(set)
  
   equals: (other) ->
     return false unless other instanceof RelationType
