@@ -1,0 +1,8 @@
+SetType         = require '../../../../lib/type/set_type'
+should          = require 'should'
+
+describe "SetType#defaultName", ->
+
+  type = new SetType(intType, "foo")
+  subject = type.defaultName()
+  subject.should.equal('{intType}')
