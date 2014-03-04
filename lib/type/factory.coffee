@@ -31,7 +31,7 @@ class TypeFactory
       t
 
     else if isNativeType(t)
-      new BuiltinType(t, name || t.constructor.name)
+      new BuiltinType(t, name || t.constructor.name)
 
     else if isRegexp(t)
       @subtype(String, t)
