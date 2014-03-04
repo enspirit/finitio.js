@@ -41,7 +41,7 @@ class NotImplementedError extends QJSError
     super "Missing #{clazz.constructor.name}##{method}"
 
 module.exports =
-  QSJError: QJSError
+  Error: Error
   ArgumentError: ArgumentError
   NotImplementedError: NotImplementedError
   TypeError: TypeError
