@@ -46,12 +46,12 @@ class System
     
     callback()
 
-  # TODO: dress: (*args, &bl)  
+  # TODO: dress: (*args, &bl)
   
   # TODO: parse: (source)
 
   clone: ->
     new System(_.clone(@types), _.clone(@main))
 
-# 
+#
 module.exports = System

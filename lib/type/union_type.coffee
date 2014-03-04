@@ -11,7 +11,7 @@ class UnionType extends Type
   constructor: (@candidates, @name) ->
     @name ?= null
 
-    _.each @candidates, (c) =>
+    _.each @candidates, (c) ->
       unless c instanceof Type
         throw new ArgumentError("Qjs.Type expected, got", c)
 
@@ -46,8 +46,12 @@ class UnionType extends Type
     return false unless other instanceof UnionType
     ## TODO: there's probably a better way to do this
     ## ... but _.isEqual doesn't work for [1, 2] == [2, 1]
-    return false unless _.isEqual(_.difference(other.candidates, @candidates), [])
-    return false unless _.isEqual(_.difference(@candidates, other.candidates), [])
+    unless _.isEqual(_.difference(other.candidates, @candidates), [])
+      return false
+    
+    unless _.isEqual(_.difference(@candidates, other.candidates), [])
+      return false
+
     true
 
 module.exports = UnionType

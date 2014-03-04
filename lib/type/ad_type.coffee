@@ -14,11 +14,10 @@ class AdType extends Type
       throw new ArgumentError("Hash expected, got", @contracts)
 
     invalid = _.reject(_.values(@contracts), (v) ->
-        v instanceof Array and 
-          v.length == 2 and
-          v[0] instanceof Type and 
-          v[1] instanceof Function
-      )
+      v instanceof Array and
+        v.length == 2 and
+        v[0] instanceof Type and
+        v[1] instanceof Function)
     
     unless invalid.length == 0
       throw new ArgumentError("Invalid contracts `#{invalid}`")
@@ -63,5 +62,5 @@ class AdType extends Type
     # No one succeeded, just fail
     helper.failed(this, value)
 
-# 
+#
 module.exports = AdType

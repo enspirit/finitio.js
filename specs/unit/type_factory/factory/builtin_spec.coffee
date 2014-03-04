@@ -16,4 +16,3 @@ describe 'TypeFactory#builtin', ->
 
     it 'should have the correct name', ->
       subject.name.should.equal("Num")
-

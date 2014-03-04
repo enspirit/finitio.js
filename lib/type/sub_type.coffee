@@ -18,7 +18,8 @@ class SubType extends Type
       throw new ArgumentError("Qjs.Type expected, got", @superType)
 
     unless typeof @constraints == "object"
-      throw new ArgumentError("Hash expected for constraints, got", @constraints)
+      throw new ArgumentError("Hash expected for constraints, got",
+        @constraints)
 
     super(@name)
 
@@ -51,11 +52,11 @@ class SubType extends Type
     _.str.capitalize(_.keys(@constraints)[0])
 
   include: (value) ->
-    @superType.include(value) && _.every(@constraints, (c, n) -> c(value))    
+    @superType.include(value) && _.every(@constraints, (c, n) -> c(value))
 
   equals: (other) ->
     return false unless other instanceof SubType
-    other.superType == @superType and 
+    other.superType == @superType and
       _.isEqual _.values(other.constraints), _.values(@constraints)
 
   # 'private method'

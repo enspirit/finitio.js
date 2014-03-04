@@ -19,6 +19,7 @@
     "grunt": "~0.4.2",
     "grunt-jasmine-node": "~0.1.0",
     "grunt-cucumber": "~0.2.3",
-    "pegjs": "~0.8.0"
+    "pegjs": "~0.8.0",
+    "grunt-coffeelint": "0.0.8"
   }
 }

@@ -18,12 +18,18 @@ module.exports = (grunt) ->
     cucumberjs:
       src: './features'
 
+    coffeelint:
+      lib:   ['lib/**/*.coffee']
+      tests: ['specs/**/*.coffee']
+
   #
   grunt.registerTask 'default',      ['build_parser', 'test']
   grunt.registerTask 'test',         ['jasmine_node']
+  grunt.registerTask 'lint',         ['coffeelint']
   
   grunt.registerTask 'build_parser', ->
     shell.exec 'pegjs --allowed-start-rules type lib/syntax/parser.pegjs lib/syntax/parser.js'
 
   grunt.loadNpmTasks 'grunt-jasmine-node'
   grunt.loadNpmTasks 'grunt-cucumber'
+  grunt.loadNpmTasks 'grunt-coffeelint'

@@ -67,7 +67,8 @@ class TypeFactory
       fail("JS primitive expected, got `#{t}`")
 
   name: (name) ->
-    unless not(name?) or ((name.constructor == String) and name.trim().length > 1)
+    unless not(name?) or \
+        ((name.constructor == String) and name.trim().length > 1)
       fail("Wrong type name `#{name}`")
 
     if name?
@@ -78,7 +79,7 @@ class TypeFactory
   constraints: (constraints, callback) ->
     constrs = {}
     if callback?
-      constrs['predicate'] = callback 
+      constrs['predicate'] = callback
 
     # Unfortunately, _.isObject(RegExp) == true in JS
     if constraints? and constraints.constructor == RegExp

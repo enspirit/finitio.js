@@ -49,5 +49,5 @@ class Heading
     valid
 
 
-# 
+#
 module.exports = Heading

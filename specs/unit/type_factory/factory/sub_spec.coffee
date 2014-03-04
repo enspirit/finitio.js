@@ -27,7 +27,7 @@ describe 'TypeFactory#subtype', ->
       expect(lambda(12)).toThrow()
       expect(lambda(-1)).toThrow()
 
-      try 
+      try
         lambda(12)
       catch e
         expect(e).to.be.an.instanceof(TypeError)
@@ -45,7 +45,7 @@ describe 'TypeFactory#subtype', ->
         
       expect(lambda).toThrow()
 
-      try 
+      try
         lambda()
       catch e
         e.should.be.an.instanceof(TypeError)

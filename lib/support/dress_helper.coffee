@@ -35,7 +35,7 @@ class DressHelper
       return [true, callback()]
     catch err
       if err instanceof rescueOn
-        return [false, null] 
+        return [false, null]
       else
         throw err
 
@@ -54,7 +54,7 @@ class DressHelper
     throw new TypeError(msg, cause, @location())
   
   fail: (msg, cause) ->
-    cause ?= null 
+    cause ?= null
     throw new TypeError(msg, cause, @location())
   
   defaultErrorMessage: (type, value) ->
@@ -65,7 +65,7 @@ class DressHelper
     @stack.join('/')
   
 
-# "private methods" 
+# "private methods"
 # (= utility functions only visible in the scope of this module)
 
 _valueToString = (value) ->
