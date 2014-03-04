@@ -1,12 +1,17 @@
 Type                  = require '../type'
 _                     = require 'underscore'
 
+## Support
+Attribute      = require './attribute'
+Heading        = require './heading'
+
 ## Types
 BuiltinType    = require '../type/builtin_type'
 SeqType        = require '../type/seq_type'
 SubType        = require '../type/sub_type'
 TupleType      = require '../type/tuple_type'
 UnionType      = require '../type/union_type'
+RelationType   = require '../type/relation_type'
 
 ## Errors
 {
@@ -36,10 +41,13 @@ class TypeFactory
     else if isRegexp(t)
       @subtype(String, t)
 
-    else if typeof(t) == "object"
-      #@tuple(t, name)
-      fail("Not Implemented")
+    else if t instanceof Array
+      fail("Array of arity 1 expected, got", t) unless t.length == 1
+      @seq(t[0], name)
 
+    else if typeof(t) == "object"
+      @tuple(t, name)
+      
     else
       fail("Unable to factor a Qjs.Type from `#{t}`")
 
@@ -73,6 +81,38 @@ class TypeFactory
 
     _.extend(constrs, constraints) if _.isObject(constraints)
     constrs
+
+  attribute: (name, type) ->
+    new Attribute(name, @type(type))
+  
+  attributes: (attributes) ->
+    unless typeof attributes is "object"
+      fail("Hash expected, got ", attributes)
+  
+    attr = []
+    _.each attributes, (type, name) =>
+      attr.push @attribute(name, type)
+
+    attr
+    
+  heading: (heading) ->
+    return heading if heading instanceof Heading
+    return heading.heading if heading.heading?
+    
+    if typeof(heading) is "object"
+      new Heading(@attributes(heading))
+    else
+      fail("Heading expected, got", heading)
+
+  contracts: (contracts) ->
+    unless typeof contracts is "object"
+      fail("Hash expected, got", contracts)
+    
+    invalid = _.keys contracts, (k) -> k instanceof String
+    if invalid.length > 0
+      fail("Invalid contract names `#{invalid}`")
+
+    contracts
 
   ########################################################## Type generators
 
@@ -115,7 +155,25 @@ class TypeFactory
     new UnionType(candidates, _name)
 
   #### Collections
+  seq: (elmType, name) ->
+    elmType = @type(elmType)
+    name    = @name(name)
 
+    new SeqType(elmType, name)
+ 
+ #### Tuples and relations
+
+  tuple: (heading, name) ->
+    heading = @heading(heading)
+    name    = @name(name)
+
+    new TupleType(heading, name)
+  
+  relation: (heading, name) ->
+    heading = @heading(heading)
+    name    = @name(name)
+
+    new RelationType(heading, name)
 
 # 'private' Utility functions
 # (only in the scope of this module)
@@ -130,8 +188,11 @@ isRegexp = (t) ->
   return false unless t?
   t.constructor == RegExp
 
-fail = (msg) ->
-  throw new ArgumentError(msg)
+fail = (msg, type) ->
+  if type?
+    throw new ArgumentError(msg, type)
+  else
+    throw new ArgumentError(msg)
 
 #
 module.exports = TypeFactory

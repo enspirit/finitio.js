@@ -1,4 +1,4 @@
-TypeFactory = require '../../../../lib/type/factory'
+TypeFactory = require '../../../../lib/support/factory'
 {TypeError} = require '../../../../lib/errors'
 BuiltinType = require '../../../../lib/type/builtin_type'
 SubType     = require '../../../../lib/type/sub_type'

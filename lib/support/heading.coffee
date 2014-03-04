@@ -40,7 +40,13 @@ class Heading
 
   equals: (other) ->
     return null unless other instanceof Heading
-    _.isEqual(@attributes, other.attributes)
+    return false unless _.size(@attributes) == _.size(other.attributes)
+
+    valid = _.every @attributes, (attr, name) ->
+      other_attr = other.attributes[name]
+      attr.equals(attr)
+    
+    valid
 
 
 # 
