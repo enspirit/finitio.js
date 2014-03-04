@@ -1,5 +1,5 @@
 _           = require 'underscore'
-TypeFactory = require './type/factory'
+TypeFactory = require './support/factory'
 
 ## base module
 class Qjs
