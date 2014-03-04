@@ -46,9 +46,16 @@ class TypeFactory
   ########################################################### Type Arguments
 
   jsType: (t) ->
-    unless isNativeType(t)
+    if t == 'Number'
+      Number
+    else if t == 'String'
+      String
+    else if t == 'Boolean'
+      Boolean
+    else if isNativeType(t)
+      t
+    else
       fail("JS primitive expected, got `#{t}`")
-    t
 
   name: (name) ->
     unless not(name?) or ((name.constructor == String) and name.trim().length > 1)
