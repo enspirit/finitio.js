@@ -7,14 +7,13 @@ should    = require 'should'
 
 describe "Attribute#fetchOn", ->
 
-  @attr = new Attribute('red', intType)
-  @arg = null
-  @subject = (cb) -> @attr.fetchOn(@arg, cb)
+  attr = new Attribute('red', intType)
+  subject = (arg, cb) -> attr.fetchOn(arg, cb)
 
-  describe 'with an object that does not support fetch', =>
-    @arg = 12
+  describe 'with an object that does not support fetch', ->
+    arg = 12
     
-    lambda = => @subject()
+    lambda = => subject(arg)
 
     expect(lambda).toThrow()
 
@@ -24,13 +23,13 @@ describe "Attribute#fetchOn", ->
       e.should.be.an.instanceof(ArgumentError)
       e.message.should.equal("Object expected, got Number")
 
-  describe 'with a valid object', =>
-    @arg = "red": 233
-    @subject().should.equal(233)
+  describe 'with a valid object', ->
+    arg = "red": 233
+    subject(arg).should.equal(233)
 
-  describe 'when the key is missing and no callback', =>
-    @arg = { other: 123 }
-    lambda = => @subject()
+  describe 'when the key is missing and no callback', ->
+    arg = { other: 123 }
+    lambda = -> subject(arg)
 
     expect(lambda).toThrow()
 
@@ -40,6 +39,6 @@ describe "Attribute#fetchOn", ->
       e.should.be.an.instanceof(KeyError)
 
   describe 'when the key is missing and a callback is present', =>
-    @arg = other: 123
+    arg = other: 123
 
-    @subject(-> "none").should.equal("none")
+    subject(arg, -> "none").should.equal("none")
