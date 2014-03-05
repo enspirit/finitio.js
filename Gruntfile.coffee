@@ -17,11 +17,20 @@ module.exports = (grunt) ->
       src: './features'
 
     browserify:
-      dist:
+      main:
         files:
-          'build/q.js': ['index.coffee']
+          'dist/q.js': ['index.coffee']
         options:
           alias:      ['./lib/qjs:qjs']
+          transform:  ['coffeeify']
+          extensions: ['.coffee']
+      
+      tests:
+        files:
+          'dist/test_bundle.js': ['specs/**/*.coffee']
+        options:
+          #external:   ['./lib/**/*.coffee']
+          ignore: ['./node_modules/**/*.js']
           transform:  ['coffeeify']
           extensions: ['.coffee']
       
