@@ -166,7 +166,7 @@ class TypeFactory
       if arg.constructor == Array
         candidates = _.map arg, (t) => @type(t)
       
-      if arg.constructor == String
+      else if arg.constructor == String
         _name = @name(_name)
 
       else
