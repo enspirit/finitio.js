@@ -146,9 +146,9 @@ class TypeFactory
   union: (args...) ->
     [candidates, _name] = [[], null]
     
-    _.each args, (arg) ->
+    _.each args, (arg) =>
       if arg.constructor == Array
-        candidates = _.map arg, (t) -> @type(t)
+        candidates = _.map arg, (t) => @type(t)
       
       if arg.constructor == String
         _name = @name(_name)
