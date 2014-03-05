@@ -16,11 +16,13 @@ describe 'TypeFactory#heading', ->
   describe 'when used with an array of attributes', ->
     subject = factory.heading(attributes)
 
-    subject.should.be.an.instanceof(Heading)
-    subject.equals(expected).should.be.true
+    it 'should work as expected', ->
+      subject.should.be.an.instanceof(Heading)
+      subject.equals(expected).should.be.true
 
   describe 'when used with an object name => native', ->
     subject = factory.heading(foo: Number, bar: String)
 
-    subject.should.be.an.instanceof(Heading)
-    subject.equals(expected).should.be.true
+    it 'should work as expected', ->
+      subject.should.be.an.instanceof(Heading)
+      subject.equals(expected).should.be.true

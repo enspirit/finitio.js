@@ -11,6 +11,7 @@ describe 'TypeFactory#attributes', ->
   describe 'when used with a name and a JS class', ->
     subject = factory.attributes(foo: Number, bar: String)
 
-    subject.should.be.an.instanceof(Array)
-    _.each subject, (arg)->
-      arg.should.be.an.instanceof(Attribute)
+    it 'should work as expected', ->
+      subject.should.be.an.instanceof(Array)
+      _.each subject, (arg)->
+        arg.should.be.an.instanceof(Attribute)
