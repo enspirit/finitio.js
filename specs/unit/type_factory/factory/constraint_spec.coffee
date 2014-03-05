@@ -42,3 +42,10 @@ describe 'TypeFactory#constraint', ->
       subject.name.should.equal('default')
       subject.accept("12").should.be.false
       subject.accept("word").should.be.true
+
+  describe 'with a constraint', ->
+    c = new Constraint('def', (i)-> i>0)
+    subject = factory.constraint(c)
+
+    it 'should work as expected', ->
+      subject.should.equal(c)

@@ -79,6 +79,8 @@ class TypeFactory
       null
 
   constraint: (_name, _native) ->
+    return _name if _name instanceof Constraint
+
     if typeof(_name) isnt "string"
       [_name, _native] = ['default', _name]
 

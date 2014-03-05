@@ -1,4 +1,5 @@
 TypeFactory = require '../../../../lib/support/factory'
+Constraint  = require '../../../../lib/support/constraint'
 {TypeError} = require '../../../../lib/errors'
 BuiltinType = require '../../../../lib/type/builtin_type'
 SubType     = require '../../../../lib/type/sub_type'
@@ -49,3 +50,15 @@ describe 'TypeFactory#sub_type', ->
         lambda()
       catch e
         e.should.be.an.instanceof(TypeError)
+
+  describe 'when used with a super type and an array of constraints', ->
+    subject = factory.sub_type numType, [ new Constraint('foo', (i)-> i>0) ]
+
+    it 'should be a subtype', ->
+      subject.should.be.an.instanceof(SubType)
+
+    it 'should have the correct constraints', ->
+      subject.constraints.length.should.equal(1)
+      subject.constraints[0].should.be.an.instanceof(Constraint)
+      subject.constraints[0].accept(12).should.be.true
+      subject.constraints[0].accept(-12).should.be.false
