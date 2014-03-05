@@ -7,6 +7,7 @@ Heading        = require './heading'
 
 ## Types
 BuiltinType    = require '../type/builtin_type'
+AdType         = require '../type/ad_type'
 SeqType        = require '../type/seq_type'
 SetType        = require '../type/set_type'
 SubType        = require '../type/sub_type'
@@ -61,7 +62,7 @@ class TypeFactory
       String
     else if t == 'Boolean'
       Boolean
-    else if isNativeType(t)
+    else if isNativeType(t) || t instanceof Function
       t
     else
       fail("JS primitive expected, got `#{t}`")
@@ -117,7 +118,8 @@ class TypeFactory
     unless typeof contracts is "object"
       fail("Hash expected, got", contracts)
 
-    invalid = _.keys contracts, (k) -> k instanceof String
+    invalid = _.filter(_.keys(contracts), (k) -> k instanceof String)
+
     if invalid.length > 0
       fail("Invalid contract names `#{invalid}`")
 
@@ -126,13 +128,19 @@ class TypeFactory
   ########################################################## Type generators
 
   builtin: (primitive, _name) ->
-    _name ?= null
+    _name    ?= null
     primitive = @jsType(primitive)
-    _name = @name(_name)
+    _name     = @name(_name)
     new BuiltinType(primitive, _name)
 
-  adt: (primitive, contracts, name) ->
-    throw new NotImplementedError("Factory#adt")
+  adt: (primitive, _contracts, _name) ->
+    _name    ?= null
+    primitive = @jsType(primitive) if primitive?
+    contracts = @contracts(_contracts)
+    _name     = @name(_name)
+
+    new AdType(primitive, _contracts, _name)
+
 
   #### Sub and union
 
@@ -153,11 +161,11 @@ class TypeFactory
 
   union: (args...) ->
     [candidates, _name] = [[], null]
-
-    _.each args, (arg) ->
+    
+    _.each args, (arg) =>
       if arg.constructor == Array
-        candidates = _.map arg, (t) -> @type(t)
-
+        candidates = _.map arg, (t) => @type(t)
+      
       if arg.constructor == String
         _name = @name(_name)
 
