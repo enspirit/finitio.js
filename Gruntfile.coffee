@@ -17,6 +17,6 @@ module.exports = (grunt) ->
   grunt.registerTask 'test-unit', ['jasmine_node']
   
   grunt.registerTask 'jasmine_node', ->
-    shell.exec 'jasmine-node --coffee specs/'
+    shell.exec './node_modules/jasmine-node/bin/jasmine-node --coffee specs/'
 
   grunt.loadNpmTasks 'grunt-cucumber'

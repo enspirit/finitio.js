@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "Louis Lambeau <louislambeau@gmail.com>",
   "license": "MIT",
-  "scripts":{
+  "scripts": {
     "test": "grunt test"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "shelljs": "~0.2.6",
     "should": "~3.1.2",
     "grunt": "~0.4.2",
-    "grunt-cucumber": "~0.2.3"
+    "grunt-cucumber": "~0.2.3",
+    "jasmine-node": "~1.13.1"
   }
 }
