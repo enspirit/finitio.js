@@ -5,7 +5,7 @@ SubType     = require '../../../../lib/type/sub_type'
 {numType}   = require '../../spec_helpers'
 should      = require 'should'
 
-describe 'TypeFactory#subtype', ->
+describe 'TypeFactory#sub_type', ->
 
   factory = new TypeFactory
 

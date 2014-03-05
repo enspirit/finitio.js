@@ -32,7 +32,7 @@ class TypeFactory
         [callback, name] = [name, callback]
 
     if callback?
-      return @subtype(@type(t, name), callback)
+      return @sub_type(@type(t, name), callback)
 
     if t instanceof Type
       t
@@ -41,7 +41,7 @@ class TypeFactory
       new BuiltinType(t, name || t.constructor.name)
 
     else if isRegexp(t)
-      @subtype(String, t)
+      @sub_type(String, t)
 
     else if t instanceof Array
       fail("Array of arity 1 expected, got", t) unless t.length == 1
@@ -144,9 +144,9 @@ class TypeFactory
     new AdType(primitive, _contracts, _name)
 
 
-  #### Sub and union
+  #### Sub and union
 
-  subtype: (superType, _constraints, _name, callback) ->
+  sub_type: (superType, _constraints, _name, callback) ->
     unless callback?
       if typeof _name == "function"
         [callback, _name] = [_name, callback]

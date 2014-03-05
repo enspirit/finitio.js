@@ -16,7 +16,7 @@ describe "System#constructor", ->
       subject.should.be.an.instanceof TupleType
 
   describe 'for building a sub type', ->
-    subject = system.subtype(Number, (i) -> i>=0)
+    subject = system.sub_type(Number, (i) -> i>=0)
 
     it 'should be a SubType', ->
       subject.should.be.an.instanceof SubType

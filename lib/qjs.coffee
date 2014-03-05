@@ -12,7 +12,7 @@ class Qjs
     'constraints',
     'builtin',
     'adt',
-    'subtype',
+    'sub_type',
     'union',
     'seq',
     'set',
