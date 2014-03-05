@@ -4,6 +4,7 @@ _                     = require 'underscore'
 ## Support
 Attribute      = require './attribute'
 Heading        = require './heading'
+Constraint     = require './constraint'
 
 ## Types
 BuiltinType    = require '../type/builtin_type'
@@ -77,19 +78,29 @@ class TypeFactory
     else
       null
 
+  constraint: (_name, _native) ->
+    if typeof(_name) isnt "string"
+      [_name, _native] = ['default', _name]
+
+    new Constraint(_name, _native)
+
   constraints: (constraints, callback) ->
-    constrs = {}
+    constrs = []
     if callback?
-      constrs['predicate'] = callback
+      constrs.push @constraint('default', callback)
 
-    # Unfortunately, _.isObject(RegExp) == true in JS
-    if constraints? and constraints.constructor == RegExp
-      constrs['predicate'] = constraints
+    if constraints?
+      if constraints.constructor == Array
+        _.each constraints, (c)=>
+          constrs.push(@constraint(c))
+      else if constraints.constructor == RegExp
+        constrs.push @constraint(constraints)
+      else if typeof(constraints) is "object"
+        _.each constraints, (n, c)=>
+          constrs.push(@constraint(n, c))
+      else
+        constrs.push @constraint(constraints)
 
-    else if constraints?
-      constrs['predicate'] = constraints unless _.isObject(constraints)
-
-    _.extend(constrs, constraints) if _.isObject(constraints)
     constrs
 
   attribute: (name, type) ->

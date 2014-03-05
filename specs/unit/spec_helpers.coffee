@@ -1,3 +1,4 @@
+Constraint   = require('../../lib/support/constraint')
 BuiltinType  = require('../../lib/type/builtin_type')
 SubType      = require('../../lib/type/sub_type')
 _            = require('underscore')
@@ -9,17 +10,19 @@ boolType   = new BuiltinType(Boolean, 'boolType')
 stringType = new BuiltinType(String, 'stringType')
 
 # SubType
-intType = new SubType numType, {
-  noDecimal: (i) -> i % 1 == 0
-  noDot:     (i) -> i.toString().indexOf('.') == -1
-  }, 'intType'
+intType = new SubType numType, [
+    new Constraint('noDecimal', (i) -> i % 1 == 0),
+    new Constraint('noDot', (i) -> i.toString().indexOf('.') == -1)
+  ], 'intType'
 
-floatType = new SubType numType, {
-  hasDecimal: (i) -> i % 1 != 0
-  hasDot:     (i) -> i.toString().indexOf('.') != -1
-  }, 'floatType'
+floatType = new SubType numType, [
+    new Constraint('hasDecimal', (i) -> i % 1 != 0),
+    new Constraint('hasDot', (i) -> i.toString().indexOf('.') != -1)
+  ], 'floatType'
 
-byteType = new SubType(intType, byte: (i) -> i>=0 && i<=255 )
+byteType = new SubType intType, [
+    new Constraint('byte', (i) -> i>=0 && i<=255)
+  ]
 
 module.exports =
   numType: numType

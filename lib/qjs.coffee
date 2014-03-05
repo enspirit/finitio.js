@@ -9,6 +9,7 @@ class Qjs
   @DSL_METHODS: [
     'attribute',
     'heading',
+    'constraint',
     'constraints',
     'builtin',
     'adt',

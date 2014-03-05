@@ -1,13 +1,14 @@
+Constraint  = require '../../../../lib/support/constraint'
 SubType     = require '../../../../lib/type/sub_type'
 {TypeError} = require '../../../../lib/errors'
 should      = require 'should'
 
 describe "SubType#dress", ->
 
-  _default = (i) -> i > 0
-  _small   = (i) -> i < 255
+  _default = new Constraint('default', (i) -> i > 0)
+  _small   = new Constraint('small', (i) -> i < 255)
 
-  type = new SubType(numType, {default: _default, small: _small}, "byte")
+  type = new SubType(numType, [_default, _small], "byte")
 
   factor = (arg) ->
     type.dress(arg)
