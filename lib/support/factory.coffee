@@ -5,7 +5,7 @@ _                     = require 'underscore'
 Attribute      = require './attribute'
 Heading        = require './heading'
 
-## Types
+## Types
 BuiltinType    = require '../type/builtin_type'
 AdType         = require '../type/ad_type'
 SeqType        = require '../type/seq_type'
