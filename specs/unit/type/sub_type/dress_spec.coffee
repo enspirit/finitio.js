@@ -1,15 +1,16 @@
+Constraint  = require '../../../../lib/support/constraint'
 SubType     = require '../../../../lib/type/sub_type'
 {TypeError} = require '../../../../lib/errors'
 should      = require 'should'
 
 describe "SubType#dress", ->
-  
-  _default = (i) -> i > 0
-  _small   = (i) -> i < 255
 
-  type = new SubType(numType, {default: _default, small: _small}, "byte")
+  _default = new Constraint('default', (i) -> i > 0)
+  _small   = new Constraint('small', (i) -> i < 255)
 
-  factor = (arg) -> 
+  type = new SubType(numType, [_default, _small], "byte")
+
+  factor = (arg) ->
     type.dress(arg)
 
   describe 'with a valid Number', ->
@@ -46,7 +47,7 @@ describe "SubType#dress", ->
 
       it "should have no cause", ->
         should.equal(subject.cause, null)
-      
+
       it "should have an empty location", ->
         subject.location.should.equal('')
 
@@ -55,7 +56,8 @@ describe "SubType#dress", ->
 
       it 'should raise an Error', ->
         subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `1000` for byte (not small)")
+        subject.message.should.equal \
+          "Invalid value `1000` for byte (not small)"
 
       it "should have no cause", ->
         should.equal(subject.cause, null)

@@ -6,13 +6,12 @@ should         = require 'should'
 describe "AdType#constructor", ->
 
   subject = new AdType(Date, {
-      timestamp:  [intType,    Date]
-      utc_string: [stringType, Date]
-    })
+    timestamp:  [intType,    Date]
+    utc_string: [stringType, Date]})
 
   describe 'with valid arguments', ->
     subject.should.be.an.instanceof(AdType)
-    
+
     it 'should set the instance variables', ->
       subject.jsType.should.equal(Date)
       (typeof(subject.contracts)).should.equal("object")
@@ -27,7 +26,7 @@ describe "AdType#constructor", ->
         lambda()
       catch e
         e
-      
+
       err.should.be.an.instanceof ArgumentError
       err.message.should.equal 'Constructor (function) expected, got String'
 
@@ -36,11 +35,11 @@ describe "AdType#constructor", ->
 
     it 'should raise an error', ->
       expect(lambda).toThrow()
-      
+
       err = try
         lambda()
       catch e
         e
-      
+
       err.should.be.an.instanceof ArgumentError
       err.message.should.equal "Hash expected, got String"

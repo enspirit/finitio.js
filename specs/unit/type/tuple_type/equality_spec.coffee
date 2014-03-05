@@ -17,10 +17,10 @@ describe "TupleType#equality", ->
   it 'should apply structural equality', ->
     type1.equals(type2).should.be.true
     type2.equals(type1).should.be.true
-  
+
   it 'should apply distinguish different types', ->
     type1.equals(type3).should.be.false
     type2.equals(type3).should.be.false
-  
+
   it 'should be a total function, with null for non types', ->
     should.equal(type1.equals(12), false)

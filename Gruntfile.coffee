@@ -11,10 +11,17 @@ module.exports = (grunt) ->
     cucumberjs:
       src: './features'
 
+    coffeelint:
+      lib:   ['lib/**/*.coffee']
+      tests: ['specs/**/*.coffee']
+
   #
-  grunt.registerTask 'default', ['test']
-  grunt.registerTask 'test', ['test-unit']
-  grunt.registerTask 'test-unit', ['jasmine_node']
+  grunt.registerTask 'default',      ['build_parser', 'test']
+  grunt.registerTask 'test',         ['jasmine_node']
+  grunt.registerTask 'lint',         ['coffeelint']
+
+  grunt.registerTask 'build_parser', ->
+    shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading lib/syntax/parser.pegjs lib/syntax/parser.js'
 
   grunt.registerTask 'jasmine_node', ->
     res = shell.exec './node_modules/jasmine-node/bin/jasmine-node --coffee specs/'
@@ -22,7 +29,4 @@ module.exports = (grunt) ->
       grunt.util.error("jasmine tests failed")
 
   grunt.loadNpmTasks 'grunt-cucumber'
-
-  process.on 'uncaughtException', (e) ->
-    grunt.log.error('Caught unhandled exception: ' + e.toString())
-    grunt.log.error(e.stack)
+  grunt.loadNpmTasks 'grunt-coffeelint'

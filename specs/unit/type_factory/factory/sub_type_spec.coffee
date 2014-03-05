@@ -1,11 +1,12 @@
 TypeFactory = require '../../../../lib/support/factory'
+Constraint  = require '../../../../lib/support/constraint'
 {TypeError} = require '../../../../lib/errors'
 BuiltinType = require '../../../../lib/type/builtin_type'
 SubType     = require '../../../../lib/type/sub_type'
 {numType}   = require '../../spec_helpers'
 should      = require 'should'
 
-describe 'TypeFactory#subtype', ->
+describe 'TypeFactory#sub_type', ->
 
   factory = new TypeFactory
 
@@ -27,11 +28,11 @@ describe 'TypeFactory#subtype', ->
       expect(lambda(12)).toThrow()
       expect(lambda(-1)).toThrow()
 
-      try 
+      try
         lambda(12)
       catch e
         expect(e).to.be.an.instanceof(TypeError)
-      
+
   describe 'when used with a regexp', ->
     subject = factory.type /[a-z]+/
 
@@ -42,10 +43,22 @@ describe 'TypeFactory#subtype', ->
 
       lambda = ->
         subject.dress('123')
-        
+
       expect(lambda).toThrow()
 
-      try 
+      try
         lambda()
       catch e
         e.should.be.an.instanceof(TypeError)
+
+  describe 'when used with a super type and an array of constraints', ->
+    subject = factory.sub_type numType, [ new Constraint('foo', (i)-> i>0) ]
+
+    it 'should be a subtype', ->
+      subject.should.be.an.instanceof(SubType)
+
+    it 'should have the correct constraints', ->
+      subject.constraints.length.should.equal(1)
+      subject.constraints[0].should.be.an.instanceof(Constraint)
+      subject.constraints[0].accept(12).should.be.true
+      subject.constraints[0].accept(-12).should.be.false

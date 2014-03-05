@@ -28,7 +28,7 @@ describe "TypeFactory#seq", ->
     subject = factory.type([{r: Number}], "MySeq")
 
     expected = factory.seq(factory.tuple(r: Number))
-    
+
     it 'should give expected result', ->
       subject.equals(expected).should.be.true
 

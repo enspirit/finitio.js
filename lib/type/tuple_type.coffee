@@ -9,7 +9,7 @@ class TupleType extends Type
   constructor: (@heading, @name) ->
     unless @heading instanceof Heading
       throw new ArgumentError("Heading expected, got", @heading)
-    
+
     @name ?= null
     super(@name)
 
@@ -18,7 +18,7 @@ class TupleType extends Type
   # is missing or unrecognized, as well as if any sub transformation fails.
   dress: (value, helper) ->
     helper ?= new DressHelper
-    
+
     helper.failed(this, value) unless value instanceof Object
 
     # Uped values, i.e. tuple under construction
@@ -54,6 +54,6 @@ class TupleType extends Type
   equals: (other) ->
     return false unless other instanceof TupleType
     @heading.equals(other.heading)
-  
-  
+
+
 module.exports = TupleType

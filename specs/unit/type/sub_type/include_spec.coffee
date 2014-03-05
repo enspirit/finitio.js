@@ -1,12 +1,13 @@
-SubType = require '../../../../lib/type/sub_type'
-should  = require 'should'
+Constraint = require '../../../../lib/support/constraint'
+SubType    = require '../../../../lib/type/sub_type'
+should     = require 'should'
 
 describe "SubType#include", ->
 
-  type = new SubType(intType, {
-      default: (i) -> i>0
-      small: (i) -> i<255
-    }, "byte")
+  type = new SubType(intType, [
+      new Constraint('default', (i) -> i>0),
+      new Constraint('small', (i) -> i<255)
+    ], "byte")
 
   subject = (arg) -> type.include(arg)
 

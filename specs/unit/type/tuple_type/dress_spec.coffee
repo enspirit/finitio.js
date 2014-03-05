@@ -12,9 +12,9 @@ describe "TupleType#dress", ->
       new Attribute('g', byteType),
       new Attribute('b', byteType)
     ])
-  
+
   type = new TupleType(heading, "color")
-  
+
   lambda = (arg) -> type.dress(arg)
 
   describe 'with a valid Hash', ->
@@ -29,7 +29,7 @@ describe "TupleType#dress", ->
       try
         type.dress(arg)
       catch e
-       e
+        e
 
     describe 'with something else than a Hash', ->
       subject = lambda("foo")
@@ -40,7 +40,7 @@ describe "TupleType#dress", ->
 
       it 'should have no cause', ->
         should.equal(subject.cause, null)
-      
+
       it 'should have an empty location', ->
         subject.location.should.equal('')
 
@@ -66,7 +66,7 @@ describe "TupleType#dress", ->
 
       it 'should have no cause', ->
         should.equal(subject.cause, null)
-      
+
       it 'should have an empty location', ->
         subject.location.should.equal('')
 

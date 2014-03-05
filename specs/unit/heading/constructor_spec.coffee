@@ -15,11 +15,11 @@ describe "Heading#constructor", ->
     subject(attrs).should.be.an.instanceof Heading
 
   describe 'with invalid attributes', ->
-    attributes = [ 
-        new Attribute('red', intType), 
-        new Attribute('red', intType) 
+    attributes = [
+        new Attribute('red', intType),
+        new Attribute('red', intType)
       ]
-    
+
     lambda = -> subject(attributes)
 
     it 'should raise an error', ->

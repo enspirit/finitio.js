@@ -9,10 +9,10 @@ describe "BuiltinType#dress", ->
     type.dress(arg)
 
   describe 'with an integer', ->
-    subject(12).should.equal(12);
+    subject(12).should.equal(12)
 
   describe 'with a float', ->
-    subject(3.14).should.equal(3.14);
+    subject(3.14).should.equal(3.14)
 
   describe 'with a String', ->
 
@@ -21,7 +21,7 @@ describe "BuiltinType#dress", ->
 
     it 'should throw an Error', ->
       expect(lambda).toThrow()
-    
+
     it 'should throw a TypeError', ->
       error = null
       try

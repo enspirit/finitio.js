@@ -12,6 +12,6 @@ describe "UnionType#include", ->
 
   describe 'when included on int', ->
     subject(12).should.be.true
-  
+
   describe 'when included on float', ->
     subject(12.0).should.be.true

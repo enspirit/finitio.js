@@ -17,7 +17,7 @@ describe 'Qjs', ->
 
     t.should.be.an.instanceof SubType
     t.dress(12).should.equal(12)
-    
+
     lambda = ->
       t.dress(-12)
 
