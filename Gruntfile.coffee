@@ -24,7 +24,7 @@ module.exports = (grunt) ->
     shell.exec 'pegjs --allowed-start-rules type lib/syntax/parser.pegjs lib/syntax/parser.js'
 
   grunt.registerTask 'jasmine_node', ->
-    shell.exec 'jasmine-node --coffee specs/'
+    shell.exec './node_modules/jasmine-node/bin/jasmine-node --coffee specs/'
 
   grunt.loadNpmTasks 'grunt-cucumber'
   grunt.loadNpmTasks 'grunt-coffeelint'
