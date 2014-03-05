@@ -109,7 +109,9 @@ class TypeFactory
     return heading if heading instanceof Heading
     return heading.heading if heading.heading?
 
-    if typeof(heading) is "object"
+    if heading.constructor == Array
+      new Heading(heading)
+    else if typeof(heading) is "object"
       new Heading(@attributes(heading))
     else
       fail("Heading expected, got", heading)
