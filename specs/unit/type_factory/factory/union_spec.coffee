@@ -13,4 +13,4 @@ describe 'TypeFactory#union', ->
     subject = factory.union [factory.builtin(Number), factory.builtin(String)]
 
     it 'should be a UnionType', ->
-      subject.be.an.instanceof(UnionType)
+      subject.should.be.an.instanceof(UnionType)
