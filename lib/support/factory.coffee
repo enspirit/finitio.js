@@ -62,7 +62,7 @@ class TypeFactory
       String
     else if t == 'Boolean'
       Boolean
-    else if isNativeType(t) || t instanceof Function
+    else if isNativeType(t) || t instanceof Function
       t
     else
       fail("JS primitive expected, got `#{t}`")
@@ -82,7 +82,7 @@ class TypeFactory
     if callback?
       constrs['predicate'] = callback
 
-    # Unfortunately, _.isObject(RegExp) == true in JS
+    # Unfortunately, _.isObject(RegExp) == true in JS
     if constraints? and constraints.constructor == RegExp
       constrs['predicate'] = constraints
 
