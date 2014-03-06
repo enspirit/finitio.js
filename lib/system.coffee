@@ -56,7 +56,7 @@ class System
     new System(merged_types, merged_main)
 
   parse: (source) ->
-    @merge(Parser.parse(source))
+    Parser.parse(source, system: @clone())
 
   dress: (value) ->
     unless @main
