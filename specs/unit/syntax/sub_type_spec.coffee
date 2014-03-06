@@ -26,6 +26,20 @@ describe "Parser#sub_type", ->
       catch e
         e
 
+  describe 'with a constraint on an AnyType', ->
+    subject = Parser.parse(".( v | v === null )", startRule: "type")
+
+    it 'should return a SubType', ->
+      subject.should.be.an.instanceof(SubType)
+
+    it 'should dress properly', ->
+      should.equal(subject.dress(null), null)
+      try
+        subject.dress(-1)
+        false.should.be.true
+      catch e
+        e
+
   describe 'with multiple, named constraints', ->
     subject = Parser.parse(".Number( i | positive: i >= 0, small: i <= 255 )", startRule: "type")
 

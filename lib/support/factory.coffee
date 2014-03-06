@@ -7,13 +7,14 @@ Heading        = require './heading'
 Constraint     = require './constraint'
 
 ## Types
-BuiltinType    = require '../type/builtin_type'
+AnyType        = require '../type/any_type'
 AdType         = require '../type/ad_type'
 SeqType        = require '../type/seq_type'
 SetType        = require '../type/set_type'
 SubType        = require '../type/sub_type'
 TupleType      = require '../type/tuple_type'
 UnionType      = require '../type/union_type'
+BuiltinType    = require '../type/builtin_type'
 RelationType   = require '../type/relation_type'
 
 ## Errors
@@ -141,6 +142,11 @@ class TypeFactory
     contracts
 
   ########################################################## Type generators
+
+  any: (name) ->
+    name     ?= null
+    name      = @name(name)
+    new AnyType(name)
 
   builtin: (primitive, _name) ->
     _name    ?= null
