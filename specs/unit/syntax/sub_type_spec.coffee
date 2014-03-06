@@ -32,19 +32,6 @@ describe "Parser#sub_type", ->
     it 'should return a SubType', ->
       subject.should.be.an.instanceof(SubType)
 
-    it 'should have the correct constraint', ->
-      subject.constraints.length.should.equal(1)
-      subject.constraints[0].should.be.an.instanceof(Constraint)
-      # false
-      subject.constraints[0].accept(12).should.be.false
-      subject.constraints[0].accept("foo").should.be.false
-      subject.constraints[0].accept(3.14).should.be.false
-      subject.constraints[0].accept([]).should.be.false
-      subject.constraints[0].accept({}).should.be.false
-      subject.constraints[0].accept(undefined).should.be.false
-      # true
-      subject.constraints[0].accept(null).should.be.true
-
     it 'should dress properly', ->
       should.equal(subject.dress(null), null)
       try
