@@ -19,7 +19,7 @@ module.exports = (grunt) ->
         files:
           'dist/q.js': ['index.coffee']
         options:
-          alias:      ['./lib/qjs:qjs']
+          standalone: 'Qjs'
           transform:  ['coffeeify']
           extensions: ['.coffee']
 

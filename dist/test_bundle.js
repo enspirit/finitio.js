@@ -24,7 +24,11 @@ DataType = (function() {
   };
 
   DataType.contract = function(name, infotype) {
-    return this.contracts()[name] = [Qjs.type(infotype), this[name]];
+    return this.contracts()[name] = [
+      Qjs.type(infotype), this[name], function(d) {
+        return d[name]();
+      }
+    ];
   };
 
   return DataType;
@@ -120,6 +124,7 @@ module.exports = {
 
 
 },{}],3:[function(require,module,exports){
+(function (__dirname){
 var Parser, Qjs, TypeFactory, _;
 
 _ = require('underscore');
@@ -135,19 +140,28 @@ Qjs = (function() {
 
   Qjs.VERSION = "0.0.1";
 
-  Qjs.DSL_METHODS = ['attribute', 'heading', 'constraint', 'constraints', 'any', 'builtin', 'adt', 'sub_type', 'union', 'seq', 'set', 'tuple', 'relation', 'type'];
+  Qjs.FACTORY = new TypeFactory;
 
-  Qjs.DEFAULT_FACTORY = new TypeFactory;
+  _ref = TypeFactory.PUBLIC_DSL_METHODS;
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    method = _ref[_i];
+    Qjs[method] = Qjs.FACTORY[method].bind(Qjs.FACTORY);
+  }
 
   Qjs.parse = function(source) {
     return Parser.parse(source);
   };
 
-  _ref = Qjs.DSL_METHODS;
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    method = _ref[_i];
-    Qjs[method] = Qjs.DEFAULT_FACTORY[method].bind(Qjs.DEFAULT_FACTORY);
-  }
+  Qjs.system = function(identifier) {
+    var content, path;
+    path = Path.join(__dirname, "" + identifier + ".q");
+    if (fs.existsSync(path)) {
+      content = fs.readFileSync(path).toString();
+      return this.parse(content);
+    } else {
+      throw new Error("Unknown system " + identifier);
+    }
+  };
 
   return Qjs;
 
@@ -156,6 +170,7 @@ Qjs = (function() {
 module.exports = Qjs;
 
 
+}).call(this,"/../lib")
 },{"./support/factory":8,"./syntax/parser":10,"underscore":22}],4:[function(require,module,exports){
 var ArgumentError, Attribute, KeyError, Type, TypeError, _, _ref;
 
@@ -398,6 +413,9 @@ DressHelper = (function() {
 
 _valueToString = function(value) {
   var s;
+  if (value === void 0) {
+    return 'undefined';
+  }
   if (value === null) {
     return 'null';
   }
@@ -455,6 +473,8 @@ _ref = require('../errors'), NotImplementedError = _ref.NotImplementedError, Arg
 TypeFactory = (function() {
   function TypeFactory() {}
 
+  TypeFactory.PUBLIC_DSL_METHODS = ['jsType', 'any', 'builtin', 'adt', 'sub_type', 'union', 'seq', 'set', 'tuple', 'relation', 'type'];
+
   TypeFactory.prototype.type = function(t, name, callback) {
     var _ref1;
     if (callback == null) {
@@ -490,6 +510,8 @@ TypeFactory = (function() {
       return String;
     } else if (t === 'Boolean') {
       return Boolean;
+    } else if (t === 'Date') {
+      return Date;
     } else if (isNativeType(t) || t instanceof Function) {
       return t;
     } else {
@@ -846,10 +868,10 @@ module.exports = (function() {
         peg$c7 = "|",
         peg$c8 = { type: "literal", value: "|", description: "\"|\"" },
         peg$c9 = function(head, tail) {
-              return Qjs.union(headTailToArray(head, tail));
+              return Factory.union(headTailToArray(head, tail));
             },
         peg$c10 = function(t, c) {
-              return Qjs.sub_type(t, c)
+              return Factory.sub_type(t, c)
             },
         peg$c11 = "(",
         peg$c12 = { type: "literal", value: "(", description: "\"(\"" },
@@ -879,68 +901,108 @@ module.exports = (function() {
         peg$c26 = "}",
         peg$c27 = { type: "literal", value: "}", description: "\"}\"" },
         peg$c28 = function(h) {
-            return Qjs.tuple(h)
+            return Factory.tuple(h)
           },
         peg$c29 = "{{",
         peg$c30 = { type: "literal", value: "{{", description: "\"{{\"" },
         peg$c31 = "}}",
         peg$c32 = { type: "literal", value: "}}", description: "\"}}\"" },
         peg$c33 = function(h) {
-            return Qjs.relation(h)
+            return Factory.relation(h)
           },
         peg$c34 = function(head, tail) {
-              return Qjs.heading(headTailToArray(head, tail));
+              return Factory.heading(headTailToArray(head, tail));
             },
         peg$c35 = function(n, t) {
-            return Qjs.attribute(n, t)
+            return Factory.attribute(n, t)
           },
         peg$c36 = function(t) {
-            return Qjs.set(t)
+            return Factory.set(t)
           },
         peg$c37 = "[",
         peg$c38 = { type: "literal", value: "[", description: "\"[\"" },
         peg$c39 = "]",
         peg$c40 = { type: "literal", value: "]", description: "\"]\"" },
         peg$c41 = function(t) {
-            return Qjs.seq(t)
+            return Factory.seq(t)
           },
         peg$c42 = ".",
         peg$c43 = { type: "literal", value: ".", description: "\".\"" },
-        peg$c44 = function() {
-            return Qjs.any();
+        peg$c44 = function(t, cs) {
+            var jsType = null;
+            var contracts = {}
+            if (t) {
+              jsType = Factory.jsType(t[1]);
+            }
+            for (var i = 0; i<cs.length; i++) {
+              contracts[cs[i][0]] = cs[i].slice(1);
+            }
+            return Factory.adt(jsType, contracts);
           },
-        peg$c45 = function(name) {
-            return Qjs.builtin(name);
+        peg$c45 = function(head, tail) {
+            return headTailToArray(head, tail);
           },
-        peg$c46 = function(n) {
+        peg$c46 = "<",
+        peg$c47 = { type: "literal", value: "<", description: "\"<\"" },
+        peg$c48 = ">",
+        peg$c49 = { type: "literal", value: ">", description: "\">\"" },
+        peg$c50 = function(n, t, d) {
+            var result = [ n, t ];
+            if (d) {
+              result.push(d[0]);
+              result.push(d[1]);
+            } else {
+              var unimplemented = function(value){
+                throw "Automated contracts are not implemented so far";
+              };
+              result.push(unimplemented);
+              result.push(unimplemented);
+            }
+            return result;
+          },
+        peg$c51 = "\\",
+        peg$c52 = { type: "literal", value: "\\", description: "\"\\\\\"" },
+        peg$c53 = function(up, down) {
+            return [ up, down ];
+          },
+        peg$c54 = function(n, e) {
+            return compileLambda(n, e);
+          },
+        peg$c55 = function() {
+            return Factory.any();
+          },
+        peg$c56 = function(name) {
+            return Factory.builtin(name);
+          },
+        peg$c57 = function(n) {
             return options.system.fetch(n);
           },
-        peg$c47 = "()",
-        peg$c48 = { type: "literal", value: "()", description: "\"()\"" },
-        peg$c49 = void 0,
-        peg$c50 = /^[(,)]/,
-        peg$c51 = { type: "class", value: "[(,)]", description: "[(,)]" },
-        peg$c52 = { type: "any", description: "any character" },
-        peg$c53 = /^[a-z]/,
-        peg$c54 = { type: "class", value: "[a-z]", description: "[a-z]" },
-        peg$c55 = /^[a-z0-9]/,
-        peg$c56 = { type: "class", value: "[a-z0-9]", description: "[a-z0-9]" },
-        peg$c57 = /^[a-zA-Z_]/,
-        peg$c58 = { type: "class", value: "[a-zA-Z_]", description: "[a-zA-Z_]" },
-        peg$c59 = /^[a-zA-Z0-9_]/,
-        peg$c60 = { type: "class", value: "[a-zA-Z0-9_]", description: "[a-zA-Z0-9_]" },
-        peg$c61 = /^[A-Z]/,
-        peg$c62 = { type: "class", value: "[A-Z]", description: "[A-Z]" },
-        peg$c63 = /^[a-zA-Z]/,
-        peg$c64 = { type: "class", value: "[a-zA-Z]", description: "[a-zA-Z]" },
-        peg$c65 = /^[a-zA-Z0-9:]/,
-        peg$c66 = { type: "class", value: "[a-zA-Z0-9:]", description: "[a-zA-Z0-9:]" },
-        peg$c67 = "#",
-        peg$c68 = { type: "literal", value: "#", description: "\"#\"" },
-        peg$c69 = /^[\n]/,
-        peg$c70 = { type: "class", value: "[\\n]", description: "[\\n]" },
-        peg$c71 = /^[ \t\n]/,
-        peg$c72 = { type: "class", value: "[ \\t\\n]", description: "[ \\t\\n]" },
+        peg$c58 = "()",
+        peg$c59 = { type: "literal", value: "()", description: "\"()\"" },
+        peg$c60 = void 0,
+        peg$c61 = /^[(,)]/,
+        peg$c62 = { type: "class", value: "[(,)]", description: "[(,)]" },
+        peg$c63 = { type: "any", description: "any character" },
+        peg$c64 = /^[a-z]/,
+        peg$c65 = { type: "class", value: "[a-z]", description: "[a-z]" },
+        peg$c66 = /^[a-z0-9]/,
+        peg$c67 = { type: "class", value: "[a-z0-9]", description: "[a-z0-9]" },
+        peg$c68 = /^[a-zA-Z_]/,
+        peg$c69 = { type: "class", value: "[a-zA-Z_]", description: "[a-zA-Z_]" },
+        peg$c70 = /^[a-zA-Z0-9_]/,
+        peg$c71 = { type: "class", value: "[a-zA-Z0-9_]", description: "[a-zA-Z0-9_]" },
+        peg$c72 = /^[A-Z]/,
+        peg$c73 = { type: "class", value: "[A-Z]", description: "[A-Z]" },
+        peg$c74 = /^[a-zA-Z]/,
+        peg$c75 = { type: "class", value: "[a-zA-Z]", description: "[a-zA-Z]" },
+        peg$c76 = /^[a-zA-Z0-9:]/,
+        peg$c77 = { type: "class", value: "[a-zA-Z0-9:]", description: "[a-zA-Z0-9:]" },
+        peg$c78 = "#",
+        peg$c79 = { type: "literal", value: "#", description: "\"#\"" },
+        peg$c80 = /^[\n]/,
+        peg$c81 = { type: "class", value: "[\\n]", description: "[\\n]" },
+        peg$c82 = /^[ \t\n]/,
+        peg$c83 = { type: "class", value: "[ \\t\\n]", description: "[ \\t\\n]" },
 
         peg$currPos          = 0,
         peg$reportedPos      = 0,
@@ -1973,12 +2035,363 @@ module.exports = (function() {
     function peg$parseterm_type() {
       var s0;
 
-      s0 = peg$parsebuiltin_type();
+      s0 = peg$parsead_type();
       if (s0 === peg$FAILED) {
-        s0 = peg$parseany_type();
+        s0 = peg$parsebuiltin_type();
         if (s0 === peg$FAILED) {
-          s0 = peg$parsetype_ref();
+          s0 = peg$parseany_type();
+          if (s0 === peg$FAILED) {
+            s0 = peg$parsetype_ref();
+          }
         }
+      }
+
+      return s0;
+    }
+
+    function peg$parsead_type() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 46) {
+        s2 = peg$c42;
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c43); }
+      }
+      if (s2 !== peg$FAILED) {
+        s3 = peg$parsebuiltin_type_name();
+        if (s3 !== peg$FAILED) {
+          s2 = [s2, s3];
+          s1 = s2;
+        } else {
+          peg$currPos = s1;
+          s1 = peg$c0;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$c0;
+      }
+      if (s1 === peg$FAILED) {
+        s1 = peg$c1;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsecontracts();
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c44(s1, s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parsecontracts() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      s1 = peg$parsecontract();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$currPos;
+        s4 = peg$parsespacing();
+        if (s4 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s5 = peg$c16;
+            peg$currPos++;
+          } else {
+            s5 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c17); }
+          }
+          if (s5 !== peg$FAILED) {
+            s6 = peg$parsespacing();
+            if (s6 !== peg$FAILED) {
+              s7 = peg$parsecontract();
+              if (s7 !== peg$FAILED) {
+                s4 = [s4, s5, s6, s7];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c0;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c0;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c0;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$c0;
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$currPos;
+          s4 = peg$parsespacing();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 44) {
+              s5 = peg$c16;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c17); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parsespacing();
+              if (s6 !== peg$FAILED) {
+                s7 = peg$parsecontract();
+                if (s7 !== peg$FAILED) {
+                  s4 = [s4, s5, s6, s7];
+                  s3 = s4;
+                } else {
+                  peg$currPos = s3;
+                  s3 = peg$c0;
+                }
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c0;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c0;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c0;
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c45(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parsecontract() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 60) {
+        s1 = peg$c46;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c47); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsecontract_name();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 62) {
+            s3 = peg$c48;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c49); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseunion_type();
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parsespacing();
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parsedressers();
+                  if (s7 === peg$FAILED) {
+                    s7 = peg$c1;
+                  }
+                  if (s7 !== peg$FAILED) {
+                    peg$reportedPos = s0;
+                    s1 = peg$c50(s2, s5, s7);
+                    s0 = s1;
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c0;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c0;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parsedressers() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 92) {
+        s1 = peg$c51;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c52); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parselambda_expr();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsespacing();
+          if (s3 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 92) {
+              s4 = peg$c51;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c52); }
+            }
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parselambda_expr();
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c53(s2, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parselambda_expr() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 40) {
+        s1 = peg$c11;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c12); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsevar_name();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 124) {
+                s5 = peg$c7;
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c8); }
+              }
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parsespacing();
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parseexpression();
+                  if (s7 !== peg$FAILED) {
+                    s8 = peg$parsespacing();
+                    if (s8 !== peg$FAILED) {
+                      if (input.charCodeAt(peg$currPos) === 41) {
+                        s9 = peg$c13;
+                        peg$currPos++;
+                      } else {
+                        s9 = peg$FAILED;
+                        if (peg$silentFails === 0) { peg$fail(peg$c14); }
+                      }
+                      if (s9 !== peg$FAILED) {
+                        peg$reportedPos = s0;
+                        s1 = peg$c54(s3, s7);
+                        s0 = s1;
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$c0;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$c0;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c0;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c0;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
       }
 
       return s0;
@@ -1997,7 +2410,7 @@ module.exports = (function() {
       }
       if (s1 !== peg$FAILED) {
         peg$reportedPos = s0;
-        s1 = peg$c44();
+        s1 = peg$c55();
       }
       s0 = s1;
 
@@ -2019,7 +2432,7 @@ module.exports = (function() {
         s2 = peg$parsebuiltin_type_name();
         if (s2 !== peg$FAILED) {
           peg$reportedPos = s0;
-          s1 = peg$c45(s2);
+          s1 = peg$c56(s2);
           s0 = s1;
         } else {
           peg$currPos = s0;
@@ -2040,7 +2453,7 @@ module.exports = (function() {
       s1 = peg$parsetype_name();
       if (s1 !== peg$FAILED) {
         peg$reportedPos = s0;
-        s1 = peg$c46(s1);
+        s1 = peg$c57(s1);
       }
       s0 = s1;
 
@@ -2079,12 +2492,12 @@ module.exports = (function() {
       var s0, s1, s2, s3, s4;
 
       s0 = peg$currPos;
-      if (input.substr(peg$currPos, 2) === peg$c47) {
-        s1 = peg$c47;
+      if (input.substr(peg$currPos, 2) === peg$c58) {
+        s1 = peg$c58;
         peg$currPos += 2;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c48); }
+        if (peg$silentFails === 0) { peg$fail(peg$c59); }
       }
       if (s1 === peg$FAILED) {
         s1 = peg$currPos;
@@ -2137,16 +2550,16 @@ module.exports = (function() {
       s2 = peg$currPos;
       s3 = peg$currPos;
       peg$silentFails++;
-      if (peg$c50.test(input.charAt(peg$currPos))) {
+      if (peg$c61.test(input.charAt(peg$currPos))) {
         s4 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s4 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c51); }
+        if (peg$silentFails === 0) { peg$fail(peg$c62); }
       }
       peg$silentFails--;
       if (s4 === peg$FAILED) {
-        s3 = peg$c49;
+        s3 = peg$c60;
       } else {
         peg$currPos = s3;
         s3 = peg$c0;
@@ -2157,7 +2570,7 @@ module.exports = (function() {
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c52); }
+          if (peg$silentFails === 0) { peg$fail(peg$c63); }
         }
         if (s4 !== peg$FAILED) {
           s3 = [s3, s4];
@@ -2176,16 +2589,16 @@ module.exports = (function() {
           s2 = peg$currPos;
           s3 = peg$currPos;
           peg$silentFails++;
-          if (peg$c50.test(input.charAt(peg$currPos))) {
+          if (peg$c61.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c51); }
+            if (peg$silentFails === 0) { peg$fail(peg$c62); }
           }
           peg$silentFails--;
           if (s4 === peg$FAILED) {
-            s3 = peg$c49;
+            s3 = peg$c60;
           } else {
             peg$currPos = s3;
             s3 = peg$c0;
@@ -2196,7 +2609,7 @@ module.exports = (function() {
               peg$currPos++;
             } else {
               s4 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c52); }
+              if (peg$silentFails === 0) { peg$fail(peg$c63); }
             }
             if (s4 !== peg$FAILED) {
               s3 = [s3, s4];
@@ -2226,22 +2639,22 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = [];
-      if (peg$c53.test(input.charAt(peg$currPos))) {
+      if (peg$c64.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+        if (peg$silentFails === 0) { peg$fail(peg$c65); }
       }
       if (s2 !== peg$FAILED) {
         while (s2 !== peg$FAILED) {
           s1.push(s2);
-          if (peg$c53.test(input.charAt(peg$currPos))) {
+          if (peg$c64.test(input.charAt(peg$currPos))) {
             s2 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s2 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c54); }
+            if (peg$silentFails === 0) { peg$fail(peg$c65); }
           }
         }
       } else {
@@ -2260,30 +2673,30 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = peg$currPos;
-      if (peg$c53.test(input.charAt(peg$currPos))) {
+      if (peg$c64.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+        if (peg$silentFails === 0) { peg$fail(peg$c65); }
       }
       if (s2 !== peg$FAILED) {
         s3 = [];
-        if (peg$c55.test(input.charAt(peg$currPos))) {
+        if (peg$c66.test(input.charAt(peg$currPos))) {
           s4 = input.charAt(peg$currPos);
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c56); }
+          if (peg$silentFails === 0) { peg$fail(peg$c67); }
         }
         while (s4 !== peg$FAILED) {
           s3.push(s4);
-          if (peg$c55.test(input.charAt(peg$currPos))) {
+          if (peg$c66.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c56); }
+            if (peg$silentFails === 0) { peg$fail(peg$c67); }
           }
         }
         if (s3 !== peg$FAILED) {
@@ -2310,30 +2723,30 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = peg$currPos;
-      if (peg$c53.test(input.charAt(peg$currPos))) {
+      if (peg$c64.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+        if (peg$silentFails === 0) { peg$fail(peg$c65); }
       }
       if (s2 !== peg$FAILED) {
         s3 = [];
-        if (peg$c57.test(input.charAt(peg$currPos))) {
+        if (peg$c68.test(input.charAt(peg$currPos))) {
           s4 = input.charAt(peg$currPos);
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c58); }
+          if (peg$silentFails === 0) { peg$fail(peg$c69); }
         }
         while (s4 !== peg$FAILED) {
           s3.push(s4);
-          if (peg$c57.test(input.charAt(peg$currPos))) {
+          if (peg$c68.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c58); }
+            if (peg$silentFails === 0) { peg$fail(peg$c69); }
           }
         }
         if (s3 !== peg$FAILED) {
@@ -2360,30 +2773,30 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = peg$currPos;
-      if (peg$c53.test(input.charAt(peg$currPos))) {
+      if (peg$c64.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+        if (peg$silentFails === 0) { peg$fail(peg$c65); }
       }
       if (s2 !== peg$FAILED) {
         s3 = [];
-        if (peg$c59.test(input.charAt(peg$currPos))) {
+        if (peg$c70.test(input.charAt(peg$currPos))) {
           s4 = input.charAt(peg$currPos);
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c60); }
+          if (peg$silentFails === 0) { peg$fail(peg$c71); }
         }
         while (s4 !== peg$FAILED) {
           s3.push(s4);
-          if (peg$c59.test(input.charAt(peg$currPos))) {
+          if (peg$c70.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c60); }
+            if (peg$silentFails === 0) { peg$fail(peg$c71); }
           }
         }
         if (s3 !== peg$FAILED) {
@@ -2410,31 +2823,31 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = peg$currPos;
-      if (peg$c61.test(input.charAt(peg$currPos))) {
+      if (peg$c72.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c62); }
+        if (peg$silentFails === 0) { peg$fail(peg$c73); }
       }
       if (s2 !== peg$FAILED) {
         s3 = [];
-        if (peg$c63.test(input.charAt(peg$currPos))) {
+        if (peg$c74.test(input.charAt(peg$currPos))) {
           s4 = input.charAt(peg$currPos);
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c64); }
+          if (peg$silentFails === 0) { peg$fail(peg$c75); }
         }
         if (s4 !== peg$FAILED) {
           while (s4 !== peg$FAILED) {
             s3.push(s4);
-            if (peg$c63.test(input.charAt(peg$currPos))) {
+            if (peg$c74.test(input.charAt(peg$currPos))) {
               s4 = input.charAt(peg$currPos);
               peg$currPos++;
             } else {
               s4 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c64); }
+              if (peg$silentFails === 0) { peg$fail(peg$c75); }
             }
           }
         } else {
@@ -2464,22 +2877,22 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = [];
-      if (peg$c65.test(input.charAt(peg$currPos))) {
+      if (peg$c76.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c66); }
+        if (peg$silentFails === 0) { peg$fail(peg$c77); }
       }
       if (s2 !== peg$FAILED) {
         while (s2 !== peg$FAILED) {
           s1.push(s2);
-          if (peg$c65.test(input.charAt(peg$currPos))) {
+          if (peg$c76.test(input.charAt(peg$currPos))) {
             s2 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s2 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c66); }
+            if (peg$silentFails === 0) { peg$fail(peg$c77); }
           }
         }
       } else {
@@ -2523,27 +2936,27 @@ module.exports = (function() {
       s0 = peg$currPos;
       s1 = peg$currPos;
       if (input.charCodeAt(peg$currPos) === 35) {
-        s2 = peg$c67;
+        s2 = peg$c78;
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c68); }
+        if (peg$silentFails === 0) { peg$fail(peg$c79); }
       }
       if (s2 !== peg$FAILED) {
         s3 = [];
         s4 = peg$currPos;
         s5 = peg$currPos;
         peg$silentFails++;
-        if (peg$c69.test(input.charAt(peg$currPos))) {
+        if (peg$c80.test(input.charAt(peg$currPos))) {
           s6 = input.charAt(peg$currPos);
           peg$currPos++;
         } else {
           s6 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c70); }
+          if (peg$silentFails === 0) { peg$fail(peg$c81); }
         }
         peg$silentFails--;
         if (s6 === peg$FAILED) {
-          s5 = peg$c49;
+          s5 = peg$c60;
         } else {
           peg$currPos = s5;
           s5 = peg$c0;
@@ -2554,7 +2967,7 @@ module.exports = (function() {
             peg$currPos++;
           } else {
             s6 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c52); }
+            if (peg$silentFails === 0) { peg$fail(peg$c63); }
           }
           if (s6 !== peg$FAILED) {
             s5 = [s5, s6];
@@ -2572,16 +2985,16 @@ module.exports = (function() {
           s4 = peg$currPos;
           s5 = peg$currPos;
           peg$silentFails++;
-          if (peg$c69.test(input.charAt(peg$currPos))) {
+          if (peg$c80.test(input.charAt(peg$currPos))) {
             s6 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s6 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c70); }
+            if (peg$silentFails === 0) { peg$fail(peg$c81); }
           }
           peg$silentFails--;
           if (s6 === peg$FAILED) {
-            s5 = peg$c49;
+            s5 = peg$c60;
           } else {
             peg$currPos = s5;
             s5 = peg$c0;
@@ -2592,7 +3005,7 @@ module.exports = (function() {
               peg$currPos++;
             } else {
               s6 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c52); }
+              if (peg$silentFails === 0) { peg$fail(peg$c63); }
             }
             if (s6 !== peg$FAILED) {
               s5 = [s5, s6];
@@ -2607,12 +3020,12 @@ module.exports = (function() {
           }
         }
         if (s3 !== peg$FAILED) {
-          if (peg$c69.test(input.charAt(peg$currPos))) {
+          if (peg$c80.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c70); }
+            if (peg$silentFails === 0) { peg$fail(peg$c81); }
           }
           if (s4 === peg$FAILED) {
             s4 = peg$c1;
@@ -2645,22 +3058,22 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = [];
-      if (peg$c71.test(input.charAt(peg$currPos))) {
+      if (peg$c82.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c72); }
+        if (peg$silentFails === 0) { peg$fail(peg$c83); }
       }
       if (s2 !== peg$FAILED) {
         while (s2 !== peg$FAILED) {
           s1.push(s2);
-          if (peg$c71.test(input.charAt(peg$currPos))) {
+          if (peg$c82.test(input.charAt(peg$currPos))) {
             s2 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s2 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c72); }
+            if (peg$silentFails === 0) { peg$fail(peg$c83); }
           }
         }
       } else {
@@ -2685,11 +3098,11 @@ module.exports = (function() {
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c52); }
+        if (peg$silentFails === 0) { peg$fail(peg$c63); }
       }
       peg$silentFails--;
       if (s2 === peg$FAILED) {
-        s1 = peg$c49;
+        s1 = peg$c60;
       } else {
         peg$currPos = s1;
         s1 = peg$c0;
@@ -2703,8 +3116,9 @@ module.exports = (function() {
     }
 
 
-      Qjs        = require('../qjs');
-      System     = require('../system');
+      TypeFactory = require('../support/factory');
+      Factory     = new TypeFactory();
+      System      = require('../system');
       if (!options.system) {
         options.system = new System()
       }
@@ -2718,20 +3132,24 @@ module.exports = (function() {
         return result;
       }
 
+      // compile an open expression given the varname for closing it
+      function compileLambda(varname, expr) {
+        var src = "x = function(" + varname + ")" + "{ return " + expr + "; }";
+        try {
+          return eval(src);
+        } catch(e) {
+          error("Syntax error in: `" + expr + "`");
+        }
+      }
+
       // compile a [ [n1, expr1], ... ] to an array of constraints
       function compileConstraints(varname, defs) {
         var cs = [];
         for (var i = 0; i < defs.length; i++) {
           var name = defs[i][0];
           var expr = defs[i][1];
-          var src  = "x = function(" + varname + ")" + "{ return " + expr + "; }";
-          var fn   = null;
-          try {
-            var fn = eval(src);
-          } catch(e) {
-            error("Syntax error in constraint: `" + expr + "`");
-          }
-          cs[i] = Qjs.constraint(name, fn);
+          var fn   = compileLambda(varname, expr);
+          cs[i] = Factory.constraint(name, fn);
         }
         return cs;
       }
@@ -2756,14 +3174,12 @@ module.exports = (function() {
   };
 })();
 
-},{"../qjs":3,"../system":11}],11:[function(require,module,exports){
-var ArgumentError, Error, KeyError, Parser, Qjs, System, Type, TypeFactory, _, _ref;
+},{"../support/factory":8,"../system":11}],11:[function(require,module,exports){
+var ArgumentError, Error, KeyError, Parser, System, Type, TypeFactory, _, _ref;
 
 _ = require('underscore');
 
 _ref = require('./errors'), Error = _ref.Error, KeyError = _ref.KeyError, ArgumentError = _ref.ArgumentError;
-
-Qjs = require('./qjs');
 
 Type = require('./type');
 
@@ -2790,7 +3206,7 @@ System = (function() {
       type = _ref1[name];
       this[type.name] = type;
     }
-    _ref2 = Qjs.DSL_METHODS;
+    _ref2 = TypeFactory.PUBLIC_DSL_METHODS;
     for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
       method = _ref2[_i];
       this[method] = this.factory[method].bind(this.factory);
@@ -2856,7 +3272,7 @@ System = (function() {
 module.exports = System;
 
 
-},{"./errors":2,"./qjs":3,"./support/factory":8,"./syntax/parser":10,"./type":12,"underscore":22}],12:[function(require,module,exports){
+},{"./errors":2,"./support/factory":8,"./syntax/parser":10,"./type":12,"underscore":22}],12:[function(require,module,exports){
 var ArgumentError, NotImplementedError, Type, _ref;
 
 _ref = require('./errors'), ArgumentError = _ref.ArgumentError, NotImplementedError = _ref.NotImplementedError;
@@ -2908,14 +3324,14 @@ AdType = (function(_super) {
     this.jsType = jsType;
     this.contracts = contracts;
     this.name = name;
-    if (!(this.jsType instanceof Function)) {
+    if (this.jsType && !(this.jsType instanceof Function)) {
       throw new ArgumentError("Constructor (function) expected, got", this.jsType);
     }
     if (typeof this.contracts !== "object") {
       throw new ArgumentError("Hash expected, got", this.contracts);
     }
     invalid = _.reject(_.values(this.contracts), function(v) {
-      return v instanceof Array && v.length === 2 && v[0] instanceof Type && v[1] instanceof Function;
+      return v instanceof Array && v.length === 3 && v[0] instanceof Type && v[1] instanceof Function && v[2] instanceof Function;
     });
     if (invalid.length !== 0) {
       throw new ArgumentError("Invalid contracts `" + invalid + "`");
@@ -2928,7 +3344,7 @@ AdType = (function(_super) {
   };
 
   AdType.prototype.defaultName = function() {
-    return this.jsType.name;
+    return (this.jsType && this.jsType.name) || "Anonymous";
   };
 
   AdType.prototype.include = function(value) {
@@ -2940,7 +3356,7 @@ AdType = (function(_super) {
     if (helper == null) {
       helper = new DressHelper;
     }
-    if (value instanceof this.jsType) {
+    if (this.jsType && value instanceof this.jsType) {
       return value;
     }
     uped = null;
@@ -3042,6 +3458,9 @@ BuiltinType = (function(_super) {
     if (helper == null) {
       helper = new DressHelper;
     }
+    if (value === null || value === void 0) {
+      helper.failed(this, value);
+    }
     if (value.constructor !== this.jsType) {
       helper.failed(this, value);
     }
@@ -3105,15 +3524,16 @@ RelationType = (function(_super) {
   };
 
   RelationType.prototype.include = function(value) {
-    var k, tuple, v;
-    if (typeof value !== "object") {
+    var v, _i, _len;
+    if (value === null || value === void 0) {
       return false;
     }
-    for (k in value) {
-      v = value[k];
-      tuple = {};
-      tuple[k] = v;
-      if (!this.tupleType.include(tuple)) {
+    if (value.constructor !== Array) {
+      return false;
+    }
+    for (_i = 0, _len = value.length; _i < _len; _i++) {
+      v = value[_i];
+      if (!this.tupleType.include(v)) {
         return false;
       }
     }
@@ -3579,7 +3999,7 @@ describe("Using Q's abstract data types in JavaScript", function() {
       this.b = b;
     }
 
-    MyColor.prototype.toRGB = function() {
+    MyColor.prototype.toRgb = function() {
       return {
         r: this.r,
         g: this.g,
@@ -4084,6 +4504,52 @@ module.exports = {
 
 
 },{"../../lib/support/constraint":6,"../../lib/type/builtin_type":15,"../../lib/type/sub_type":19,"underscore":22}],37:[function(require,module,exports){
+var AdType, Parser, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+AdType = require('../../../lib/type/ad_type');
+
+should = require('should');
+
+describe("Parser#ad_type", function() {
+  describe('when bound to a class with dresser/undresser', function() {
+    var source, subject;
+    source = ".Date <as> .Number \\( n | Date(n) ) \\( d | d.getTime() )";
+    subject = Parser.parse(source, {
+      startRule: "type"
+    });
+    return it('should return a AdType', function() {
+      subject.should.be.an["instanceof"](AdType);
+      return subject.jsType.should.equal(Date);
+    });
+  });
+  describe('when bound to a class with no dresser/undresser', function() {
+    var source, subject;
+    source = ".Date <as> .Number";
+    subject = Parser.parse(source, {
+      startRule: "type"
+    });
+    return it('should return a AdType', function() {
+      subject.should.be.an["instanceof"](AdType);
+      return subject.jsType.should.equal(Date);
+    });
+  });
+  return describe('when not bound to a class and no dresser/undresser', function() {
+    var source, subject;
+    source = "<as> .String";
+    subject = Parser.parse(source, {
+      startRule: "type"
+    });
+    return it('should return a AdType', function() {
+      subject.should.be.an["instanceof"](AdType);
+      return (subject.jsType === null).should.be["true"];
+    });
+  });
+});
+
+
+},{"../../../lib/syntax/parser":10,"../../../lib/type/ad_type":13,"should":22}],38:[function(require,module,exports){
 var AnyType, Parser, should;
 
 Parser = require('../../../lib/syntax/parser');
@@ -4103,7 +4569,7 @@ describe("Parser#any_type", function() {
 });
 
 
-},{"../../../lib/syntax/parser":10,"../../../lib/type/any_type":14,"should":22}],38:[function(require,module,exports){
+},{"../../../lib/syntax/parser":10,"../../../lib/type/any_type":14,"should":22}],39:[function(require,module,exports){
 var Attribute, BuiltinType, Parser, should;
 
 Parser = require('../../../lib/syntax/parser');
@@ -4127,7 +4593,7 @@ describe("Parser#attribute", function() {
 });
 
 
-},{"../../../lib/support/attribute":4,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"should":22}],39:[function(require,module,exports){
+},{"../../../lib/support/attribute":4,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"should":22}],40:[function(require,module,exports){
 var BuiltinType, Parser, should;
 
 Parser = require('../../../lib/syntax/parser');
@@ -4148,7 +4614,7 @@ describe("Parser#builtin_type", function() {
 });
 
 
-},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"should":22}],40:[function(require,module,exports){
+},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"should":22}],41:[function(require,module,exports){
 var Attribute, BuiltinType, Heading, Parser, should;
 
 Parser = require('../../../lib/syntax/parser');
@@ -4173,7 +4639,7 @@ describe("Parser#heading", function() {
 });
 
 
-},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"should":22}],41:[function(require,module,exports){
+},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"should":22}],42:[function(require,module,exports){
 var Attribute, BuiltinType, Heading, Parser, RelationType, should;
 
 Parser = require('../../../lib/syntax/parser');
@@ -4204,7 +4670,7 @@ describe("Parser#relation_type", function() {
 });
 
 
-},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/relation_type":16,"should":22}],42:[function(require,module,exports){
+},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/relation_type":16,"should":22}],43:[function(require,module,exports){
 var BuiltinType, Parser, SeqType, should;
 
 Parser = require('../../../lib/syntax/parser');
@@ -4228,7 +4694,7 @@ describe("Parser#seq_type", function() {
 });
 
 
-},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/seq_type":17,"should":22}],43:[function(require,module,exports){
+},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/seq_type":17,"should":22}],44:[function(require,module,exports){
 var BuiltinType, Parser, SetType, should;
 
 Parser = require('../../../lib/syntax/parser');
@@ -4252,7 +4718,7 @@ describe("Parser#set_type", function() {
 });
 
 
-},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/set_type":18,"should":22}],44:[function(require,module,exports){
+},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/set_type":18,"should":22}],45:[function(require,module,exports){
 var BuiltinType, Constraint, Parser, SubType, should;
 
 Parser = require('../../../lib/syntax/parser');
@@ -4354,7 +4820,7 @@ describe("Parser#sub_type", function() {
 });
 
 
-},{"../../../lib/support/constraint":6,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/sub_type":19,"should":22}],45:[function(require,module,exports){
+},{"../../../lib/support/constraint":6,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/sub_type":19,"should":22}],46:[function(require,module,exports){
 var BuiltinType, Parser, System, should;
 
 Parser = require('../../../lib/syntax/parser');
@@ -4416,7 +4882,7 @@ describe("Parser#system", function() {
 });
 
 
-},{"../../../lib/syntax/parser":10,"../../../lib/system":11,"../../../lib/type/builtin_type":15,"should":22}],46:[function(require,module,exports){
+},{"../../../lib/syntax/parser":10,"../../../lib/system":11,"../../../lib/type/builtin_type":15,"should":22}],47:[function(require,module,exports){
 var Attribute, BuiltinType, Heading, Parser, TupleType, should;
 
 Parser = require('../../../lib/syntax/parser');
@@ -4447,7 +4913,7 @@ describe("Parser#heading", function() {
 });
 
 
-},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/tuple_type":20,"should":22}],47:[function(require,module,exports){
+},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/tuple_type":20,"should":22}],48:[function(require,module,exports){
 var BuiltinType, Parser, UnionType, should;
 
 Parser = require('../../../lib/syntax/parser');
@@ -4469,7 +4935,7 @@ describe("Parser#union_type", function() {
 });
 
 
-},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/union_type":21,"should":22}],48:[function(require,module,exports){
+},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/union_type":21,"should":22}],49:[function(require,module,exports){
 var ArgumentError, Error, System, should, _ref;
 
 _ref = require('../../../lib/errors'), ArgumentError = _ref.ArgumentError, Error = _ref.Error;
@@ -4536,7 +5002,7 @@ describe("System#addType", function() {
 });
 
 
-},{"../../../lib/errors":2,"../../../lib/system":11,"should":22}],49:[function(require,module,exports){
+},{"../../../lib/errors":2,"../../../lib/system":11,"should":22}],50:[function(require,module,exports){
 var System, should;
 
 System = require('../../../lib/system');
@@ -4571,7 +5037,7 @@ describe("System#clone", function() {
 });
 
 
-},{"../../../lib/system":11,"should":22}],50:[function(require,module,exports){
+},{"../../../lib/system":11,"should":22}],51:[function(require,module,exports){
 var System, should;
 
 System = require('../../../lib/system');
@@ -4587,8 +5053,10 @@ describe("System#constructor", function() {
 });
 
 
-},{"../../../lib/system":11,"should":22}],51:[function(require,module,exports){
-var System, TypeError, should;
+},{"../../../lib/system":11,"should":22}],52:[function(require,module,exports){
+var Qjs, System, TypeError, should;
+
+Qjs = require('../../../lib/qjs');
 
 TypeError = require('../../../lib/errors').TypeError;
 
@@ -4630,7 +5098,7 @@ describe('System#dress', function() {
 });
 
 
-},{"../../../lib/errors":2,"../../../lib/system":11,"should":22}],52:[function(require,module,exports){
+},{"../../../lib/errors":2,"../../../lib/qjs":3,"../../../lib/system":11,"should":22}],53:[function(require,module,exports){
 var SubType, System, TupleType, TypeError, should;
 
 TypeError = require('../../../lib/errors').TypeError;
@@ -4683,7 +5151,7 @@ describe("System#constructor", function() {
 });
 
 
-},{"../../../lib/errors":2,"../../../lib/system":11,"../../../lib/type/sub_type":19,"../../../lib/type/tuple_type":20,"should":22}],53:[function(require,module,exports){
+},{"../../../lib/errors":2,"../../../lib/system":11,"../../../lib/type/sub_type":19,"../../../lib/type/tuple_type":20,"should":22}],54:[function(require,module,exports){
 var KeyError, System, TupleType, should;
 
 KeyError = require('../../../lib/errors').KeyError;
@@ -4744,7 +5212,7 @@ describe('System#fetch', function() {
 });
 
 
-},{"../../../lib/errors":2,"../../../lib/system":11,"../../../lib/type/tuple_type":20,"should":22}],54:[function(require,module,exports){
+},{"../../../lib/errors":2,"../../../lib/system":11,"../../../lib/type/tuple_type":20,"should":22}],55:[function(require,module,exports){
 var System, TupleType, should;
 
 System = require('../../../lib/system');
@@ -4780,8 +5248,10 @@ describe("System#[]", function() {
 });
 
 
-},{"../../../lib/system":11,"../../../lib/type/tuple_type":20,"should":22}],55:[function(require,module,exports){
-var BuiltinType, KeyError, System, Type, should;
+},{"../../../lib/system":11,"../../../lib/type/tuple_type":20,"should":22}],56:[function(require,module,exports){
+var BuiltinType, KeyError, Qjs, System, Type, should;
+
+Qjs = require('../../../lib/qjs');
 
 KeyError = require('../../../lib/errors').KeyError;
 
@@ -4847,7 +5317,7 @@ describe('System#merge', function() {
 });
 
 
-},{"../../../lib/errors":2,"../../../lib/system":11,"../../../lib/type":12,"../../../lib/type/builtin_type":15,"should":22}],56:[function(require,module,exports){
+},{"../../../lib/errors":2,"../../../lib/qjs":3,"../../../lib/system":11,"../../../lib/type":12,"../../../lib/type/builtin_type":15,"should":22}],57:[function(require,module,exports){
 var KeyError, Qjs, System, Type, should;
 
 KeyError = require('../../../lib/errors').KeyError;
@@ -4891,7 +5361,7 @@ describe('System#parse', function() {
 });
 
 
-},{"../../../lib/errors":2,"../../../lib/qjs":3,"../../../lib/system":11,"../../../lib/type":12,"should":22}],57:[function(require,module,exports){
+},{"../../../lib/errors":2,"../../../lib/qjs":3,"../../../lib/system":11,"../../../lib/type":12,"should":22}],58:[function(require,module,exports){
 var AdType, ArgumentError, TypeError, should, _ref;
 
 AdType = require('../../../../lib/type/ad_type');
@@ -4903,8 +5373,8 @@ should = require('should');
 describe("AdType#constructor", function() {
   var subject;
   subject = new AdType(Date, {
-    timestamp: [intType, Date],
-    utc_string: [stringType, Date]
+    timestamp: [intType, Date, Date],
+    utc_string: [stringType, Date, Date]
   });
   describe('with valid arguments', function() {
     subject.should.be.an["instanceof"](AdType);
@@ -4956,7 +5426,7 @@ describe("AdType#constructor", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/ad_type":13,"should":22}],58:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/ad_type":13,"should":22}],59:[function(require,module,exports){
 var AdType, should;
 
 AdType = require('../../../../lib/type/ad_type');
@@ -4964,16 +5434,25 @@ AdType = require('../../../../lib/type/ad_type');
 should = require('should');
 
 describe("AdType#defaultName", function() {
-  var type;
-  type = new AdType(Date, {
-    timestamp: [intType, Date],
-    utc_string: [stringType, Date]
+  var contracts;
+  contracts = {
+    timestamp: [intType, Date, Date],
+    utc_string: [stringType, Date, Date]
+  };
+  describe('when not anonymous', function() {
+    var type;
+    type = new AdType(Date, contracts);
+    return type.name.should.equal('Date');
   });
-  return type.name.should.equal('Date');
+  return describe('when anonymous', function() {
+    var type;
+    type = new AdType(null, contracts);
+    return type.name.should.equal('Anonymous');
+  });
 });
 
 
-},{"../../../../lib/type/ad_type":13,"should":22}],59:[function(require,module,exports){
+},{"../../../../lib/type/ad_type":13,"should":22}],60:[function(require,module,exports){
 var AdType, ArgumentError, TypeError, should, _ref;
 
 AdType = require('../../../../lib/type/ad_type');
@@ -4983,79 +5462,99 @@ _ref = require('../../../../lib/errors'), TypeError = _ref.TypeError, ArgumentEr
 should = require('should');
 
 describe("AdType#dress", function() {
-  var subject, type;
-  type = new AdType(Date, {
+  var contracts;
+  contracts = {
     timestamp: [
-      intType, function(i) {
+      intType, (function(i) {
         return i * 2;
+      }), function(d) {
+        return null;
       }
     ],
     utc_string: [
-      stringType, function(s) {
+      stringType, (function(s) {
         return "foo";
+      }), function(d) {
+        return null;
       }
     ]
-  });
-  subject = function(arg) {
-    return type.dress(arg);
   };
-  describe('with a date', function() {
-    var d;
-    d = new Date();
-    return subject(d).should.equal(d);
-  });
-  describe('with an integer', function() {
-    return subject(12).should.equal(24);
-  });
-  describe('with a string', function() {
-    return subject("bar").should.equal("foo");
-  });
-  describe('with an unrecognized', function() {
-    var lambda;
-    lambda = function() {
-      return subject([]);
+  describe('when not bound to a javascript type', function() {
+    var subject, type;
+    type = new AdType(null, contracts);
+    subject = function(arg) {
+      return type.dress(arg);
     };
-    return it('should raise an error', function() {
-      var e, err;
-      expect(lambda).toThrow();
-      err = (function() {
-        try {
-          return lambda();
-        } catch (_error) {
-          e = _error;
-          return e;
-        }
-      })();
-      err.should.be.an["instanceof"](TypeError);
-      return err.message.should.equal("Invalid value `[]` for Date");
+    return describe('with a string', function() {
+      return subject("bar").should.equal("foo");
     });
   });
-  return describe('when the upper raises an error', function() {
-    type = new AdType(Date, {
-      timestamp: [
-        intType, function(t) {
-          throw new ArgumentError;
-        }
-      ]
+  return describe('when bound to a javascript type', function() {
+    var subject, type;
+    type = new AdType(Date, contracts);
+    subject = function(arg) {
+      return type.dress(arg);
+    };
+    describe('with a date', function() {
+      var d;
+      d = new Date();
+      return subject(d).should.equal(d);
     });
-    return it('should hide the error', function() {
-      var e, err;
-      err = (function() {
-        try {
-          return type.dress(12);
-        } catch (_error) {
-          e = _error;
-          return e;
-        }
-      })();
-      err.should.be.an["instanceof"](TypeError);
-      return err.message.should.equal("Invalid value `12` for Date");
+    describe('with an integer', function() {
+      return subject(12).should.equal(24);
+    });
+    describe('with a string', function() {
+      return subject("bar").should.equal("foo");
+    });
+    describe('with an unrecognized', function() {
+      var lambda;
+      lambda = function() {
+        return subject([]);
+      };
+      return it('should raise an error', function() {
+        var e, err;
+        expect(lambda).toThrow();
+        err = (function() {
+          try {
+            return lambda();
+          } catch (_error) {
+            e = _error;
+            return e;
+          }
+        })();
+        err.should.be.an["instanceof"](TypeError);
+        return err.message.should.equal("Invalid value `[]` for Date");
+      });
+    });
+    return describe('when the upper raises an error', function() {
+      type = new AdType(Date, {
+        timestamp: [
+          intType, (function(t) {
+            throw new ArgumentError;
+          }), (function(d) {
+            return null;
+          })
+        ]
+      });
+      return it('should hide the error', function() {
+        var e, err;
+        err = (function() {
+          try {
+            return type.dress(12);
+          } catch (_error) {
+            e = _error;
+            return e;
+          }
+        })();
+        err.should.be.an["instanceof"](TypeError);
+        return err.message.should.equal("Invalid value `12` for Date");
+      });
     });
   });
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/ad_type":13,"should":22}],60:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/ad_type":13,"should":22}],61:[function(require,module,exports){
 var AdType, should;
 
 AdType = require('../../../../lib/type/ad_type');
@@ -5074,7 +5573,7 @@ describe("AdType#include", function() {
 });
 
 
-},{"../../../../lib/type/ad_type":13,"should":22}],61:[function(require,module,exports){
+},{"../../../../lib/type/ad_type":13,"should":22}],62:[function(require,module,exports){
 var AdType, ArgumentError, TypeError, should, _ref;
 
 AdType = require('../../../../lib/type/ad_type');
@@ -5097,7 +5596,7 @@ describe("AdType#name", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/ad_type":13,"should":22}],62:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/ad_type":13,"should":22}],63:[function(require,module,exports){
 var AnyType, should;
 
 AnyType = require('../../../../lib/type/any_type');
@@ -5113,7 +5612,7 @@ describe("AnyType#constructor", function() {
 });
 
 
-},{"../../../../lib/type/any_type":14,"should":22}],63:[function(require,module,exports){
+},{"../../../../lib/type/any_type":14,"should":22}],64:[function(require,module,exports){
 var AnyType, should;
 
 AnyType = require('../../../../lib/type/any_type');
@@ -5129,7 +5628,7 @@ describe('AnyType#defaultName', function() {
 });
 
 
-},{"../../../../lib/type/any_type":14,"should":22}],64:[function(require,module,exports){
+},{"../../../../lib/type/any_type":14,"should":22}],65:[function(require,module,exports){
 var AnyType, TypeError, should;
 
 AnyType = require('../../../../lib/type/any_type');
@@ -5163,7 +5662,7 @@ describe("AnyType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/any_type":14,"should":22}],65:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/any_type":14,"should":22}],66:[function(require,module,exports){
 var AnyType, should;
 
 AnyType = require('../../../../lib/type/any_type');
@@ -5183,7 +5682,7 @@ describe('AnyType#equals', function() {
 });
 
 
-},{"../../../../lib/type/any_type":14,"should":22}],66:[function(require,module,exports){
+},{"../../../../lib/type/any_type":14,"should":22}],67:[function(require,module,exports){
 var AnyType, TypeError, should, _;
 
 AnyType = require('../../../../lib/type/any_type');
@@ -5218,7 +5717,7 @@ describe("AnyType#include", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/any_type":14,"should":22,"underscore":22}],67:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/any_type":14,"should":22,"underscore":22}],68:[function(require,module,exports){
 var AnyType, TypeError, should;
 
 AnyType = require('../../../../lib/type/any_type');
@@ -5249,7 +5748,7 @@ describe('AnyType#name', function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/any_type":14,"should":22}],68:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/any_type":14,"should":22}],69:[function(require,module,exports){
 var BuiltinType, should;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -5265,7 +5764,7 @@ describe("BuiltinType#constructor", function() {
 });
 
 
-},{"../../../../lib/type/builtin_type":15,"should":22}],69:[function(require,module,exports){
+},{"../../../../lib/type/builtin_type":15,"should":22}],70:[function(require,module,exports){
 var BuiltinType, should;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -5281,7 +5780,7 @@ describe('BuiltinType#defaultName', function() {
 });
 
 
-},{"../../../../lib/type/builtin_type":15,"should":22}],70:[function(require,module,exports){
+},{"../../../../lib/type/builtin_type":15,"should":22}],71:[function(require,module,exports){
 var BuiltinType, TypeError;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -5294,6 +5793,14 @@ describe("BuiltinType#dress", function() {
   subject = function(arg) {
     return type.dress(arg);
   };
+  it('is robust enough', function() {
+    expect(function() {
+      return type.dress(null);
+    }).toThrow(new TypeError("Invalid value `null` for num"));
+    return expect(function() {
+      return type.dress();
+    }).toThrow(new TypeError("Invalid value `undefined` for num"));
+  });
   describe('with an integer', function() {
     return subject(12).should.equal(12);
   });
@@ -5325,7 +5832,7 @@ describe("BuiltinType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/builtin_type":15}],71:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/builtin_type":15}],72:[function(require,module,exports){
 var BuiltinType, should;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -5349,7 +5856,7 @@ describe('BuiltinType#equals', function() {
 });
 
 
-},{"../../../../lib/type/builtin_type":15,"should":22}],72:[function(require,module,exports){
+},{"../../../../lib/type/builtin_type":15,"should":22}],73:[function(require,module,exports){
 var BuiltinType, TypeError, should;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -5373,7 +5880,7 @@ describe("BuiltinType#include", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/builtin_type":15,"should":22}],73:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/builtin_type":15,"should":22}],74:[function(require,module,exports){
 var BuiltinType, TypeError, should;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -5404,7 +5911,7 @@ describe('BuiltinType#name', function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/builtin_type":15,"should":22}],74:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/builtin_type":15,"should":22}],75:[function(require,module,exports){
 var ArgumentError, Attribute, Heading, RelationType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -5446,7 +5953,7 @@ describe("RelationType#initialize", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],75:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],76:[function(require,module,exports){
 var Attribute, Heading, RelationType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -5466,7 +5973,7 @@ describe("RelationType#default_name", function() {
 });
 
 
-},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],76:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],77:[function(require,module,exports){
 var Attribute, Heading, RelationType, TypeError, should, _;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -5642,7 +6149,7 @@ describe("RelationType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22,"underscore":22}],77:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22,"underscore":22}],78:[function(require,module,exports){
 var Attribute, Heading, RelationType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -5675,7 +6182,7 @@ describe("RelationType#equality", function() {
 });
 
 
-},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],78:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],79:[function(require,module,exports){
 var Attribute, Heading, RelationType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -5693,30 +6200,37 @@ describe("RelationType#include", function() {
   subject = function(arg) {
     return type.include(arg);
   };
-  describe('when an empty set', function() {
-    return subject({}).should.be["true"];
+  describe('when a valid relation', function() {
+    return subject([
+      {
+        a: 12
+      }, {
+        a: 17
+      }
+    ]).should.be["true"];
   });
-  describe('when a valid, non empty set', function() {
-    var arg;
-    arg = {
-      a: 14
-    };
-    return subject(arg).should.be["true"];
+  describe('when an empty relation', function() {
+    return subject([]).should.be["true"];
   });
-  describe('when not a set', function() {
-    return subject("foo").should.be["false"];
+  describe('when a relation containing invalid tuples', function() {
+    return subject([
+      {
+        a: 12
+      }, {
+        a: 'foo'
+      }
+    ]).should.be["false"];
   });
-  return describe('when a set containing invalid tuples', function() {
-    var arg;
-    arg = {
-      a: "foo"
-    };
-    return subject(arg).should.be["false"];
+  return describe('when not an relation at all', function() {
+    subject({}).should.be["false"];
+    subject("foo").should.be["false"];
+    subject(null).should.be["false"];
+    return type.include().should.be["false"];
   });
 });
 
 
-},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],79:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],80:[function(require,module,exports){
 var Attribute, Heading, RelationType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -5746,7 +6260,7 @@ describe("RelationType#name", function() {
 });
 
 
-},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],80:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],81:[function(require,module,exports){
 var ArgumentError, SeqType, TypeError, should, _, _ref;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -5789,7 +6303,7 @@ describe("SeqType#initialize", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],81:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],82:[function(require,module,exports){
 var SeqType, should;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -5804,7 +6318,7 @@ describe("SeqType#defaultName", function() {
 });
 
 
-},{"../../../../lib/type/seq_type":17,"should":22}],82:[function(require,module,exports){
+},{"../../../../lib/type/seq_type":17,"should":22}],83:[function(require,module,exports){
 var ArgumentError, SeqType, TypeError, should, _, _ref;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -5867,7 +6381,7 @@ describe("SeqType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],83:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],84:[function(require,module,exports){
 var ArgumentError, SeqType, TypeError, should, _, _ref;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -5895,7 +6409,7 @@ describe("SeqType#equality", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],84:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],85:[function(require,module,exports){
 var ArgumentError, SeqType, TypeError, should, _, _ref;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -5927,7 +6441,7 @@ describe("SeqType#include", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],85:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],86:[function(require,module,exports){
 var SeqType, should, _;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -5950,7 +6464,7 @@ describe("SeqType#name", function() {
 });
 
 
-},{"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],86:[function(require,module,exports){
+},{"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],87:[function(require,module,exports){
 var ArgumentError, SetType, TypeError, should, _, _ref;
 
 SetType = require('../../../../lib/type/set_type');
@@ -5993,7 +6507,7 @@ describe("SetType#initialize", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],87:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],88:[function(require,module,exports){
 var SetType, should;
 
 SetType = require('../../../../lib/type/set_type');
@@ -6008,7 +6522,7 @@ describe("SetType#defaultName", function() {
 });
 
 
-},{"../../../../lib/type/set_type":18,"should":22}],88:[function(require,module,exports){
+},{"../../../../lib/type/set_type":18,"should":22}],89:[function(require,module,exports){
 var ArgumentError, SetType, TypeError, should, _, _ref;
 
 SetType = require('../../../../lib/type/set_type');
@@ -6092,7 +6606,7 @@ describe("SetType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],89:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],90:[function(require,module,exports){
 var ArgumentError, SetType, TypeError, should, _, _ref;
 
 SetType = require('../../../../lib/type/set_type');
@@ -6120,7 +6634,7 @@ describe("SetType#equality", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],90:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],91:[function(require,module,exports){
 var ArgumentError, SetType, TypeError, should, _, _ref;
 
 SetType = require('../../../../lib/type/set_type');
@@ -6155,7 +6669,7 @@ describe("SetType#include", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],91:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],92:[function(require,module,exports){
 var SetType, should, _;
 
 SetType = require('../../../../lib/type/set_type');
@@ -6178,7 +6692,7 @@ describe("SetType#name", function() {
 });
 
 
-},{"../../../../lib/type/set_type":18,"should":22,"underscore":22}],92:[function(require,module,exports){
+},{"../../../../lib/type/set_type":18,"should":22,"underscore":22}],93:[function(require,module,exports){
 var Constraint, SubType, should, _;
 
 Constraint = require('../../../../lib/support/constraint');
@@ -6205,7 +6719,7 @@ describe("SubType#constructor", function() {
 });
 
 
-},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22,"underscore":22}],93:[function(require,module,exports){
+},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22,"underscore":22}],94:[function(require,module,exports){
 var Constraint, SubType, should;
 
 Constraint = require('../../../../lib/support/constraint');
@@ -6223,7 +6737,7 @@ describe('SubType#defaultName', function() {
 });
 
 
-},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],94:[function(require,module,exports){
+},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],95:[function(require,module,exports){
 var Constraint, SubType, TypeError, should;
 
 Constraint = require('../../../../lib/support/constraint');
@@ -6306,7 +6820,7 @@ describe("SubType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],95:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],96:[function(require,module,exports){
 var Constraint, SubType, should;
 
 Constraint = require('../../../../lib/support/constraint');
@@ -6345,7 +6859,7 @@ describe('SubType#equals', function() {
 });
 
 
-},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],96:[function(require,module,exports){
+},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],97:[function(require,module,exports){
 var Constraint, SubType, should;
 
 Constraint = require('../../../../lib/support/constraint');
@@ -6381,7 +6895,7 @@ describe("SubType#include", function() {
 });
 
 
-},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],97:[function(require,module,exports){
+},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],98:[function(require,module,exports){
 var Constraint, SubType, should;
 
 Constraint = require('../../../../lib/support/constraint');
@@ -6416,7 +6930,7 @@ describe("SubType#name", function() {
 });
 
 
-},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],98:[function(require,module,exports){
+},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],99:[function(require,module,exports){
 var ArgumentError, Attribute, Heading, TupleType, TypeError, should, _ref;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -6458,7 +6972,7 @@ describe("TupleType#constructor", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],99:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],100:[function(require,module,exports){
 var Attribute, Heading, TupleType, TypeError, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -6479,7 +6993,7 @@ describe("TupleType#defaultName", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],100:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],101:[function(require,module,exports){
 var Attribute, Heading, TupleType, TypeError, should, _;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -6599,7 +7113,7 @@ describe("TupleType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22,"underscore":22}],101:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22,"underscore":22}],102:[function(require,module,exports){
 var Attribute, Heading, TupleType, TypeError, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -6634,7 +7148,7 @@ describe("TupleType#equality", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],102:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],103:[function(require,module,exports){
 var Attribute, Heading, TupleType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -6676,7 +7190,7 @@ describe("TupleType#include", function() {
 });
 
 
-},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],103:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],104:[function(require,module,exports){
 var Attribute, Heading, TupleType, TypeError, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -6705,7 +7219,7 @@ describe("TupleType#name", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],104:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],105:[function(require,module,exports){
 var ArgumentError, UnionType, should, _;
 
 ArgumentError = require('../../../../lib/errors').ArgumentError;
@@ -6747,7 +7261,7 @@ describe("UnionType#constructor", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/union_type":21,"should":22,"underscore":22}],105:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/union_type":21,"should":22,"underscore":22}],106:[function(require,module,exports){
 var UnionType, should;
 
 UnionType = require('../../../../lib/type/union_type');
@@ -6761,7 +7275,7 @@ describe("UnionType#defaultName", function() {
 });
 
 
-},{"../../../../lib/type/union_type":21,"should":22}],106:[function(require,module,exports){
+},{"../../../../lib/type/union_type":21,"should":22}],107:[function(require,module,exports){
 var TypeError, UnionType, should;
 
 TypeError = require('../../../../lib/errors').TypeError;
@@ -6807,7 +7321,7 @@ describe("UnionType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/type/union_type":21,"should":22}],107:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/union_type":21,"should":22}],108:[function(require,module,exports){
 var UnionType, should;
 
 UnionType = require('../../../../lib/type/union_type');
@@ -6835,7 +7349,7 @@ describe("UnionType#equality", function() {
 });
 
 
-},{"../../../../lib/type/union_type":21,"should":22}],108:[function(require,module,exports){
+},{"../../../../lib/type/union_type":21,"should":22}],109:[function(require,module,exports){
 var UnionType, should;
 
 UnionType = require('../../../../lib/type/union_type');
@@ -6860,7 +7374,7 @@ describe("UnionType#include", function() {
 });
 
 
-},{"../../../../lib/type/union_type":21,"should":22}],109:[function(require,module,exports){
+},{"../../../../lib/type/union_type":21,"should":22}],110:[function(require,module,exports){
 var UnionType, should;
 
 UnionType = require('../../../../lib/type/union_type');
@@ -6881,7 +7395,7 @@ describe("UnionType#name", function() {
 });
 
 
-},{"../../../../lib/type/union_type":21,"should":22}],110:[function(require,module,exports){
+},{"../../../../lib/type/union_type":21,"should":22}],111:[function(require,module,exports){
 var AnyType, TypeFactory, should;
 
 TypeFactory = require('../../../../lib/support/factory');
@@ -6914,7 +7428,7 @@ describe("TypeFactory#any", function() {
 });
 
 
-},{"../../../../lib/support/factory":8,"../../../../lib/type/any_type":14,"should":22}],111:[function(require,module,exports){
+},{"../../../../lib/support/factory":8,"../../../../lib/type/any_type":14,"should":22}],112:[function(require,module,exports){
 var Attribute, BuiltinType, TypeFactory, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -6949,7 +7463,7 @@ describe('TypeFactory#attribute', function() {
 });
 
 
-},{"../../../../lib/support/attribute":4,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"should":22}],112:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"should":22}],113:[function(require,module,exports){
 var Attribute, BuiltinType, TypeFactory, should, _;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -6981,7 +7495,7 @@ describe('TypeFactory#attributes', function() {
 });
 
 
-},{"../../../../lib/support/attribute":4,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"should":22,"underscore":22}],113:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"should":22,"underscore":22}],114:[function(require,module,exports){
 var TypeFactory, should;
 
 TypeFactory = require('../../../../lib/support/factory');
@@ -7009,7 +7523,7 @@ describe('TypeFactory#builtin', function() {
 });
 
 
-},{"../../../../lib/support/factory":8,"should":22}],114:[function(require,module,exports){
+},{"../../../../lib/support/factory":8,"should":22}],115:[function(require,module,exports){
 var Constraint, TypeFactory, should;
 
 Constraint = require('../../../../lib/support/constraint');
@@ -7080,7 +7594,7 @@ describe('TypeFactory#constraint', function() {
 });
 
 
-},{"../../../../lib/support/constraint":6,"../../../../lib/support/factory":8,"should":22}],115:[function(require,module,exports){
+},{"../../../../lib/support/constraint":6,"../../../../lib/support/factory":8,"should":22}],116:[function(require,module,exports){
 var Constraint, TypeFactory, should;
 
 Constraint = require('../../../../lib/support/constraint');
@@ -7116,7 +7630,7 @@ describe('TypeFactory#constraints', function() {
 });
 
 
-},{"../../../../lib/support/constraint":6,"../../../../lib/support/factory":8,"should":22}],116:[function(require,module,exports){
+},{"../../../../lib/support/constraint":6,"../../../../lib/support/factory":8,"should":22}],117:[function(require,module,exports){
 var Attribute, BuiltinType, Heading, TypeFactory, should, _;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -7160,7 +7674,7 @@ describe('TypeFactory#heading', function() {
 });
 
 
-},{"../../../../lib/support/attribute":4,"../../../../lib/support/factory":8,"../../../../lib/support/heading":9,"../../../../lib/type/builtin_type":15,"should":22,"underscore":22}],117:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/factory":8,"../../../../lib/support/heading":9,"../../../../lib/type/builtin_type":15,"should":22,"underscore":22}],118:[function(require,module,exports){
 var TypeFactory, should;
 
 TypeFactory = require('../../../../lib/support/factory');
@@ -7187,7 +7701,7 @@ describe('TypeFactory#jsType', function() {
 });
 
 
-},{"../../../../lib/support/factory":8,"should":22}],118:[function(require,module,exports){
+},{"../../../../lib/support/factory":8,"should":22}],119:[function(require,module,exports){
 var SeqType, TypeFactory, should;
 
 TypeFactory = require('../../../../lib/support/factory');
@@ -7240,7 +7754,7 @@ describe("TypeFactory#seq", function() {
 });
 
 
-},{"../../../../lib/support/factory":8,"../../../../lib/type/seq_type":17,"should":22}],119:[function(require,module,exports){
+},{"../../../../lib/support/factory":8,"../../../../lib/type/seq_type":17,"should":22}],120:[function(require,module,exports){
 var BuiltinType, Constraint, SubType, TypeError, TypeFactory, numType, should;
 
 TypeFactory = require('../../../../lib/support/factory');
@@ -7326,7 +7840,7 @@ describe('TypeFactory#sub_type', function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/support/constraint":6,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"../../../../lib/type/sub_type":19,"../../spec_helpers":36,"should":22}],120:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/constraint":6,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"../../../../lib/type/sub_type":19,"../../spec_helpers":36,"should":22}],121:[function(require,module,exports){
 var TupleType, TypeFactory, should;
 
 TupleType = require('../../../../lib/type/tuple_type');
@@ -7365,7 +7879,7 @@ describe("TypeFactory#tuple", function() {
 });
 
 
-},{"../../../../lib/support/factory":8,"../../../../lib/type/tuple_type":20,"should":22}],121:[function(require,module,exports){
+},{"../../../../lib/support/factory":8,"../../../../lib/type/tuple_type":20,"should":22}],122:[function(require,module,exports){
 var BuiltinType, TypeError, TypeFactory, UnionType, numType, should;
 
 TypeFactory = require('../../../../lib/support/factory');
@@ -7393,4 +7907,4 @@ describe('TypeFactory#union', function() {
 });
 
 
-},{"../../../../lib/errors":2,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"../../../../lib/type/union_type":21,"../../spec_helpers":36,"should":22}]},{},[23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121])
+},{"../../../../lib/errors":2,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"../../../../lib/type/union_type":21,"../../spec_helpers":36,"should":22}]},{},[23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122])

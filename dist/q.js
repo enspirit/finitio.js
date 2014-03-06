@@ -1,14 +1,14 @@
-require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var qjs;
+!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Qjs=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+var Qjs;
 
-qjs = require("./lib/qjs");
+Qjs = _dereq_("./lib/qjs");
 
-module.exports = qjs;
+module.exports = Qjs;
 
 module.exports.VERSION = "0.0.0";
 
 
-},{"./lib/qjs":"Wfb730"}],2:[function(require,module,exports){
+},{"./lib/qjs":3}],2:[function(_dereq_,module,exports){
 var ArgumentError, KeyError, NotImplementedError, QJSError, TypeError,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -93,14 +93,15 @@ module.exports = {
 };
 
 
-},{}],"Wfb730":[function(require,module,exports){
+},{}],3:[function(_dereq_,module,exports){
+(function (__dirname){
 var Parser, Qjs, TypeFactory, _;
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
-TypeFactory = require('./support/factory');
+TypeFactory = _dereq_('./support/factory');
 
-Parser = require('./syntax/parser');
+Parser = _dereq_('./syntax/parser');
 
 Qjs = (function() {
   var method, _i, _len, _ref;
@@ -109,19 +110,28 @@ Qjs = (function() {
 
   Qjs.VERSION = "0.0.1";
 
-  Qjs.DSL_METHODS = ['attribute', 'heading', 'constraint', 'constraints', 'any', 'builtin', 'adt', 'sub_type', 'union', 'seq', 'set', 'tuple', 'relation', 'type'];
+  Qjs.FACTORY = new TypeFactory;
 
-  Qjs.DEFAULT_FACTORY = new TypeFactory;
+  _ref = TypeFactory.PUBLIC_DSL_METHODS;
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    method = _ref[_i];
+    Qjs[method] = Qjs.FACTORY[method].bind(Qjs.FACTORY);
+  }
 
   Qjs.parse = function(source) {
     return Parser.parse(source);
   };
 
-  _ref = Qjs.DSL_METHODS;
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    method = _ref[_i];
-    Qjs[method] = Qjs.DEFAULT_FACTORY[method].bind(Qjs.DEFAULT_FACTORY);
-  }
+  Qjs.system = function(identifier) {
+    var content, path;
+    path = Path.join(__dirname, "" + identifier + ".q");
+    if (fs.existsSync(path)) {
+      content = fs.readFileSync(path).toString();
+      return this.parse(content);
+    } else {
+      throw new Error("Unknown system " + identifier);
+    }
+  };
 
   return Qjs;
 
@@ -130,16 +140,15 @@ Qjs = (function() {
 module.exports = Qjs;
 
 
-},{"./support/factory":9,"./syntax/parser":11,"underscore":24}],"qjs":[function(require,module,exports){
-module.exports=require('Wfb730');
-},{}],5:[function(require,module,exports){
+}).call(this,"/lib")
+},{"./support/factory":8,"./syntax/parser":10,"underscore":23}],4:[function(_dereq_,module,exports){
 var ArgumentError, Attribute, KeyError, Type, TypeError, _, _ref;
 
-Type = require('../type');
+Type = _dereq_('../type');
 
-_ref = require('../errors'), KeyError = _ref.KeyError, ArgumentError = _ref.ArgumentError, TypeError = _ref.TypeError;
+_ref = _dereq_('../errors'), KeyError = _ref.KeyError, ArgumentError = _ref.ArgumentError, TypeError = _ref.TypeError;
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
 Attribute = (function() {
   function Attribute(name, type) {
@@ -185,14 +194,14 @@ Attribute = (function() {
 module.exports = Attribute;
 
 
-},{"../errors":2,"../type":13,"underscore":24}],6:[function(require,module,exports){
+},{"../errors":2,"../type":12,"underscore":23}],5:[function(_dereq_,module,exports){
 var ArgumentError, CollectionType, Type,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Type = require('../type');
+Type = _dereq_('../type');
 
-ArgumentError = require('../errors').ArgumentError;
+ArgumentError = _dereq_('../errors').ArgumentError;
 
 CollectionType = (function(_super) {
   __extends(CollectionType, _super);
@@ -220,12 +229,12 @@ CollectionType = (function(_super) {
 module.exports = CollectionType;
 
 
-},{"../errors":2,"../type":13}],7:[function(require,module,exports){
+},{"../errors":2,"../type":12}],6:[function(_dereq_,module,exports){
 var ArgumentError, Constraint, TypeError, _, _ref;
 
-_ref = require('../errors'), ArgumentError = _ref.ArgumentError, TypeError = _ref.TypeError;
+_ref = _dereq_('../errors'), ArgumentError = _ref.ArgumentError, TypeError = _ref.TypeError;
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
 Constraint = (function() {
   function Constraint(name, _native) {
@@ -267,12 +276,12 @@ Constraint = (function() {
 module.exports = Constraint;
 
 
-},{"../errors":2,"underscore":24}],8:[function(require,module,exports){
+},{"../errors":2,"underscore":23}],7:[function(_dereq_,module,exports){
 var DressHelper, TypeError, _, _typeToString, _valueToString;
 
-TypeError = require('../errors').TypeError;
+TypeError = _dereq_('../errors').TypeError;
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
 DressHelper = (function() {
   function DressHelper() {
@@ -374,6 +383,9 @@ DressHelper = (function() {
 
 _valueToString = function(value) {
   var s;
+  if (value === void 0) {
+    return 'undefined';
+  }
   if (value === null) {
     return 'null';
   }
@@ -394,42 +406,44 @@ _typeToString = function(type) {
 module.exports = DressHelper;
 
 
-},{"../errors":2,"underscore":24}],9:[function(require,module,exports){
+},{"../errors":2,"underscore":23}],8:[function(_dereq_,module,exports){
 var AdType, AnyType, ArgumentError, Attribute, BuiltinType, Constraint, Heading, NotImplementedError, RelationType, SeqType, SetType, SubType, TupleType, Type, TypeFactory, UnionType, fail, isNativeType, isRegexp, _, _ref,
   __slice = [].slice;
 
-Type = require('../type');
+Type = _dereq_('../type');
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
-Attribute = require('./attribute');
+Attribute = _dereq_('./attribute');
 
-Heading = require('./heading');
+Heading = _dereq_('./heading');
 
-Constraint = require('./constraint');
+Constraint = _dereq_('./constraint');
 
-AnyType = require('../type/any_type');
+AnyType = _dereq_('../type/any_type');
 
-AdType = require('../type/ad_type');
+AdType = _dereq_('../type/ad_type');
 
-SeqType = require('../type/seq_type');
+SeqType = _dereq_('../type/seq_type');
 
-SetType = require('../type/set_type');
+SetType = _dereq_('../type/set_type');
 
-SubType = require('../type/sub_type');
+SubType = _dereq_('../type/sub_type');
 
-TupleType = require('../type/tuple_type');
+TupleType = _dereq_('../type/tuple_type');
 
-UnionType = require('../type/union_type');
+UnionType = _dereq_('../type/union_type');
 
-BuiltinType = require('../type/builtin_type');
+BuiltinType = _dereq_('../type/builtin_type');
 
-RelationType = require('../type/relation_type');
+RelationType = _dereq_('../type/relation_type');
 
-_ref = require('../errors'), NotImplementedError = _ref.NotImplementedError, ArgumentError = _ref.ArgumentError;
+_ref = _dereq_('../errors'), NotImplementedError = _ref.NotImplementedError, ArgumentError = _ref.ArgumentError;
 
 TypeFactory = (function() {
   function TypeFactory() {}
+
+  TypeFactory.PUBLIC_DSL_METHODS = ['jsType', 'any', 'builtin', 'adt', 'sub_type', 'union', 'seq', 'set', 'tuple', 'relation', 'type'];
 
   TypeFactory.prototype.type = function(t, name, callback) {
     var _ref1;
@@ -466,6 +480,8 @@ TypeFactory = (function() {
       return String;
     } else if (t === 'Boolean') {
       return Boolean;
+    } else if (t === 'Date') {
+      return Date;
     } else if (isNativeType(t) || t instanceof Function) {
       return t;
     } else {
@@ -696,14 +712,14 @@ fail = function(msg, type) {
 module.exports = TypeFactory;
 
 
-},{"../errors":2,"../type":13,"../type/ad_type":14,"../type/any_type":15,"../type/builtin_type":16,"../type/relation_type":17,"../type/seq_type":18,"../type/set_type":19,"../type/sub_type":20,"../type/tuple_type":21,"../type/union_type":22,"./attribute":5,"./constraint":7,"./heading":10,"underscore":24}],10:[function(require,module,exports){
+},{"../errors":2,"../type":12,"../type/ad_type":13,"../type/any_type":14,"../type/builtin_type":15,"../type/relation_type":16,"../type/seq_type":17,"../type/set_type":18,"../type/sub_type":19,"../type/tuple_type":20,"../type/union_type":21,"./attribute":4,"./constraint":6,"./heading":9,"underscore":23}],9:[function(_dereq_,module,exports){
 var ArgumentError, Attribute, Heading, TypeError, _, _ref;
 
-_ref = require('../errors'), ArgumentError = _ref.ArgumentError, TypeError = _ref.TypeError;
+_ref = _dereq_('../errors'), ArgumentError = _ref.ArgumentError, TypeError = _ref.TypeError;
 
-Attribute = require('./attribute');
+Attribute = _dereq_('./attribute');
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
 Heading = (function() {
   function Heading(attributes) {
@@ -770,7 +786,7 @@ Heading = (function() {
 module.exports = Heading;
 
 
-},{"../errors":2,"./attribute":5,"underscore":24}],11:[function(require,module,exports){
+},{"../errors":2,"./attribute":4,"underscore":23}],10:[function(_dereq_,module,exports){
 module.exports = (function() {
   /*
    * Generated by PEG.js 0.8.0.
@@ -822,10 +838,10 @@ module.exports = (function() {
         peg$c7 = "|",
         peg$c8 = { type: "literal", value: "|", description: "\"|\"" },
         peg$c9 = function(head, tail) {
-              return Qjs.union(headTailToArray(head, tail));
+              return Factory.union(headTailToArray(head, tail));
             },
         peg$c10 = function(t, c) {
-              return Qjs.sub_type(t, c)
+              return Factory.sub_type(t, c)
             },
         peg$c11 = "(",
         peg$c12 = { type: "literal", value: "(", description: "\"(\"" },
@@ -855,68 +871,108 @@ module.exports = (function() {
         peg$c26 = "}",
         peg$c27 = { type: "literal", value: "}", description: "\"}\"" },
         peg$c28 = function(h) {
-            return Qjs.tuple(h)
+            return Factory.tuple(h)
           },
         peg$c29 = "{{",
         peg$c30 = { type: "literal", value: "{{", description: "\"{{\"" },
         peg$c31 = "}}",
         peg$c32 = { type: "literal", value: "}}", description: "\"}}\"" },
         peg$c33 = function(h) {
-            return Qjs.relation(h)
+            return Factory.relation(h)
           },
         peg$c34 = function(head, tail) {
-              return Qjs.heading(headTailToArray(head, tail));
+              return Factory.heading(headTailToArray(head, tail));
             },
         peg$c35 = function(n, t) {
-            return Qjs.attribute(n, t)
+            return Factory.attribute(n, t)
           },
         peg$c36 = function(t) {
-            return Qjs.set(t)
+            return Factory.set(t)
           },
         peg$c37 = "[",
         peg$c38 = { type: "literal", value: "[", description: "\"[\"" },
         peg$c39 = "]",
         peg$c40 = { type: "literal", value: "]", description: "\"]\"" },
         peg$c41 = function(t) {
-            return Qjs.seq(t)
+            return Factory.seq(t)
           },
         peg$c42 = ".",
         peg$c43 = { type: "literal", value: ".", description: "\".\"" },
-        peg$c44 = function() {
-            return Qjs.any();
+        peg$c44 = function(t, cs) {
+            var jsType = null;
+            var contracts = {}
+            if (t) {
+              jsType = Factory.jsType(t[1]);
+            }
+            for (var i = 0; i<cs.length; i++) {
+              contracts[cs[i][0]] = cs[i].slice(1);
+            }
+            return Factory.adt(jsType, contracts);
           },
-        peg$c45 = function(name) {
-            return Qjs.builtin(name);
+        peg$c45 = function(head, tail) {
+            return headTailToArray(head, tail);
           },
-        peg$c46 = function(n) {
+        peg$c46 = "<",
+        peg$c47 = { type: "literal", value: "<", description: "\"<\"" },
+        peg$c48 = ">",
+        peg$c49 = { type: "literal", value: ">", description: "\">\"" },
+        peg$c50 = function(n, t, d) {
+            var result = [ n, t ];
+            if (d) {
+              result.push(d[0]);
+              result.push(d[1]);
+            } else {
+              var unimplemented = function(value){
+                throw "Automated contracts are not implemented so far";
+              };
+              result.push(unimplemented);
+              result.push(unimplemented);
+            }
+            return result;
+          },
+        peg$c51 = "\\",
+        peg$c52 = { type: "literal", value: "\\", description: "\"\\\\\"" },
+        peg$c53 = function(up, down) {
+            return [ up, down ];
+          },
+        peg$c54 = function(n, e) {
+            return compileLambda(n, e);
+          },
+        peg$c55 = function() {
+            return Factory.any();
+          },
+        peg$c56 = function(name) {
+            return Factory.builtin(name);
+          },
+        peg$c57 = function(n) {
             return options.system.fetch(n);
           },
-        peg$c47 = "()",
-        peg$c48 = { type: "literal", value: "()", description: "\"()\"" },
-        peg$c49 = void 0,
-        peg$c50 = /^[(,)]/,
-        peg$c51 = { type: "class", value: "[(,)]", description: "[(,)]" },
-        peg$c52 = { type: "any", description: "any character" },
-        peg$c53 = /^[a-z]/,
-        peg$c54 = { type: "class", value: "[a-z]", description: "[a-z]" },
-        peg$c55 = /^[a-z0-9]/,
-        peg$c56 = { type: "class", value: "[a-z0-9]", description: "[a-z0-9]" },
-        peg$c57 = /^[a-zA-Z_]/,
-        peg$c58 = { type: "class", value: "[a-zA-Z_]", description: "[a-zA-Z_]" },
-        peg$c59 = /^[a-zA-Z0-9_]/,
-        peg$c60 = { type: "class", value: "[a-zA-Z0-9_]", description: "[a-zA-Z0-9_]" },
-        peg$c61 = /^[A-Z]/,
-        peg$c62 = { type: "class", value: "[A-Z]", description: "[A-Z]" },
-        peg$c63 = /^[a-zA-Z]/,
-        peg$c64 = { type: "class", value: "[a-zA-Z]", description: "[a-zA-Z]" },
-        peg$c65 = /^[a-zA-Z0-9:]/,
-        peg$c66 = { type: "class", value: "[a-zA-Z0-9:]", description: "[a-zA-Z0-9:]" },
-        peg$c67 = "#",
-        peg$c68 = { type: "literal", value: "#", description: "\"#\"" },
-        peg$c69 = /^[\n]/,
-        peg$c70 = { type: "class", value: "[\\n]", description: "[\\n]" },
-        peg$c71 = /^[ \t\n]/,
-        peg$c72 = { type: "class", value: "[ \\t\\n]", description: "[ \\t\\n]" },
+        peg$c58 = "()",
+        peg$c59 = { type: "literal", value: "()", description: "\"()\"" },
+        peg$c60 = void 0,
+        peg$c61 = /^[(,)]/,
+        peg$c62 = { type: "class", value: "[(,)]", description: "[(,)]" },
+        peg$c63 = { type: "any", description: "any character" },
+        peg$c64 = /^[a-z]/,
+        peg$c65 = { type: "class", value: "[a-z]", description: "[a-z]" },
+        peg$c66 = /^[a-z0-9]/,
+        peg$c67 = { type: "class", value: "[a-z0-9]", description: "[a-z0-9]" },
+        peg$c68 = /^[a-zA-Z_]/,
+        peg$c69 = { type: "class", value: "[a-zA-Z_]", description: "[a-zA-Z_]" },
+        peg$c70 = /^[a-zA-Z0-9_]/,
+        peg$c71 = { type: "class", value: "[a-zA-Z0-9_]", description: "[a-zA-Z0-9_]" },
+        peg$c72 = /^[A-Z]/,
+        peg$c73 = { type: "class", value: "[A-Z]", description: "[A-Z]" },
+        peg$c74 = /^[a-zA-Z]/,
+        peg$c75 = { type: "class", value: "[a-zA-Z]", description: "[a-zA-Z]" },
+        peg$c76 = /^[a-zA-Z0-9:]/,
+        peg$c77 = { type: "class", value: "[a-zA-Z0-9:]", description: "[a-zA-Z0-9:]" },
+        peg$c78 = "#",
+        peg$c79 = { type: "literal", value: "#", description: "\"#\"" },
+        peg$c80 = /^[\n]/,
+        peg$c81 = { type: "class", value: "[\\n]", description: "[\\n]" },
+        peg$c82 = /^[ \t\n]/,
+        peg$c83 = { type: "class", value: "[ \\t\\n]", description: "[ \\t\\n]" },
 
         peg$currPos          = 0,
         peg$reportedPos      = 0,
@@ -1949,12 +2005,363 @@ module.exports = (function() {
     function peg$parseterm_type() {
       var s0;
 
-      s0 = peg$parsebuiltin_type();
+      s0 = peg$parsead_type();
       if (s0 === peg$FAILED) {
-        s0 = peg$parseany_type();
+        s0 = peg$parsebuiltin_type();
         if (s0 === peg$FAILED) {
-          s0 = peg$parsetype_ref();
+          s0 = peg$parseany_type();
+          if (s0 === peg$FAILED) {
+            s0 = peg$parsetype_ref();
+          }
         }
+      }
+
+      return s0;
+    }
+
+    function peg$parsead_type() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 46) {
+        s2 = peg$c42;
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c43); }
+      }
+      if (s2 !== peg$FAILED) {
+        s3 = peg$parsebuiltin_type_name();
+        if (s3 !== peg$FAILED) {
+          s2 = [s2, s3];
+          s1 = s2;
+        } else {
+          peg$currPos = s1;
+          s1 = peg$c0;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$c0;
+      }
+      if (s1 === peg$FAILED) {
+        s1 = peg$c1;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsecontracts();
+          if (s3 !== peg$FAILED) {
+            peg$reportedPos = s0;
+            s1 = peg$c44(s1, s3);
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parsecontracts() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      s1 = peg$parsecontract();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$currPos;
+        s4 = peg$parsespacing();
+        if (s4 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s5 = peg$c16;
+            peg$currPos++;
+          } else {
+            s5 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c17); }
+          }
+          if (s5 !== peg$FAILED) {
+            s6 = peg$parsespacing();
+            if (s6 !== peg$FAILED) {
+              s7 = peg$parsecontract();
+              if (s7 !== peg$FAILED) {
+                s4 = [s4, s5, s6, s7];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c0;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c0;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c0;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$c0;
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$currPos;
+          s4 = peg$parsespacing();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 44) {
+              s5 = peg$c16;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c17); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parsespacing();
+              if (s6 !== peg$FAILED) {
+                s7 = peg$parsecontract();
+                if (s7 !== peg$FAILED) {
+                  s4 = [s4, s5, s6, s7];
+                  s3 = s4;
+                } else {
+                  peg$currPos = s3;
+                  s3 = peg$c0;
+                }
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c0;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c0;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c0;
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c45(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parsecontract() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 60) {
+        s1 = peg$c46;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c47); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsecontract_name();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 62) {
+            s3 = peg$c48;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c49); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseunion_type();
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parsespacing();
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parsedressers();
+                  if (s7 === peg$FAILED) {
+                    s7 = peg$c1;
+                  }
+                  if (s7 !== peg$FAILED) {
+                    peg$reportedPos = s0;
+                    s1 = peg$c50(s2, s5, s7);
+                    s0 = s1;
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c0;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c0;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parsedressers() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 92) {
+        s1 = peg$c51;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c52); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parselambda_expr();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsespacing();
+          if (s3 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 92) {
+              s4 = peg$c51;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c52); }
+            }
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parselambda_expr();
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c53(s2, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parselambda_expr() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 40) {
+        s1 = peg$c11;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c12); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsevar_name();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 124) {
+                s5 = peg$c7;
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c8); }
+              }
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parsespacing();
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parseexpression();
+                  if (s7 !== peg$FAILED) {
+                    s8 = peg$parsespacing();
+                    if (s8 !== peg$FAILED) {
+                      if (input.charCodeAt(peg$currPos) === 41) {
+                        s9 = peg$c13;
+                        peg$currPos++;
+                      } else {
+                        s9 = peg$FAILED;
+                        if (peg$silentFails === 0) { peg$fail(peg$c14); }
+                      }
+                      if (s9 !== peg$FAILED) {
+                        peg$reportedPos = s0;
+                        s1 = peg$c54(s3, s7);
+                        s0 = s1;
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$c0;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$c0;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c0;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c0;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
       }
 
       return s0;
@@ -1973,7 +2380,7 @@ module.exports = (function() {
       }
       if (s1 !== peg$FAILED) {
         peg$reportedPos = s0;
-        s1 = peg$c44();
+        s1 = peg$c55();
       }
       s0 = s1;
 
@@ -1995,7 +2402,7 @@ module.exports = (function() {
         s2 = peg$parsebuiltin_type_name();
         if (s2 !== peg$FAILED) {
           peg$reportedPos = s0;
-          s1 = peg$c45(s2);
+          s1 = peg$c56(s2);
           s0 = s1;
         } else {
           peg$currPos = s0;
@@ -2016,7 +2423,7 @@ module.exports = (function() {
       s1 = peg$parsetype_name();
       if (s1 !== peg$FAILED) {
         peg$reportedPos = s0;
-        s1 = peg$c46(s1);
+        s1 = peg$c57(s1);
       }
       s0 = s1;
 
@@ -2055,12 +2462,12 @@ module.exports = (function() {
       var s0, s1, s2, s3, s4;
 
       s0 = peg$currPos;
-      if (input.substr(peg$currPos, 2) === peg$c47) {
-        s1 = peg$c47;
+      if (input.substr(peg$currPos, 2) === peg$c58) {
+        s1 = peg$c58;
         peg$currPos += 2;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c48); }
+        if (peg$silentFails === 0) { peg$fail(peg$c59); }
       }
       if (s1 === peg$FAILED) {
         s1 = peg$currPos;
@@ -2113,16 +2520,16 @@ module.exports = (function() {
       s2 = peg$currPos;
       s3 = peg$currPos;
       peg$silentFails++;
-      if (peg$c50.test(input.charAt(peg$currPos))) {
+      if (peg$c61.test(input.charAt(peg$currPos))) {
         s4 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s4 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c51); }
+        if (peg$silentFails === 0) { peg$fail(peg$c62); }
       }
       peg$silentFails--;
       if (s4 === peg$FAILED) {
-        s3 = peg$c49;
+        s3 = peg$c60;
       } else {
         peg$currPos = s3;
         s3 = peg$c0;
@@ -2133,7 +2540,7 @@ module.exports = (function() {
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c52); }
+          if (peg$silentFails === 0) { peg$fail(peg$c63); }
         }
         if (s4 !== peg$FAILED) {
           s3 = [s3, s4];
@@ -2152,16 +2559,16 @@ module.exports = (function() {
           s2 = peg$currPos;
           s3 = peg$currPos;
           peg$silentFails++;
-          if (peg$c50.test(input.charAt(peg$currPos))) {
+          if (peg$c61.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c51); }
+            if (peg$silentFails === 0) { peg$fail(peg$c62); }
           }
           peg$silentFails--;
           if (s4 === peg$FAILED) {
-            s3 = peg$c49;
+            s3 = peg$c60;
           } else {
             peg$currPos = s3;
             s3 = peg$c0;
@@ -2172,7 +2579,7 @@ module.exports = (function() {
               peg$currPos++;
             } else {
               s4 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c52); }
+              if (peg$silentFails === 0) { peg$fail(peg$c63); }
             }
             if (s4 !== peg$FAILED) {
               s3 = [s3, s4];
@@ -2202,22 +2609,22 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = [];
-      if (peg$c53.test(input.charAt(peg$currPos))) {
+      if (peg$c64.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+        if (peg$silentFails === 0) { peg$fail(peg$c65); }
       }
       if (s2 !== peg$FAILED) {
         while (s2 !== peg$FAILED) {
           s1.push(s2);
-          if (peg$c53.test(input.charAt(peg$currPos))) {
+          if (peg$c64.test(input.charAt(peg$currPos))) {
             s2 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s2 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c54); }
+            if (peg$silentFails === 0) { peg$fail(peg$c65); }
           }
         }
       } else {
@@ -2236,30 +2643,30 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = peg$currPos;
-      if (peg$c53.test(input.charAt(peg$currPos))) {
+      if (peg$c64.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+        if (peg$silentFails === 0) { peg$fail(peg$c65); }
       }
       if (s2 !== peg$FAILED) {
         s3 = [];
-        if (peg$c55.test(input.charAt(peg$currPos))) {
+        if (peg$c66.test(input.charAt(peg$currPos))) {
           s4 = input.charAt(peg$currPos);
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c56); }
+          if (peg$silentFails === 0) { peg$fail(peg$c67); }
         }
         while (s4 !== peg$FAILED) {
           s3.push(s4);
-          if (peg$c55.test(input.charAt(peg$currPos))) {
+          if (peg$c66.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c56); }
+            if (peg$silentFails === 0) { peg$fail(peg$c67); }
           }
         }
         if (s3 !== peg$FAILED) {
@@ -2286,30 +2693,30 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = peg$currPos;
-      if (peg$c53.test(input.charAt(peg$currPos))) {
+      if (peg$c64.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+        if (peg$silentFails === 0) { peg$fail(peg$c65); }
       }
       if (s2 !== peg$FAILED) {
         s3 = [];
-        if (peg$c57.test(input.charAt(peg$currPos))) {
+        if (peg$c68.test(input.charAt(peg$currPos))) {
           s4 = input.charAt(peg$currPos);
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c58); }
+          if (peg$silentFails === 0) { peg$fail(peg$c69); }
         }
         while (s4 !== peg$FAILED) {
           s3.push(s4);
-          if (peg$c57.test(input.charAt(peg$currPos))) {
+          if (peg$c68.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c58); }
+            if (peg$silentFails === 0) { peg$fail(peg$c69); }
           }
         }
         if (s3 !== peg$FAILED) {
@@ -2336,30 +2743,30 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = peg$currPos;
-      if (peg$c53.test(input.charAt(peg$currPos))) {
+      if (peg$c64.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+        if (peg$silentFails === 0) { peg$fail(peg$c65); }
       }
       if (s2 !== peg$FAILED) {
         s3 = [];
-        if (peg$c59.test(input.charAt(peg$currPos))) {
+        if (peg$c70.test(input.charAt(peg$currPos))) {
           s4 = input.charAt(peg$currPos);
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c60); }
+          if (peg$silentFails === 0) { peg$fail(peg$c71); }
         }
         while (s4 !== peg$FAILED) {
           s3.push(s4);
-          if (peg$c59.test(input.charAt(peg$currPos))) {
+          if (peg$c70.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c60); }
+            if (peg$silentFails === 0) { peg$fail(peg$c71); }
           }
         }
         if (s3 !== peg$FAILED) {
@@ -2386,31 +2793,31 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = peg$currPos;
-      if (peg$c61.test(input.charAt(peg$currPos))) {
+      if (peg$c72.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c62); }
+        if (peg$silentFails === 0) { peg$fail(peg$c73); }
       }
       if (s2 !== peg$FAILED) {
         s3 = [];
-        if (peg$c63.test(input.charAt(peg$currPos))) {
+        if (peg$c74.test(input.charAt(peg$currPos))) {
           s4 = input.charAt(peg$currPos);
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c64); }
+          if (peg$silentFails === 0) { peg$fail(peg$c75); }
         }
         if (s4 !== peg$FAILED) {
           while (s4 !== peg$FAILED) {
             s3.push(s4);
-            if (peg$c63.test(input.charAt(peg$currPos))) {
+            if (peg$c74.test(input.charAt(peg$currPos))) {
               s4 = input.charAt(peg$currPos);
               peg$currPos++;
             } else {
               s4 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c64); }
+              if (peg$silentFails === 0) { peg$fail(peg$c75); }
             }
           }
         } else {
@@ -2440,22 +2847,22 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = [];
-      if (peg$c65.test(input.charAt(peg$currPos))) {
+      if (peg$c76.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c66); }
+        if (peg$silentFails === 0) { peg$fail(peg$c77); }
       }
       if (s2 !== peg$FAILED) {
         while (s2 !== peg$FAILED) {
           s1.push(s2);
-          if (peg$c65.test(input.charAt(peg$currPos))) {
+          if (peg$c76.test(input.charAt(peg$currPos))) {
             s2 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s2 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c66); }
+            if (peg$silentFails === 0) { peg$fail(peg$c77); }
           }
         }
       } else {
@@ -2499,27 +2906,27 @@ module.exports = (function() {
       s0 = peg$currPos;
       s1 = peg$currPos;
       if (input.charCodeAt(peg$currPos) === 35) {
-        s2 = peg$c67;
+        s2 = peg$c78;
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c68); }
+        if (peg$silentFails === 0) { peg$fail(peg$c79); }
       }
       if (s2 !== peg$FAILED) {
         s3 = [];
         s4 = peg$currPos;
         s5 = peg$currPos;
         peg$silentFails++;
-        if (peg$c69.test(input.charAt(peg$currPos))) {
+        if (peg$c80.test(input.charAt(peg$currPos))) {
           s6 = input.charAt(peg$currPos);
           peg$currPos++;
         } else {
           s6 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c70); }
+          if (peg$silentFails === 0) { peg$fail(peg$c81); }
         }
         peg$silentFails--;
         if (s6 === peg$FAILED) {
-          s5 = peg$c49;
+          s5 = peg$c60;
         } else {
           peg$currPos = s5;
           s5 = peg$c0;
@@ -2530,7 +2937,7 @@ module.exports = (function() {
             peg$currPos++;
           } else {
             s6 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c52); }
+            if (peg$silentFails === 0) { peg$fail(peg$c63); }
           }
           if (s6 !== peg$FAILED) {
             s5 = [s5, s6];
@@ -2548,16 +2955,16 @@ module.exports = (function() {
           s4 = peg$currPos;
           s5 = peg$currPos;
           peg$silentFails++;
-          if (peg$c69.test(input.charAt(peg$currPos))) {
+          if (peg$c80.test(input.charAt(peg$currPos))) {
             s6 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s6 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c70); }
+            if (peg$silentFails === 0) { peg$fail(peg$c81); }
           }
           peg$silentFails--;
           if (s6 === peg$FAILED) {
-            s5 = peg$c49;
+            s5 = peg$c60;
           } else {
             peg$currPos = s5;
             s5 = peg$c0;
@@ -2568,7 +2975,7 @@ module.exports = (function() {
               peg$currPos++;
             } else {
               s6 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c52); }
+              if (peg$silentFails === 0) { peg$fail(peg$c63); }
             }
             if (s6 !== peg$FAILED) {
               s5 = [s5, s6];
@@ -2583,12 +2990,12 @@ module.exports = (function() {
           }
         }
         if (s3 !== peg$FAILED) {
-          if (peg$c69.test(input.charAt(peg$currPos))) {
+          if (peg$c80.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c70); }
+            if (peg$silentFails === 0) { peg$fail(peg$c81); }
           }
           if (s4 === peg$FAILED) {
             s4 = peg$c1;
@@ -2621,22 +3028,22 @@ module.exports = (function() {
 
       s0 = peg$currPos;
       s1 = [];
-      if (peg$c71.test(input.charAt(peg$currPos))) {
+      if (peg$c82.test(input.charAt(peg$currPos))) {
         s2 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c72); }
+        if (peg$silentFails === 0) { peg$fail(peg$c83); }
       }
       if (s2 !== peg$FAILED) {
         while (s2 !== peg$FAILED) {
           s1.push(s2);
-          if (peg$c71.test(input.charAt(peg$currPos))) {
+          if (peg$c82.test(input.charAt(peg$currPos))) {
             s2 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s2 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c72); }
+            if (peg$silentFails === 0) { peg$fail(peg$c83); }
           }
         }
       } else {
@@ -2661,11 +3068,11 @@ module.exports = (function() {
         peg$currPos++;
       } else {
         s2 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c52); }
+        if (peg$silentFails === 0) { peg$fail(peg$c63); }
       }
       peg$silentFails--;
       if (s2 === peg$FAILED) {
-        s1 = peg$c49;
+        s1 = peg$c60;
       } else {
         peg$currPos = s1;
         s1 = peg$c0;
@@ -2679,8 +3086,9 @@ module.exports = (function() {
     }
 
 
-      Qjs        = require('../qjs');
-      System     = require('../system');
+      TypeFactory = _dereq_('../support/factory');
+      Factory     = new TypeFactory();
+      System      = _dereq_('../system');
       if (!options.system) {
         options.system = new System()
       }
@@ -2694,20 +3102,24 @@ module.exports = (function() {
         return result;
       }
 
+      // compile an open expression given the varname for closing it
+      function compileLambda(varname, expr) {
+        var src = "x = function(" + varname + ")" + "{ return " + expr + "; }";
+        try {
+          return eval(src);
+        } catch(e) {
+          error("Syntax error in: `" + expr + "`");
+        }
+      }
+
       // compile a [ [n1, expr1], ... ] to an array of constraints
       function compileConstraints(varname, defs) {
         var cs = [];
         for (var i = 0; i < defs.length; i++) {
           var name = defs[i][0];
           var expr = defs[i][1];
-          var src  = "x = function(" + varname + ")" + "{ return " + expr + "; }";
-          var fn   = null;
-          try {
-            var fn = eval(src);
-          } catch(e) {
-            error("Syntax error in constraint: `" + expr + "`");
-          }
-          cs[i] = Qjs.constraint(name, fn);
+          var fn   = compileLambda(varname, expr);
+          cs[i] = Factory.constraint(name, fn);
         }
         return cs;
       }
@@ -2732,20 +3144,18 @@ module.exports = (function() {
   };
 })();
 
-},{"../qjs":"Wfb730","../system":12}],12:[function(require,module,exports){
-var ArgumentError, Error, KeyError, Parser, Qjs, System, Type, TypeFactory, _, _ref;
+},{"../support/factory":8,"../system":11}],11:[function(_dereq_,module,exports){
+var ArgumentError, Error, KeyError, Parser, System, Type, TypeFactory, _, _ref;
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
-_ref = require('./errors'), Error = _ref.Error, KeyError = _ref.KeyError, ArgumentError = _ref.ArgumentError;
+_ref = _dereq_('./errors'), Error = _ref.Error, KeyError = _ref.KeyError, ArgumentError = _ref.ArgumentError;
 
-Qjs = require('./qjs');
+Type = _dereq_('./type');
 
-Type = require('./type');
+TypeFactory = _dereq_('./support/factory');
 
-TypeFactory = require('./support/factory');
-
-Parser = require('./syntax/parser');
+Parser = _dereq_('./syntax/parser');
 
 System = (function() {
   function System(types, main) {
@@ -2766,7 +3176,7 @@ System = (function() {
       type = _ref1[name];
       this[type.name] = type;
     }
-    _ref2 = Qjs.DSL_METHODS;
+    _ref2 = TypeFactory.PUBLIC_DSL_METHODS;
     for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
       method = _ref2[_i];
       this[method] = this.factory[method].bind(this.factory);
@@ -2832,10 +3242,10 @@ System = (function() {
 module.exports = System;
 
 
-},{"./errors":2,"./qjs":"Wfb730","./support/factory":9,"./syntax/parser":11,"./type":13,"underscore":24}],13:[function(require,module,exports){
+},{"./errors":2,"./support/factory":8,"./syntax/parser":10,"./type":12,"underscore":23}],12:[function(_dereq_,module,exports){
 var ArgumentError, NotImplementedError, Type, _ref;
 
-_ref = require('./errors'), ArgumentError = _ref.ArgumentError, NotImplementedError = _ref.NotImplementedError;
+_ref = _dereq_('./errors'), ArgumentError = _ref.ArgumentError, NotImplementedError = _ref.NotImplementedError;
 
 Type = (function() {
   function Type(name) {
@@ -2863,18 +3273,18 @@ Type = (function() {
 module.exports = Type;
 
 
-},{"./errors":2}],14:[function(require,module,exports){
+},{"./errors":2}],13:[function(_dereq_,module,exports){
 var AdType, ArgumentError, DressHelper, Type, TypeError, _, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-_ref = require('../errors'), ArgumentError = _ref.ArgumentError, TypeError = _ref.TypeError;
+_ref = _dereq_('../errors'), ArgumentError = _ref.ArgumentError, TypeError = _ref.TypeError;
 
-DressHelper = require('../support/dress_helper');
+DressHelper = _dereq_('../support/dress_helper');
 
-Type = require('../type');
+Type = _dereq_('../type');
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
 AdType = (function(_super) {
   __extends(AdType, _super);
@@ -2884,14 +3294,14 @@ AdType = (function(_super) {
     this.jsType = jsType;
     this.contracts = contracts;
     this.name = name;
-    if (!(this.jsType instanceof Function)) {
+    if (this.jsType && !(this.jsType instanceof Function)) {
       throw new ArgumentError("Constructor (function) expected, got", this.jsType);
     }
     if (typeof this.contracts !== "object") {
       throw new ArgumentError("Hash expected, got", this.contracts);
     }
     invalid = _.reject(_.values(this.contracts), function(v) {
-      return v instanceof Array && v.length === 2 && v[0] instanceof Type && v[1] instanceof Function;
+      return v instanceof Array && v.length === 3 && v[0] instanceof Type && v[1] instanceof Function && v[2] instanceof Function;
     });
     if (invalid.length !== 0) {
       throw new ArgumentError("Invalid contracts `" + invalid + "`");
@@ -2904,7 +3314,7 @@ AdType = (function(_super) {
   };
 
   AdType.prototype.defaultName = function() {
-    return this.jsType.name;
+    return (this.jsType && this.jsType.name) || "Anonymous";
   };
 
   AdType.prototype.include = function(value) {
@@ -2916,7 +3326,7 @@ AdType = (function(_super) {
     if (helper == null) {
       helper = new DressHelper;
     }
-    if (value instanceof this.jsType) {
+    if (this.jsType && value instanceof this.jsType) {
       return value;
     }
     uped = null;
@@ -2947,13 +3357,13 @@ AdType = (function(_super) {
 module.exports = AdType;
 
 
-},{"../errors":2,"../support/dress_helper":8,"../type":13,"underscore":24}],15:[function(require,module,exports){
+},{"../errors":2,"../support/dress_helper":7,"../type":12,"underscore":23}],14:[function(_dereq_,module,exports){
 var AnyType, Type,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-Type = require('../type');
+Type = _dereq_('../type');
 
 AnyType = (function(_super) {
   __extends(AnyType, _super);
@@ -2990,19 +3400,19 @@ AnyType = (function(_super) {
 module.exports = AnyType;
 
 
-},{"../type":13}],16:[function(require,module,exports){
+},{"../type":12}],15:[function(_dereq_,module,exports){
 var BuiltinType, DressHelper, NotImplementedError, Type, _,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-NotImplementedError = require('../errors').NotImplementedError;
+NotImplementedError = _dereq_('../errors').NotImplementedError;
 
-DressHelper = require('../support/dress_helper');
+DressHelper = _dereq_('../support/dress_helper');
 
-Type = require('../type');
+Type = _dereq_('../type');
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
 BuiltinType = (function(_super) {
   __extends(BuiltinType, _super);
@@ -3017,6 +3427,9 @@ BuiltinType = (function(_super) {
   BuiltinType.prototype.dress = function(value, helper) {
     if (helper == null) {
       helper = new DressHelper;
+    }
+    if (value === null || value === void 0) {
+      helper.failed(this, value);
     }
     if (value.constructor !== this.jsType) {
       helper.failed(this, value);
@@ -3046,22 +3459,22 @@ BuiltinType = (function(_super) {
 module.exports = BuiltinType;
 
 
-},{"../errors":2,"../support/dress_helper":8,"../type":13,"underscore":24}],17:[function(require,module,exports){
+},{"../errors":2,"../support/dress_helper":7,"../type":12,"underscore":23}],16:[function(_dereq_,module,exports){
 var ArgumentError, DressHelper, Heading, RelationType, TupleType, Type, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
-Type = require('../type');
+Type = _dereq_('../type');
 
-TupleType = require('./tuple_type');
+TupleType = _dereq_('./tuple_type');
 
-Heading = require('../support/heading');
+Heading = _dereq_('../support/heading');
 
-DressHelper = require('../support/dress_helper');
+DressHelper = _dereq_('../support/dress_helper');
 
-ArgumentError = require('../errors').ArgumentError;
+ArgumentError = _dereq_('../errors').ArgumentError;
 
 RelationType = (function(_super) {
   __extends(RelationType, _super);
@@ -3081,15 +3494,16 @@ RelationType = (function(_super) {
   };
 
   RelationType.prototype.include = function(value) {
-    var k, tuple, v;
-    if (typeof value !== "object") {
+    var v, _i, _len;
+    if (value === null || value === void 0) {
       return false;
     }
-    for (k in value) {
-      v = value[k];
-      tuple = {};
-      tuple[k] = v;
-      if (!this.tupleType.include(tuple)) {
+    if (value.constructor !== Array) {
+      return false;
+    }
+    for (_i = 0, _len = value.length; _i < _len; _i++) {
+      v = value[_i];
+      if (!this.tupleType.include(v)) {
         return false;
       }
     }
@@ -3133,20 +3547,20 @@ RelationType = (function(_super) {
 module.exports = RelationType;
 
 
-},{"../errors":2,"../support/dress_helper":8,"../support/heading":10,"../type":13,"./tuple_type":21,"underscore":24}],18:[function(require,module,exports){
+},{"../errors":2,"../support/dress_helper":7,"../support/heading":9,"../type":12,"./tuple_type":20,"underscore":23}],17:[function(_dereq_,module,exports){
 var ArgumentError, CollectionType, DressHelper, SeqType, Type, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
-Type = require('../type');
+Type = _dereq_('../type');
 
-CollectionType = require('../support/collection_type');
+CollectionType = _dereq_('../support/collection_type');
 
-DressHelper = require('../support/dress_helper');
+DressHelper = _dereq_('../support/dress_helper');
 
-ArgumentError = require('../errors').ArgumentError;
+ArgumentError = _dereq_('../errors').ArgumentError;
 
 SeqType = (function(_super) {
   __extends(SeqType, _super);
@@ -3191,20 +3605,20 @@ SeqType = (function(_super) {
 module.exports = SeqType;
 
 
-},{"../errors":2,"../support/collection_type":6,"../support/dress_helper":8,"../type":13,"underscore":24}],19:[function(require,module,exports){
+},{"../errors":2,"../support/collection_type":5,"../support/dress_helper":7,"../type":12,"underscore":23}],18:[function(_dereq_,module,exports){
 var ArgumentError, CollectionType, DressHelper, SetType, Type, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
-Type = require('../type');
+Type = _dereq_('../type');
 
-CollectionType = require('../support/collection_type');
+CollectionType = _dereq_('../support/collection_type');
 
-DressHelper = require('../support/dress_helper');
+DressHelper = _dereq_('../support/dress_helper');
 
-ArgumentError = require('../errors').ArgumentError;
+ArgumentError = _dereq_('../errors').ArgumentError;
 
 SetType = (function(_super) {
   __extends(SetType, _super);
@@ -3261,22 +3675,22 @@ SetType = (function(_super) {
 module.exports = SetType;
 
 
-},{"../errors":2,"../support/collection_type":6,"../support/dress_helper":8,"../type":13,"underscore":24}],20:[function(require,module,exports){
+},{"../errors":2,"../support/collection_type":5,"../support/dress_helper":7,"../type":12,"underscore":23}],19:[function(_dereq_,module,exports){
 var ArgumentError, Constraint, DressHelper, SubType, Type, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
-Type = require('../type');
+Type = _dereq_('../type');
 
-Constraint = require('../support/constraint');
+Constraint = _dereq_('../support/constraint');
 
-DressHelper = require('../support/dress_helper');
+DressHelper = _dereq_('../support/dress_helper');
 
-ArgumentError = require('../errors').ArgumentError;
+ArgumentError = _dereq_('../errors').ArgumentError;
 
-_.str = require('underscore.string');
+_.str = _dereq_('underscore.string');
 
 SubType = (function(_super) {
   __extends(SubType, _super);
@@ -3361,20 +3775,20 @@ SubType = (function(_super) {
 module.exports = SubType;
 
 
-},{"../errors":2,"../support/constraint":7,"../support/dress_helper":8,"../type":13,"underscore":24,"underscore.string":23}],21:[function(require,module,exports){
+},{"../errors":2,"../support/constraint":6,"../support/dress_helper":7,"../type":12,"underscore":23,"underscore.string":22}],20:[function(_dereq_,module,exports){
 var ArgumentError, DressHelper, Heading, TupleType, Type, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
-Type = require('../type');
+Type = _dereq_('../type');
 
-Heading = require('../support/heading');
+Heading = _dereq_('../support/heading');
 
-DressHelper = require('../support/dress_helper');
+DressHelper = _dereq_('../support/dress_helper');
 
-ArgumentError = require('../errors').ArgumentError;
+ArgumentError = _dereq_('../errors').ArgumentError;
 
 TupleType = (function(_super) {
   __extends(TupleType, _super);
@@ -3451,20 +3865,20 @@ TupleType = (function(_super) {
 module.exports = TupleType;
 
 
-},{"../errors":2,"../support/dress_helper":8,"../support/heading":10,"../type":13,"underscore":24}],22:[function(require,module,exports){
+},{"../errors":2,"../support/dress_helper":7,"../support/heading":9,"../type":12,"underscore":23}],21:[function(_dereq_,module,exports){
 var ArgumentError, DressHelper, Type, UnionType, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-_ = require('underscore');
+_ = _dereq_('underscore');
 
-Type = require('../type');
+Type = _dereq_('../type');
 
-DressHelper = require('../support/dress_helper');
+DressHelper = _dereq_('../support/dress_helper');
 
-ArgumentError = require('../errors').ArgumentError;
+ArgumentError = _dereq_('../errors').ArgumentError;
 
-_.str = require('underscore.string');
+_.str = _dereq_('underscore.string');
 
 UnionType = (function(_super) {
   __extends(UnionType, _super);
@@ -3535,7 +3949,7 @@ UnionType = (function(_super) {
 module.exports = UnionType;
 
 
-},{"../errors":2,"../support/dress_helper":8,"../type":13,"underscore":24,"underscore.string":23}],23:[function(require,module,exports){
+},{"../errors":2,"../support/dress_helper":7,"../type":12,"underscore":23,"underscore.string":22}],22:[function(_dereq_,module,exports){
 //  Underscore.string
 //  (c) 2010 Esa-Matti Suuronen <esa-matti aet suuronen dot org>
 //  Underscore.string is freely distributable under the terms of the MIT license.
@@ -4210,7 +4624,7 @@ module.exports = UnionType;
   root._.string = root._.str = _s;
 }(this, String);
 
-},{}],24:[function(require,module,exports){
+},{}],23:[function(_dereq_,module,exports){
 //     Underscore.js 1.6.0
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -5556,3 +5970,5 @@ module.exports = UnionType;
 }).call(this);
 
 },{}]},{},[1])
+(1)
+});
