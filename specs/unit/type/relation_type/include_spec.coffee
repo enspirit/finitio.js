@@ -12,17 +12,17 @@ describe "RelationType#include", ->
 
   subject = (arg) -> type.include(arg)
 
-  describe 'when an empty set', ->
-    subject({}).should.be.true
+  describe 'when a valid relation', ->
+    subject([{a: 12}, {a: 17}]).should.be.true
 
-  describe 'when a valid, non empty set', ->
-    arg = {a: 14}
+  describe 'when an empty relation', ->
+    subject([]).should.be.true
 
-    subject(arg).should.be.true
+  describe 'when a relation containing invalid tuples', ->
+    subject([{a: 12}, {a: 'foo'}]).should.be.false
 
-  describe 'when not a set', ->
+  describe 'when not an relation at all', ->
+    subject({}).should.be.false
     subject("foo").should.be.false
-
-  describe 'when a set containing invalid tuples', ->
-    arg = {a: "foo"}
-    subject(arg).should.be.false
+    subject(null).should.be.false
+    type.include().should.be.false
