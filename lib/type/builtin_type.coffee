@@ -11,7 +11,13 @@ class BuiltinType extends Type
 
   dress: (value, helper) ->
     helper ?= new DressHelper
-    helper.failed(this, value) unless value.constructor == @jsType
+
+    if value == null || value == undefined
+      helper.failed(this, value)
+
+    unless value.constructor == @jsType
+      helper.failed(this, value)
+
     value
 
   defaultName: ->
