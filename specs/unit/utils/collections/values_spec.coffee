@@ -3,17 +3,32 @@ should  = require 'should'
 
 describe "Utils.collection#values", ->
 
-  it "raises an error when used with a non object", ->
+  subject = $u.values
+
+  it "raises an error when used on a non-Enumerable", ->
     test = (obj) ->
       ->
-        $u.values obj
+        subject obj
 
     should(test(false)).throw(/Enumerable .* expected, got .*/)
+
+  describe "When used on an array", ->
+
+    it 'returns an array', ->
+      res = subject ['foo', 'bar']
+      res.should.be.an.instanceof(Array)
+
+    it 'returns the array itself', ->
+      array = ['a', 2, undefined, null]
+
+      res = subject array
+      should(res).eql(array)
+      should(res == array).be.true
 
   describe "When used on an object", ->
 
     it 'returns an array', ->
-      res = $u.values {foo: 'bar'}
+      res = subject {foo: 'bar'}
       res.should.be.an.instanceof(Array)
 
     it 'returns all the values of the object', ->
@@ -21,7 +36,7 @@ describe "Utils.collection#values", ->
       obj      = {a: 'a', b: 2, c: undefined, d: null, e: date}
       expected = ['a', 2, undefined, null, date]
 
-      res = $u.values obj
+      res = subject obj
       should(res).eql(expected)
 
   describe "When used on a String", ->
@@ -34,5 +49,5 @@ describe "Utils.collection#values", ->
       str      = "foo"
       expected = ['f', 'o', 'o']
 
-      res = $u.values str
+      res = subject str
       should(res).eql(expected)

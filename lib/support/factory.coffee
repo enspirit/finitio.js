@@ -151,7 +151,7 @@ class TypeFactory
     unless typeof contracts is "object"
       fail("Hash expected, got", contracts)
 
-    invalid = $u.filter(_.keys(contracts), (k) -> k instanceof String)
+    invalid = $u.filter($u.keys(contracts), (k) -> k instanceof String)
 
     if invalid.length > 0
       fail("Invalid contract names `#{invalid}`")
