@@ -19,7 +19,7 @@ module.exports = (grunt) ->
 
   #
   grunt.registerTask 'default',      ['build_parser', 'test']
-  grunt.registerTask 'test',         ['jasmine_node']
+  grunt.registerTask 'test',         ['jasmine_node', 'cucumberjs']
   grunt.registerTask 'lint',         ['coffeelint']
 
   grunt.registerTask 'build_parser', ->

@@ -41,24 +41,35 @@ module.exports = ->
     callback()
 
   this.Then /^it should be a success$/, (callback) =>
-    @result.should.not.be.an.instanceof Error
+    if @result instanceof Error
+      callback.fail(Error)
+    else
+      callback()
 
   this.Then /^the result should be a Tuple representation$/, (callback) =>
-    @result.constructor.should.equal Object
+    unless @result instanceof Object
+      callback.fail new Error("result is not an object")
+    callback()
 
   this.Then /^its '(.*)' attribute should be a Date representation$/, (attr, callback) =>
-    @result[attr].constructor.should.equal Date
+    unless @result[attr] instanceof Date
+      callback.fail new Error("attribute is not a Date")
+    callback()
 
   this.Then /^the result should be a representation for Nil$/, (callback) =>
-    @result.should.be.null
+    unless @result == null
+      callback.fail new Error("Result is not a representation for Nil")
+    callback()
 
   this.Then /^the result should be a representation for (.*?)$/, (type,callback) =>
-    @system.fetch(type).include(@result).should.be.true
+    unless @system.fetch(type).include(@result)
+      callback.fail new Error("Result is not a representation for #{type.name}")
+    callback()
 
   this.Then /^it should be a TypeError as:$/, (table, callback) ->
-    @result.should.be.an.instanceof Qjs.TypeError
-
-    callback.pending()
+    unless @result instanceof Qjs.TypeError
+      callback.fail new Error("Result is not a TypeError")
+    callback()
 
   this.Then /^the result should equal (\d+)$/, (expected, callback) ->
     callback.pending()
