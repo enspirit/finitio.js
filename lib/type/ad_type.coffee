@@ -27,7 +27,7 @@ class AdType extends Type
     super(@name)
 
   contractNames: ->
-    _.$u.keys(@contracts)
+    $u.keys(@contracts)
 
   defaultName: ->
     (@jsType && @jsType.name) || "Anonymous"
