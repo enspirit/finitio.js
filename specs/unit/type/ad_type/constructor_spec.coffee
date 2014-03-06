@@ -6,8 +6,8 @@ should         = require 'should'
 describe "AdType#constructor", ->
 
   subject = new AdType(Date, {
-    timestamp:  [intType,    Date]
-    utc_string: [stringType, Date]})
+    timestamp:  [intType,    Date, Date]
+    utc_string: [stringType, Date, Date]})
 
   describe 'with valid arguments', ->
     subject.should.be.an.instanceof(AdType)

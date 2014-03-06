@@ -14,7 +14,9 @@ class DataType
     @adType().dress(value, helper)
 
   @contract: (name, infotype) ->
-    @contracts()[name] = [ Qjs.type(infotype) , this[name] ]
+    @contracts()[name] = [ Qjs.type(infotype) ,
+                           this[name],
+                           (d)-> d[name]() ]
   
 # 
 module.exports = DataType

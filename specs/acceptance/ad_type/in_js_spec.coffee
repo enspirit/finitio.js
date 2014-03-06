@@ -8,7 +8,7 @@ describe "Using Q's abstract data types in JavaScript", ->
     
     constructor: (@r, @g, @b) ->
       
-    toRGB: ->
+    toRgb: ->
       { r: @r, g: @g, b: @b }
     
     @rgb: (tuple) ->

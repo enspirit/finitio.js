@@ -6,8 +6,8 @@ should         = require 'should'
 describe "AdType#dress", ->
 
   type = new AdType(Date, {
-    timestamp:  [intType,    (i) -> i*2   ]
-    utc_string: [stringType, (s) -> "foo" ]})
+    timestamp:  [intType,    ((i) -> i*2),   (d)-> null ]
+    utc_string: [stringType, ((s) -> "foo"), (d)-> null ]})
 
   subject = (arg) -> type.dress(arg)
 
@@ -37,7 +37,7 @@ describe "AdType#dress", ->
 
   describe 'when the upper raises an error', ->
     type = new AdType(Date,
-      timestamp: [intType, (t) -> throw new ArgumentError])
+      timestamp: [intType, ((t) -> throw new ArgumentError), ((d)-> null)])
 
     it 'should hide the error', ->
 

@@ -64,6 +64,8 @@ class TypeFactory
       String
     else if t == 'Boolean'
       Boolean
+    else if t == 'Date'
+      Date
     else if isNativeType(t) || t instanceof Function
       t
     else

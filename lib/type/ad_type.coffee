@@ -15,9 +15,10 @@ class AdType extends Type
 
     invalid = _.reject(_.values(@contracts), (v) ->
       v instanceof Array and
-        v.length == 2 and
+        v.length == 3 and
         v[0] instanceof Type and
-        v[1] instanceof Function)
+        v[1] instanceof Function and
+        v[2] instanceof Function)
 
     unless invalid.length == 0
       throw new ArgumentError("Invalid contracts `#{invalid}`")

@@ -8,6 +8,7 @@ class Qjs
   @VERSION: "0.0.1"
 
   @DSL_METHODS: [
+    'jsType',
     'attribute',
     'heading',
     'constraint',
