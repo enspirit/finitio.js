@@ -38,7 +38,7 @@ class AdType extends Type
     helper ?= new DressHelper
 
     # Up should be idempotent with respect to the ADT
-    return value if value instanceof @jsType
+    return value if @jsType and value instanceof @jsType
 
     # Try each contract in turn. Do nothing on TypeError as
     # the next candidate could be the good one! Return the
