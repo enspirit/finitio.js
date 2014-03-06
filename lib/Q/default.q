@@ -8,6 +8,8 @@ Boolean     = .Boolean
 # Numbers
 
 Number      = .Number
+Integer     = .Number( i | i.toString().indexOf('.') == -1 )
+Real        = .Number( r | r.toString().indexOf('.') != -1 )
 
 # String
 
