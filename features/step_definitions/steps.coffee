@@ -49,7 +49,7 @@ module.exports = ->
 
   this.Then /^the result should be a Tuple representation$/, (callback) =>
     unless @result instanceof Object
-      callback.fail new Error("result is not an object")
+      callback.fail new Error("#{@result} is not an object")
     callback()
 
   this.Then /^its '(.*)' attribute should be a Date representation$/, (attr, callback) =>
@@ -59,17 +59,17 @@ module.exports = ->
 
   this.Then /^the result should be a representation for Nil$/, (callback) =>
     unless @result == null
-      callback.fail new Error("Result is not a representation for Nil")
+      callback.fail new Error("#{@result} is not a representation for Nil")
     callback()
 
   this.Then /^the result should be a representation for (.*?)$/, (type,callback) =>
     unless @system.fetch(type).include(@result)
-      callback.fail new Error("Result is not a representation for #{type.name}")
+      callback.fail new Error("#{@result} is not a representation for #{type}")
     callback()
 
   this.Then /^it should be a TypeError as:$/, (table, callback) ->
     unless @result instanceof Qjs.TypeError
-      callback.fail new Error("Result is not a TypeError")
+      callback.fail new Error("#{@result} is not a TypeError")
     callback()
 
   this.Then /^the result should equal (\d+)$/, (expected, callback) ->
