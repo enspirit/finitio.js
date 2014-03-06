@@ -12,8 +12,8 @@ describe "Attribute#fetchOn", ->
 
   describe 'with an object that does not support fetch', ->
     arg = 12
-    
-    lambda = => subject(arg)
+
+    lambda = -> subject(arg)
 
     expect(lambda).toThrow()
 
@@ -38,7 +38,7 @@ describe "Attribute#fetchOn", ->
     catch e
       e.should.be.an.instanceof(KeyError)
 
-  describe 'when the key is missing and a callback is present', =>
+  describe 'when the key is missing and a callback is present', ->
     arg = other: 123
 
     subject(arg, -> "none").should.equal("none")

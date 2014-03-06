@@ -1,11 +1,12 @@
-Attribute = require '../../../lib/support/attribute'
-should    = require 'should'
+Attribute   = require '../../../lib/support/attribute'
+BuiltinType = require '../../../lib/type/builtin_type'
+should      = require 'should'
 
 describe "Attribute#equality", ->
 
-  attr1 = new Attribute('red', intType)
-  attr2 = new Attribute('red', intType)
-  attr3 = new Attribute('blue', intType)
+  attr1 = new Attribute('red',  new BuiltinType(Number))
+  attr2 = new Attribute('red',  new BuiltinType(Number))
+  attr3 = new Attribute('blue', new BuiltinType(Number))
 
   it 'should apply structural equality', ->
     attr1.equals(attr2).should.be.true

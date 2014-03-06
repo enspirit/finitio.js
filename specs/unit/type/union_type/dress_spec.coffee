@@ -20,7 +20,7 @@ describe "UnionType#dress", ->
       type.dress("foo")
     catch e
       e
-    
+
     it 'should raise an Error', ->
       subject.should.be.an.instanceof(TypeError)
       subject.message.should.equal("Invalid value `foo` for union")

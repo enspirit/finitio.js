@@ -12,7 +12,7 @@ describe "UnionType#equality", ->
     uType.equals(uType2).should.be.true
     uType.equals(uType3).should.be.true
     uType2.equals(uType3).should.be.true
-  
+
   it 'should apply distinguish different types', ->
     uType.equals(uType4).should.be.false
     uType.equals(intType).should.be.false

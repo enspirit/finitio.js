@@ -10,14 +10,14 @@ class RelationType extends Type
   constructor: (@heading, @name) ->
     unless @heading instanceof Heading
       throw new ArgumentError("Heading expected, got", @heading)
-    
+
     @tupleType = new TupleType(heading)
 
     super(@name)
 
   defaultName: ->
     "{{#{@heading.toName()}}}"
-  
+
   include: (value) ->
     return false unless typeof value == "object"
     for k, v of value
@@ -47,7 +47,7 @@ class RelationType extends Type
 
     # Return built tuples
     _.values(set)
- 
+
   equals: (other) ->
     return false unless other instanceof RelationType
     @heading.equals(other.heading)

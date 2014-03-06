@@ -1,3 +1,5 @@
+shell = require 'shelljs'
+
 'use strict'
 
 module.exports = (grunt) ->
@@ -6,15 +8,11 @@ module.exports = (grunt) ->
 
     pkg: grunt.file.readJSON 'package.json'
 
-    jasmine_node:
-      specFolders: ['./specs']
-      source: 'lib/'
-      extensions: 'coffee'
-      useCoffee: true
-      useHelpers: true
-
     cucumberjs:
       src: './features'
+
+      options:
+        format: 'pretty'
 
     browserify:
       main:
@@ -24,7 +22,7 @@ module.exports = (grunt) ->
           alias:      ['./lib/qjs:qjs']
           transform:  ['coffeeify']
           extensions: ['.coffee']
-      
+
       tests:
         files:
           'dist/test_bundle.js': ['specs/**/*.coffee']
@@ -33,12 +31,24 @@ module.exports = (grunt) ->
           ignore: ['./node_modules/**/*.js']
           transform:  ['coffeeify']
           extensions: ['.coffee']
-      
+
+    coffeelint:
+      lib:   ['lib/**/*.coffee']
+      tests: ['specs/**/*.coffee']
+
   #
-  grunt.registerTask 'default', ['test']
-  grunt.registerTask 'test', ['test-unit']
-  grunt.registerTask 'test-unit', ['jasmine_node']
-  
-  grunt.loadNpmTasks 'grunt-jasmine-node'
+  grunt.registerTask 'default',      ['build_parser', 'test']
+  grunt.registerTask 'test',         ['jasmine_node']
+  grunt.registerTask 'lint',         ['coffeelint']
+
+  grunt.registerTask 'build_parser', ->
+    shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading lib/syntax/parser.pegjs lib/syntax/parser.js'
+
+  grunt.registerTask 'jasmine_node', ->
+    res = shell.exec './node_modules/jasmine-node/bin/jasmine-node --coffee specs/'
+    unless res.code == 0
+      grunt.util.error("jasmine tests failed")
+
   grunt.loadNpmTasks 'grunt-cucumber'
   grunt.loadNpmTasks 'grunt-browserify'
+  grunt.loadNpmTasks 'grunt-coffeelint'

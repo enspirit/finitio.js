@@ -3,7 +3,7 @@ DressHelper           = require '../support/dress_helper'
 Type                  = require '../type'
 _                     = require 'underscore'
 
-# 
+#
 class BuiltinType extends Type
 
   constructor: (@jsType, @name) ->
@@ -19,7 +19,7 @@ class BuiltinType extends Type
 
   include: (value) ->
     value.constructor == @jsType
-    
+
   equals: (other) =>
     return false unless other instanceof BuiltinType
     other.jsType == @jsType

@@ -1,4 +1,40 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var DataType, DressHelper, Qjs;
+
+Qjs = require('./qjs');
+
+DressHelper = require('./support/dress_helper');
+
+DataType = (function() {
+  function DataType() {}
+
+  DataType.contracts = function() {
+    return this._contracts != null ? this._contracts : this._contracts = {};
+  };
+
+  DataType.adType = function() {
+    return this._adType != null ? this._adType : this._adType = Qjs.adt(this, this.contracts());
+  };
+
+  DataType.dress = function(value, helper) {
+    if (helper == null) {
+      helper = new DressHelper;
+    }
+    return this.adType().dress(value, helper);
+  };
+
+  DataType.contract = function(name, infotype) {
+    return this.contracts()[name] = [Qjs.type(infotype), this[name]];
+  };
+
+  return DataType;
+
+})();
+
+module.exports = DataType;
+
+
+},{"./qjs":3,"./support/dress_helper":7}],2:[function(require,module,exports){
 var ArgumentError, KeyError, NotImplementedError, QJSError, TypeError,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -83,36 +119,44 @@ module.exports = {
 };
 
 
-},{}],2:[function(require,module,exports){
-var Qjs, TypeFactory, method, _, _i, _len, _ref;
+},{}],3:[function(require,module,exports){
+var Parser, Qjs, TypeFactory, _;
 
 _ = require('underscore');
 
 TypeFactory = require('./support/factory');
 
+Parser = require('./syntax/parser');
+
 Qjs = (function() {
+  var method, _i, _len, _ref;
+
   function Qjs() {}
 
   Qjs.VERSION = "0.0.1";
 
-  Qjs.DSL_METHODS = ['attribute', 'heading', 'constraints', 'builtin', 'adt', 'subtype', 'union', 'seq', 'set', 'tuple', 'relation', 'type'];
+  Qjs.DSL_METHODS = ['attribute', 'heading', 'constraint', 'constraints', 'any', 'builtin', 'adt', 'sub_type', 'union', 'seq', 'set', 'tuple', 'relation', 'type'];
 
   Qjs.DEFAULT_FACTORY = new TypeFactory;
+
+  Qjs.parse = function(source) {
+    return Parser.parse(source);
+  };
+
+  _ref = Qjs.DSL_METHODS;
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    method = _ref[_i];
+    Qjs[method] = Qjs.DEFAULT_FACTORY[method].bind(Qjs.DEFAULT_FACTORY);
+  }
 
   return Qjs;
 
 })();
 
-_ref = Qjs.DSL_METHODS;
-for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-  method = _ref[_i];
-  Qjs[method] = Qjs.DEFAULT_FACTORY[method].bind(Qjs.DEFAULT_FACTORY);
-}
-
 module.exports = Qjs;
 
 
-},{"./support/factory":6,"underscore":18}],3:[function(require,module,exports){
+},{"./support/factory":8,"./syntax/parser":10,"underscore":22}],4:[function(require,module,exports){
 var ArgumentError, Attribute, KeyError, Type, TypeError, _, _ref;
 
 Type = require('../type');
@@ -165,7 +209,7 @@ Attribute = (function() {
 module.exports = Attribute;
 
 
-},{"../errors":1,"../type":9,"underscore":18}],4:[function(require,module,exports){
+},{"../errors":2,"../type":12,"underscore":22}],5:[function(require,module,exports){
 var ArgumentError, CollectionType, Type,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -200,7 +244,54 @@ CollectionType = (function(_super) {
 module.exports = CollectionType;
 
 
-},{"../errors":1,"../type":9}],5:[function(require,module,exports){
+},{"../errors":2,"../type":12}],6:[function(require,module,exports){
+var ArgumentError, Constraint, TypeError, _, _ref;
+
+_ref = require('../errors'), ArgumentError = _ref.ArgumentError, TypeError = _ref.TypeError;
+
+_ = require('underscore');
+
+Constraint = (function() {
+  function Constraint(name, _native) {
+    this.name = name;
+    this["native"] = _native;
+    if (typeof this.name !== "string") {
+      throw new ArgumentError("String expected for constraint name, got", this.name);
+    }
+  }
+
+  Constraint.prototype.isAnonymous = function() {
+    return this.name === 'default';
+  };
+
+  Constraint.prototype.accept = function(arg) {
+    if (typeof this["native"] === "function") {
+      if (this["native"](arg)) {
+        return true;
+      }
+    } else if (this["native"].constructor === RegExp) {
+      if (this["native"].test(arg)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  Constraint.prototype.equals = function(other) {
+    if (!(other instanceof Constraint)) {
+      return false;
+    }
+    return this["native"] === other["native"];
+  };
+
+  return Constraint;
+
+})();
+
+module.exports = Constraint;
+
+
+},{"../errors":2,"underscore":22}],7:[function(require,module,exports){
 var DressHelper, TypeError, _, _typeToString, _valueToString;
 
 TypeError = require('../errors').TypeError;
@@ -327,8 +418,8 @@ _typeToString = function(type) {
 module.exports = DressHelper;
 
 
-},{"../errors":1,"underscore":18}],6:[function(require,module,exports){
-var ArgumentError, Attribute, BuiltinType, Heading, NotImplementedError, RelationType, SeqType, SetType, SubType, TupleType, Type, TypeFactory, UnionType, fail, isNativeType, isRegexp, _, _ref,
+},{"../errors":2,"underscore":22}],8:[function(require,module,exports){
+var AdType, AnyType, ArgumentError, Attribute, BuiltinType, Constraint, Heading, NotImplementedError, RelationType, SeqType, SetType, SubType, TupleType, Type, TypeFactory, UnionType, fail, isNativeType, isRegexp, _, _ref,
   __slice = [].slice;
 
 Type = require('../type');
@@ -339,7 +430,11 @@ Attribute = require('./attribute');
 
 Heading = require('./heading');
 
-BuiltinType = require('../type/builtin_type');
+Constraint = require('./constraint');
+
+AnyType = require('../type/any_type');
+
+AdType = require('../type/ad_type');
 
 SeqType = require('../type/seq_type');
 
@@ -350,6 +445,8 @@ SubType = require('../type/sub_type');
 TupleType = require('../type/tuple_type');
 
 UnionType = require('../type/union_type');
+
+BuiltinType = require('../type/builtin_type');
 
 RelationType = require('../type/relation_type');
 
@@ -366,14 +463,14 @@ TypeFactory = (function() {
       }
     }
     if (callback != null) {
-      return this.subtype(this.type(t, name), callback);
+      return this.sub_type(this.type(t, name), callback);
     }
     if (t instanceof Type) {
       return t;
     } else if (isNativeType(t)) {
       return new BuiltinType(t, name || t.constructor.name);
     } else if (isRegexp(t)) {
-      return this.subtype(String, t);
+      return this.sub_type(String, t);
     } else if (t instanceof Array) {
       if (t.length !== 1) {
         fail("Array of arity 1 expected, got", t);
@@ -387,10 +484,17 @@ TypeFactory = (function() {
   };
 
   TypeFactory.prototype.jsType = function(t) {
-    if (!isNativeType(t)) {
-      fail("JS primitive expected, got `" + t + "`");
+    if (t === 'Number') {
+      return Number;
+    } else if (t === 'String') {
+      return String;
+    } else if (t === 'Boolean') {
+      return Boolean;
+    } else if (isNativeType(t) || t instanceof Function) {
+      return t;
+    } else {
+      return fail("JS primitive expected, got `" + t + "`");
     }
-    return t;
   };
 
   TypeFactory.prototype.name = function(name) {
@@ -404,21 +508,41 @@ TypeFactory = (function() {
     }
   };
 
+  TypeFactory.prototype.constraint = function(_name, _native) {
+    var _ref1;
+    if (_name instanceof Constraint) {
+      return _name;
+    }
+    if (typeof _name !== "string") {
+      _ref1 = ['default', _name], _name = _ref1[0], _native = _ref1[1];
+    }
+    return new Constraint(_name, _native);
+  };
+
   TypeFactory.prototype.constraints = function(constraints, callback) {
     var constrs;
-    constrs = {};
+    constrs = [];
     if (callback != null) {
-      constrs['predicate'] = callback;
+      constrs.push(this.constraint('default', callback));
     }
-    if ((constraints != null) && constraints.constructor === RegExp) {
-      constrs['predicate'] = constraints;
-    } else if (constraints != null) {
-      if (!_.isObject(constraints)) {
-        constrs['predicate'] = constraints;
+    if (constraints != null) {
+      if (constraints.constructor === Array) {
+        _.each(constraints, (function(_this) {
+          return function(c) {
+            return constrs.push(_this.constraint(c));
+          };
+        })(this));
+      } else if (constraints.constructor === RegExp) {
+        constrs.push(this.constraint(constraints));
+      } else if (typeof constraints === "object") {
+        _.each(constraints, (function(_this) {
+          return function(n, c) {
+            return constrs.push(_this.constraint(n, c));
+          };
+        })(this));
+      } else {
+        constrs.push(this.constraint(constraints));
       }
-    }
-    if (_.isObject(constraints)) {
-      _.extend(constrs, constraints);
     }
     return constrs;
   };
@@ -448,7 +572,9 @@ TypeFactory = (function() {
     if (heading.heading != null) {
       return heading.heading;
     }
-    if (typeof heading === "object") {
+    if (heading.constructor === Array) {
+      return new Heading(heading);
+    } else if (typeof heading === "object") {
       return new Heading(this.attributes(heading));
     } else {
       return fail("Heading expected, got", heading);
@@ -460,13 +586,21 @@ TypeFactory = (function() {
     if (typeof contracts !== "object") {
       fail("Hash expected, got", contracts);
     }
-    invalid = _.keys(contracts, function(k) {
+    invalid = _.filter(_.keys(contracts), function(k) {
       return k instanceof String;
     });
     if (invalid.length > 0) {
       fail("Invalid contract names `" + invalid + "`");
     }
     return contracts;
+  };
+
+  TypeFactory.prototype.any = function(name) {
+    if (name == null) {
+      name = null;
+    }
+    name = this.name(name);
+    return new AnyType(name);
   };
 
   TypeFactory.prototype.builtin = function(primitive, _name) {
@@ -478,11 +612,20 @@ TypeFactory = (function() {
     return new BuiltinType(primitive, _name);
   };
 
-  TypeFactory.prototype.adt = function(primitive, contracts, name) {
-    throw new NotImplementedError("Factory#adt");
+  TypeFactory.prototype.adt = function(primitive, _contracts, _name) {
+    var contracts;
+    if (_name == null) {
+      _name = null;
+    }
+    if (primitive != null) {
+      primitive = this.jsType(primitive);
+    }
+    contracts = this.contracts(_contracts);
+    _name = this.name(_name);
+    return new AdType(primitive, _contracts, _name);
   };
 
-  TypeFactory.prototype.subtype = function(superType, _constraints, _name, callback) {
+  TypeFactory.prototype.sub_type = function(superType, _constraints, _name, callback) {
     var _ref1, _ref2;
     if (callback == null) {
       if (typeof _name === "function") {
@@ -504,18 +647,19 @@ TypeFactory = (function() {
     var args, candidates, _name, _ref1;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
     _ref1 = [[], null], candidates = _ref1[0], _name = _ref1[1];
-    _.each(args, function(arg) {
-      if (arg.constructor === Array) {
-        candidates = _.map(arg, function(t) {
-          return this.type(t);
-        });
-      }
-      if (arg.constructor === String) {
-        return _name = this.name(_name);
-      } else {
-        return candidates.push(arg);
-      }
-    });
+    _.each(args, (function(_this) {
+      return function(arg) {
+        if (arg.constructor === Array) {
+          return candidates = _.map(arg, function(t) {
+            return _this.type(t);
+          });
+        } else if (arg.constructor === String) {
+          return _name = _this.name(_name);
+        } else {
+          return candidates.push(arg);
+        }
+      };
+    })(this));
     return new UnionType(candidates, _name);
   };
 
@@ -576,7 +720,7 @@ fail = function(msg, type) {
 module.exports = TypeFactory;
 
 
-},{"../errors":1,"../type":9,"../type/builtin_type":11,"../type/relation_type":12,"../type/seq_type":13,"../type/set_type":14,"../type/sub_type":15,"../type/tuple_type":16,"../type/union_type":17,"./attribute":3,"./heading":7,"underscore":18}],7:[function(require,module,exports){
+},{"../errors":2,"../type":12,"../type/ad_type":13,"../type/any_type":14,"../type/builtin_type":15,"../type/relation_type":16,"../type/seq_type":17,"../type/set_type":18,"../type/sub_type":19,"../type/tuple_type":20,"../type/union_type":21,"./attribute":4,"./constraint":6,"./heading":9,"underscore":22}],9:[function(require,module,exports){
 var ArgumentError, Attribute, Heading, TypeError, _, _ref;
 
 _ref = require('../errors'), ArgumentError = _ref.ArgumentError, TypeError = _ref.TypeError;
@@ -638,7 +782,7 @@ Heading = (function() {
     valid = _.every(this.attributes, function(attr, name) {
       var other_attr;
       other_attr = other.attributes[name];
-      return attr.equals(attr);
+      return attr.equals(other_attr);
     });
     return valid;
   };
@@ -650,8 +794,1970 @@ Heading = (function() {
 module.exports = Heading;
 
 
-},{"../errors":1,"./attribute":3,"underscore":18}],8:[function(require,module,exports){
-var ArgumentError, Error, KeyError, Qjs, System, Type, TypeFactory, _, _ref;
+},{"../errors":2,"./attribute":4,"underscore":22}],10:[function(require,module,exports){
+module.exports = (function() {
+  /*
+   * Generated by PEG.js 0.8.0.
+   *
+   * http://pegjs.majda.cz/
+   */
+
+  function peg$subclass(child, parent) {
+    function ctor() { this.constructor = child; }
+    ctor.prototype = parent.prototype;
+    child.prototype = new ctor();
+  }
+
+  function SyntaxError(message, expected, found, offset, line, column) {
+    this.message  = message;
+    this.expected = expected;
+    this.found    = found;
+    this.offset   = offset;
+    this.line     = line;
+    this.column   = column;
+
+    this.name     = "SyntaxError";
+  }
+
+  peg$subclass(SyntaxError, Error);
+
+  function parse(input) {
+    var options = arguments.length > 1 ? arguments[1] : {},
+
+        peg$FAILED = {},
+
+        peg$startRuleFunctions = { system: peg$parsesystem, type: peg$parsetype, attribute: peg$parseattribute, heading: peg$parseheading },
+        peg$startRuleFunction  = peg$parsesystem,
+
+        peg$c0 = peg$FAILED,
+        peg$c1 = null,
+        peg$c2 = function(m) {
+            if (m){ options.system.main = m }
+            return options.system;
+          },
+        peg$c3 = [],
+        peg$c4 = "=",
+        peg$c5 = { type: "literal", value: "=", description: "\"=\"" },
+        peg$c6 = function(n, t) {
+            t.name = n;
+            options.system.addType(t);
+            return t;
+          },
+        peg$c7 = "|",
+        peg$c8 = { type: "literal", value: "|", description: "\"|\"" },
+        peg$c9 = function(head, tail) {
+              return Qjs.union(headTailToArray(head, tail));
+            },
+        peg$c10 = function(t, c) {
+              return Qjs.sub_type(t, c)
+            },
+        peg$c11 = "(",
+        peg$c12 = { type: "literal", value: "(", description: "\"(\"" },
+        peg$c13 = ")",
+        peg$c14 = { type: "literal", value: ")", description: "\")\"" },
+        peg$c15 = function(n, c) {
+            return compileConstraints(n, c)
+          },
+        peg$c16 = ",",
+        peg$c17 = { type: "literal", value: ",", description: "\",\"" },
+        peg$c18 = function(head, tail) {
+              return headTailToArray(head, tail);
+            },
+        peg$c19 = function(c) {
+            return [c];
+          },
+        peg$c20 = ":",
+        peg$c21 = { type: "literal", value: ":", description: "\":\"" },
+        peg$c22 = function(n, e) {
+            return [n, e];
+          },
+        peg$c23 = function(e) {
+            return ['default', e];
+          },
+        peg$c24 = "{",
+        peg$c25 = { type: "literal", value: "{", description: "\"{\"" },
+        peg$c26 = "}",
+        peg$c27 = { type: "literal", value: "}", description: "\"}\"" },
+        peg$c28 = function(h) {
+            return Qjs.tuple(h)
+          },
+        peg$c29 = "{{",
+        peg$c30 = { type: "literal", value: "{{", description: "\"{{\"" },
+        peg$c31 = "}}",
+        peg$c32 = { type: "literal", value: "}}", description: "\"}}\"" },
+        peg$c33 = function(h) {
+            return Qjs.relation(h)
+          },
+        peg$c34 = function(head, tail) {
+              return Qjs.heading(headTailToArray(head, tail));
+            },
+        peg$c35 = function(n, t) {
+            return Qjs.attribute(n, t)
+          },
+        peg$c36 = function(t) {
+            return Qjs.set(t)
+          },
+        peg$c37 = "[",
+        peg$c38 = { type: "literal", value: "[", description: "\"[\"" },
+        peg$c39 = "]",
+        peg$c40 = { type: "literal", value: "]", description: "\"]\"" },
+        peg$c41 = function(t) {
+            return Qjs.seq(t)
+          },
+        peg$c42 = ".",
+        peg$c43 = { type: "literal", value: ".", description: "\".\"" },
+        peg$c44 = function() {
+            return Qjs.any();
+          },
+        peg$c45 = function(name) {
+            return Qjs.builtin(name);
+          },
+        peg$c46 = function(n) {
+            return options.system.fetch(n);
+          },
+        peg$c47 = "()",
+        peg$c48 = { type: "literal", value: "()", description: "\"()\"" },
+        peg$c49 = void 0,
+        peg$c50 = /^[(,)]/,
+        peg$c51 = { type: "class", value: "[(,)]", description: "[(,)]" },
+        peg$c52 = { type: "any", description: "any character" },
+        peg$c53 = /^[a-z]/,
+        peg$c54 = { type: "class", value: "[a-z]", description: "[a-z]" },
+        peg$c55 = /^[a-z0-9]/,
+        peg$c56 = { type: "class", value: "[a-z0-9]", description: "[a-z0-9]" },
+        peg$c57 = /^[a-zA-Z_]/,
+        peg$c58 = { type: "class", value: "[a-zA-Z_]", description: "[a-zA-Z_]" },
+        peg$c59 = /^[a-zA-Z0-9_]/,
+        peg$c60 = { type: "class", value: "[a-zA-Z0-9_]", description: "[a-zA-Z0-9_]" },
+        peg$c61 = /^[A-Z]/,
+        peg$c62 = { type: "class", value: "[A-Z]", description: "[A-Z]" },
+        peg$c63 = /^[a-zA-Z]/,
+        peg$c64 = { type: "class", value: "[a-zA-Z]", description: "[a-zA-Z]" },
+        peg$c65 = /^[a-zA-Z0-9:]/,
+        peg$c66 = { type: "class", value: "[a-zA-Z0-9:]", description: "[a-zA-Z0-9:]" },
+        peg$c67 = "#",
+        peg$c68 = { type: "literal", value: "#", description: "\"#\"" },
+        peg$c69 = /^[\n]/,
+        peg$c70 = { type: "class", value: "[\\n]", description: "[\\n]" },
+        peg$c71 = /^[ \t\n]/,
+        peg$c72 = { type: "class", value: "[ \\t\\n]", description: "[ \\t\\n]" },
+
+        peg$currPos          = 0,
+        peg$reportedPos      = 0,
+        peg$cachedPos        = 0,
+        peg$cachedPosDetails = { line: 1, column: 1, seenCR: false },
+        peg$maxFailPos       = 0,
+        peg$maxFailExpected  = [],
+        peg$silentFails      = 0,
+
+        peg$result;
+
+    if ("startRule" in options) {
+      if (!(options.startRule in peg$startRuleFunctions)) {
+        throw new Error("Can't start parsing from rule \"" + options.startRule + "\".");
+      }
+
+      peg$startRuleFunction = peg$startRuleFunctions[options.startRule];
+    }
+
+    function text() {
+      return input.substring(peg$reportedPos, peg$currPos);
+    }
+
+    function offset() {
+      return peg$reportedPos;
+    }
+
+    function line() {
+      return peg$computePosDetails(peg$reportedPos).line;
+    }
+
+    function column() {
+      return peg$computePosDetails(peg$reportedPos).column;
+    }
+
+    function expected(description) {
+      throw peg$buildException(
+        null,
+        [{ type: "other", description: description }],
+        peg$reportedPos
+      );
+    }
+
+    function error(message) {
+      throw peg$buildException(message, null, peg$reportedPos);
+    }
+
+    function peg$computePosDetails(pos) {
+      function advance(details, startPos, endPos) {
+        var p, ch;
+
+        for (p = startPos; p < endPos; p++) {
+          ch = input.charAt(p);
+          if (ch === "\n") {
+            if (!details.seenCR) { details.line++; }
+            details.column = 1;
+            details.seenCR = false;
+          } else if (ch === "\r" || ch === "\u2028" || ch === "\u2029") {
+            details.line++;
+            details.column = 1;
+            details.seenCR = true;
+          } else {
+            details.column++;
+            details.seenCR = false;
+          }
+        }
+      }
+
+      if (peg$cachedPos !== pos) {
+        if (peg$cachedPos > pos) {
+          peg$cachedPos = 0;
+          peg$cachedPosDetails = { line: 1, column: 1, seenCR: false };
+        }
+        advance(peg$cachedPosDetails, peg$cachedPos, pos);
+        peg$cachedPos = pos;
+      }
+
+      return peg$cachedPosDetails;
+    }
+
+    function peg$fail(expected) {
+      if (peg$currPos < peg$maxFailPos) { return; }
+
+      if (peg$currPos > peg$maxFailPos) {
+        peg$maxFailPos = peg$currPos;
+        peg$maxFailExpected = [];
+      }
+
+      peg$maxFailExpected.push(expected);
+    }
+
+    function peg$buildException(message, expected, pos) {
+      function cleanupExpected(expected) {
+        var i = 1;
+
+        expected.sort(function(a, b) {
+          if (a.description < b.description) {
+            return -1;
+          } else if (a.description > b.description) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+
+        while (i < expected.length) {
+          if (expected[i - 1] === expected[i]) {
+            expected.splice(i, 1);
+          } else {
+            i++;
+          }
+        }
+      }
+
+      function buildMessage(expected, found) {
+        function stringEscape(s) {
+          function hex(ch) { return ch.charCodeAt(0).toString(16).toUpperCase(); }
+
+          return s
+            .replace(/\\/g,   '\\\\')
+            .replace(/"/g,    '\\"')
+            .replace(/\x08/g, '\\b')
+            .replace(/\t/g,   '\\t')
+            .replace(/\n/g,   '\\n')
+            .replace(/\f/g,   '\\f')
+            .replace(/\r/g,   '\\r')
+            .replace(/[\x00-\x07\x0B\x0E\x0F]/g, function(ch) { return '\\x0' + hex(ch); })
+            .replace(/[\x10-\x1F\x80-\xFF]/g,    function(ch) { return '\\x'  + hex(ch); })
+            .replace(/[\u0180-\u0FFF]/g,         function(ch) { return '\\u0' + hex(ch); })
+            .replace(/[\u1080-\uFFFF]/g,         function(ch) { return '\\u'  + hex(ch); });
+        }
+
+        var expectedDescs = new Array(expected.length),
+            expectedDesc, foundDesc, i;
+
+        for (i = 0; i < expected.length; i++) {
+          expectedDescs[i] = expected[i].description;
+        }
+
+        expectedDesc = expected.length > 1
+          ? expectedDescs.slice(0, -1).join(", ")
+              + " or "
+              + expectedDescs[expected.length - 1]
+          : expectedDescs[0];
+
+        foundDesc = found ? "\"" + stringEscape(found) + "\"" : "end of input";
+
+        return "Expected " + expectedDesc + " but " + foundDesc + " found.";
+      }
+
+      var posDetails = peg$computePosDetails(pos),
+          found      = pos < input.length ? input.charAt(pos) : null;
+
+      if (expected !== null) {
+        cleanupExpected(expected);
+      }
+
+      return new SyntaxError(
+        message !== null ? message : buildMessage(expected, found),
+        expected,
+        found,
+        pos,
+        posDetails.line,
+        posDetails.column
+      );
+    }
+
+    function peg$parsesystem() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parsedefinitions();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseunion_type();
+          if (s3 === peg$FAILED) {
+            s3 = peg$c1;
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseeof();
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c2(s3);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parsedefinitions() {
+      var s0, s1, s2, s3;
+
+      s0 = [];
+      s1 = peg$currPos;
+      s2 = peg$parsespacing();
+      if (s2 !== peg$FAILED) {
+        s3 = peg$parsetype_def();
+        if (s3 !== peg$FAILED) {
+          s2 = [s2, s3];
+          s1 = s2;
+        } else {
+          peg$currPos = s1;
+          s1 = peg$c0;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$c0;
+      }
+      while (s1 !== peg$FAILED) {
+        s0.push(s1);
+        s1 = peg$currPos;
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsetype_def();
+          if (s3 !== peg$FAILED) {
+            s2 = [s2, s3];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$c0;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$c0;
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parsetype_def() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parsetype_name();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 61) {
+            s3 = peg$c4;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c5); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseunion_type();
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c6(s1, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parsetype() {
+      var s0;
+
+      s0 = peg$parseunion_type();
+
+      return s0;
+    }
+
+    function peg$parseunion_type() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parsesub_type();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$currPos;
+        if (input.charCodeAt(peg$currPos) === 124) {
+          s4 = peg$c7;
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c8); }
+        }
+        if (s4 !== peg$FAILED) {
+          s5 = peg$parsesub_type();
+          if (s5 !== peg$FAILED) {
+            s4 = [s4, s5];
+            s3 = s4;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c0;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$c0;
+        }
+        if (s3 !== peg$FAILED) {
+          while (s3 !== peg$FAILED) {
+            s2.push(s3);
+            s3 = peg$currPos;
+            if (input.charCodeAt(peg$currPos) === 124) {
+              s4 = peg$c7;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c8); }
+            }
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parsesub_type();
+              if (s5 !== peg$FAILED) {
+                s4 = [s4, s5];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c0;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c0;
+            }
+          }
+        } else {
+          s2 = peg$c0;
+        }
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c9(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsesub_type();
+      }
+
+      return s0;
+    }
+
+    function peg$parsesub_type() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$parserel_type();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parseconstraint_fn();
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c10(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+      if (s0 === peg$FAILED) {
+        s0 = peg$parserel_type();
+      }
+
+      return s0;
+    }
+
+    function peg$parseconstraint_fn() {
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 40) {
+        s1 = peg$c11;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c12); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsevar_name();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 124) {
+                s5 = peg$c7;
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c8); }
+              }
+              if (s5 !== peg$FAILED) {
+                s6 = peg$parsespacing();
+                if (s6 !== peg$FAILED) {
+                  s7 = peg$parseconstraints();
+                  if (s7 !== peg$FAILED) {
+                    s8 = peg$parsespacing();
+                    if (s8 !== peg$FAILED) {
+                      if (input.charCodeAt(peg$currPos) === 41) {
+                        s9 = peg$c13;
+                        peg$currPos++;
+                      } else {
+                        s9 = peg$FAILED;
+                        if (peg$silentFails === 0) { peg$fail(peg$c14); }
+                      }
+                      if (s9 !== peg$FAILED) {
+                        peg$reportedPos = s0;
+                        s1 = peg$c15(s3, s7);
+                        s0 = s1;
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$c0;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$c0;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c0;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c0;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parseconstraints() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      s1 = peg$parsenamed_constraint();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$currPos;
+        s4 = peg$parsespacing();
+        if (s4 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s5 = peg$c16;
+            peg$currPos++;
+          } else {
+            s5 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c17); }
+          }
+          if (s5 !== peg$FAILED) {
+            s6 = peg$parsespacing();
+            if (s6 !== peg$FAILED) {
+              s7 = peg$parsenamed_constraint();
+              if (s7 !== peg$FAILED) {
+                s4 = [s4, s5, s6, s7];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c0;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c0;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c0;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$c0;
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$currPos;
+          s4 = peg$parsespacing();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 44) {
+              s5 = peg$c16;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c17); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parsespacing();
+              if (s6 !== peg$FAILED) {
+                s7 = peg$parsenamed_constraint();
+                if (s7 !== peg$FAILED) {
+                  s4 = [s4, s5, s6, s7];
+                  s3 = s4;
+                } else {
+                  peg$currPos = s3;
+                  s3 = peg$c0;
+                }
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c0;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c0;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c0;
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c18(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parseunnamed_constraint();
+        if (s1 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c19(s1);
+        }
+        s0 = s1;
+      }
+
+      return s0;
+    }
+
+    function peg$parsenamed_constraint() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parseconstraint_name();
+      if (s1 !== peg$FAILED) {
+        if (input.charCodeAt(peg$currPos) === 58) {
+          s2 = peg$c20;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c21); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsespacing();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parseexpression();
+            if (s4 !== peg$FAILED) {
+              peg$reportedPos = s0;
+              s1 = peg$c22(s1, s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parseunnamed_constraint() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parseexpression();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c23(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parserel_type() {
+      var s0;
+
+      s0 = peg$parserelation_type();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsetuple_type();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parsecollection_type();
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parsetuple_type() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 123) {
+        s1 = peg$c24;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c25); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseheading();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 125) {
+                s5 = peg$c26;
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c27); }
+              }
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c28(s3);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parserelation_type() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 2) === peg$c29) {
+        s1 = peg$c29;
+        peg$currPos += 2;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c30); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseheading();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              if (input.substr(peg$currPos, 2) === peg$c31) {
+                s5 = peg$c31;
+                peg$currPos += 2;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c32); }
+              }
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c33(s3);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parseheading() {
+      var s0, s1, s2, s3, s4, s5, s6, s7;
+
+      s0 = peg$currPos;
+      s1 = peg$parseattribute();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$currPos;
+        s4 = peg$parsespacing();
+        if (s4 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s5 = peg$c16;
+            peg$currPos++;
+          } else {
+            s5 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c17); }
+          }
+          if (s5 !== peg$FAILED) {
+            s6 = peg$parsespacing();
+            if (s6 !== peg$FAILED) {
+              s7 = peg$parseattribute();
+              if (s7 !== peg$FAILED) {
+                s4 = [s4, s5, s6, s7];
+                s3 = s4;
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c0;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c0;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c0;
+          }
+        } else {
+          peg$currPos = s3;
+          s3 = peg$c0;
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$currPos;
+          s4 = peg$parsespacing();
+          if (s4 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 44) {
+              s5 = peg$c16;
+              peg$currPos++;
+            } else {
+              s5 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c17); }
+            }
+            if (s5 !== peg$FAILED) {
+              s6 = peg$parsespacing();
+              if (s6 !== peg$FAILED) {
+                s7 = peg$parseattribute();
+                if (s7 !== peg$FAILED) {
+                  s4 = [s4, s5, s6, s7];
+                  s3 = s4;
+                } else {
+                  peg$currPos = s3;
+                  s3 = peg$c0;
+                }
+              } else {
+                peg$currPos = s3;
+                s3 = peg$c0;
+              }
+            } else {
+              peg$currPos = s3;
+              s3 = peg$c0;
+            }
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c0;
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c34(s1, s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+      if (s0 === peg$FAILED) {
+        s0 = peg$parsespacing();
+      }
+
+      return s0;
+    }
+
+    function peg$parseattribute() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseattribute_name();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 58) {
+            s3 = peg$c20;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c21); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseunion_type();
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c35(s1, s5);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parsecollection_type() {
+      var s0;
+
+      s0 = peg$parseset_type();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseseq_type();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parseterm_type();
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseset_type() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 123) {
+        s1 = peg$c24;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c25); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseunion_type();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 125) {
+                s5 = peg$c26;
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c27); }
+              }
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c36(s3);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parseseq_type() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 91) {
+        s1 = peg$c37;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c38); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsespacing();
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseunion_type();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsespacing();
+            if (s4 !== peg$FAILED) {
+              if (input.charCodeAt(peg$currPos) === 93) {
+                s5 = peg$c39;
+                peg$currPos++;
+              } else {
+                s5 = peg$FAILED;
+                if (peg$silentFails === 0) { peg$fail(peg$c40); }
+              }
+              if (s5 !== peg$FAILED) {
+                peg$reportedPos = s0;
+                s1 = peg$c41(s3);
+                s0 = s1;
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parseterm_type() {
+      var s0;
+
+      s0 = peg$parsebuiltin_type();
+      if (s0 === peg$FAILED) {
+        s0 = peg$parseany_type();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parsetype_ref();
+        }
+      }
+
+      return s0;
+    }
+
+    function peg$parseany_type() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 46) {
+        s1 = peg$c42;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c43); }
+      }
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c44();
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsebuiltin_type() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 46) {
+        s1 = peg$c42;
+        peg$currPos++;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c43); }
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsebuiltin_type_name();
+        if (s2 !== peg$FAILED) {
+          peg$reportedPos = s0;
+          s1 = peg$c45(s2);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$c0;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$c0;
+      }
+
+      return s0;
+    }
+
+    function peg$parsetype_ref() {
+      var s0, s1;
+
+      s0 = peg$currPos;
+      s1 = peg$parsetype_name();
+      if (s1 !== peg$FAILED) {
+        peg$reportedPos = s0;
+        s1 = peg$c46(s1);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseexpression() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$parseparen_expression();
+      if (s2 === peg$FAILED) {
+        s2 = peg$parseany_expression();
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$parseparen_expression();
+          if (s2 === peg$FAILED) {
+            s2 = peg$parseany_expression();
+          }
+        }
+      } else {
+        s1 = peg$c0;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseparen_expression() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      if (input.substr(peg$currPos, 2) === peg$c47) {
+        s1 = peg$c47;
+        peg$currPos += 2;
+      } else {
+        s1 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c48); }
+      }
+      if (s1 === peg$FAILED) {
+        s1 = peg$currPos;
+        if (input.charCodeAt(peg$currPos) === 40) {
+          s2 = peg$c11;
+          peg$currPos++;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c12); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseexpression();
+          if (s3 !== peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 41) {
+              s4 = peg$c13;
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c14); }
+            }
+            if (s4 !== peg$FAILED) {
+              s2 = [s2, s3, s4];
+              s1 = s2;
+            } else {
+              peg$currPos = s1;
+              s1 = peg$c0;
+            }
+          } else {
+            peg$currPos = s1;
+            s1 = peg$c0;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$c0;
+        }
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseany_expression() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$currPos;
+      s3 = peg$currPos;
+      peg$silentFails++;
+      if (peg$c50.test(input.charAt(peg$currPos))) {
+        s4 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s4 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c51); }
+      }
+      peg$silentFails--;
+      if (s4 === peg$FAILED) {
+        s3 = peg$c49;
+      } else {
+        peg$currPos = s3;
+        s3 = peg$c0;
+      }
+      if (s3 !== peg$FAILED) {
+        if (input.length > peg$currPos) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c52); }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$c0;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$c0;
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          s2 = peg$currPos;
+          s3 = peg$currPos;
+          peg$silentFails++;
+          if (peg$c50.test(input.charAt(peg$currPos))) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c51); }
+          }
+          peg$silentFails--;
+          if (s4 === peg$FAILED) {
+            s3 = peg$c49;
+          } else {
+            peg$currPos = s3;
+            s3 = peg$c0;
+          }
+          if (s3 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c52); }
+            }
+            if (s4 !== peg$FAILED) {
+              s3 = [s3, s4];
+              s2 = s3;
+            } else {
+              peg$currPos = s2;
+              s2 = peg$c0;
+            }
+          } else {
+            peg$currPos = s2;
+            s2 = peg$c0;
+          }
+        }
+      } else {
+        s1 = peg$c0;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsevar_name() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = [];
+      if (peg$c53.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          if (peg$c53.test(input.charAt(peg$currPos))) {
+            s2 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c54); }
+          }
+        }
+      } else {
+        s1 = peg$c0;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsecontract_name() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      if (peg$c53.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+      }
+      if (s2 !== peg$FAILED) {
+        s3 = [];
+        if (peg$c55.test(input.charAt(peg$currPos))) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c56); }
+        }
+        while (s4 !== peg$FAILED) {
+          s3.push(s4);
+          if (peg$c55.test(input.charAt(peg$currPos))) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c56); }
+          }
+        }
+        if (s3 !== peg$FAILED) {
+          s2 = [s2, s3];
+          s1 = s2;
+        } else {
+          peg$currPos = s1;
+          s1 = peg$c0;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$c0;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseconstraint_name() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      if (peg$c53.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+      }
+      if (s2 !== peg$FAILED) {
+        s3 = [];
+        if (peg$c57.test(input.charAt(peg$currPos))) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c58); }
+        }
+        while (s4 !== peg$FAILED) {
+          s3.push(s4);
+          if (peg$c57.test(input.charAt(peg$currPos))) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c58); }
+          }
+        }
+        if (s3 !== peg$FAILED) {
+          s2 = [s2, s3];
+          s1 = s2;
+        } else {
+          peg$currPos = s1;
+          s1 = peg$c0;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$c0;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseattribute_name() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      if (peg$c53.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+      }
+      if (s2 !== peg$FAILED) {
+        s3 = [];
+        if (peg$c59.test(input.charAt(peg$currPos))) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c60); }
+        }
+        while (s4 !== peg$FAILED) {
+          s3.push(s4);
+          if (peg$c59.test(input.charAt(peg$currPos))) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c60); }
+          }
+        }
+        if (s3 !== peg$FAILED) {
+          s2 = [s2, s3];
+          s1 = s2;
+        } else {
+          peg$currPos = s1;
+          s1 = peg$c0;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$c0;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsetype_name() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      if (peg$c61.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c62); }
+      }
+      if (s2 !== peg$FAILED) {
+        s3 = [];
+        if (peg$c63.test(input.charAt(peg$currPos))) {
+          s4 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s4 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c64); }
+        }
+        if (s4 !== peg$FAILED) {
+          while (s4 !== peg$FAILED) {
+            s3.push(s4);
+            if (peg$c63.test(input.charAt(peg$currPos))) {
+              s4 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s4 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c64); }
+            }
+          }
+        } else {
+          s3 = peg$c0;
+        }
+        if (s3 !== peg$FAILED) {
+          s2 = [s2, s3];
+          s1 = s2;
+        } else {
+          peg$currPos = s1;
+          s1 = peg$c0;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$c0;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsebuiltin_type_name() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = [];
+      if (peg$c65.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c66); }
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          if (peg$c65.test(input.charAt(peg$currPos))) {
+            s2 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c66); }
+          }
+        }
+      } else {
+        s1 = peg$c0;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsespacing() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = [];
+      s2 = peg$parsespaces();
+      if (s2 === peg$FAILED) {
+        s2 = peg$parsecomment();
+      }
+      while (s2 !== peg$FAILED) {
+        s1.push(s2);
+        s2 = peg$parsespaces();
+        if (s2 === peg$FAILED) {
+          s2 = peg$parsecomment();
+        }
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsecomment() {
+      var s0, s1, s2, s3, s4, s5, s6;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      if (input.charCodeAt(peg$currPos) === 35) {
+        s2 = peg$c67;
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c68); }
+      }
+      if (s2 !== peg$FAILED) {
+        s3 = [];
+        s4 = peg$currPos;
+        s5 = peg$currPos;
+        peg$silentFails++;
+        if (peg$c69.test(input.charAt(peg$currPos))) {
+          s6 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s6 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c70); }
+        }
+        peg$silentFails--;
+        if (s6 === peg$FAILED) {
+          s5 = peg$c49;
+        } else {
+          peg$currPos = s5;
+          s5 = peg$c0;
+        }
+        if (s5 !== peg$FAILED) {
+          if (input.length > peg$currPos) {
+            s6 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s6 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c52); }
+          }
+          if (s6 !== peg$FAILED) {
+            s5 = [s5, s6];
+            s4 = s5;
+          } else {
+            peg$currPos = s4;
+            s4 = peg$c0;
+          }
+        } else {
+          peg$currPos = s4;
+          s4 = peg$c0;
+        }
+        while (s4 !== peg$FAILED) {
+          s3.push(s4);
+          s4 = peg$currPos;
+          s5 = peg$currPos;
+          peg$silentFails++;
+          if (peg$c69.test(input.charAt(peg$currPos))) {
+            s6 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s6 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c70); }
+          }
+          peg$silentFails--;
+          if (s6 === peg$FAILED) {
+            s5 = peg$c49;
+          } else {
+            peg$currPos = s5;
+            s5 = peg$c0;
+          }
+          if (s5 !== peg$FAILED) {
+            if (input.length > peg$currPos) {
+              s6 = input.charAt(peg$currPos);
+              peg$currPos++;
+            } else {
+              s6 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c52); }
+            }
+            if (s6 !== peg$FAILED) {
+              s5 = [s5, s6];
+              s4 = s5;
+            } else {
+              peg$currPos = s4;
+              s4 = peg$c0;
+            }
+          } else {
+            peg$currPos = s4;
+            s4 = peg$c0;
+          }
+        }
+        if (s3 !== peg$FAILED) {
+          if (peg$c69.test(input.charAt(peg$currPos))) {
+            s4 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s4 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c70); }
+          }
+          if (s4 === peg$FAILED) {
+            s4 = peg$c1;
+          }
+          if (s4 !== peg$FAILED) {
+            s2 = [s2, s3, s4];
+            s1 = s2;
+          } else {
+            peg$currPos = s1;
+            s1 = peg$c0;
+          }
+        } else {
+          peg$currPos = s1;
+          s1 = peg$c0;
+        }
+      } else {
+        peg$currPos = s1;
+        s1 = peg$c0;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parsespaces() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = [];
+      if (peg$c71.test(input.charAt(peg$currPos))) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c72); }
+      }
+      if (s2 !== peg$FAILED) {
+        while (s2 !== peg$FAILED) {
+          s1.push(s2);
+          if (peg$c71.test(input.charAt(peg$currPos))) {
+            s2 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s2 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c72); }
+          }
+        }
+      } else {
+        s1 = peg$c0;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+    function peg$parseeof() {
+      var s0, s1, s2;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      peg$silentFails++;
+      if (input.length > peg$currPos) {
+        s2 = input.charAt(peg$currPos);
+        peg$currPos++;
+      } else {
+        s2 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c52); }
+      }
+      peg$silentFails--;
+      if (s2 === peg$FAILED) {
+        s1 = peg$c49;
+      } else {
+        peg$currPos = s1;
+        s1 = peg$c0;
+      }
+      if (s1 !== peg$FAILED) {
+        s1 = input.substring(s0, peg$currPos);
+      }
+      s0 = s1;
+
+      return s0;
+    }
+
+
+      Qjs        = require('../qjs');
+      System     = require('../system');
+      if (!options.system) {
+        options.system = new System()
+      }
+
+      // converts head:X tail(... X)* to an array of Xs
+      function headTailToArray(head, tail) {
+        var result = [ head ];
+        for (var i = 0; i < tail.length; i++) {
+          result[i+1] = tail[i][tail[i].length-1];
+        }
+        return result;
+      }
+
+      // compile a [ [n1, expr1], ... ] to an array of constraints
+      function compileConstraints(varname, defs) {
+        var cs = [];
+        for (var i = 0; i < defs.length; i++) {
+          var name = defs[i][0];
+          var expr = defs[i][1];
+          var src  = "x = function(" + varname + ")" + "{ return " + expr + "; }";
+          var fn   = null;
+          try {
+            var fn = eval(src);
+          } catch(e) {
+            error("Syntax error in constraint: `" + expr + "`");
+          }
+          cs[i] = Qjs.constraint(name, fn);
+        }
+        return cs;
+      }
+
+
+    peg$result = peg$startRuleFunction();
+
+    if (peg$result !== peg$FAILED && peg$currPos === input.length) {
+      return peg$result;
+    } else {
+      if (peg$result !== peg$FAILED && peg$currPos < input.length) {
+        peg$fail({ type: "end", description: "end of input" });
+      }
+
+      throw peg$buildException(null, peg$maxFailExpected, peg$maxFailPos);
+    }
+  }
+
+  return {
+    SyntaxError: SyntaxError,
+    parse:       parse
+  };
+})();
+
+},{"../qjs":3,"../system":11}],11:[function(require,module,exports){
+var ArgumentError, Error, KeyError, Parser, Qjs, System, Type, TypeFactory, _, _ref;
 
 _ = require('underscore');
 
@@ -662,6 +2768,8 @@ Qjs = require('./qjs');
 Type = require('./type');
 
 TypeFactory = require('./support/factory');
+
+Parser = require('./syntax/parser');
 
 System = (function() {
   function System(types, main) {
@@ -714,8 +2822,31 @@ System = (function() {
     return callback();
   };
 
+  System.prototype.merge = function(other) {
+    var merged_main, merged_types;
+    if (!(other instanceof System)) {
+      throw new ArgumentError("Qjs.System expected, got", other);
+    }
+    merged_types = _.extend({}, this.types, other.types);
+    merged_main = other.main || this.main;
+    return new System(merged_types, merged_main);
+  };
+
+  System.prototype.parse = function(source) {
+    return Parser.parse(source, {
+      system: this.clone()
+    });
+  };
+
+  System.prototype.dress = function(value) {
+    if (!this.main) {
+      throw new Error("No main on System");
+    }
+    return this.main.dress(value);
+  };
+
   System.prototype.clone = function() {
-    return new System(_.clone(this.types), _.clone(this.main));
+    return new System(_.clone(this.types), this.main);
   };
 
   return System;
@@ -725,7 +2856,7 @@ System = (function() {
 module.exports = System;
 
 
-},{"./errors":1,"./qjs":2,"./support/factory":6,"./type":9,"underscore":18}],9:[function(require,module,exports){
+},{"./errors":2,"./qjs":3,"./support/factory":8,"./syntax/parser":10,"./type":12,"underscore":22}],12:[function(require,module,exports){
 var ArgumentError, NotImplementedError, Type, _ref;
 
 _ref = require('./errors'), ArgumentError = _ref.ArgumentError, NotImplementedError = _ref.NotImplementedError;
@@ -756,7 +2887,7 @@ Type = (function() {
 module.exports = Type;
 
 
-},{"./errors":1}],10:[function(require,module,exports){
+},{"./errors":2}],13:[function(require,module,exports){
 var AdType, ArgumentError, DressHelper, Type, TypeError, _, _ref,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -840,7 +2971,50 @@ AdType = (function(_super) {
 module.exports = AdType;
 
 
-},{"../errors":1,"../support/dress_helper":5,"../type":9,"underscore":18}],11:[function(require,module,exports){
+},{"../errors":2,"../support/dress_helper":7,"../type":12,"underscore":22}],14:[function(require,module,exports){
+var AnyType, Type,
+  __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+  __hasProp = {}.hasOwnProperty,
+  __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+Type = require('../type');
+
+AnyType = (function(_super) {
+  __extends(AnyType, _super);
+
+  function AnyType(name) {
+    this.name = name;
+    this.equals = __bind(this.equals, this);
+    AnyType.__super__.constructor.call(this, this.name);
+  }
+
+  AnyType.prototype.dress = function(value, helper) {
+    return value;
+  };
+
+  AnyType.prototype.defaultName = function() {
+    return "Any";
+  };
+
+  AnyType.prototype.include = function(value) {
+    return true;
+  };
+
+  AnyType.prototype.equals = function(other) {
+    if (!(other instanceof AnyType)) {
+      return false;
+    }
+    return true;
+  };
+
+  return AnyType;
+
+})(Type);
+
+module.exports = AnyType;
+
+
+},{"../type":12}],15:[function(require,module,exports){
 var BuiltinType, DressHelper, NotImplementedError, Type, _,
   __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
   __hasProp = {}.hasOwnProperty,
@@ -896,7 +3070,7 @@ BuiltinType = (function(_super) {
 module.exports = BuiltinType;
 
 
-},{"../errors":1,"../support/dress_helper":5,"../type":9,"underscore":18}],12:[function(require,module,exports){
+},{"../errors":2,"../support/dress_helper":7,"../type":12,"underscore":22}],16:[function(require,module,exports){
 var ArgumentError, DressHelper, Heading, RelationType, TupleType, Type, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -983,7 +3157,7 @@ RelationType = (function(_super) {
 module.exports = RelationType;
 
 
-},{"../errors":1,"../support/dress_helper":5,"../support/heading":7,"../type":9,"./tuple_type":16,"underscore":18}],13:[function(require,module,exports){
+},{"../errors":2,"../support/dress_helper":7,"../support/heading":9,"../type":12,"./tuple_type":20,"underscore":22}],17:[function(require,module,exports){
 var ArgumentError, CollectionType, DressHelper, SeqType, Type, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1041,7 +3215,7 @@ SeqType = (function(_super) {
 module.exports = SeqType;
 
 
-},{"../errors":1,"../support/collection_type":4,"../support/dress_helper":5,"../type":9,"underscore":18}],14:[function(require,module,exports){
+},{"../errors":2,"../support/collection_type":5,"../support/dress_helper":7,"../type":12,"underscore":22}],18:[function(require,module,exports){
 var ArgumentError, CollectionType, DressHelper, SetType, Type, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1111,8 +3285,8 @@ SetType = (function(_super) {
 module.exports = SetType;
 
 
-},{"../errors":1,"../support/collection_type":4,"../support/dress_helper":5,"../type":9,"underscore":18}],15:[function(require,module,exports){
-var ArgumentError, DEFAULT_CONSTRAINT_NAMES, DressHelper, SubType, Type, _,
+},{"../errors":2,"../support/collection_type":5,"../support/dress_helper":7,"../type":12,"underscore":22}],19:[function(require,module,exports){
+var ArgumentError, Constraint, DressHelper, SubType, Type, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1120,13 +3294,13 @@ _ = require('underscore');
 
 Type = require('../type');
 
+Constraint = require('../support/constraint');
+
 DressHelper = require('../support/dress_helper');
 
 ArgumentError = require('../errors').ArgumentError;
 
 _.str = require('underscore.string');
-
-DEFAULT_CONSTRAINT_NAMES = ['default', 'predicate'];
 
 SubType = (function(_super) {
   __extends(SubType, _super);
@@ -1141,8 +3315,16 @@ SubType = (function(_super) {
     if (!(this.superType instanceof Type)) {
       throw new ArgumentError("Qjs.Type expected, got", this.superType);
     }
-    if (typeof this.constraints !== "object") {
-      throw new ArgumentError("Hash expected for constraints, got", this.constraints);
+    if (this.constraints.constructor !== Array) {
+      throw new ArgumentError("Array expected for constraints, got", this.constraints);
+    }
+    if (!(this.constraints.length > 0)) {
+      throw new ArgumentError("Empty constraints not allowed on SubType");
+    }
+    if (!_.every(this.constraints, function(c) {
+      return c.constructor === Constraint;
+    })) {
+      throw new ArgumentError("Array of constraints expected, got", this.constraints);
     }
     SubType.__super__.constructor.call(this, this.name);
   }
@@ -1158,21 +3340,14 @@ SubType = (function(_super) {
       };
     })(this));
     _.each(this.constraints, (function(_this) {
-      return function(constraint, name) {
+      return function(constraint) {
         var msg;
-        if (typeof constraint === "function") {
-          if (constraint(uped)) {
-            return;
-          }
-        }
-        if ((constraint != null) && constraint.constructor === RegExp) {
-          if (constraint.test(uped)) {
-            return;
-          }
+        if (constraint.accept(uped)) {
+          return;
         }
         msg = helper.defaultErrorMessage(_this, value);
-        if (!_this.isDefaultConstraint(name)) {
-          msg += " (not " + name + ")";
+        if (!_this.defaultConstraint(constraint)) {
+          msg += " (not " + constraint.name + ")";
         }
         return helper.fail(msg);
       };
@@ -1181,12 +3356,12 @@ SubType = (function(_super) {
   };
 
   SubType.prototype.defaultName = function() {
-    return _.str.capitalize(_.keys(this.constraints)[0]);
+    return _.str.capitalize(this.constraints[0].name);
   };
 
   SubType.prototype.include = function(value) {
-    return this.superType.include(value) && _.every(this.constraints, function(c, n) {
-      return c(value);
+    return this.superType.include(value) && _.every(this.constraints, function(c) {
+      return c.accept(value);
     });
   };
 
@@ -1194,11 +3369,13 @@ SubType = (function(_super) {
     if (!(other instanceof SubType)) {
       return false;
     }
-    return other.superType === this.superType && _.isEqual(_.values(other.constraints), _.values(this.constraints));
+    return this.superType.equals(other.superType) && this.constraints.length === other.constraints.length && _.every(_.zip(this.constraints, other.constraints), function(pair) {
+      return pair[0].equals(pair[1]);
+    });
   };
 
-  SubType.prototype.isDefaultConstraint = function(name) {
-    return _.contains(DEFAULT_CONSTRAINT_NAMES, name) || _.str.capitalize(name.toString()) === this.name;
+  SubType.prototype.defaultConstraint = function(constraint) {
+    return constraint.isAnonymous() || _.str.capitalize(constraint.name) === this.name;
   };
 
   return SubType;
@@ -1208,7 +3385,7 @@ SubType = (function(_super) {
 module.exports = SubType;
 
 
-},{"../errors":1,"../support/dress_helper":5,"../type":9,"underscore":18,"underscore.string":18}],16:[function(require,module,exports){
+},{"../errors":2,"../support/constraint":6,"../support/dress_helper":7,"../type":12,"underscore":22,"underscore.string":22}],20:[function(require,module,exports){
 var ArgumentError, DressHelper, Heading, TupleType, Type, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1298,7 +3475,7 @@ TupleType = (function(_super) {
 module.exports = TupleType;
 
 
-},{"../errors":1,"../support/dress_helper":5,"../support/heading":7,"../type":9,"underscore":18}],17:[function(require,module,exports){
+},{"../errors":2,"../support/dress_helper":7,"../support/heading":9,"../type":12,"underscore":22}],21:[function(require,module,exports){
 var ArgumentError, DressHelper, Type, UnionType, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -1322,13 +3499,11 @@ UnionType = (function(_super) {
     if (this.name == null) {
       this.name = null;
     }
-    _.each(this.candidates, (function(_this) {
-      return function(c) {
-        if (!(c instanceof Type)) {
-          throw new ArgumentError("Qjs.Type expected, got", c);
-        }
-      };
-    })(this));
+    _.each(this.candidates, function(c) {
+      if (!(c instanceof Type)) {
+        throw new ArgumentError("Qjs.Type expected, got", c);
+      }
+    });
     UnionType.__super__.constructor.call(this, this.name);
   }
 
@@ -1384,9 +3559,80 @@ UnionType = (function(_super) {
 module.exports = UnionType;
 
 
-},{"../errors":1,"../support/dress_helper":5,"../type":9,"underscore":18,"underscore.string":18}],18:[function(require,module,exports){
+},{"../errors":2,"../support/dress_helper":7,"../type":12,"underscore":22,"underscore.string":22}],22:[function(require,module,exports){
 
-},{}],19:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
+var DataType, should, _;
+
+_ = require('underscore');
+
+DataType = require('../../../lib/data_type');
+
+should = require('should');
+
+describe("Using Q's abstract data types in JavaScript", function() {
+  var MyColor;
+  MyColor = (function() {
+    function MyColor(r, g, b) {
+      this.r = r;
+      this.g = g;
+      this.b = b;
+    }
+
+    MyColor.prototype.toRGB = function() {
+      return {
+        r: this.r,
+        g: this.g,
+        b: this.b
+      };
+    };
+
+    MyColor.rgb = function(tuple) {
+      return new MyColor(tuple.r, tuple.g, tuple.b);
+    };
+
+    return MyColor;
+
+  })();
+  _.extend(MyColor, DataType);
+  MyColor.contract('rgb', {
+    r: byteType,
+    g: byteType,
+    b: byteType
+  });
+  describe('The example class', function() {
+    return it('should be a class', function() {
+      return MyColor.should.be.an["instanceof"](Function);
+    });
+  });
+  describe('the dress method, when valid', function() {
+    var subject;
+    subject = MyColor.dress({
+      r: 12,
+      g: 13,
+      b: 28
+    });
+    it('should be an instance of the example class', function() {
+      return subject.should.be.an["instanceof"](MyColor);
+    });
+    return it('should set the instance variables correctly', function() {
+      subject.r.should.equal(12);
+      subject.g.should.equal(13);
+      return subject.b.should.equal(28);
+    });
+  });
+  return describe('the up method, when already a color', function() {
+    var subject, value;
+    value = new MyColor(12, 13, 28);
+    subject = MyColor.dress(value);
+    return it('should remain the same', function() {
+      return subject.should.equal(value);
+    });
+  });
+});
+
+
+},{"../../../lib/data_type":1,"should":22,"underscore":22}],24:[function(require,module,exports){
 var Attribute, should;
 
 Attribute = require('../../../lib/support/attribute');
@@ -1403,18 +3649,20 @@ describe("Attribute#constructor", function() {
 });
 
 
-},{"../../../lib/support/attribute":3,"should":18}],20:[function(require,module,exports){
-var Attribute, should;
+},{"../../../lib/support/attribute":4,"should":22}],25:[function(require,module,exports){
+var Attribute, BuiltinType, should;
 
 Attribute = require('../../../lib/support/attribute');
+
+BuiltinType = require('../../../lib/type/builtin_type');
 
 should = require('should');
 
 describe("Attribute#equality", function() {
   var attr1, attr2, attr3;
-  attr1 = new Attribute('red', intType);
-  attr2 = new Attribute('red', intType);
-  attr3 = new Attribute('blue', intType);
+  attr1 = new Attribute('red', new BuiltinType(Number));
+  attr2 = new Attribute('red', new BuiltinType(Number));
+  attr3 = new Attribute('blue', new BuiltinType(Number));
   it('should apply structural equality', function() {
     return attr1.equals(attr2).should.be["true"];
   });
@@ -1427,7 +3675,7 @@ describe("Attribute#equality", function() {
 });
 
 
-},{"../../../lib/support/attribute":3,"should":18}],21:[function(require,module,exports){
+},{"../../../lib/support/attribute":4,"../../../lib/type/builtin_type":15,"should":22}],26:[function(require,module,exports){
 var ArgumentError, Attribute, KeyError, should, _ref;
 
 Attribute = require('../../../lib/support/attribute');
@@ -1445,11 +3693,9 @@ describe("Attribute#fetchOn", function() {
   describe('with an object that does not support fetch', function() {
     var arg, e, lambda;
     arg = 12;
-    lambda = (function(_this) {
-      return function() {
-        return subject(arg);
-      };
-    })(this);
+    lambda = function() {
+      return subject(arg);
+    };
     expect(lambda).toThrow();
     try {
       return lambda();
@@ -1482,21 +3728,19 @@ describe("Attribute#fetchOn", function() {
       return e.should.be.an["instanceof"](KeyError);
     }
   });
-  return describe('when the key is missing and a callback is present', (function(_this) {
-    return function() {
-      var arg;
-      arg = {
-        other: 123
-      };
-      return subject(arg, function() {
-        return "none";
-      }).should.equal("none");
+  return describe('when the key is missing and a callback is present', function() {
+    var arg;
+    arg = {
+      other: 123
     };
-  })(this));
+    return subject(arg, function() {
+      return "none";
+    }).should.equal("none");
+  });
 });
 
 
-},{"../../../lib/errors":1,"../../../lib/support/attribute":3,"should":18}],22:[function(require,module,exports){
+},{"../../../lib/errors":2,"../../../lib/support/attribute":4,"should":22}],27:[function(require,module,exports){
 var Attribute, should;
 
 Attribute = require('../../../lib/support/attribute');
@@ -1510,7 +3754,67 @@ describe("Attribute#toName", function() {
 });
 
 
-},{"../../../lib/support/attribute":3,"should":18}],23:[function(require,module,exports){
+},{"../../../lib/support/attribute":4,"should":22}],28:[function(require,module,exports){
+var Constraint, should;
+
+Constraint = require('../../../lib/support/constraint');
+
+should = require('should');
+
+describe("Constraint#accept", function() {
+  describe('with a function', function() {
+    var constraint;
+    constraint = new Constraint('positive', function(i) {
+      return i > 0;
+    });
+    it('accepts positive numbers', function() {
+      return constraint.accept(12).should.be["true"];
+    });
+    return it('rejects negative numbers', function() {
+      return constraint.accept(-12).should.be["false"];
+    });
+  });
+  return describe('with a regexp', function() {
+    var constraint;
+    constraint = new Constraint('word', /[a-z]+/);
+    it('accepts words', function() {
+      return constraint.accept("abgd").should.be["true"];
+    });
+    return it('rejects numbers', function() {
+      return constraint.accept("12").should.be["false"];
+    });
+  });
+});
+
+
+},{"../../../lib/support/constraint":6,"should":22}],29:[function(require,module,exports){
+var Constraint, should;
+
+Constraint = require('../../../lib/support/constraint');
+
+should = require('should');
+
+describe("Constraint#equals", function() {
+  var c1, c2, c3, fn1, fn2;
+  fn1 = function(i) {
+    return i > 0;
+  };
+  fn2 = function(i) {
+    return i > 100;
+  };
+  c1 = new Constraint('positive', fn1);
+  c2 = new Constraint('othername', fn1);
+  c3 = new Constraint('positive', fn2);
+  it('applies structural equivalence', function() {
+    return c1.equals(c2).should.be["true"];
+  });
+  return it('distinguishes different functions', function() {
+    return c1.equals(c3).should.be["false"];
+  });
+});
+
+
+},{"../../../lib/support/constraint":6,"should":22}],30:[function(require,module,exports){
 var ArgumentError, Attribute, Heading, should;
 
 Attribute = require('../../../lib/support/attribute');
@@ -1555,7 +3859,7 @@ describe("Heading#constructor", function() {
 });
 
 
-},{"../../../lib/errors":1,"../../../lib/support/attribute":3,"../../../lib/support/heading":7,"should":18}],24:[function(require,module,exports){
+},{"../../../lib/errors":2,"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"should":22}],31:[function(require,module,exports){
 var Attribute, Heading, should, _;
 
 Attribute = require('../../../lib/support/attribute');
@@ -1589,27 +3893,34 @@ describe("Heading#each", function() {
 });
 
 
-},{"../../../lib/support/attribute":3,"../../../lib/support/heading":7,"should":18,"underscore":18}],25:[function(require,module,exports){
-var Attribute, Heading, should;
+},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"should":22,"underscore":22}],32:[function(require,module,exports){
+var Attribute, BuiltinType, Heading, should;
 
 Attribute = require('../../../lib/support/attribute');
 
 Heading = require('../../../lib/support/heading');
 
+BuiltinType = require('../../../lib/type/builtin_type');
+
 should = require('should');
 
 describe("Heading#equality", function() {
-  var h1, h2, h3;
-  h1 = new Heading([new Attribute('r', intType), new Attribute('b', intType)]);
-  h2 = new Heading([new Attribute('b', intType), new Attribute('r', intType)]);
-  h3 = new Heading([new Attribute('b', intType)]);
+  var a, b, g, h1, h2, h3, h4, r;
+  r = new Attribute('r', intType);
+  g = new Attribute('g', intType);
+  b = new Attribute('b', intType);
+  a = new Attribute('a', intType);
+  h1 = new Heading([r, g, b]);
+  h2 = new Heading([r, b, g]);
+  h3 = new Heading([r, b]);
+  h4 = new Heading([r, b, a]);
   it('should apply structural equality', function() {
     h1.equals(h2).should.be["true"];
     return h2.equals(h1).should.be["true"];
   });
-  it('should apply distinguish different types', function() {
+  it('should distinguish different types', function() {
     h1.equals(h3).should.be["false"];
-    return h2.equals(h3).should.be["false"];
+    return h1.equals(h4).should.be["false"];
   });
   return it('should be a total function, with null for non types', function() {
     return should.equal(h1.equals(12), null);
@@ -1617,7 +3928,7 @@ describe("Heading#equality", function() {
 });
 
 
-},{"../../../lib/support/attribute":3,"../../../lib/support/heading":7,"should":18}],26:[function(require,module,exports){
+},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"../../../lib/type/builtin_type":15,"should":22}],33:[function(require,module,exports){
 var Attribute, Heading, should;
 
 Attribute = require('../../../lib/support/attribute');
@@ -1649,7 +3960,7 @@ describe("Heading#size", function() {
 });
 
 
-},{"../../../lib/support/attribute":3,"../../../lib/support/heading":7,"should":18}],27:[function(require,module,exports){
+},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"should":22}],34:[function(require,module,exports){
 var Attribute, Heading, should;
 
 Attribute = require('../../../lib/support/attribute');
@@ -1679,14 +3990,16 @@ describe("Heading#toName", function() {
 });
 
 
-},{"../../../lib/support/attribute":3,"../../../lib/support/heading":7,"should":18}],28:[function(require,module,exports){
-var Qjs, SubType, Type, TypeError, should;
+},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"should":22}],35:[function(require,module,exports){
+var Qjs, SubType, System, Type, TypeError, should;
 
 Qjs = require('../../lib/qjs');
 
 Type = require('../../lib/type');
 
 SubType = require('../../lib/type/sub_type');
+
+System = require('../../lib/system');
 
 TypeError = require('../../lib/errors').TypeError;
 
@@ -1697,7 +4010,7 @@ describe('Qjs', function() {
     (typeof Qjs.VERSION).should.not.equal('undefined');
     return (Qjs.VERSION != null).should.be["true"];
   });
-  return it('should have DSL methods', function() {
+  it('should have DSL methods', function() {
     var e, lambda, t;
     t = Qjs.type(Number, function(i) {
       return i >= 0;
@@ -1715,11 +4028,16 @@ describe('Qjs', function() {
       return e.should.be.an["instanceof"](TypeError);
     }
   });
+  return it('should have a parse method', function() {
+    return Qjs.parse(".Number").should.be.an["instanceof"](System);
+  });
 });
 
 
-},{"../../lib/errors":1,"../../lib/qjs":2,"../../lib/type":9,"../../lib/type/sub_type":15,"should":18}],29:[function(require,module,exports){
-var BuiltinType, SubType, boolType, byteType, floatType, intType, numType, stringType, _;
+},{"../../lib/errors":2,"../../lib/qjs":3,"../../lib/system":11,"../../lib/type":12,"../../lib/type/sub_type":19,"should":22}],36:[function(require,module,exports){
+var BuiltinType, Constraint, SubType, boolType, byteType, floatType, intType, numType, stringType, _;
+
+Constraint = require('../../lib/support/constraint');
 
 BuiltinType = require('../../lib/type/builtin_type');
 
@@ -1733,29 +4051,27 @@ boolType = new BuiltinType(Boolean, 'boolType');
 
 stringType = new BuiltinType(String, 'stringType');
 
-intType = new SubType(numType, {
-  noDecimal: function(i) {
+intType = new SubType(numType, [
+  new Constraint('noDecimal', function(i) {
     return i % 1 === 0;
-  },
-  noDot: function(i) {
+  }), new Constraint('noDot', function(i) {
     return i.toString().indexOf('.') === -1;
-  }
-}, 'intType');
+  })
+], 'intType');
 
-floatType = new SubType(numType, {
-  hasDecimal: function(i) {
+floatType = new SubType(numType, [
+  new Constraint('hasDecimal', function(i) {
     return i % 1 !== 0;
-  },
-  hasDot: function(i) {
+  }), new Constraint('hasDot', function(i) {
     return i.toString().indexOf('.') !== -1;
-  }
-}, 'floatType');
+  })
+], 'floatType');
 
-byteType = new SubType(intType, {
-  byte: function(i) {
+byteType = new SubType(intType, [
+  new Constraint('byte', function(i) {
     return i >= 0 && i <= 255;
-  }
-});
+  })
+]);
 
 module.exports = {
   numType: numType,
@@ -1767,7 +4083,393 @@ module.exports = {
 };
 
 
-},{"../../lib/type/builtin_type":11,"../../lib/type/sub_type":15,"underscore":18}],30:[function(require,module,exports){
+},{"../../lib/support/constraint":6,"../../lib/type/builtin_type":15,"../../lib/type/sub_type":19,"underscore":22}],37:[function(require,module,exports){
+var AnyType, Parser, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+AnyType = require('../../../lib/type/any_type');
+
+should = require('should');
+
+describe("Parser#any_type", function() {
+  var subject;
+  subject = Parser.parse(".", {
+    startRule: "type"
+  });
+  return it('should return an AnyType', function() {
+    return subject.should.be.an["instanceof"](AnyType);
+  });
+});
+
+
+},{"../../../lib/syntax/parser":10,"../../../lib/type/any_type":14,"should":22}],38:[function(require,module,exports){
+var Attribute, BuiltinType, Parser, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+BuiltinType = require('../../../lib/type/builtin_type');
+
+Attribute = require('../../../lib/support/attribute');
+
+should = require('should');
+
+describe("Parser#attribute", function() {
+  var subject;
+  subject = Parser.parse("foo: .String", {
+    startRule: "attribute"
+  });
+  return it('should return an Attribute', function() {
+    subject.should.be.an["instanceof"](Attribute);
+    subject.name.should.equal('foo');
+    return subject.type.should.be.an["instanceof"](BuiltinType);
+  });
+});
+
+
+},{"../../../lib/support/attribute":4,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"should":22}],39:[function(require,module,exports){
+var BuiltinType, Parser, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+BuiltinType = require('../../../lib/type/builtin_type');
+
+should = require('should');
+
+describe("Parser#builtin_type", function() {
+  var subject;
+  subject = Parser.parse(".String", {
+    startRule: "type"
+  });
+  return it('should return a BuiltinType', function() {
+    subject.should.be.an["instanceof"](BuiltinType);
+    return subject.jsType.should.equal(String);
+  });
+});
+
+
+},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"should":22}],40:[function(require,module,exports){
+var Attribute, BuiltinType, Heading, Parser, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+BuiltinType = require('../../../lib/type/builtin_type');
+
+Heading = require('../../../lib/support/heading');
+
+Attribute = require('../../../lib/support/attribute');
+
+should = require('should');
+
+describe("Parser#heading", function() {
+  var subject;
+  subject = Parser.parse("foo: .String, bar: .Number", {
+    startRule: "heading"
+  });
+  return it('should return a Heading', function() {
+    subject.should.be.an["instanceof"](Heading);
+    return subject.size().should.equal(2);
+  });
+});
+
+
+},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"should":22}],41:[function(require,module,exports){
+var Attribute, BuiltinType, Heading, Parser, RelationType, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+BuiltinType = require('../../../lib/type/builtin_type');
+
+RelationType = require('../../../lib/type/relation_type');
+
+Heading = require('../../../lib/support/heading');
+
+Attribute = require('../../../lib/support/attribute');
+
+should = require('should');
+
+describe("Parser#relation_type", function() {
+  var bar, expected, foo, heading, subject;
+  subject = Parser.parse("{{foo: .String, bar: .Number}}", {
+    startRule: "type"
+  });
+  foo = new Attribute('foo', new BuiltinType(String));
+  bar = new Attribute('bar', new BuiltinType(Number));
+  heading = new Heading([foo, bar]);
+  expected = new RelationType(heading);
+  return it('should return a RelationType', function() {
+    subject.should.be.an["instanceof"](RelationType);
+    return subject.equals(expected).should.be["true"];
+  });
+});
+
+
+},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/relation_type":16,"should":22}],42:[function(require,module,exports){
+var BuiltinType, Parser, SeqType, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+SeqType = require('../../../lib/type/seq_type');
+
+BuiltinType = require('../../../lib/type/builtin_type');
+
+should = require('should');
+
+describe("Parser#seq_type", function() {
+  var subject;
+  subject = Parser.parse("[.String]", {
+    startRule: "type"
+  });
+  return it('should return a SeqType', function() {
+    subject.should.be.an["instanceof"](SeqType);
+    subject.elmType.should.be.an["instanceof"](BuiltinType);
+    return subject.elmType.jsType.should.equal(String);
+  });
+});
+
+
+},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/seq_type":17,"should":22}],43:[function(require,module,exports){
+var BuiltinType, Parser, SetType, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+SetType = require('../../../lib/type/set_type');
+
+BuiltinType = require('../../../lib/type/builtin_type');
+
+should = require('should');
+
+describe("Parser#set_type", function() {
+  var subject;
+  subject = Parser.parse("{.String}", {
+    startRule: "type"
+  });
+  return it('should return a SetType', function() {
+    subject.should.be.an["instanceof"](SetType);
+    subject.elmType.should.be.an["instanceof"](BuiltinType);
+    return subject.elmType.jsType.should.equal(String);
+  });
+});
+
+
+},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/set_type":18,"should":22}],44:[function(require,module,exports){
+var BuiltinType, Constraint, Parser, SubType, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+Constraint = require('../../../lib/support/constraint');
+
+BuiltinType = require('../../../lib/type/builtin_type');
+
+SubType = require('../../../lib/type/sub_type');
+
+should = require('should');
+
+describe("Parser#sub_type", function() {
+  describe('with a single constraint', function() {
+    var subject;
+    subject = Parser.parse(".Number( i | i >= 0 )", {
+      startRule: "type"
+    });
+    it('should return a SubType', function() {
+      return subject.should.be.an["instanceof"](SubType);
+    });
+    it('should have the correct constraint', function() {
+      subject.constraints.length.should.equal(1);
+      subject.constraints[0].should.be.an["instanceof"](Constraint);
+      subject.constraints[0].accept(12).should.be["true"];
+      return subject.constraints[0].accept(-12).should.be["false"];
+    });
+    return it('should dress properly', function() {
+      var e;
+      subject.dress(12).should.equal(12);
+      try {
+        subject.dress(-1);
+        return false.should.be["true"];
+      } catch (_error) {
+        e = _error;
+        return e;
+      }
+    });
+  });
+  describe('with a constraint on an AnyType', function() {
+    var subject;
+    subject = Parser.parse(".( v | v === null )", {
+      startRule: "type"
+    });
+    it('should return a SubType', function() {
+      return subject.should.be.an["instanceof"](SubType);
+    });
+    return it('should dress properly', function() {
+      var e;
+      should.equal(subject.dress(null), null);
+      try {
+        subject.dress(-1);
+        return false.should.be["true"];
+      } catch (_error) {
+        e = _error;
+        return e;
+      }
+    });
+  });
+  describe('with multiple, named constraints', function() {
+    var subject;
+    subject = Parser.parse(".Number( i | positive: i >= 0, small: i <= 255 )", {
+      startRule: "type"
+    });
+    it('should return a SubType', function() {
+      return subject.should.be.an["instanceof"](SubType);
+    });
+    it('should dress properly according to positive', function() {
+      var e;
+      subject.dress(12).should.equal(12);
+      try {
+        subject.dress(-1);
+        return false.should.be["true"];
+      } catch (_error) {
+        e = _error;
+        return e;
+      }
+    });
+    return it('should dress properly according to small', function() {
+      var e;
+      try {
+        subject.dress(256);
+        return false.should.be["true"];
+      } catch (_error) {
+        e = _error;
+        return e;
+      }
+    });
+  });
+  return describe('with a complex constraint expression', function() {
+    var subject;
+    subject = Parser.parse(".Number( i | noDot: i.toString().indexOf('.') == -1 )", {
+      startRule: "type"
+    });
+    return it('should return a SubType', function() {
+      return subject.should.be.an["instanceof"](SubType);
+    });
+  });
+});
+
+
+},{"../../../lib/support/constraint":6,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/sub_type":19,"should":22}],45:[function(require,module,exports){
+var BuiltinType, Parser, System, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+System = require('../../../lib/system');
+
+BuiltinType = require('../../../lib/type/builtin_type');
+
+should = require('should');
+
+describe("Parser#system", function() {
+  describe('when a single type', function() {
+    var subject;
+    subject = Parser.parse(".String", {
+      startRule: "system"
+    });
+    it('should return a System', function() {
+      return subject.should.be.an["instanceof"](System);
+    });
+    it('should not have any type', function() {
+      return subject.types.should.be.empty;
+    });
+    return it('should have a main type', function() {
+      return subject.main.should.be.an["instanceof"](BuiltinType);
+    });
+  });
+  describe('with some definitions and a main type', function() {
+    var subject;
+    subject = Parser.parse("Str = .String\nStr", {
+      startRule: "system"
+    });
+    it('should return a System', function() {
+      return subject.should.be.an["instanceof"](System);
+    });
+    it('should have a type', function() {
+      subject.getType('Str').should.be.an["instanceof"](BuiltinType);
+      return subject.getType('Str').name.should.equal('Str');
+    });
+    return it('should have a main type', function() {
+      return subject.main.should.be.an["instanceof"](BuiltinType);
+    });
+  });
+  return describe('with some definitions but no main type', function() {
+    var subject;
+    subject = Parser.parse("Str = .String\nInt = .Number", {
+      startRule: "system"
+    });
+    it('should return a System', function() {
+      return subject.should.be.an["instanceof"](System);
+    });
+    it('should have the types', function() {
+      subject.getType('Str').should.be.an["instanceof"](BuiltinType);
+      return subject.getType('Int').should.be.an["instanceof"](BuiltinType);
+    });
+    return it('should have no main type', function() {
+      return expect(subject.main).toBeNull();
+    });
+  });
+});
+
+
+},{"../../../lib/syntax/parser":10,"../../../lib/system":11,"../../../lib/type/builtin_type":15,"should":22}],46:[function(require,module,exports){
+var Attribute, BuiltinType, Heading, Parser, TupleType, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+BuiltinType = require('../../../lib/type/builtin_type');
+
+TupleType = require('../../../lib/type/tuple_type');
+
+Heading = require('../../../lib/support/heading');
+
+Attribute = require('../../../lib/support/attribute');
+
+should = require('should');
+
+describe("Parser#heading", function() {
+  var bar, expected, foo, heading, subject;
+  subject = Parser.parse("{foo: .String, bar: .Number}", {
+    startRule: "type"
+  });
+  foo = new Attribute('foo', new BuiltinType(String));
+  bar = new Attribute('bar', new BuiltinType(Number));
+  heading = new Heading([foo, bar]);
+  expected = new TupleType(heading);
+  return it('should return a TupleType', function() {
+    subject.should.be.an["instanceof"](TupleType);
+    return subject.equals(expected).should.be["true"];
+  });
+});
+
+
+},{"../../../lib/support/attribute":4,"../../../lib/support/heading":9,"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/tuple_type":20,"should":22}],47:[function(require,module,exports){
+var BuiltinType, Parser, UnionType, should;
+
+Parser = require('../../../lib/syntax/parser');
+
+UnionType = require('../../../lib/type/union_type');
+
+BuiltinType = require('../../../lib/type/builtin_type');
+
+should = require('should');
+
+describe("Parser#union_type", function() {
+  var subject;
+  subject = Parser.parse(".String|.Number|.Boolean", {
+    startRule: "type"
+  });
+  return it('should return a SetType', function() {
+    return subject.should.be.an["instanceof"](UnionType);
+  });
+});
+
+
+},{"../../../lib/syntax/parser":10,"../../../lib/type/builtin_type":15,"../../../lib/type/union_type":21,"should":22}],48:[function(require,module,exports){
 var ArgumentError, Error, System, should, _ref;
 
 _ref = require('../../../lib/errors'), ArgumentError = _ref.ArgumentError, Error = _ref.Error;
@@ -1834,7 +4536,7 @@ describe("System#addType", function() {
 });
 
 
-},{"../../../lib/errors":1,"../../../lib/system":8,"should":18}],31:[function(require,module,exports){
+},{"../../../lib/errors":2,"../../../lib/system":11,"should":22}],49:[function(require,module,exports){
 var System, should;
 
 System = require('../../../lib/system');
@@ -1869,7 +4571,7 @@ describe("System#clone", function() {
 });
 
 
-},{"../../../lib/system":8,"should":18}],32:[function(require,module,exports){
+},{"../../../lib/system":11,"should":22}],50:[function(require,module,exports){
 var System, should;
 
 System = require('../../../lib/system');
@@ -1885,7 +4587,50 @@ describe("System#constructor", function() {
 });
 
 
-},{"../../../lib/system":8,"should":18}],33:[function(require,module,exports){
+},{"../../../lib/system":11,"should":22}],51:[function(require,module,exports){
+var System, TypeError, should;
+
+TypeError = require('../../../lib/errors').TypeError;
+
+System = require('../../../lib/system');
+
+should = require('should');
+
+describe('System#dress', function() {
+  describe("when a main", function() {
+    var system;
+    system = Qjs.parse(".Number");
+    return it('delegates to the main', function() {
+      var e, error;
+      system.dress(12).should.equal(12);
+      try {
+        system.dress("foo");
+      } catch (_error) {
+        e = _error;
+        error = e;
+      }
+      return error.should.be.an["instanceof"](TypeError);
+    });
+  });
+  return describe("when no main", function() {
+    var system;
+    system = Qjs.parse("Num = .Number");
+    return it('throws an Error', function() {
+      var e, error;
+      try {
+        system.dress("foo");
+      } catch (_error) {
+        e = _error;
+        error = e;
+      }
+      error.should.be.an["instanceof"](Error);
+      return error.message.should.equal("No main on System");
+    });
+  });
+});
+
+
+},{"../../../lib/errors":2,"../../../lib/system":11,"should":22}],52:[function(require,module,exports){
 var SubType, System, TupleType, TypeError, should;
 
 TypeError = require('../../../lib/errors').TypeError;
@@ -1912,7 +4657,7 @@ describe("System#constructor", function() {
   });
   return describe('for building a sub type', function() {
     var subject;
-    subject = system.subtype(Number, function(i) {
+    subject = system.sub_type(Number, function(i) {
       return i >= 0;
     });
     it('should be a SubType', function() {
@@ -1938,7 +4683,7 @@ describe("System#constructor", function() {
 });
 
 
-},{"../../../lib/errors":1,"../../../lib/system":8,"../../../lib/type/sub_type":15,"../../../lib/type/tuple_type":16,"should":18}],34:[function(require,module,exports){
+},{"../../../lib/errors":2,"../../../lib/system":11,"../../../lib/type/sub_type":19,"../../../lib/type/tuple_type":20,"should":22}],53:[function(require,module,exports){
 var KeyError, System, TupleType, should;
 
 KeyError = require('../../../lib/errors').KeyError;
@@ -1999,7 +4744,7 @@ describe('System#fetch', function() {
 });
 
 
-},{"../../../lib/errors":1,"../../../lib/system":8,"../../../lib/type/tuple_type":16,"should":18}],35:[function(require,module,exports){
+},{"../../../lib/errors":2,"../../../lib/system":11,"../../../lib/type/tuple_type":20,"should":22}],54:[function(require,module,exports){
 var System, TupleType, should;
 
 System = require('../../../lib/system');
@@ -2035,7 +4780,118 @@ describe("System#[]", function() {
 });
 
 
-},{"../../../lib/system":8,"../../../lib/type/tuple_type":16,"should":18}],36:[function(require,module,exports){
+},{"../../../lib/system":11,"../../../lib/type/tuple_type":20,"should":22}],55:[function(require,module,exports){
+var BuiltinType, KeyError, System, Type, should;
+
+KeyError = require('../../../lib/errors').KeyError;
+
+System = require('../../../lib/system');
+
+Type = require('../../../lib/type');
+
+BuiltinType = require('../../../lib/type/builtin_type');
+
+should = require('should');
+
+describe('System#merge', function() {
+  var should_be_a_system;
+  should_be_a_system = function(subject) {
+    return function() {
+      return subject.should.be.an["instanceof"](System);
+    };
+  };
+  describe("when disjoint", function() {
+    var s1, s2, subject;
+    s1 = Qjs.parse("Str = .String");
+    s2 = Qjs.parse("Num = .Number");
+    subject = s1.merge(s2);
+    it('should be a System', should_be_a_system(subject));
+    return it('should merge the types, by name', function() {
+      subject['Str'].should.be.an["instanceof"](Type);
+      return subject['Num'].should.be.an["instanceof"](Type);
+    });
+  });
+  describe("with two mains", function() {
+    var s1, s2, subject;
+    s1 = Qjs.parse(".String");
+    s2 = Qjs.parse(".Number");
+    subject = s1.merge(s2);
+    it('should be a System', should_be_a_system(subject));
+    return it('should give priority to the second one', function() {
+      subject.main.should.be.an["instanceof"](BuiltinType);
+      return subject.main.jsType.should.equal(Number);
+    });
+  });
+  describe("with one main at left", function() {
+    var s1, s2, subject;
+    s1 = Qjs.parse(".String");
+    s2 = Qjs.parse("Num = .Number");
+    subject = s1.merge(s2);
+    it('should be a System', should_be_a_system(subject));
+    return it('should use the only main available', function() {
+      subject.main.should.be.an["instanceof"](BuiltinType);
+      return subject.main.jsType.should.equal(String);
+    });
+  });
+  return describe("with one main at right", function() {
+    var s1, s2, subject;
+    s1 = Qjs.parse("Num = .Number");
+    s2 = Qjs.parse(".String");
+    subject = s1.merge(s2);
+    it('should be a System', should_be_a_system(subject));
+    return it('should use the only main available', function() {
+      subject.main.should.be.an["instanceof"](BuiltinType);
+      return subject.main.jsType.should.equal(String);
+    });
+  });
+});
+
+
+},{"../../../lib/errors":2,"../../../lib/system":11,"../../../lib/type":12,"../../../lib/type/builtin_type":15,"should":22}],56:[function(require,module,exports){
+var KeyError, Qjs, System, Type, should;
+
+KeyError = require('../../../lib/errors').KeyError;
+
+Qjs = require('../../../lib/qjs');
+
+System = require('../../../lib/system');
+
+Type = require('../../../lib/type');
+
+should = require('should');
+
+describe('System#parse', function() {
+  var system;
+  system = Qjs.parse('Num = .Number');
+  describe("when the new system does not make cross-references", function() {
+    var subject;
+    subject = system.parse('Str = .String');
+    it('should return another System', function() {
+      subject.should.be.an["instanceof"](System);
+      return subject.should.not.equal(system);
+    });
+    it('should have the types of the original system', function() {
+      return subject['Num'].should.be.an["instanceof"](Type);
+    });
+    return it('should have the new types', function() {
+      return subject['Str'].should.be.an["instanceof"](Type);
+    });
+  });
+  return describe("when the new system does make cross-references", function() {
+    var subject;
+    subject = system.parse('Int = Num( i | i >= 0 )');
+    it('should return another System', function() {
+      subject.should.be.an["instanceof"](System);
+      return subject.should.not.equal(system);
+    });
+    return it('should have the new types', function() {
+      return subject['Int'].should.be.an["instanceof"](Type);
+    });
+  });
+});
+
+
+},{"../../../lib/errors":2,"../../../lib/qjs":3,"../../../lib/system":11,"../../../lib/type":12,"should":22}],57:[function(require,module,exports){
 var AdType, ArgumentError, TypeError, should, _ref;
 
 AdType = require('../../../../lib/type/ad_type');
@@ -2100,7 +4956,7 @@ describe("AdType#constructor", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/ad_type":10,"should":18}],37:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/ad_type":13,"should":22}],58:[function(require,module,exports){
 var AdType, should;
 
 AdType = require('../../../../lib/type/ad_type');
@@ -2117,7 +4973,7 @@ describe("AdType#defaultName", function() {
 });
 
 
-},{"../../../../lib/type/ad_type":10,"should":18}],38:[function(require,module,exports){
+},{"../../../../lib/type/ad_type":13,"should":22}],59:[function(require,module,exports){
 var AdType, ArgumentError, TypeError, should, _ref;
 
 AdType = require('../../../../lib/type/ad_type');
@@ -2199,7 +5055,7 @@ describe("AdType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/ad_type":10,"should":18}],39:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/ad_type":13,"should":22}],60:[function(require,module,exports){
 var AdType, should;
 
 AdType = require('../../../../lib/type/ad_type');
@@ -2218,7 +5074,7 @@ describe("AdType#include", function() {
 });
 
 
-},{"../../../../lib/type/ad_type":10,"should":18}],40:[function(require,module,exports){
+},{"../../../../lib/type/ad_type":13,"should":22}],61:[function(require,module,exports){
 var AdType, ArgumentError, TypeError, should, _ref;
 
 AdType = require('../../../../lib/type/ad_type');
@@ -2241,7 +5097,159 @@ describe("AdType#name", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/ad_type":10,"should":18}],41:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/ad_type":13,"should":22}],62:[function(require,module,exports){
+var AnyType, should;
+
+AnyType = require('../../../../lib/type/any_type');
+
+should = require('should');
+
+describe("AnyType#constructor", function() {
+  var type;
+  type = new AnyType;
+  return it('should create an AnyType instance', function() {
+    return type.should.be.an["instanceof"](AnyType);
+  });
+});
+
+
+},{"../../../../lib/type/any_type":14,"should":22}],63:[function(require,module,exports){
+var AnyType, should;
+
+AnyType = require('../../../../lib/type/any_type');
+
+should = require('should');
+
+describe('AnyType#defaultName', function() {
+  var type;
+  type = new AnyType("any");
+  return it('has a default name', function() {
+    return type.defaultName().should.equal("Any");
+  });
+});
+
+
+},{"../../../../lib/type/any_type":14,"should":22}],64:[function(require,module,exports){
+var AnyType, TypeError, should;
+
+AnyType = require('../../../../lib/type/any_type');
+
+TypeError = require('../../../../lib/errors').TypeError;
+
+should = require("should");
+
+describe("AnyType#dress", function() {
+  var subject, type;
+  type = new AnyType('any');
+  subject = function(arg) {
+    return type.dress(arg);
+  };
+  describe('with a Number', function() {
+    return subject(42).should.equal(42);
+  });
+  describe('with a String', function() {
+    return subject("foo").should.equal("foo");
+  });
+  describe('with null', function() {
+    var res;
+    res = subject(null);
+    return should(res).eql(null);
+  });
+  return describe('with undefined', function() {
+    var res;
+    res = subject(void 0);
+    return should(res).eql(void 0);
+  });
+});
+
+
+},{"../../../../lib/errors":2,"../../../../lib/type/any_type":14,"should":22}],65:[function(require,module,exports){
+var AnyType, should;
+
+AnyType = require('../../../../lib/type/any_type');
+
+should = require('should');
+
+describe('AnyType#equals', function() {
+  var anyType1, anyType2;
+  anyType1 = new AnyType();
+  anyType2 = new AnyType();
+  it('should apply structural equality', function() {
+    return anyType1.equals(anyType2).should.be["true"];
+  });
+  return it('should be a total function, with null for non types', function() {
+    return anyType1.equals(12).should.be["false"];
+  });
+});
+
+
+},{"../../../../lib/type/any_type":14,"should":22}],66:[function(require,module,exports){
+var AnyType, TypeError, should, _;
+
+AnyType = require('../../../../lib/type/any_type');
+
+TypeError = require('../../../../lib/errors').TypeError;
+
+should = require('should');
+
+_ = require('underscore');
+
+describe("AnyType#include", function() {
+  var subject, type;
+  type = new AnyType;
+  subject = function(arg) {
+    return type.include(arg);
+  };
+  return describe('in any case', function() {
+    var cases;
+    cases = [
+      null, void 0, 42, 3.14, "foo", false, true, {
+        'foo': 'bar'
+      }, [12]
+    ];
+    return it('should return true', function() {
+      var allpass;
+      allpass = _.every(cases, function(val) {
+        return subject(val).should.be["true"];
+      });
+      return allpass.should.be["true"];
+    });
+  });
+});
+
+
+},{"../../../../lib/errors":2,"../../../../lib/type/any_type":14,"should":22,"underscore":22}],67:[function(require,module,exports){
+var AnyType, TypeError, should;
+
+AnyType = require('../../../../lib/type/any_type');
+
+TypeError = require('../../../../lib/errors').TypeError;
+
+should = require('should');
+
+describe('AnyType#name', function() {
+  var nameOf;
+  nameOf = function(type) {
+    return type.name;
+  };
+  describe('when not provided', function() {
+    var subject;
+    subject = nameOf(new AnyType);
+    return it('uses the default name', function() {
+      return subject.should.equal("Any");
+    });
+  });
+  return describe('when provided', function() {
+    var subject;
+    subject = nameOf(new AnyType("anytype"));
+    return it('uses the specified name', function() {
+      return subject.should.equal("anytype");
+    });
+  });
+});
+
+
+},{"../../../../lib/errors":2,"../../../../lib/type/any_type":14,"should":22}],68:[function(require,module,exports){
 var BuiltinType, should;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -2257,7 +5265,7 @@ describe("BuiltinType#constructor", function() {
 });
 
 
-},{"../../../../lib/type/builtin_type":11,"should":18}],42:[function(require,module,exports){
+},{"../../../../lib/type/builtin_type":15,"should":22}],69:[function(require,module,exports){
 var BuiltinType, should;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -2273,7 +5281,7 @@ describe('BuiltinType#defaultName', function() {
 });
 
 
-},{"../../../../lib/type/builtin_type":11,"should":18}],43:[function(require,module,exports){
+},{"../../../../lib/type/builtin_type":15,"should":22}],70:[function(require,module,exports){
 var BuiltinType, TypeError;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -2317,7 +5325,7 @@ describe("BuiltinType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/builtin_type":11}],44:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/builtin_type":15}],71:[function(require,module,exports){
 var BuiltinType, should;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -2341,7 +5349,7 @@ describe('BuiltinType#equals', function() {
 });
 
 
-},{"../../../../lib/type/builtin_type":11,"should":18}],45:[function(require,module,exports){
+},{"../../../../lib/type/builtin_type":15,"should":22}],72:[function(require,module,exports){
 var BuiltinType, TypeError, should;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -2365,7 +5373,7 @@ describe("BuiltinType#include", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/builtin_type":11,"should":18}],46:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/builtin_type":15,"should":22}],73:[function(require,module,exports){
 var BuiltinType, TypeError, should;
 
 BuiltinType = require('../../../../lib/type/builtin_type');
@@ -2396,7 +5404,7 @@ describe('BuiltinType#name', function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/builtin_type":11,"should":18}],47:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/builtin_type":15,"should":22}],74:[function(require,module,exports){
 var ArgumentError, Attribute, Heading, RelationType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -2438,7 +5446,7 @@ describe("RelationType#initialize", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/relation_type":12,"should":18}],48:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],75:[function(require,module,exports){
 var Attribute, Heading, RelationType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -2458,7 +5466,7 @@ describe("RelationType#default_name", function() {
 });
 
 
-},{"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/relation_type":12,"should":18}],49:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],76:[function(require,module,exports){
 var Attribute, Heading, RelationType, TypeError, should, _;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -2634,7 +5642,7 @@ describe("RelationType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/relation_type":12,"should":18,"underscore":18}],50:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22,"underscore":22}],77:[function(require,module,exports){
 var Attribute, Heading, RelationType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -2667,7 +5675,7 @@ describe("RelationType#equality", function() {
 });
 
 
-},{"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/relation_type":12,"should":18}],51:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],78:[function(require,module,exports){
 var Attribute, Heading, RelationType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -2708,7 +5716,7 @@ describe("RelationType#include", function() {
 });
 
 
-},{"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/relation_type":12,"should":18}],52:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],79:[function(require,module,exports){
 var Attribute, Heading, RelationType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -2738,7 +5746,7 @@ describe("RelationType#name", function() {
 });
 
 
-},{"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/relation_type":12,"should":18}],53:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/relation_type":16,"should":22}],80:[function(require,module,exports){
 var ArgumentError, SeqType, TypeError, should, _, _ref;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -2781,7 +5789,7 @@ describe("SeqType#initialize", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/seq_type":13,"should":18,"underscore":18}],54:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],81:[function(require,module,exports){
 var SeqType, should;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -2796,7 +5804,7 @@ describe("SeqType#defaultName", function() {
 });
 
 
-},{"../../../../lib/type/seq_type":13,"should":18}],55:[function(require,module,exports){
+},{"../../../../lib/type/seq_type":17,"should":22}],82:[function(require,module,exports){
 var ArgumentError, SeqType, TypeError, should, _, _ref;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -2859,7 +5867,7 @@ describe("SeqType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/seq_type":13,"should":18,"underscore":18}],56:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],83:[function(require,module,exports){
 var ArgumentError, SeqType, TypeError, should, _, _ref;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -2887,7 +5895,7 @@ describe("SeqType#equality", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/seq_type":13,"should":18,"underscore":18}],57:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],84:[function(require,module,exports){
 var ArgumentError, SeqType, TypeError, should, _, _ref;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -2919,7 +5927,7 @@ describe("SeqType#include", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/seq_type":13,"should":18,"underscore":18}],58:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],85:[function(require,module,exports){
 var SeqType, should, _;
 
 SeqType = require('../../../../lib/type/seq_type');
@@ -2942,7 +5950,7 @@ describe("SeqType#name", function() {
 });
 
 
-},{"../../../../lib/type/seq_type":13,"should":18,"underscore":18}],59:[function(require,module,exports){
+},{"../../../../lib/type/seq_type":17,"should":22,"underscore":22}],86:[function(require,module,exports){
 var ArgumentError, SetType, TypeError, should, _, _ref;
 
 SetType = require('../../../../lib/type/set_type');
@@ -2985,7 +5993,7 @@ describe("SetType#initialize", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/set_type":14,"should":18,"underscore":18}],60:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],87:[function(require,module,exports){
 var SetType, should;
 
 SetType = require('../../../../lib/type/set_type');
@@ -3000,7 +6008,7 @@ describe("SetType#defaultName", function() {
 });
 
 
-},{"../../../../lib/type/set_type":14,"should":18}],61:[function(require,module,exports){
+},{"../../../../lib/type/set_type":18,"should":22}],88:[function(require,module,exports){
 var ArgumentError, SetType, TypeError, should, _, _ref;
 
 SetType = require('../../../../lib/type/set_type');
@@ -3084,7 +6092,7 @@ describe("SetType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/set_type":14,"should":18,"underscore":18}],62:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],89:[function(require,module,exports){
 var ArgumentError, SetType, TypeError, should, _, _ref;
 
 SetType = require('../../../../lib/type/set_type');
@@ -3112,7 +6120,7 @@ describe("SetType#equality", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/set_type":14,"should":18,"underscore":18}],63:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],90:[function(require,module,exports){
 var ArgumentError, SetType, TypeError, should, _, _ref;
 
 SetType = require('../../../../lib/type/set_type');
@@ -3147,7 +6155,7 @@ describe("SetType#include", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/set_type":14,"should":18,"underscore":18}],64:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/set_type":18,"should":22,"underscore":22}],91:[function(require,module,exports){
 var SetType, should, _;
 
 SetType = require('../../../../lib/type/set_type');
@@ -3170,8 +6178,10 @@ describe("SetType#name", function() {
 });
 
 
-},{"../../../../lib/type/set_type":14,"should":18,"underscore":18}],65:[function(require,module,exports){
-var SubType, should, _;
+},{"../../../../lib/type/set_type":18,"should":22,"underscore":22}],92:[function(require,module,exports){
+var Constraint, SubType, should, _;
+
+Constraint = require('../../../../lib/support/constraint');
 
 SubType = require('../../../../lib/type/sub_type');
 
@@ -3181,28 +6191,24 @@ _ = require('underscore');
 
 describe("SubType#constructor", function() {
   var c1, c2, sub;
-  c1 = function(i) {
+  c1 = new Constraint('a', function(i) {
     return i > 0;
-  };
-  c2 = function(i) {
-    return i < 255;
-  };
-  sub = new SubType(numType, {
-    positive: c1,
-    small: c2
   });
+  c2 = new Constraint('b', function(i) {
+    return i < 255;
+  });
+  sub = new SubType(numType, [c1, c2]);
   return it('sets the variable instances', function() {
     sub.superType.should.equal(numType);
-    return _.isEqual(sub.constraints, {
-      positive: c1,
-      small: c2
-    }).should.be["true"];
+    return _.isEqual(sub.constraints, [c1, c2]).should.be["true"];
   });
 });
 
 
-},{"../../../../lib/type/sub_type":15,"should":18,"underscore":18}],66:[function(require,module,exports){
-var SubType, should;
+},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22,"underscore":22}],93:[function(require,module,exports){
+var Constraint, SubType, should;
+
+Constraint = require('../../../../lib/support/constraint');
 
 SubType = require('../../../../lib/type/sub_type');
 
@@ -3210,17 +6216,17 @@ should = require('should');
 
 describe('SubType#defaultName', function() {
   var type;
-  type = new SubType(numType, {
-    posint: function(i) {}
-  });
+  type = new SubType(numType, [new Constraint('posint', function(i) {})]);
   return it('uses the first constraint name', function() {
     return type.defaultName().should.equal("Posint");
   });
 });
 
 
-},{"../../../../lib/type/sub_type":15,"should":18}],67:[function(require,module,exports){
-var SubType, TypeError, should;
+},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],94:[function(require,module,exports){
+var Constraint, SubType, TypeError, should;
+
+Constraint = require('../../../../lib/support/constraint');
 
 SubType = require('../../../../lib/type/sub_type');
 
@@ -3230,16 +6236,13 @@ should = require('should');
 
 describe("SubType#dress", function() {
   var factor, type, _default, _small;
-  _default = function(i) {
+  _default = new Constraint('default', function(i) {
     return i > 0;
-  };
-  _small = function(i) {
+  });
+  _small = new Constraint('small', function(i) {
     return i < 255;
-  };
-  type = new SubType(numType, {
-    "default": _default,
-    small: _small
-  }, "byte");
+  });
+  type = new SubType(numType, [_default, _small], "byte");
   factor = function(arg) {
     return type.dress(arg);
   };
@@ -3303,37 +6306,32 @@ describe("SubType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/sub_type":15,"should":18}],68:[function(require,module,exports){
-var SubType, should;
+},{"../../../../lib/errors":2,"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],95:[function(require,module,exports){
+var Constraint, SubType, should;
+
+Constraint = require('../../../../lib/support/constraint');
 
 SubType = require('../../../../lib/type/sub_type');
 
 should = require('should');
 
 describe('SubType#equals', function() {
-  var c1, c2, type, type2, type3, type4, type5;
-  c1 = function(i) {
+  var c1, c2, c3, fn1, fn2, type, type2, type3, type4, type5;
+  fn1 = function(i) {
     return i > 0;
   };
-  c2 = function(i) {
+  fn2 = function(i) {
     return i < 255;
   };
-  type = new SubType(numType, {
-    "default": c1
-  });
-  type2 = new SubType(numType, {
-    "default": c1
-  });
-  type3 = new SubType(numType, {
-    another_name: c1
-  });
-  type4 = new SubType(numType, {
-    "default": c2
-  });
-  type5 = new SubType(stringType, {
-    "default": c1
-  });
-  it('should apply structural equality', function() {
+  c1 = new Constraint('default', fn1);
+  c2 = new Constraint('anothername', fn1);
+  c3 = new Constraint('small', fn2);
+  type = new SubType(numType, [c1]);
+  type2 = new SubType(numType, [c1]);
+  type3 = new SubType(numType, [c2]);
+  type4 = new SubType(numType, [c3]);
+  type5 = new SubType(stringType, [c1]);
+  it('should apply structural equivalence', function() {
     type.equals(type2).should.be["true"];
     return type.equals(type3).should.be["true"];
   });
@@ -3347,8 +6345,10 @@ describe('SubType#equals', function() {
 });
 
 
-},{"../../../../lib/type/sub_type":15,"should":18}],69:[function(require,module,exports){
-var SubType, should;
+},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],96:[function(require,module,exports){
+var Constraint, SubType, should;
+
+Constraint = require('../../../../lib/support/constraint');
 
 SubType = require('../../../../lib/type/sub_type');
 
@@ -3356,14 +6356,13 @@ should = require('should');
 
 describe("SubType#include", function() {
   var subject, type;
-  type = new SubType(intType, {
-    "default": function(i) {
+  type = new SubType(intType, [
+    new Constraint('default', function(i) {
       return i > 0;
-    },
-    small: function(i) {
+    }), new Constraint('small', function(i) {
       return i < 255;
-    }
-  }, "byte");
+    })
+  ], "byte");
   subject = function(arg) {
     return type.include(arg);
   };
@@ -3382,8 +6381,10 @@ describe("SubType#include", function() {
 });
 
 
-},{"../../../../lib/type/sub_type":15,"should":18}],70:[function(require,module,exports){
-var SubType, should;
+},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],97:[function(require,module,exports){
+var Constraint, SubType, should;
+
+Constraint = require('../../../../lib/support/constraint');
 
 SubType = require('../../../../lib/type/sub_type');
 
@@ -3396,26 +6397,26 @@ describe("SubType#name", function() {
   };
   describe('when provided', function() {
     var subject;
-    subject = get(new SubType(numType, {
-      positive: function(i) {}
-    }, "Foo"));
+    subject = get(new SubType(numType, [
+      new Constraint("default", function(i) {
+        return true;
+      })
+    ], "Foo"));
     return it('uses the specified one', function() {
       return subject.should.equal("Foo");
     });
   });
   return describe('when not provided', function() {
     var subject;
-    subject = get(new SubType(numType, {
-      positive: function(i) {}
-    }));
+    subject = get(new SubType(numType, [new Constraint('byte', function(i) {})]));
     return it('uses the first constraint name', function() {
-      return subject.should.equal("Positive");
+      return subject.should.equal("Byte");
     });
   });
 });
 
 
-},{"../../../../lib/type/sub_type":15,"should":18}],71:[function(require,module,exports){
+},{"../../../../lib/support/constraint":6,"../../../../lib/type/sub_type":19,"should":22}],98:[function(require,module,exports){
 var ArgumentError, Attribute, Heading, TupleType, TypeError, should, _ref;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -3457,7 +6458,7 @@ describe("TupleType#constructor", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/tuple_type":16,"should":18}],72:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],99:[function(require,module,exports){
 var Attribute, Heading, TupleType, TypeError, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -3478,7 +6479,7 @@ describe("TupleType#defaultName", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/tuple_type":16,"should":18}],73:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],100:[function(require,module,exports){
 var Attribute, Heading, TupleType, TypeError, should, _;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -3598,7 +6599,7 @@ describe("TupleType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/tuple_type":16,"should":18,"underscore":18}],74:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22,"underscore":22}],101:[function(require,module,exports){
 var Attribute, Heading, TupleType, TypeError, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -3633,7 +6634,7 @@ describe("TupleType#equality", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/tuple_type":16,"should":18}],75:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],102:[function(require,module,exports){
 var Attribute, Heading, TupleType, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -3675,7 +6676,7 @@ describe("TupleType#include", function() {
 });
 
 
-},{"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/tuple_type":16,"should":18}],76:[function(require,module,exports){
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],103:[function(require,module,exports){
 var Attribute, Heading, TupleType, TypeError, should;
 
 Attribute = require('../../../../lib/support/attribute');
@@ -3704,7 +6705,7 @@ describe("TupleType#name", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/support/attribute":3,"../../../../lib/support/heading":7,"../../../../lib/type/tuple_type":16,"should":18}],77:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/attribute":4,"../../../../lib/support/heading":9,"../../../../lib/type/tuple_type":20,"should":22}],104:[function(require,module,exports){
 var ArgumentError, UnionType, should, _;
 
 ArgumentError = require('../../../../lib/errors').ArgumentError;
@@ -3746,7 +6747,7 @@ describe("UnionType#constructor", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/union_type":17,"should":18,"underscore":18}],78:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/union_type":21,"should":22,"underscore":22}],105:[function(require,module,exports){
 var UnionType, should;
 
 UnionType = require('../../../../lib/type/union_type');
@@ -3760,7 +6761,7 @@ describe("UnionType#defaultName", function() {
 });
 
 
-},{"../../../../lib/type/union_type":17,"should":18}],79:[function(require,module,exports){
+},{"../../../../lib/type/union_type":21,"should":22}],106:[function(require,module,exports){
 var TypeError, UnionType, should;
 
 TypeError = require('../../../../lib/errors').TypeError;
@@ -3806,7 +6807,7 @@ describe("UnionType#dress", function() {
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/type/union_type":17,"should":18}],80:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/type/union_type":21,"should":22}],107:[function(require,module,exports){
 var UnionType, should;
 
 UnionType = require('../../../../lib/type/union_type');
@@ -3834,7 +6835,7 @@ describe("UnionType#equality", function() {
 });
 
 
-},{"../../../../lib/type/union_type":17,"should":18}],81:[function(require,module,exports){
+},{"../../../../lib/type/union_type":21,"should":22}],108:[function(require,module,exports){
 var UnionType, should;
 
 UnionType = require('../../../../lib/type/union_type');
@@ -3859,7 +6860,7 @@ describe("UnionType#include", function() {
 });
 
 
-},{"../../../../lib/type/union_type":17,"should":18}],82:[function(require,module,exports){
+},{"../../../../lib/type/union_type":21,"should":22}],109:[function(require,module,exports){
 var UnionType, should;
 
 UnionType = require('../../../../lib/type/union_type');
@@ -3880,7 +6881,107 @@ describe("UnionType#name", function() {
 });
 
 
-},{"../../../../lib/type/union_type":17,"should":18}],83:[function(require,module,exports){
+},{"../../../../lib/type/union_type":21,"should":22}],110:[function(require,module,exports){
+var AnyType, TypeFactory, should;
+
+TypeFactory = require('../../../../lib/support/factory');
+
+AnyType = require('../../../../lib/type/any_type');
+
+should = require('should');
+
+describe("TypeFactory#any", function() {
+  var expected, factory;
+  factory = new TypeFactory;
+  expected = new AnyType;
+  describe('when called', function() {
+    var subject;
+    subject = factory.any();
+    return it('should give expected result', function() {
+      return subject.equals(expected).should.be["true"];
+    });
+  });
+  return describe('when called with a name', function() {
+    var subject;
+    subject = factory.any("MyAny");
+    it('should give expected result', function() {
+      return subject.equals(expected).should.be["true"];
+    });
+    return it('should have the correct name', function() {
+      return subject.name.should.equal("MyAny");
+    });
+  });
+});
+
+
+},{"../../../../lib/support/factory":8,"../../../../lib/type/any_type":14,"should":22}],111:[function(require,module,exports){
+var Attribute, BuiltinType, TypeFactory, should;
+
+Attribute = require('../../../../lib/support/attribute');
+
+TypeFactory = require('../../../../lib/support/factory');
+
+BuiltinType = require('../../../../lib/type/builtin_type');
+
+should = require('should');
+
+describe('TypeFactory#attribute', function() {
+  var factory;
+  factory = new TypeFactory;
+  describe('when used with a name and a JS class', function() {
+    var subject;
+    subject = factory.attribute('foo', Number);
+    return it('should work as expected', function() {
+      subject.should.be.an["instanceof"](Attribute);
+      subject.name.should.equal('foo');
+      return subject.type.should.be.an["instanceof"](BuiltinType);
+    });
+  });
+  return describe('when used with a name and a BuiltinType', function() {
+    var subject;
+    subject = factory.attribute('foo', intType);
+    return it('should work as expected', function() {
+      subject.should.be.an["instanceof"](Attribute);
+      subject.name.should.equal('foo');
+      return subject.type.should.equal(intType);
+    });
+  });
+});
+
+
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"should":22}],112:[function(require,module,exports){
+var Attribute, BuiltinType, TypeFactory, should, _;
+
+Attribute = require('../../../../lib/support/attribute');
+
+TypeFactory = require('../../../../lib/support/factory');
+
+BuiltinType = require('../../../../lib/type/builtin_type');
+
+should = require('should');
+
+_ = require('underscore');
+
+describe('TypeFactory#attributes', function() {
+  var factory;
+  factory = new TypeFactory;
+  return describe('when used with a name and a JS class', function() {
+    var subject;
+    subject = factory.attributes({
+      foo: Number,
+      bar: String
+    });
+    return it('should work as expected', function() {
+      subject.should.be.an["instanceof"](Array);
+      return _.each(subject, function(arg) {
+        return arg.should.be.an["instanceof"](Attribute);
+      });
+    });
+  });
+});
+
+
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"should":22,"underscore":22}],113:[function(require,module,exports){
 var TypeFactory, should;
 
 TypeFactory = require('../../../../lib/support/factory');
@@ -3893,7 +6994,9 @@ describe('TypeFactory#builtin', function() {
   describe('when used with a JS class', function() {
     var subject;
     subject = factory.type(Number);
-    return subject.equals(numType).should.be["true"];
+    return it('should work as expected', function() {
+      return subject.equals(numType).should.be["true"];
+    });
   });
   return describe('when used with a JS class and a name', function() {
     var subject;
@@ -3906,7 +7009,185 @@ describe('TypeFactory#builtin', function() {
 });
 
 
-},{"../../../../lib/support/factory":6,"should":18}],84:[function(require,module,exports){
+},{"../../../../lib/support/factory":8,"should":22}],114:[function(require,module,exports){
+var Constraint, TypeFactory, should;
+
+Constraint = require('../../../../lib/support/constraint');
+
+TypeFactory = require('../../../../lib/support/factory');
+
+should = require('should');
+
+describe('TypeFactory#constraint', function() {
+  var factory;
+  factory = new TypeFactory;
+  describe('with a callback', function() {
+    var subject;
+    subject = factory.constraint(function(i) {
+      return i > 0;
+    });
+    return it('should work as expected', function() {
+      subject.should.be.an["instanceof"](Constraint);
+      subject.name.should.equal('default');
+      subject.accept(12).should.be["true"];
+      return subject.accept(-12).should.be["false"];
+    });
+  });
+  describe('with only a function', function() {
+    var subject;
+    subject = factory.constraint(function(i) {
+      return i > 0;
+    });
+    return it('should work as expected', function() {
+      subject.should.be.an["instanceof"](Constraint);
+      subject.name.should.equal('default');
+      subject.accept(12).should.be["true"];
+      return subject.accept(-12).should.be["false"];
+    });
+  });
+  describe('with a name and a function', function() {
+    var subject;
+    subject = factory.constraint('positive', function(i) {
+      return i > 0;
+    });
+    return it('should work as expected', function() {
+      subject.should.be.an["instanceof"](Constraint);
+      subject.name.should.equal('positive');
+      subject.accept(12).should.be["true"];
+      return subject.accept(-12).should.be["false"];
+    });
+  });
+  describe('with only a regexp', function() {
+    var subject;
+    subject = factory.constraint(/[a-z]+/);
+    return it('should work as expected', function() {
+      subject.should.be.an["instanceof"](Constraint);
+      subject.name.should.equal('default');
+      subject.accept("12").should.be["false"];
+      return subject.accept("word").should.be["true"];
+    });
+  });
+  return describe('with a constraint', function() {
+    var c, subject;
+    c = new Constraint('def', function(i) {
+      return i > 0;
+    });
+    subject = factory.constraint(c);
+    return it('should work as expected', function() {
+      return subject.should.equal(c);
+    });
+  });
+});
+
+
+},{"../../../../lib/support/constraint":6,"../../../../lib/support/factory":8,"should":22}],115:[function(require,module,exports){
+var Constraint, TypeFactory, should;
+
+Constraint = require('../../../../lib/support/constraint');
+
+TypeFactory = require('../../../../lib/support/factory');
+
+should = require('should');
+
+describe('TypeFactory#constraints', function() {
+  var factory;
+  factory = new TypeFactory;
+  describe('with a callback', function() {
+    var subject;
+    subject = factory.constraints(function(i) {
+      return i > 0;
+    });
+    return it('should work as expected', function() {
+      subject.should.be.an["instanceof"](Array);
+      subject.length.should.equal(1);
+      return subject[0].should.be.an["instanceof"](Constraint);
+    });
+  });
+  return describe('with a regexp', function() {
+    var regexp, subject;
+    regexp = /[a-z]/;
+    subject = factory.constraints(regexp);
+    return it('should work as expected', function() {
+      subject.should.be.an["instanceof"](Array);
+      subject.length.should.equal(1);
+      return subject[0].should.be.an["instanceof"](Constraint);
+    });
+  });
+});
+
+
+},{"../../../../lib/support/constraint":6,"../../../../lib/support/factory":8,"should":22}],116:[function(require,module,exports){
+var Attribute, BuiltinType, Heading, TypeFactory, should, _;
+
+Attribute = require('../../../../lib/support/attribute');
+
+Heading = require('../../../../lib/support/heading');
+
+TypeFactory = require('../../../../lib/support/factory');
+
+BuiltinType = require('../../../../lib/type/builtin_type');
+
+should = require('should');
+
+_ = require('underscore');
+
+describe('TypeFactory#heading', function() {
+  var attributes, bar, expected, factory, foo;
+  factory = new TypeFactory;
+  foo = factory.attribute('foo', Number);
+  bar = factory.attribute('bar', String);
+  attributes = [foo, bar];
+  expected = new Heading(attributes);
+  describe('when used with an array of attributes', function() {
+    var subject;
+    subject = factory.heading(attributes);
+    return it('should work as expected', function() {
+      subject.should.be.an["instanceof"](Heading);
+      return subject.equals(expected).should.be["true"];
+    });
+  });
+  return describe('when used with an object name => native', function() {
+    var subject;
+    subject = factory.heading({
+      foo: Number,
+      bar: String
+    });
+    return it('should work as expected', function() {
+      subject.should.be.an["instanceof"](Heading);
+      return subject.equals(expected).should.be["true"];
+    });
+  });
+});
+
+
+},{"../../../../lib/support/attribute":4,"../../../../lib/support/factory":8,"../../../../lib/support/heading":9,"../../../../lib/type/builtin_type":15,"should":22,"underscore":22}],117:[function(require,module,exports){
+var TypeFactory, should;
+
+TypeFactory = require('../../../../lib/support/factory');
+
+should = require('should');
+
+describe('TypeFactory#jsType', function() {
+  var factory;
+  factory = new TypeFactory;
+  describe('when used with a JS class', function() {
+    var subject;
+    subject = factory.jsType(Number);
+    return it('should work as expected', function() {
+      return subject.should.equal(Number);
+    });
+  });
+  return describe('when used with a JS class name', function() {
+    var subject;
+    subject = factory.jsType('Number');
+    return it('should work as expected', function() {
+      return subject.should.equal(Number);
+    });
+  });
+});
+
+
+},{"../../../../lib/support/factory":8,"should":22}],118:[function(require,module,exports){
 var SeqType, TypeFactory, should;
 
 TypeFactory = require('../../../../lib/support/factory');
@@ -3959,10 +7240,12 @@ describe("TypeFactory#seq", function() {
 });
 
 
-},{"../../../../lib/support/factory":6,"../../../../lib/type/seq_type":13,"should":18}],85:[function(require,module,exports){
-var BuiltinType, SubType, TypeError, TypeFactory, numType, should;
+},{"../../../../lib/support/factory":8,"../../../../lib/type/seq_type":17,"should":22}],119:[function(require,module,exports){
+var BuiltinType, Constraint, SubType, TypeError, TypeFactory, numType, should;
 
 TypeFactory = require('../../../../lib/support/factory');
+
+Constraint = require('../../../../lib/support/constraint');
 
 TypeError = require('../../../../lib/errors').TypeError;
 
@@ -3974,7 +7257,7 @@ numType = require('../../spec_helpers').numType;
 
 should = require('should');
 
-describe('TypeFactory#subtype', function() {
+describe('TypeFactory#sub_type', function() {
   var factory;
   factory = new TypeFactory;
   describe('when used with a JS class and a block', function() {
@@ -4004,7 +7287,7 @@ describe('TypeFactory#subtype', function() {
       }
     });
   });
-  return describe('when used with a regexp', function() {
+  describe('when used with a regexp', function() {
     var subject;
     subject = factory.type(/[a-z]+/);
     subject.should.be.an["instanceof"](SubType);
@@ -4023,10 +7306,27 @@ describe('TypeFactory#subtype', function() {
       }
     });
   });
+  return describe('when used with a super type and an array of constraints', function() {
+    var subject;
+    subject = factory.sub_type(numType, [
+      new Constraint('foo', function(i) {
+        return i > 0;
+      })
+    ]);
+    it('should be a subtype', function() {
+      return subject.should.be.an["instanceof"](SubType);
+    });
+    return it('should have the correct constraints', function() {
+      subject.constraints.length.should.equal(1);
+      subject.constraints[0].should.be.an["instanceof"](Constraint);
+      subject.constraints[0].accept(12).should.be["true"];
+      return subject.constraints[0].accept(-12).should.be["false"];
+    });
+  });
 });
 
 
-},{"../../../../lib/errors":1,"../../../../lib/support/factory":6,"../../../../lib/type/builtin_type":11,"../../../../lib/type/sub_type":15,"../../spec_helpers":29,"should":18}],86:[function(require,module,exports){
+},{"../../../../lib/errors":2,"../../../../lib/support/constraint":6,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"../../../../lib/type/sub_type":19,"../../spec_helpers":36,"should":22}],120:[function(require,module,exports){
 var TupleType, TypeFactory, should;
 
 TupleType = require('../../../../lib/type/tuple_type');
@@ -4065,4 +7365,32 @@ describe("TypeFactory#tuple", function() {
 });
 
 
-},{"../../../../lib/support/factory":6,"../../../../lib/type/tuple_type":16,"should":18}]},{},[19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86])
+},{"../../../../lib/support/factory":8,"../../../../lib/type/tuple_type":20,"should":22}],121:[function(require,module,exports){
+var BuiltinType, TypeError, TypeFactory, UnionType, numType, should;
+
+TypeFactory = require('../../../../lib/support/factory');
+
+TypeError = require('../../../../lib/errors').TypeError;
+
+BuiltinType = require('../../../../lib/type/builtin_type');
+
+UnionType = require('../../../../lib/type/union_type');
+
+numType = require('../../spec_helpers').numType;
+
+should = require('should');
+
+describe('TypeFactory#union', function() {
+  var factory;
+  factory = new TypeFactory;
+  return describe('when used with an array of types', function() {
+    var subject;
+    subject = factory.union([factory.builtin(Number), factory.builtin(String)]);
+    return it('should be a UnionType', function() {
+      return subject.should.be.an["instanceof"](UnionType);
+    });
+  });
+});
+
+
+},{"../../../../lib/errors":2,"../../../../lib/support/factory":8,"../../../../lib/type/builtin_type":15,"../../../../lib/type/union_type":21,"../../spec_helpers":36,"should":22}]},{},[23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121])

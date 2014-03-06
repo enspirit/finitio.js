@@ -5,7 +5,7 @@ describe "System#clone", ->
 
   system = new System
   system.addType(numType)
-  
+
   subject = -> system.clone()
 
   it 'should return a System', ->
@@ -17,7 +17,7 @@ describe "System#clone", ->
 
   it 'should have numType', ->
     subject()['numType'].should.equal(numType)
-  
+
   it 'should not share internals with the original', ->
     clone = subject()
     clone.addType(stringType)

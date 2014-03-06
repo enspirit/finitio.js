@@ -7,14 +7,14 @@ should      = require 'should'
 describe "RelationType#include", ->
 
   heading = new Heading([new Attribute('a', intType)])
-  
+
   type = new RelationType(heading)
 
   subject = (arg) -> type.include(arg)
 
   describe 'when an empty set', ->
     subject({}).should.be.true
-  
+
   describe 'when a valid, non empty set', ->
     arg = {a: 14}
 

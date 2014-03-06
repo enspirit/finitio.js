@@ -8,7 +8,8 @@ describe 'TypeFactory#builtin', ->
   describe 'when used with a JS class', ->
     subject = factory.type(Number)
 
-    subject.equals(numType).should.be.true
+    it 'should work as expected', ->
+      subject.equals(numType).should.be.true
 
   describe 'when used with a JS class and a name', ->
     subject = factory.type(Number, 'Num')
@@ -16,4 +17,3 @@ describe 'TypeFactory#builtin', ->
 
     it 'should have the correct name', ->
       subject.name.should.equal("Num")
-
