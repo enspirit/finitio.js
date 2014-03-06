@@ -7,19 +7,25 @@ Feature: TestSystem.False
 
     Given I dress JSON's 'false'
     Then the result should be a representation for False
+    Then the result should be a representation for Boolean
 
   Scenario: Against true
 
     Given I dress JSON's 'true'
-
     Then it should be a TypeError as:
-      | message                       | location    |
-      | Invalid value `true` for True |             |
+      | message                        |
+      | Invalid value `true` for False |
 
-  Scenario: Against a string
+  Scenario: Against null
 
-    Given I dress JSON's '"foo"'
-
+    Given I dress JSON's 'null'
     Then it should be a TypeError as:
-      | message                        | location    |
-      | Invalid value `foo` for False  |             |
+      | message                        |
+      | Invalid value `null` for False |
+
+  Scenario: Against an arbitrary value
+
+    Given I dress JSON's '12'
+    Then it should be a TypeError as:
+      | message                      |
+      | Invalid value `12` for False |

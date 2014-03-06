@@ -13,5 +13,5 @@ Feature: TestSystem.Nil
     Given I dress JSON's '"bar"'
 
     Then it should be a TypeError as:
-      | message                        | location    |
-      | Invalid value `bar` for Nil    |             |
+      | message                        |
+      | Invalid value `bar` for Nil    |
