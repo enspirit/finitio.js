@@ -1,5 +1,6 @@
 {TypeError} = require '../errors'
 _           = require 'underscore'
+$u          = require './utils'
 
 class DressHelper
 
@@ -7,7 +8,7 @@ class DressHelper
     @stack = []
 
   iterate: (value, callback) ->
-    _.each value, (elm, index) =>
+    $u.each value, (elm, index) =>
       @deeper index, ->
         callback(elm, index)
 

@@ -4,6 +4,8 @@ Heading         = require '../support/heading'
 DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'
 
+$u              = require '../support/utils'
+
 class TupleType extends Type
 
   constructor: (@heading, @name) ->
@@ -31,7 +33,7 @@ class TupleType extends Type
       helper.fail("Unrecognized attribute `#{extra[0]}`")
 
     # Up each attribute in turn now. Fail on missing ones.
-    _.each @heading.attributes, (attribute) ->
+    $u.each @heading.attributes, (attribute) ->
       val = attribute.fetchOn value, ->
         helper.fail("Missing attribute `#{attribute.name}`")
 

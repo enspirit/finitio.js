@@ -37,7 +37,7 @@ class SubType extends Type
       @superType.dress(value, helper)
 
     # Check each constraint in turn
-    _.each @constraints, (constraint) =>
+    $u.each @constraints, (constraint) =>
       return if constraint.accept(uped)
       msg = helper.defaultErrorMessage(this, value)
       msg += " (not #{constraint.name})" unless @defaultConstraint(constraint)
