@@ -34,4 +34,6 @@ class Qjs
   @DEFAULT_SYSTEM = Qjs.system("Q/default")
 
 ##
+_.extend Qjs, require './errors'
+
 module.exports = Qjs

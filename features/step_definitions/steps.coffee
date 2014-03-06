@@ -42,6 +42,7 @@ module.exports = ->
 
   this.Then /^it should be a success$/, (callback) =>
     if @result instanceof Error
+      throw @result
       callback.fail(Error)
     else
       callback()
