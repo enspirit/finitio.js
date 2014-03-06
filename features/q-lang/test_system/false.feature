@@ -8,6 +8,7 @@ Feature: TestSystem.False
     Given I dress JSON's 'false'
     Then the result should be a representation for False
     Then the result should be a representation for Boolean
+    And the result should be the Boolean false
 
   Scenario: Against true
 

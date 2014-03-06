@@ -94,17 +94,27 @@ module.exports = ->
 
     callback()
 
-  this.Then /^the result should equal (\d+)$/, (expected, callback) ->
+  @Then /^the result should be the integer (\d+)$/, (expected, callback) ->
     unless result == parseInt(expected)
       callback.fail new Error("#{result} <> #{expected}")
     callback()
 
-  this.Then /^the result should equal '(.*?)'$/, (expected, callback) ->
-    unless result == expected
+  @Then /^the result should be the Boolean true$/, (callback) ->
+    unless result == true
+      callback.fail new Error("#{result} <> true")
+    callback()
+
+  @Then /^the result should be the Boolean false$/, (callback) ->
+    unless result == false
+      callback.fail new Error("#{result} <> false")
+    callback()
+
+  @Then /^the result should be the real (\d+\.\d+)$/, (expected, callback) ->
+    unless result == parseFloat(expected)
       callback.fail new Error("#{result} <> #{expected}")
     callback()
 
-  this.Then /^the result should equal (\d+.\d+)$/, (expected, callback) ->
-    unless result == parseFloat(expected)
+  @Then /^the result should be the string '(.*)'$/, (expected, callback) ->
+    unless result == expected
       callback.fail new Error("#{result} <> #{expected}")
     callback()

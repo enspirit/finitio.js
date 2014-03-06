@@ -7,7 +7,7 @@ Feature: TestSystem.Real
 
     Given I dress JSON's '12.5'
     Then the result should be a representation for Real
-    And  the result should equal 12.5
+    And  the result should be the real 12.5
 
   Scenario: Against an integer
 

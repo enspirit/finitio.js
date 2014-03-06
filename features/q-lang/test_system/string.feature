@@ -7,7 +7,7 @@ Feature: TestSystem.String
 
     Given I dress JSON's '"foo"'
     Then the result should be a representation for String
-    And the result should equal 'foo'
+    And the result should be the string 'foo'
 
   Scenario: Against null
 

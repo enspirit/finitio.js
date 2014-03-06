@@ -11,4 +11,4 @@ Feature: TestSystem.Any
   Scenario: Against a string
 
     Given I dress JSON's '12'
-    Then the result should equal 12
+    Then the result should be the integer 12

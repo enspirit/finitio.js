@@ -7,7 +7,7 @@ Feature: TestSystem.Integer
 
     Given I dress JSON's '12'
     Then the result should be a representation for Integer
-    And  the result should equal 12
+    And  the result should be the integer 12
 
   Scenario: Against a real
 

@@ -7,11 +7,13 @@ Feature: TestSystem.Boolean
 
     Given I dress JSON's 'true'
     Then the result should be a representation for Boolean
+    And the result should be the Boolean true
 
   Scenario: Against false
 
     Given I dress JSON's 'false'
     Then the result should be a representation for Boolean
+    And the result should be the Boolean false
 
   Scenario: Against null
 

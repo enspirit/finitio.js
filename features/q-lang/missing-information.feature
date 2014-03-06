@@ -15,7 +15,7 @@ Feature: Missing information Using Q
        """
 
      Then it should be a success
-     And the result should equal 12
+     And the result should be the integer 12
 
   Scenario: Validating nil against Integer
 
