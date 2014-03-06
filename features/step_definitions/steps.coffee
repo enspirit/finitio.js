@@ -86,8 +86,12 @@ module.exports = ->
 
   this.Then /^it should be a TypeError as:$/, (table, callback) ->
     unless result instanceof Qjs.TypeError
-      throw result
       callback.fail new Error("#{result} is not a TypeError")
+
+    for k, v of table.hashes()[0]
+      unless result[k] == v
+        callback.fail new Error("TypeError##{k}: `#{result[k]}` expected, got `#{v}`")
+
     callback()
 
   this.Then /^the result should equal (\d+)$/, (expected, callback) ->
