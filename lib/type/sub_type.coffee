@@ -4,7 +4,7 @@ Constraint      = require '../support/constraint'
 DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'
 
-_.str = (require '../support/utils').string
+$u              = require '../support/utils'
 
 class SubType extends Type
 
@@ -47,7 +47,7 @@ class SubType extends Type
     uped
 
   defaultName: ->
-    _.str.capitalize(@constraints[0].name)
+    $u.capitalize(@constraints[0].name)
 
   include: (value) ->
     @superType.include(value) && _.every(@constraints, (c) -> c.accept(value))
@@ -60,6 +60,6 @@ class SubType extends Type
         pair[0].equals(pair[1])
 
   defaultConstraint: (constraint)->
-    constraint.isAnonymous() or _.str.capitalize(constraint.name) == @name
+    constraint.isAnonymous() or $u.capitalize(constraint.name) == @name
 
 module.exports = SubType

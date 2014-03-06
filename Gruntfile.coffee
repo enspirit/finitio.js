@@ -22,7 +22,8 @@ module.exports = (grunt) ->
         options:
           standalone: 'Qjs'
           transform:  ['coffeeify']
-          extensions: ['.coffee']
+          extensions: ['.coffee', '.js']
+          ignore:     ['./node_modules/**/*.*']
 
       tests:
         files:

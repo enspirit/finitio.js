@@ -1,4 +1,4 @@
-$u      = (require '../../../../lib/support/utils').string
+$u      = (require '../../../../lib/support/utils')
 should  = require 'should'
 
 describe "Utils.string#capitalize", ->
@@ -27,6 +27,6 @@ describe "Utils.string#capitalize", ->
       subject("foo bar").should.equal("FooBar")
 
   describe 'on non strings', ->
-    it 'acts as an identity function', ->
+    it 'throws an error', ->
       for i, obj of [null, undefined, [], {}, new Date(), /foo.*bar/]
-        should.equal(subject(obj), obj)
+        should(-> subject(obj)).throw(/String expected, got .*/)
