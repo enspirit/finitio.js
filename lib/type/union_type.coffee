@@ -3,15 +3,14 @@ Type            = require '../type'
 DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'
 
-# Extend underscore with the string helpers
-_.str = require 'underscore.string'
+$u              = require '../support/utils'
 
 class UnionType extends Type
 
   constructor: (@candidates, @name) ->
     @name ?= null
 
-    _.each @candidates, (c) ->
+    $u.each @candidates, (c) ->
       unless c instanceof Type
         throw new ArgumentError("Qjs.Type expected, got", c)
 

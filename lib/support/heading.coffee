@@ -2,6 +2,7 @@
 TypeError}  = require '../errors'
 Attribute   = require './attribute'
 _           = require 'underscore'
+$u          = require './utils'
 
 #
 # Helper class for tuple and relation types.
@@ -17,7 +18,7 @@ class Heading
       throw new ArgumentError("Array of Attribute expected")
 
     @attributes = {}
-    _.each attributes, (attr) =>
+    $u.each attributes, (attr) =>
       if @attributes[attr.name]?
         throw new ArgumentError("Attribute names must be unique")
       @attributes[attr.name] = attr
@@ -30,7 +31,7 @@ class Heading
     @size() == 0
 
   each: (callback) ->
-    _.each(_.values(@attributes), callback)
+    $u.each(_.values(@attributes), callback)
 
   toName: ->
     _.map(_.values(@attributes), (a) -> a.toName()).join(', ')

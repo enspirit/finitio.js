@@ -1,5 +1,3 @@
-fs          = require 'fs'
-Path        = require 'path'
 _           = require 'underscore'
 TypeFactory = require './support/factory'
 Parser      = require './syntax/parser'
@@ -31,7 +29,9 @@ class Qjs
     else
       throw new Error("Unknown system #{identifier}")
 
-  @DEFAULT_SYSTEM = Qjs.system("Q/default")
+  @DEFAULT_SYSTEM = require("./Q/default")
 
 ##
+_.extend Qjs, require './errors'
+
 module.exports = Qjs

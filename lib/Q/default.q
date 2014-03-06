@@ -1,3 +1,6 @@
+# Any
+Any        = .
+
 # Null & Undefined
 Null        = .( v | v === null      )
 Undefined   = .( v | v === undefined )
@@ -8,8 +11,8 @@ Boolean     = .Boolean
 # Numbers
 
 Number      = .Number
-Integer     = .Number( i | i.toString().indexOf('.') == -1 )
-Real        = .Number( r | r.toString().indexOf('.') != -1 )
+Integer     = .Number( n | n % 1 === 0    )
+Real        = .Number( n | !(n % 1 === 0) )
 
 # String
 

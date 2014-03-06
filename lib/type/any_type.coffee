@@ -15,7 +15,7 @@ class AnyType extends Type
   include: (value) ->
     true
 
-  equals: (other) =>
+  equals: (other) ->
     return false unless other instanceof AnyType
     true
 

@@ -17,6 +17,6 @@ class DataType
     @contracts()[name] = [ Qjs.type(infotype) ,
                            this[name],
                            (d)-> d[name]() ]
-  
-# 
+
+#
 module.exports = DataType

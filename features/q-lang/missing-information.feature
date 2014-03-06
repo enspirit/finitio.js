@@ -15,7 +15,7 @@ Feature: Missing information Using Q
        """
 
      Then it should be a success
-     And the result should equal 12
+     And the result should be the integer 12
 
   Scenario: Validating nil against Integer
 
@@ -25,8 +25,8 @@ Feature: Missing information Using Q
       """
 
     Then it should be a TypeError as:
-      | message                         |
-      | Invalid value `nil` for Integer |
+      | message                          |
+      | Invalid value `null` for Integer |
 
   Scenario: Validating nil against MaybeInt
 

@@ -5,6 +5,7 @@ _              = require 'underscore'
 Attribute      = require './attribute'
 Heading        = require './heading'
 Constraint     = require './constraint'
+$u             = require './utils'
 
 ## Types
 AnyType        = require '../type/any_type'
@@ -110,12 +111,12 @@ class TypeFactory
 
     if constraints?
       if constraints.constructor == Array
-        _.each constraints, (c)=>
+        $u.each constraints, (c) =>
           constrs.push(@constraint(c))
       else if constraints.constructor == RegExp
         constrs.push @constraint(constraints)
       else if typeof(constraints) is "object"
-        _.each constraints, (n, c)=>
+        $u.each constraints, (c, n) =>
           constrs.push(@constraint(n, c))
       else
         constrs.push @constraint(constraints)
@@ -130,7 +131,7 @@ class TypeFactory
       fail("Hash expected, got ", attributes)
 
     attr = []
-    _.each attributes, (type, name) =>
+    $u.each attributes, (type, name) =>
       attr.push @attribute(name, type)
 
     attr
@@ -198,11 +199,11 @@ class TypeFactory
 
   union: (args...) ->
     [candidates, _name] = [[], null]
-    
-    _.each args, (arg) =>
+
+    $u.each args, (arg) =>
       if arg.constructor == Array
         candidates = _.map arg, (t) => @type(t)
-      
+
       else if arg.constructor == String
         _name = @name(_name)
 
