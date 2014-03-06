@@ -46,3 +46,9 @@ describe "Parser#sub_type", ->
         false.should.be.true
       catch e
         e
+
+  describe 'with a complex constraint expression', ->
+    subject = Parser.parse(".Number( i | noDot: i.toString().indexOf('.') == -1 )", startRule: "type")
+
+    it 'should return a SubType', ->
+      subject.should.be.an.instanceof(SubType)
