@@ -16,7 +16,7 @@ module.exports = ->
       @result = @system.dress(json)
     catch e
       @result = e
-    console.log @result
+
     callback()
 
   this.Given /^I dress the following JSON document with (.*?):$/, (type, doc, callback) =>
@@ -53,7 +53,6 @@ module.exports = ->
 
   this.Then /^its '(.*)' attribute should be a Date representation$/, (attr, callback) =>
     unless @result[attr] instanceof Date
-      console.log @result[attr]
       callback.fail new Error("attribute is not a Date")
     callback()
 
