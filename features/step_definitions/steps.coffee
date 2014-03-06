@@ -76,4 +76,6 @@ module.exports = ->
     callback()
 
   this.Then /^the result should equal (\d+)$/, (expected, callback) ->
-    callback.pending()
+    unless result == parseInt(expected)
+      callback.fail new Error("#{result} <> #{expected}")
+    callback()
