@@ -12,6 +12,7 @@ class Qjs
     'heading',
     'constraint',
     'constraints',
+    'any',
     'builtin',
     'adt',
     'sub_type',
