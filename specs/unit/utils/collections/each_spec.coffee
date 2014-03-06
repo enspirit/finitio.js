@@ -3,6 +3,16 @@ should  = require 'should'
 
 describe "Utils.collection#each", ->
 
+  it "allows callback to be undefined", ->
+    lambda = -> $u.each [1, 2, 3]
+
+    should(lambda).not.throw()
+
+  it "raises an error if callback is null", ->
+    lambda = -> $u.each [1, 2, 3], null
+
+    should(lambda).throw(/Function expected, got null/)
+
   describe 'for Arrays,', ->
 
     describe 'on an empty array', ->
