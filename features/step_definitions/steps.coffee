@@ -9,7 +9,7 @@ system = null
 module.exports = ->
 
   this.Given /^the System is$/, (source, callback) ->
-    system ?= TestSystem.parse(source)
+    system = TestSystem.parse(source)
 
     callback()
 
