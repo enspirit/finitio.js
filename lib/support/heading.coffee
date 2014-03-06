@@ -25,7 +25,7 @@ class Heading
 
   # TODO: Use getters and setters
   size: ->
-    _.size(@attributes)
+    $u.size(@attributes)
 
   isEmpty: ->
     @size() == 0
@@ -41,7 +41,7 @@ class Heading
 
   equals: (other) ->
     return null unless other instanceof Heading
-    return false unless _.size(@attributes) == _.size(other.attributes)
+    return false unless $u.size(@attributes) == $u.size(other.attributes)
 
     valid = $u.every @attributes, (attr, name) ->
       other_attr = other.attributes[name]

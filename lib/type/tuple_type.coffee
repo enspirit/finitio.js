@@ -28,7 +28,7 @@ class TupleType extends Type
 
     # Check the tuple arity and fail fast if extra attributes
     # (missing attributes are handled just after)
-    if _.size(value) > _.size(@heading.names())
+    if $u.size(value) > $u.size(@heading.names())
       extra = _.difference(_.keys(value), @heading.names())
       helper.fail("Unrecognized attribute `#{extra[0]}`")
 
@@ -44,7 +44,7 @@ class TupleType extends Type
 
   include: (value) ->
     return false unless typeof(value) == "object"
-    return false if _.size(value) > _.size(@heading.attributes)
+    return false if $u.size(value) > $u.size(@heading.attributes)
     $u.every @heading.attributes, (attribute) ->
       return false unless value[attribute.name]?
       attr_val = value[attribute.name]
