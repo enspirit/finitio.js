@@ -3,12 +3,13 @@ Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'
+$u              = require '../support/utils'
 
 class SetType extends CollectionType
 
   include: (value) ->
     return false unless value instanceof Array
-    return false unless _.every(value, (v) => @elmType.include(v))
+    return false unless $u.every(value, (v) => @elmType.include(v))
     _.uniq(value).length == value.length
 
   # Apply the element type's `dress` transformation to each element of

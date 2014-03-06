@@ -21,7 +21,7 @@ class SubType extends Type
     unless @constraints.length > 0
       throw new ArgumentError("Empty constraints not allowed on SubType")
 
-    unless _.every(@constraints, (c)-> c.constructor == Constraint)
+    unless $u.every(@constraints, (c)-> c.constructor == Constraint)
       throw new ArgumentError("Array of constraints expected, got",
         @constraints)
 
@@ -50,13 +50,13 @@ class SubType extends Type
     $u.capitalize(@constraints[0].name)
 
   include: (value) ->
-    @superType.include(value) && _.every(@constraints, (c) -> c.accept(value))
+    @superType.include(value) && $u.every(@constraints, (c) -> c.accept(value))
 
   equals: (other) ->
     return false unless other instanceof SubType
     @superType.equals(other.superType) and
       @constraints.length == other.constraints.length and
-      _.every _.zip(@constraints, other.constraints), (pair)->
+      $u.every _.zip(@constraints, other.constraints), (pair)->
         pair[0].equals(pair[1])
 
   defaultConstraint: (constraint)->

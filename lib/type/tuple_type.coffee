@@ -45,7 +45,7 @@ class TupleType extends Type
   include: (value) ->
     return false unless typeof(value) == "object"
     return false if _.size(value) > _.size(@heading.attributes)
-    _.every @heading.attributes, (attribute) ->
+    $u.every @heading.attributes, (attribute) ->
       return false unless value[attribute.name]?
       attr_val = value[attribute.name]
       attribute.type.include(attr_val)

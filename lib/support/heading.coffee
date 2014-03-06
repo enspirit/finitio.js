@@ -14,7 +14,7 @@ class Heading
 
   constructor: (attributes) ->
     unless _.isArray(attributes) and \
-           _.every(attributes, (a) -> a instanceof Attribute)
+           $u.every(attributes, (a) -> a instanceof Attribute)
       throw new ArgumentError("Array of Attribute expected")
 
     @attributes = {}
@@ -43,7 +43,7 @@ class Heading
     return null unless other instanceof Heading
     return false unless _.size(@attributes) == _.size(other.attributes)
 
-    valid = _.every @attributes, (attr, name) ->
+    valid = $u.every @attributes, (attr, name) ->
       other_attr = other.attributes[name]
       attr.equals(other_attr)
 

@@ -3,11 +3,12 @@ Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'
+$u              = require '../support/utils'
 
 class SeqType extends CollectionType
 
   include: (value) ->
-    value instanceof Array and _.every(value, (v) => @elmType.include(v))
+    value instanceof Array and $u.every(value, (v) => @elmType.include(v))
 
   # Apply the element type's `dress` transformation to each element of
   # `value` (expected to respond to `each`). Return converted values in an
