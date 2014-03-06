@@ -99,6 +99,11 @@ module.exports = ->
       callback.fail new Error("#{result} <> #{expected}")
     callback()
 
+  this.Then /^the result should equal '(.*?)'$/, (expected, callback) ->
+    unless result == expected
+      callback.fail new Error("#{result} <> #{expected}")
+    callback()
+
   this.Then /^the result should equal (\d+.\d+)$/, (expected, callback) ->
     unless result == parseFloat(expected)
       callback.fail new Error("#{result} <> #{expected}")
