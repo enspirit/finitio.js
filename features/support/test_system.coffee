@@ -18,7 +18,7 @@ TestSystem = Qjs.parse """
   String  = .String
 
   # Dates and Time
-  Date = .Date <iso8601> .String \\( n | Date(n)     )
-                                 \\( d | d.getTime() )
+  Date = .Date <iso8601> .String \\( s | new Date(s)   )
+                                 \\( d | d.toString()  )
   """
 module.exports = TestSystem
