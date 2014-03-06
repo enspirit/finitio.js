@@ -23,7 +23,7 @@ class UnionType extends Type
     helper ?= new DressHelper
 
     # Do nothing on TypeError as the next candidate could be the good one!
-    match = _.find @candidates, (c) ->
+    match = $u.find @candidates, (c) ->
       [success, uped] = helper.justTry ->
         c.dress(value, helper)
 
@@ -35,7 +35,7 @@ class UnionType extends Type
     helper.failed(this, value)
 
   include: (value) ->
-    found = _.find @candidates, (c) -> c.include(value)
+    found = $u.find @candidates, (c) -> c.include(value)
     found?
 
   defaultName: ->

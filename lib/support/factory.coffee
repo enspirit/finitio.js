@@ -244,7 +244,7 @@ class TypeFactory
 # (only in the scope of this module)
 isNativeType = (t) ->
   return false unless t?
-  match = _.find [Number, Boolean, String], (primitive) ->
+  match = $u.find [Number, Boolean, String], (primitive) ->
     t == primitive
 
   match?

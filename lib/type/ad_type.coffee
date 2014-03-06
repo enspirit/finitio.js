@@ -45,7 +45,7 @@ class AdType extends Type
     # the next candidate could be the good one! Return the
     # first successfully uped.
     uped = null
-    candidate = _.find @contracts, (contract, name) ->
+    candidate = $u.find @contracts, (contract, name) ->
       [infotype, upper] = contract
 
       # First make the dress transformation on the information type
