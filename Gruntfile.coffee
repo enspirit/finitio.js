@@ -10,6 +10,8 @@ module.exports = (grunt) ->
 
     cucumberjs:
       src: './features'
+      options:
+        format: 'pretty'
 
     coffeelint:
       lib:   ['lib/**/*.coffee']

@@ -1,15 +1,36 @@
-Qjs    = require '../../lib/qjs'
-should = require 'should'
+Qjs          = require '../../lib/qjs'
+should       = require 'should'
+TestSystem   = require '../support/test_system'
 
 module.exports = ->
 
-  this.Given /^the Realm is$/, (source, callback) =>
-    @realm ?= Qjs.parse_realm(source)
+  this.Given /^the System is$/, (source, callback) =>
+    @system ?= TestSystem.parse(source)
 
     callback()
 
-  this.Given /^I validate the following JSON data against (.*?)$/, (type, json, callback) ->
-    type = @realm.fetch(type)
+  this.Given /^I dress the following JSON document:$/, (doc, callback) =>
+    json = JSON.parse(doc)
+
+    try
+      @result = @system.dress(json)
+    catch e
+      @result = e
+
+    callback()
+
+  this.Given /^I dress the following JSON document with (.*?):$/, (type, doc, callback) =>
+    json = JSON.parse(doc)
+
+    try
+      @result = @system.fetch(type).dress(json)
+    catch e
+      @result = e
+
+    callback()
+
+  this.Given /^I validate the following JSON data against (.*?)$/, (type, json, callback) =>
+    type = @system.fetch(type)
     json = JSON.parse(json)
 
     try
@@ -22,31 +43,22 @@ module.exports = ->
   this.Then /^it should be a success$/, (callback) =>
     @result.should.not.be.an.instanceof Error
 
-  this.Then /^the result should be a (.*?) native representation$/, (type, callback) =>
-    type = @realm.fetch(type)
+  this.Then /^the result should be a Tuple representation$/, (callback) =>
+    @result.constructor.should.equal Object
 
-    if type instanceof Qjs.TupleType
-      @result.constructor.should.equal Object
+  this.Then /^its '(.*)' attribute should be a Date representation$/, (attr, callback) =>
+    @result[attr].constructor.should.equal Date
 
-    else if type instanceof Qjs.RelationType
-      @result.constructor.should.equal Array
-      @result.forEach (t) ->
-        t.constructor.should.equal Object
-    else
-      throw new Error("Unexpected type `#{type}`")
+  this.Then /^the result should be a representation for Nil$/, (callback) =>
+    @result.should.be.null
 
-    callback()
+  this.Then /^the result should be a representation for (.*?)$/, (type,callback) =>
+    @system.fetch(type).include(@result).should.be.true
 
   this.Then /^it should be a TypeError as:$/, (table, callback) ->
     @result.should.be.an.instanceof Qjs.TypeError
 
     callback.pending()
-
-
-  this.Then /^the result should be the null representation in the host language$/, (callback) ->
-    @result.should.equal(null)
-    callback()
-
 
   this.Then /^the result should equal (\d+)$/, (expected, callback) ->
     callback.pending()

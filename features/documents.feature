@@ -2,13 +2,12 @@ Feature: Using Q to build formal document schemas
 
   Background:
 
-    Given the document has been defined as follows:
+    Given the System is
       """
-      Str    = .String
-      Byte   = .Integer( i | i >= 0 and i <= 255 )
-      Gender = <mf> Str( s | s == 'M' or s == 'F' )
+      Byte   = Integer( i | i >= 0 && i <= 255 )
+      Gender = <mf> String( s | s == 'M' || s == 'F' )
       {
-        name: Str,
+        name: String,
         color: { red: Byte, green: Byte, blue: Byte },
         gender: Gender
       }
@@ -16,7 +15,7 @@ Feature: Using Q to build formal document schemas
 
   Scenario: Validating data against valid document
 
-    Given I use the document schema to validate the following JSON doc:
+    Given I dress the following JSON document:
       """
       {
         "name": "Bernard Lambeau",
@@ -33,7 +32,7 @@ Feature: Using Q to build formal document schemas
 
   Scenario: Validating data against an invalid document (I)
 
-    Given I use the document schema to validate the following JSON doc:
+    Given I dress the following JSON document:
       """
       {
         "name": "Bernard Lambeau",
@@ -52,7 +51,7 @@ Feature: Using Q to build formal document schemas
 
   Scenario: Validating data against an invalid document (II)
 
-    Given I use the document schema to validate the following JSON doc:
+    Given I dress the following JSON document:
       """
       {
         "name": "Bernard Lambeau",
