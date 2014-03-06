@@ -7,7 +7,7 @@ _            = require 'underscore'
 class AdType extends Type
 
   constructor: (@jsType, @contracts, @name) ->
-    unless @jsType instanceof Function
+    if @jsType and not(@jsType instanceof Function)
       throw new ArgumentError("Constructor (function) expected, got", @jsType)
 
     unless typeof @contracts is "object"
@@ -29,7 +29,7 @@ class AdType extends Type
     _.keys(@contracts)
 
   defaultName: ->
-    @jsType.name
+    (@jsType && @jsType.name) || "Anonymous"
 
   include: (value) ->
     value.constructor == @jsType

@@ -3,8 +3,17 @@ should  = require 'should'
 
 describe "AdType#defaultName", ->
 
-  type = new AdType(Date, {
+  contracts = {
     timestamp:  [intType,    Date, Date]
-    utc_string: [stringType, Date, Date]})
+    utc_string: [stringType, Date, Date]
+  }
 
-  type.name.should.equal('Date')
+  describe 'when not anonymous', ->
+    type = new AdType(Date, contracts)
+
+    type.name.should.equal('Date')
+
+  describe 'when anonymous', ->
+    type = new AdType(null, contracts)
+
+    type.name.should.equal('Anonymous')
