@@ -58,7 +58,10 @@ class System
   parse: (source) ->
     @merge(Parser.parse(source))
 
-  # TODO: dress: (*args, &bl)
+  dress: (value) ->
+    unless @main
+      throw new Error("No main on System")
+    @main.dress(value)
 
   clone: ->
     new System(_.clone(@types), @main)
