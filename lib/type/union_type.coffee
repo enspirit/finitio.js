@@ -3,9 +3,6 @@ Type            = require '../type'
 DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'
 
-# Extend underscore with the string helpers
-_.str = require 'underscore.string'
-
 class UnionType extends Type
 
   constructor: (@candidates, @name) ->

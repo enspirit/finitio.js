@@ -10,8 +10,7 @@
   },
   "dependencies": {
     "coffee-script": "~1.7.1",
-    "underscore": "~1.6.0",
-    "underscore.string": "~2.3.3"
+    "underscore": "~1.6.0"
   },
   "devDependencies": {
     "shelljs": "~0.2.6",

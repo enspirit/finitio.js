@@ -4,8 +4,7 @@ Constraint      = require '../support/constraint'
 DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'
 
-# Extend underscore with the string helpers
-_.str = require 'underscore.string'
+_.str = (require '../support/utils').string
 
 class SubType extends Type
 
