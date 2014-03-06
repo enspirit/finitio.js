@@ -6,7 +6,7 @@
   "author": "Louis Lambeau <louislambeau@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt build_parser test"
   },
   "dependencies": {
     "coffee-script": "~1.7.1",
