@@ -7,7 +7,7 @@ _            = require 'underscore'
 class AdType extends Type
 
   constructor: (@jsType, @contracts, @name) ->
-    unless @jsType instanceof Function
+    if @jsType and not(@jsType instanceof Function)
       throw new ArgumentError("Constructor (function) expected, got", @jsType)
 
     unless typeof @contracts is "object"
@@ -15,9 +15,10 @@ class AdType extends Type
 
     invalid = _.reject(_.values(@contracts), (v) ->
       v instanceof Array and
-        v.length == 2 and
+        v.length == 3 and
         v[0] instanceof Type and
-        v[1] instanceof Function)
+        v[1] instanceof Function and
+        v[2] instanceof Function)
 
     unless invalid.length == 0
       throw new ArgumentError("Invalid contracts `#{invalid}`")
@@ -28,7 +29,7 @@ class AdType extends Type
     _.keys(@contracts)
 
   defaultName: ->
-    @jsType.name
+    (@jsType && @jsType.name) || "Anonymous"
 
   include: (value) ->
     value.constructor == @jsType
@@ -37,7 +38,7 @@ class AdType extends Type
     helper ?= new DressHelper
 
     # Up should be idempotent with respect to the ADT
-    return value if value instanceof @jsType
+    return value if @jsType and value instanceof @jsType
 
     # Try each contract in turn. Do nothing on TypeError as
     # the next candidate could be the good one! Return the

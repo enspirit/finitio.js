@@ -1,3 +1,5 @@
+fs          = require 'fs'
+Path        = require 'path'
 _           = require 'underscore'
 TypeFactory = require './support/factory'
 Parser      = require './syntax/parser'
@@ -7,32 +9,29 @@ class Qjs
 
   @VERSION: "0.0.1"
 
-  @DSL_METHODS: [
-    'attribute',
-    'heading',
-    'constraint',
-    'constraints',
-    'any',
-    'builtin',
-    'adt',
-    'sub_type',
-    'union',
-    'seq',
-    'set',
-    'tuple',
-    'relation',
-    'type'
-  ]
+  ## DSL
 
-  @DEFAULT_FACTORY: new TypeFactory
+  @FACTORY: new TypeFactory
+
+  for method in TypeFactory.PUBLIC_DSL_METHODS
+    Qjs[method] = @FACTORY[method].bind(@FACTORY)
 
   ## Parsing
-  Qjs.parse = (source) ->
+
+  @parse = (source) ->
     Parser.parse(source)
 
-  ## DSL methods
-  for method in Qjs.DSL_METHODS
-    Qjs[method] = Qjs.DEFAULT_FACTORY[method].bind(Qjs.DEFAULT_FACTORY)
+  ## Systems
+
+  @system = (identifier) ->
+    path = Path.join __dirname, "#{identifier}.q"
+    if fs.existsSync(path)
+      content = fs.readFileSync(path).toString()
+      @parse(content)
+    else
+      throw new Error("Unknown system #{identifier}")
+
+  @DEFAULT_SYSTEM = Qjs.system("Q/default")
 
 ##
 module.exports = Qjs

@@ -1,5 +1,5 @@
-Type                  = require '../type'
-_                     = require 'underscore'
+Type           = require '../type'
+_              = require 'underscore'
 
 ## Support
 Attribute      = require './attribute'
@@ -25,6 +25,20 @@ RelationType   = require '../type/relation_type'
 
 # Typefactory
 class TypeFactory
+
+  @PUBLIC_DSL_METHODS: [
+    'jsType',
+    'any',
+    'builtin',
+    'adt',
+    'sub_type',
+    'union',
+    'seq',
+    'set',
+    'tuple',
+    'relation',
+    'type'
+  ]
 
   ################################################################## Factory
 
@@ -64,6 +78,8 @@ class TypeFactory
       String
     else if t == 'Boolean'
       Boolean
+    else if t == 'Date'
+      Date
     else if isNativeType(t) || t instanceof Function
       t
     else

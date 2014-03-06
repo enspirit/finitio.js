@@ -19,11 +19,15 @@ class RelationType extends Type
     "{{#{@heading.toName()}}}"
 
   include: (value) ->
-    return false unless typeof value == "object"
-    for k, v of value
-      tuple = {}
-      tuple[k] = v
-      return false unless @tupleType.include(tuple)
+    if value == null || value == undefined
+      return false
+
+    unless value.constructor == Array
+      return false
+
+    for v in value
+      return false unless @tupleType.include(v)
+
     return true
 
   # Apply the corresponding TupleType's `dress` to every element of `value`
