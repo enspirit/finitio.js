@@ -4,12 +4,27 @@ TestSystem   = require '../support/test_system'
 
 # Global variables for steps below
 result = null
-system = null
+system = TestSystem
+type   = null
 
 module.exports = ->
 
   this.Given /^the System is$/, (source, callback) ->
     system = TestSystem.parse(source)
+
+    callback()
+
+  @Given /^the type under test is (.*?)$/, (typeName, callback) ->
+    type = system.fetch(typeName)
+
+    callback()
+
+  @Given /^I dress JSON's '(.*?)'$/, (jsonValue, callback) ->
+    try
+      json = JSON.parse(jsonValue)
+      result = type.dress(json)
+    catch e
+      result = e
 
     callback()
 
