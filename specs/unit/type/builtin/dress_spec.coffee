@@ -8,6 +8,10 @@ describe "BuiltinType#dress", ->
   subject = (arg) ->
     type.dress(arg)
 
+  it 'is robust enough', ->
+    expect(-> type.dress(null)).toThrow(new TypeError("Invalid value `null` for num"))
+    expect(-> type.dress()).toThrow(new TypeError("Invalid value `undefined` for num"))
+
   describe 'with an integer', ->
     subject(12).should.equal(12)
 

@@ -69,7 +69,8 @@ class DressHelper
 # (= utility functions only visible in the scope of this module)
 
 _valueToString = (value) ->
-  return 'null' if value == null
+  return 'undefined' if value == undefined
+  return 'null'      if value == null
   s = value.toString()
   s = "#{s.substring(0, 25)}..." if s.length>25
   s = "[#{s}]" if value instanceof Array
