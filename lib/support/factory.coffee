@@ -26,6 +26,20 @@ RelationType   = require '../type/relation_type'
 # Typefactory
 class TypeFactory
 
+  @PUBLIC_DSL_METHODS: [
+    'jsType',
+    'any',
+    'builtin',
+    'adt',
+    'sub_type',
+    'union',
+    'seq',
+    'set',
+    'tuple',
+    'relation',
+    'type'
+  ]
+
   ################################################################## Factory
 
   type: (t, name, callback) ->

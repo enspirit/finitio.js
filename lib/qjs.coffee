@@ -9,27 +9,20 @@ class Qjs
 
   @VERSION: "0.0.1"
 
-  @DSL_METHODS: [
-    'jsType',
-    'any',
-    'builtin',
-    'adt',
-    'sub_type',
-    'union',
-    'seq',
-    'set',
-    'tuple',
-    'relation',
-    'type'
-  ]
+  ## DSL
 
   @FACTORY: new TypeFactory
 
+  for method in TypeFactory.PUBLIC_DSL_METHODS
+    Qjs[method] = @FACTORY[method].bind(@FACTORY)
+
   ## Parsing
+
   @parse = (source) ->
     Parser.parse(source)
 
   ## Systems
+
   @system = (identifier) ->
     path = Path.join __dirname, "#{identifier}.q"
     if fs.existsSync(path)
@@ -38,11 +31,7 @@ class Qjs
     else
       throw new Error("Unknown system #{identifier}")
 
-  ## DSL methods
-  for method in Qjs.DSL_METHODS
-    Qjs[method] = Qjs.FACTORY[method].bind(Qjs.FACTORY)
+  @DEFAULT_SYSTEM = Qjs.system("Q/default")
 
 ##
 module.exports = Qjs
-
-Qjs.DEFAULT_SYSTEM = Qjs.system("Q/default")

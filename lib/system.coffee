@@ -3,7 +3,6 @@ _     = require 'underscore'
 {Error,
 KeyError,
 ArgumentError} = require './errors'
-Qjs            = require './qjs'
 Type           = require './type'
 TypeFactory    = require './support/factory'
 Parser         = require './syntax/parser'
@@ -23,7 +22,7 @@ class System
       this[type.name] = type
 
     ## Decorate prototype with factory methods
-    for method in Qjs.DSL_METHODS
+    for method in TypeFactory.PUBLIC_DSL_METHODS
       this[method] = @factory[method].bind(@factory)
 
   addType: (type) ->
