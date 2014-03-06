@@ -1,5 +1,6 @@
 _           = require 'underscore'
 TypeFactory = require './support/factory'
+Parser      = require './syntax/parser'
 
 ## base module
 class Qjs
@@ -24,9 +25,13 @@ class Qjs
 
   @DEFAULT_FACTORY: new TypeFactory
 
-## DSL methods
-for method in Qjs.DSL_METHODS
-  Qjs[method] = Qjs.DEFAULT_FACTORY[method].bind(Qjs.DEFAULT_FACTORY)
+  ## Parsing
+  Qjs.parse = (source) ->
+    Parser.parse(source)
+
+  ## DSL methods
+  for method in Qjs.DSL_METHODS
+    Qjs[method] = Qjs.DEFAULT_FACTORY[method].bind(Qjs.DEFAULT_FACTORY)
 
 ##
 module.exports = Qjs

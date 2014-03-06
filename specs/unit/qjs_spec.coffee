@@ -1,6 +1,7 @@
 Qjs         = require '../../lib/qjs'
 Type        = require '../../lib/type'
 SubType     = require '../../lib/type/sub_type'
+System      = require '../../lib/system'
 {TypeError} = require '../../lib/errors'
 
 should   = require 'should'
@@ -27,3 +28,6 @@ describe 'Qjs', ->
       lambda()
     catch e
       e.should.be.an.instanceof(TypeError)
+
+  it 'should have a parse method', ->
+    Qjs.parse(".Number").should.be.an.instanceof System
