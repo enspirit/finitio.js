@@ -66,7 +66,7 @@ module.exports = ->
 
   this.Then /^the result should be a representation for (.*?)$/, (type,callback) ->
     unless system.fetch(type).include(result)
-      callback.fail new Error("#{result} is not a representation for #{type}")
+      callback.fail new Error("#{JSON.stringify(result)} is not a representation for #{type}")
     callback()
 
   this.Then /^it should be a TypeError as:$/, (table, callback) ->
