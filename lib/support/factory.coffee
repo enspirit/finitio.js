@@ -1,5 +1,5 @@
-Type                  = require '../type'
-_                     = require 'underscore'
+Type           = require '../type'
+_              = require 'underscore'
 
 ## Support
 Attribute      = require './attribute'

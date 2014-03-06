@@ -1,3 +1,4 @@
+Qjs         = require '../../../lib/qjs'
 {TypeError} = require '../../../lib/errors'
 System      = require '../../../lib/system'
 should      = require 'should'
