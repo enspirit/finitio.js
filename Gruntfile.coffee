@@ -10,9 +10,28 @@ module.exports = (grunt) ->
 
     cucumberjs:
       src: './features'
+
       options:
         format: 'pretty'
         steps: 'features/step_definitions'
+
+    browserify:
+      main:
+        files:
+          'dist/q.js': ['index.coffee']
+        options:
+          standalone: 'Qjs'
+          transform:  ['coffeeify']
+          extensions: ['.coffee']
+
+      tests:
+        files:
+          'dist/test_bundle.js': ['specs/**/*.coffee']
+        options:
+          #external:   ['./lib/**/*.coffee']
+          ignore: ['./node_modules/**/*.js']
+          transform:  ['coffeeify']
+          extensions: ['.coffee']
 
     coffeelint:
       lib:   ['lib/**/*.coffee']
@@ -32,4 +51,5 @@ module.exports = (grunt) ->
       grunt.util.error("jasmine tests failed")
 
   grunt.loadNpmTasks 'grunt-cucumber'
+  grunt.loadNpmTasks 'grunt-browserify'
   grunt.loadNpmTasks 'grunt-coffeelint'
