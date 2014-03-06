@@ -3,6 +3,7 @@ TypeError}   = require '../errors'
 DressHelper  = require '../support/dress_helper'
 Type         = require '../type'
 _            = require 'underscore'
+$u           = require '../support/utils'
 
 class AdType extends Type
 
@@ -13,7 +14,7 @@ class AdType extends Type
     unless typeof @contracts is "object"
       throw new ArgumentError("Hash expected, got", @contracts)
 
-    invalid = _.reject(_.values(@contracts), (v) ->
+    invalid = _.reject($u.values(@contracts), (v) ->
       v instanceof Array and
         v.length == 3 and
         v[0] instanceof Type and

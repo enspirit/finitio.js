@@ -4,6 +4,7 @@ TupleType       = require './tuple_type'
 Heading         = require '../support/heading'
 DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'
+$u              = require '../support/utils'
 
 class RelationType extends Type
 
@@ -50,7 +51,7 @@ class RelationType extends Type
       set[key] = tuple
 
     # Return built tuples
-    _.values(set)
+    $u.values(set)
 
   equals: (other) ->
     return false unless other instanceof RelationType

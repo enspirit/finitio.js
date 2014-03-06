@@ -31,13 +31,13 @@ class Heading
     @size() == 0
 
   each: (callback) ->
-    $u.each(_.values(@attributes), callback)
+    $u.each($u.values(@attributes), callback)
 
   toName: ->
-    _.map(_.values(@attributes), (a) -> a.toName()).join(', ')
+    _.map($u.values(@attributes), (a) -> a.toName()).join(', ')
 
   names: ->
-    _.map(_.values(@attributes), (a) -> a.name)
+    _.map($u.values(@attributes), (a) -> a.name)
 
   equals: (other) ->
     return null unless other instanceof Heading
