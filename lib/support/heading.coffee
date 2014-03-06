@@ -34,10 +34,10 @@ class Heading
     $u.each($u.values(@attributes), callback)
 
   toName: ->
-    _.map($u.values(@attributes), (a) -> a.toName()).join(', ')
+    $u.map($u.values(@attributes), (a) -> a.toName()).join(', ')
 
   names: ->
-    _.map($u.values(@attributes), (a) -> a.name)
+    $u.map($u.values(@attributes), (a) -> a.name)
 
   equals: (other) ->
     return null unless other instanceof Heading

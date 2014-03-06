@@ -39,7 +39,7 @@ class UnionType extends Type
     found?
 
   defaultName: ->
-    _.map(@candidates, (c) -> c.name).join('|')
+    $u.map(@candidates, (c) -> c.name).join('|')
 
   equals: (other) ->
     return false unless other instanceof UnionType

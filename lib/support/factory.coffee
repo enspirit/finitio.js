@@ -202,7 +202,7 @@ class TypeFactory
 
     $u.each args, (arg) =>
       if arg.constructor == Array
-        candidates = _.map arg, (t) => @type(t)
+        candidates = $u.map arg, (t) => @type(t)
 
       else if arg.constructor == String
         _name = @name(_name)
