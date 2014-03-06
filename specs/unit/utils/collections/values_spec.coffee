@@ -8,9 +8,7 @@ describe "Utils.collection#values", ->
       ->
         $u.values obj
 
-    should(test([])).throw(/Object expected, got .*/)
-    should(test(false)).throw(/Object expected, got .*/)
-    should(test("foo")).throw(/Object expected, got .*/)
+    should(test(false)).throw(/Enumerable .* expected, got .*/)
 
   describe "When used on an object", ->
 
@@ -24,4 +22,17 @@ describe "Utils.collection#values", ->
       expected = ['a', 2, undefined, null, date]
 
       res = $u.values obj
+      should(res).eql(expected)
+
+  describe "When used on a String", ->
+
+    it 'returns an array', ->
+      res = $u.values "bar"
+      res.should.be.an.instanceof(Array)
+
+    it 'returns all the characters of the string', ->
+      str      = "foo"
+      expected = ['f', 'o', 'o']
+
+      res = $u.values str
       should(res).eql(expected)
