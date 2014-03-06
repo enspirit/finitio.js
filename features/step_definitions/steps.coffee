@@ -67,10 +67,10 @@ module.exports = ->
       callback.fail new Error("#{@result} is not a representation for #{type}")
     callback()
 
-  this.Then /^it should be a TypeError as:$/, (table, callback) ->
+  this.Then /^it should be a TypeError as:$/, (table, callback) =>
     unless @result instanceof Qjs.TypeError
       callback.fail new Error("#{@result} is not a TypeError")
     callback()
 
-  this.Then /^the result should equal (\d+)$/, (expected, callback) ->
+  this.Then /^the result should equal (\d+)$/, (expected, callback) =>
     callback.pending()
