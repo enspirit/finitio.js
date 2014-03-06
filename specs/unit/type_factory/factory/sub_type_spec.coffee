@@ -62,3 +62,22 @@ describe 'TypeFactory#sub_type', ->
       subject.constraints[0].should.be.an.instanceof(Constraint)
       subject.constraints[0].accept(12).should.be.true
       subject.constraints[0].accept(-12).should.be.false
+
+  describe 'when used with a super type and an hash of constraints', ->
+    subject = factory.sub_type numType, {
+        first: (i) -> i > 0,
+        second: (i) => i < 100
+      }
+
+    it 'should be a subtype', ->
+      subject.should.be.an.instanceof(SubType)
+
+    it 'should have the correct constraints', ->
+      subject.constraints.length.should.equal(2)
+
+      for i, constraint of subject.constraints
+        constraint.should.be.an.instanceof Constraint
+
+    it "constraints' name should be set accordingly", ->
+      subject.constraints[0].name.should.equal("first")
+      subject.constraints[1].name.should.equal("second")

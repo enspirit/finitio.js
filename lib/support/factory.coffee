@@ -115,7 +115,7 @@ class TypeFactory
       else if constraints.constructor == RegExp
         constrs.push @constraint(constraints)
       else if typeof(constraints) is "object"
-        _.each constraints, (n, c)=>
+        _.each constraints, (c, n) =>
           constrs.push(@constraint(n, c))
       else
         constrs.push @constraint(constraints)
@@ -198,11 +198,11 @@ class TypeFactory
 
   union: (args...) ->
     [candidates, _name] = [[], null]
-    
+
     _.each args, (arg) =>
       if arg.constructor == Array
         candidates = _.map arg, (t) => @type(t)
-      
+
       else if arg.constructor == String
         _name = @name(_name)
 
