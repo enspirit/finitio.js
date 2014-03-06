@@ -6,6 +6,7 @@ ArgumentError} = require './errors'
 Qjs            = require './qjs'
 Type           = require './type'
 TypeFactory    = require './support/factory'
+Parser         = require './syntax/parser'
 
 #
 # A System is a collection of named Q types.
@@ -13,8 +14,8 @@ TypeFactory    = require './support/factory'
 class System
 
   constructor: (@types, @main) ->
-    @types ?= {}
-    @main ?= null
+    @types   ?= {}
+    @main    ?= null
     @factory ?= new TypeFactory
 
     # include types as attribute of the system
@@ -46,12 +47,21 @@ class System
 
     callback()
 
+  merge: (other) ->
+    unless other instanceof System
+      throw new ArgumentError("Qjs.System expected, got", other)
+
+    merged_types = _.extend({}, @types, other.types)
+    merged_main  = other.main || @main
+    new System(merged_types, merged_main)
+
+  parse: (source) ->
+    @merge(Parser.parse(source))
+
   # TODO: dress: (*args, &bl)
 
-  # TODO: parse: (source)
-
   clone: ->
-    new System(_.clone(@types), _.clone(@main))
+    new System(_.clone(@types), @main)
 
 #
 module.exports = System
