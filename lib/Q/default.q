@@ -1,3 +1,7 @@
+# Null & Undefined
+Null        = .( |v| v === null      )
+Undefined   = .( |v| v === undefined )
+
 # Bool
 
 Boolean = .Boolean
