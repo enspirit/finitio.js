@@ -23,9 +23,8 @@ module.exports = ->
     callback()
 
   this.Given /^I dress the following JSON document with (.*?):$/, (type, doc, callback) ->
-    json = JSON.parse(doc)
-
     try
+      json = JSON.parse(doc)
       result = system.fetch(type).dress(json)
     catch e
       result = e
@@ -34,9 +33,9 @@ module.exports = ->
 
   this.Given /^I validate the following JSON data against (.*?)$/, (type, json, callback) ->
     type = system.fetch(type)
-    json = JSON.parse(json)
 
     try
+      json = JSON.parse(json)
       result = types.dress(json)
     catch e
       result = e
