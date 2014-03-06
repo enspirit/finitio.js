@@ -98,3 +98,8 @@ module.exports = ->
     unless result == parseInt(expected)
       callback.fail new Error("#{result} <> #{expected}")
     callback()
+
+  this.Then /^the result should equal (\d+.\d+)$/, (expected, callback) ->
+    unless result == parseFloat(expected)
+      callback.fail new Error("#{result} <> #{expected}")
+    callback()

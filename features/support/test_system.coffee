@@ -12,7 +12,8 @@ TestSystem = Qjs.parse """
 
   # Numerics
   Numeric = .Number
-  Integer = .Number( i | noDot: i.toString().indexOf('.') == -1 )
+  Real    = .Number( n | !(n % 1 === 0) )
+  Integer = .Number( n | n % 1 === 0    )
 
   # String
   String  = .String
