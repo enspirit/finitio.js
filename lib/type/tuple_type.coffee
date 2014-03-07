@@ -29,7 +29,7 @@ class TupleType extends Type
     # Check the tuple arity and fail fast if extra attributes
     # (missing attributes are handled just after)
     if $u.size(value) > $u.size(@heading.names())
-      extra = _.difference($u.keys(value), @heading.names())
+      extra = $u.difference($u.keys(value), @heading.names())
       helper.fail("Unrecognized attribute `#{extra[0]}`")
 
     # Up each attribute in turn now. Fail on missing ones.

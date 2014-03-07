@@ -10,7 +10,7 @@ class SetType extends CollectionType
   include: (value) ->
     return false unless value instanceof Array
     return false unless $u.every(value, (v) => @elmType.include(v))
-    _.uniq(value).length == value.length
+    $u.uniq(value).length == value.length
 
   # Apply the element type's `dress` transformation to each element of
   # `value` (expected to respond to `each`). Return converted values in an
@@ -23,7 +23,7 @@ class SetType extends CollectionType
     array = []
     helper.iterate value, (elm, index) =>
       dressed = @elmType.dress(elm, helper)
-      if _.include(array, dressed)
+      if $u.include(array, dressed)
         helper.fail("Duplicate value `#{dressed}`")
       else
         array.push dressed
