@@ -20,14 +20,21 @@
   </script>
 
   <!-- include source files here... -->
-  <script type="text/javascript" src="../dist/q.js"></script>
+  <!--<script type="text/javascript" src="../dist/q.js"></script>-->
 
   <!-- include spec files here... -->
   <script type="text/javascript" src="../dist/test_bundle.js"></script>
 
   <script type="text/javascript">
     (function() {
-      var jasmineEnv = jasmine.getEnv();
+      // Load the helpers and put them in the global scope
+      var helpers = require("helpers");
+      for (var h in helpers){
+        console.log(h);
+        window[h] = helpers[h];
+      }
+
+      var jasmineEnv = jasmine.getEnv({global: {intType: 2}});
       jasmineEnv.updateInterval = 1000;
 
       var htmlReporter = new jasmine.HtmlReporter();
@@ -50,7 +57,6 @@
       function execJasmine() {
         jasmineEnv.execute();
       }
-
     })();
   </script>
 

@@ -1,4 +1,3 @@
-_               = require 'underscore'
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'

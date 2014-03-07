@@ -1,4 +1,3 @@
-_               = require 'underscore'
 Type            = require '../type'
 TupleType       = require './tuple_type'
 Heading         = require '../support/heading'

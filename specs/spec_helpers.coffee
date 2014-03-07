@@ -1,6 +1,6 @@
-Constraint   = require('../../lib/support/constraint')
-BuiltinType  = require('../../lib/type/builtin_type')
-SubType      = require('../../lib/type/sub_type')
+Constraint   = require('../lib/support/constraint')
+BuiltinType  = require('../lib/type/builtin_type')
+SubType      = require('../lib/type/sub_type')
 _            = require('underscore')
 
 
@@ -31,3 +31,8 @@ module.exports =
   intType: intType
   floatType: floatType,
   byteType: byteType
+
+# So that we can reuse the helpers directly in the browser
+if (window?)
+  _.each module.exports, (h, k) ->
+    window[k] = h

@@ -1,4 +1,3 @@
-_               = require 'underscore'
 Type            = require '../type'
 DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'

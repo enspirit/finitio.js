@@ -2,15 +2,17 @@ _        = require 'underscore'
 DataType = require '../../../lib/data_type'
 should   = require 'should'
 
+helpers = require '../../spec_helpers'
+
 describe "Using Q's abstract data types in JavaScript", ->
 
   class MyColor
-    
+
     constructor: (@r, @g, @b) ->
-      
+
     toRgb: ->
       { r: @r, g: @g, b: @b }
-    
+
     @rgb: (tuple) ->
       new MyColor(tuple.r, tuple.g, tuple.b)
 
@@ -27,7 +29,7 @@ describe "Using Q's abstract data types in JavaScript", ->
   describe 'the dress method, when valid', ->
 
     subject = MyColor.dress(r: 12, g: 13, b: 28)
-    
+
     it 'should be an instance of the example class', ->
       subject.should.be.an.instanceof MyColor
 
@@ -38,8 +40,8 @@ describe "Using Q's abstract data types in JavaScript", ->
 
   describe 'the up method, when already a color', ->
     value = new MyColor(12, 13, 28)
-    
+
     subject = MyColor.dress(value)
-    
+
     it 'should remain the same', ->
       subject.should.equal(value)

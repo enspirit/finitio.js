@@ -1,7 +1,6 @@
 {NotImplementedError} = require '../errors'
 DressHelper           = require '../support/dress_helper'
 Type                  = require '../type'
-_                     = require 'underscore'
 
 #
 class BuiltinType extends Type

@@ -2,7 +2,6 @@ Type        = require '../type'
 {KeyError,
 ArgumentError
 TypeError}  = require '../errors'
-_           = require 'underscore'
 
 #
 # Helper class for tuple and relation attributes.

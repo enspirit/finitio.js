@@ -3,7 +3,6 @@ Constraint  = require '../../../../lib/support/constraint'
 {TypeError} = require '../../../../lib/errors'
 BuiltinType = require '../../../../lib/type/builtin_type'
 SubType     = require '../../../../lib/type/sub_type'
-{numType}   = require '../../spec_helpers'
 should      = require 'should'
 
 describe 'TypeFactory#sub_type', ->

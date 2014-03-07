@@ -1,6 +1,5 @@
 {ArgumentError,
 TypeError}  = require '../errors'
-_           = require 'underscore'
 
 #
 # Helper class for constraints.

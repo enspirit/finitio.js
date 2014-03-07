@@ -1,7 +1,6 @@
 {ArgumentError,
 TypeError}  = require '../errors'
 Attribute   = require './attribute'
-_           = require 'underscore'
 $u          = require './utils'
 
 #

@@ -1,5 +1,3 @@
-_     = require 'underscore'
-
 {Error,
 KeyError,
 ArgumentError} = require './errors'

@@ -1,5 +1,4 @@
 {TypeError} = require '../errors'
-_           = require 'underscore'
 $u          = require './utils'
 
 class DressHelper

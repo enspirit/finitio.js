@@ -1,4 +1,3 @@
-_               = require 'underscore'
 Type            = require '../type'
 Constraint      = require '../support/constraint'
 DressHelper     = require '../support/dress_helper'

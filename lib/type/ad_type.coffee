@@ -2,7 +2,6 @@
 TypeError}   = require '../errors'
 DressHelper  = require '../support/dress_helper'
 Type         = require '../type'
-_            = require 'underscore'
 $u           = require '../support/utils'
 
 class AdType extends Type
