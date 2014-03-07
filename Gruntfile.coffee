@@ -18,7 +18,7 @@ module.exports = (grunt) ->
     browserify:
       main:
         files:
-          'dist/q.js': ['index.coffee']
+          'dist/q-lang.js': ['index.coffee']
         options:
           standalone: 'Qjs'
           transform:  ['coffeeify']
@@ -39,8 +39,8 @@ module.exports = (grunt) ->
       tests: ['specs/**/*.coffee']
 
   #
-  grunt.registerTask 'default',      ['build_parser', 'test']
-  grunt.registerTask 'test',         ['jasmine_node', 'cucumberjs']
+  grunt.registerTask 'default',      ['test', 'browserify']
+  grunt.registerTask 'test',         ['build_parser', 'jasmine_node', 'cucumberjs']
   grunt.registerTask 'lint',         ['coffeelint']
 
   grunt.registerTask 'build_parser', ->
