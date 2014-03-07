@@ -24,6 +24,13 @@ module.exports = (grunt) ->
         format: 'pretty'
         steps: 'features/step_definitions'
 
+    mochaTest:
+      test:
+        src: ['specs/**/*.coffee']
+        options:
+          reporter: 'spec'
+          require: 'coffee-script/register'
+
     browserify:
       main:
         files:
@@ -86,7 +93,7 @@ module.exports = (grunt) ->
 
   #
   grunt.registerTask 'default',      ['test']
-  grunt.registerTask 'test',         ['build_parser', 'jasmine_node', 'cucumberjs']
+  grunt.registerTask 'test',         ['build_parser', 'mochaTest', 'cucumberjs']
   grunt.registerTask 'lint',         ['coffeelint']
 
   grunt.registerTask 'travis',       ['build_parser', 'browserify', 'connect', 'saucelabs-jasmine']
@@ -95,12 +102,8 @@ module.exports = (grunt) ->
   grunt.registerTask 'build_parser', ->
     shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading lib/syntax/parser.pegjs lib/syntax/parser.js'
 
-  grunt.registerTask 'jasmine_node', ->
-    res = shell.exec './node_modules/jasmine-node/bin/jasmine-node --coffee specs/'
-    unless res.code == 0
-      grunt.util.error("jasmine tests failed")
-
   grunt.loadNpmTasks 'grunt-cucumber'
+  grunt.loadNpmTasks 'grunt-mocha-test'
   grunt.loadNpmTasks 'grunt-browserify'
   grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-contrib-connect'
