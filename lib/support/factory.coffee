@@ -40,6 +40,13 @@ class TypeFactory
     'type'
   ]
 
+  World: {
+    'Number':  Number,
+    'String':  String,
+    'Boolean': Boolean,
+    'Date':    Date
+  }
+
   ################################################################## Factory
 
   type: (t, name, callback) ->
@@ -72,14 +79,11 @@ class TypeFactory
   ########################################################### Type Arguments
 
   jsType: (t) ->
-    if t == 'Number'
-      Number
-    else if t == 'String'
-      String
-    else if t == 'Boolean'
-      Boolean
-    else if t == 'Date'
-      Date
+    if typeof(t) == 'string'
+      parts = t.split('.')
+      $u.inject parts, @World, (memo, part)->
+        throw new ArgumentError("Unknown type #{t}") unless memo[part]
+        memo[part]
     else if isNativeType(t) || t instanceof Function
       t
     else
