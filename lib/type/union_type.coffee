@@ -43,13 +43,10 @@ class UnionType extends Type
 
   equals: (other) ->
     return false unless other instanceof UnionType
-    ## TODO: there's probably a better way to do this
-    ## ... but _.isEqual doesn't work for [1, 2] == [2, 1]
-    unless _.isEqual(_.difference(other.candidates, @candidates), [])
-      return false
+    return false if $u.size(other.candidates) != $u.size(@candidates)
 
-    unless _.isEqual(_.difference(@candidates, other.candidates), [])
-      return false
+    $u.each @candidates, (c, i) ->
+      return false unless other.candidates[i].equals(c)
 
     true
 
