@@ -14,7 +14,7 @@ class AdType extends Type
     unless typeof @contracts is "object"
       throw new ArgumentError("Hash expected, got", @contracts)
 
-    invalid = _.reject($u.values(@contracts), (v) ->
+    invalid = $u.reject($u.values(@contracts), (v) ->
       v instanceof Array and
         v.length == 3 and
         v[0] instanceof Type and
