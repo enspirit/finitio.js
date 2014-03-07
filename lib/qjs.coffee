@@ -16,8 +16,8 @@ class Qjs
 
   ## Parsing
 
-  @parse = (source) ->
-    Parser.parse(source)
+  @parse = (source, options) ->
+    Parser.parse(source, options || {})
 
   ## Systems
 
