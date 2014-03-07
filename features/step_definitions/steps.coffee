@@ -1,16 +1,24 @@
 Qjs          = require '../../lib/qjs'
 should       = require 'should'
-TestSystem   = require '../support/test_system'
 
 # Global variables for steps below
-result = null
-system = TestSystem
-type   = null
+TestSystem  = null
+result      = null
+system      = null
+type        = null
 
 module.exports = ->
 
+  this.Before (callback)->
+    TestSystem ?= require '../support/test_system'
+    system = TestSystem
+    callback()
+
   this.Given /^the System is$/, (source, callback) ->
-    system = TestSystem.parse(source)
+    try
+      system = TestSystem.parse(source)
+    catch e
+      callback.fail(e)
 
     callback()
 
@@ -71,7 +79,7 @@ module.exports = ->
 
   this.Then /^its '(.*)' attribute should be a Date representation$/, (attr, callback) ->
     unless result[attr] instanceof Date
-      callback.fail new Error("attribute is not a Date")
+      callback.fail new Error("attribute is not a Date, got #{result[attr]}")
     callback()
 
   this.Then /^the result should be a representation for Nil$/, (callback) ->
