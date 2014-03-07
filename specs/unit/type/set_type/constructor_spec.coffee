@@ -18,7 +18,7 @@ describe "SetType#initialize", ->
     lambda = -> new SetType("foo")
 
     it 'should raise an error', ->
-      expect(lambda).toThrow
+      should(lambda).throw()
 
       err = try
         lambda()

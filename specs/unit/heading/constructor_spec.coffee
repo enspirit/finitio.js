@@ -23,7 +23,7 @@ describe "Heading#constructor", ->
     lambda = -> subject(attributes)
 
     it 'should raise an error', ->
-      expect(lambda).toThrow()
+      should(lambda).throw()
       try
         lambda()
       catch e

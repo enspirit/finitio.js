@@ -1,5 +1,6 @@
 BuiltinType = require '../../../../lib/type/builtin_type'
 {TypeError} = require '../../../../lib/errors'
+should      = require 'should'
 
 describe "BuiltinType#dress", ->
 
@@ -9,8 +10,8 @@ describe "BuiltinType#dress", ->
     type.dress(arg)
 
   it 'is robust enough', ->
-    expect(-> type.dress(null)).toThrow(new TypeError("Invalid value `null` for num"))
-    expect(-> type.dress()).toThrow(new TypeError("Invalid value `undefined` for num"))
+    should(-> type.dress(null)).throw(new TypeError("Invalid value `null` for num"))
+    should(-> type.dress()).throw(new TypeError("Invalid value `undefined` for num"))
 
   describe 'with an integer', ->
     subject(12).should.equal(12)
@@ -24,7 +25,7 @@ describe "BuiltinType#dress", ->
       subject("Hello World!")
 
     it 'should throw an Error', ->
-      expect(lambda).toThrow()
+      should(lambda).throw()
 
     it 'should throw a TypeError', ->
       error = null

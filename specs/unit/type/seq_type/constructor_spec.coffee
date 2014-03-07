@@ -18,7 +18,7 @@ describe "SeqType#initialize", ->
     lambda = -> new SeqType("foo")
 
     it 'should raise an error', ->
-      expect(lambda).toThrow
+      should(lambda).throw()
 
       err = try
         lambda()

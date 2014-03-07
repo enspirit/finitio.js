@@ -24,7 +24,7 @@ describe "System#constructor", ->
     it 'should apply the constraint', ->
       lambda = -> subject.dress(-9)
 
-      expect(lambda).toThrow()
+      should(lambda).throw()
 
       err = try
         lambda()

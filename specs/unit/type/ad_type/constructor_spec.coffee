@@ -20,7 +20,7 @@ describe "AdType#constructor", ->
     lambda = -> new AdType("foo", {})
 
     it 'should raise an error', ->
-      expect(lambda).toThrow()
+      should(lambda).throw()
 
       err = try
         lambda()
@@ -34,7 +34,7 @@ describe "AdType#constructor", ->
     lambda = -> new AdType(Date, "bar")
 
     it 'should raise an error', ->
-      expect(lambda).toThrow()
+      should(lambda).throw()
 
       err = try
         lambda()

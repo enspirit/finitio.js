@@ -41,4 +41,4 @@ describe "Parser#system", ->
       subject.getType('Int').should.be.an.instanceof(BuiltinType)
 
     it 'should have no main type', ->
-      expect(subject.main).toBeNull()
+      should(subject.main).be.null

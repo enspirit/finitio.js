@@ -24,7 +24,7 @@ describe 'System#fetch', ->
     lambda = -> subject(name)
 
     it 'should raise an error', ->
-      expect(lambda).toThrow()
+      should(lambda).throw()
 
       err = try
         lambda()

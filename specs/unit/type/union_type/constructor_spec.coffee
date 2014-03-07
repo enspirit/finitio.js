@@ -17,7 +17,7 @@ describe "UnionType#constructor", ->
       union = new UnionType(["bar"])
 
     it 'should throw an error', ->
-      expect(lambda).toThrow()
+      should(lambda).throw()
 
     it 'should throw an ArgumentError', ->
       try

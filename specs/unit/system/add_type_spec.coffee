@@ -23,7 +23,7 @@ describe "System#addType", ->
     lambda = -> system.addType("foo")
 
     it 'should raise an error', ->
-      expect(lambda).toThrow()
+      should(lambda).throw()
 
       err = try
         lambda()
@@ -41,7 +41,7 @@ describe "System#addType", ->
       system.addType(numType)
 
     it 'should raise an error', ->
-      expect(lambda).toThrow()
+      should(lambda).throw()
 
       err = try
         lambda()

@@ -15,7 +15,7 @@ describe "Attribute#fetchOn", ->
 
     lambda = -> subject(arg)
 
-    expect(lambda).toThrow()
+    should(lambda).throw()
 
     try
       lambda()
@@ -31,7 +31,7 @@ describe "Attribute#fetchOn", ->
     arg = { other: 123 }
     lambda = -> subject(arg)
 
-    expect(lambda).toThrow()
+    should(lambda).throw()
 
     try
       lambda()

@@ -21,7 +21,7 @@ describe "SeqType#dress", ->
   describe 'with something else than array', ->
     lambda = -> subject("foo")
 
-    expect(lambda).toThrow()
+    should(lambda).throw()
 
     try
       lambda()

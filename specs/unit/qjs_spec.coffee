@@ -22,7 +22,7 @@ describe 'Qjs', ->
     lambda = ->
       t.dress(-12)
 
-    expect(lambda).toThrow()
+    should(lambda).throw()
 
     try
       lambda()

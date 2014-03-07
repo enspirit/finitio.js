@@ -37,7 +37,7 @@ describe "AdType#dress", ->
       lambda = -> subject []
 
       it 'should raise an error', ->
-        expect(lambda).toThrow()
+        should(lambda).throw()
 
         err = try
           lambda()
