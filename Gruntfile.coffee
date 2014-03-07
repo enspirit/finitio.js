@@ -38,9 +38,7 @@ module.exports = (grunt) ->
         files:
           'dist/test_bundle.js': ['specs/**/*.coffee']
         options:
-          alias: [
-            './specs/spec_helpers.coffee:helpers'
-          ]
+          ignore: ['./specs/spec_helpers.coffee']
           transform:  ['coffeeify']
           extensions: ['.coffee']
 

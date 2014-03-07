@@ -1,5 +1,7 @@
 AdType  = require '../../../../lib/type/ad_type'
 should  = require 'should'
+{intType,
+stringType}    = require '../../../spec_helpers'
 
 describe "AdType#defaultName", ->
 

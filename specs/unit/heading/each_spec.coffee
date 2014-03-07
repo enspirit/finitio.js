@@ -2,6 +2,7 @@ Attribute = require '../../../lib/support/attribute'
 Heading   = require '../../../lib/support/heading'
 should    = require 'should'
 _         = require 'underscore'
+{intType} = require '../../spec_helpers'
 
 describe "Heading#each", ->
 

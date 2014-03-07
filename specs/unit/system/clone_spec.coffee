@@ -1,5 +1,7 @@
-System    = require '../../../lib/system'
-should = require 'should'
+System      = require '../../../lib/system'
+should      = require 'should'
+{numType,
+stringType} = require '../../spec_helpers'
 
 describe "System#clone", ->
 

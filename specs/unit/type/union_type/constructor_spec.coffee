@@ -2,6 +2,8 @@
 UnionType       = require '../../../../lib/type/union_type'
 should          = require 'should'
 _               = require 'underscore'
+{intType,
+floatType}      = require '../../../spec_helpers'
 
 describe "UnionType#constructor", ->
 

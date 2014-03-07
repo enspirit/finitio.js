@@ -1,6 +1,8 @@
-Constraint = require '../../../../lib/support/constraint'
-SubType    = require '../../../../lib/type/sub_type'
-should     = require 'should'
+Constraint  = require '../../../../lib/support/constraint'
+SubType     = require '../../../../lib/type/sub_type'
+should      = require 'should'
+{numType,
+stringType} = require '../../../spec_helpers'
 
 describe 'SubType#equals', ->
 

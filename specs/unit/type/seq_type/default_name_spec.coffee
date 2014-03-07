@@ -1,5 +1,6 @@
 SeqType         = require '../../../../lib/type/seq_type'
 should          = require 'should'
+{intType}       = require '../../../spec_helpers'
 
 describe "SeqType#defaultName", ->
 

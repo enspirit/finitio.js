@@ -3,6 +3,7 @@ Heading     = require '../../../../lib/support/heading'
 TupleType   = require '../../../../lib/type/tuple_type'
 {TypeError} = require '../../../../lib/errors'
 should      = require 'should'
+{byteType}  = require '../../../spec_helpers'
 
 describe "TupleType#defaultName", ->
 

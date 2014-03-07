@@ -1,6 +1,8 @@
 {TypeError} = require '../../../../lib/errors'
 UnionType   = require '../../../../lib/type/union_type'
 should      = require 'should'
+{intType,
+floatType}  = require '../../../spec_helpers'
 
 describe "UnionType#dress", ->
 

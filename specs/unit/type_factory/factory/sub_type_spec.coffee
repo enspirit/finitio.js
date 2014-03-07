@@ -4,6 +4,7 @@ Constraint  = require '../../../../lib/support/constraint'
 BuiltinType = require '../../../../lib/type/builtin_type'
 SubType     = require '../../../../lib/type/sub_type'
 should      = require 'should'
+{numType}   = require '../../../spec_helpers'
 
 describe 'TypeFactory#sub_type', ->
 

@@ -3,6 +3,7 @@ SeqType         = require '../../../../lib/type/seq_type'
 TypeError}      = require '../../../../lib/errors'
 _               = require 'underscore'
 should          = require 'should'
+{byteType}      = require '../../../spec_helpers'
 
 describe "SeqType#dress", ->
 

@@ -1,6 +1,7 @@
 Attribute = require '../../../lib/support/attribute'
 Heading   = require '../../../lib/support/heading'
 should    = require 'should'
+{intType} = require '../../spec_helpers'
 
 describe "Heading#size", ->
 

@@ -2,6 +2,7 @@ Attribute   = require '../../../../lib/support/attribute'
 TypeFactory = require '../../../../lib/support/factory'
 BuiltinType = require '../../../../lib/type/builtin_type'
 should      = require 'should'
+{intType}   = require '../../../spec_helpers'
 
 describe 'TypeFactory#attribute', ->
 

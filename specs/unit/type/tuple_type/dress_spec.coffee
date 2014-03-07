@@ -4,6 +4,7 @@ TupleType   = require '../../../../lib/type/tuple_type'
 {TypeError} = require '../../../../lib/errors'
 should      = require 'should'
 _           = require 'underscore'
+{byteType}  = require '../../../spec_helpers'
 
 describe "TupleType#dress", ->
 

@@ -1,6 +1,7 @@
 TypeFactory = require '../../../../lib/support/factory'
 SeqType     = require '../../../../lib/type/seq_type'
 should      = require 'should'
+{numType}   = require '../../../spec_helpers'
 
 describe "TypeFactory#seq", ->
 

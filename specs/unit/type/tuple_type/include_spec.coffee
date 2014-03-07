@@ -1,7 +1,7 @@
 Attribute   = require '../../../../lib/support/attribute'
 Heading     = require '../../../../lib/support/heading'
 TupleType   = require '../../../../lib/type/tuple_type'
-
+{intType}   = require '../../../spec_helpers'
 should      = require 'should'
 
 describe "TupleType#include", ->

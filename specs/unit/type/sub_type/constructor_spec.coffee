@@ -2,6 +2,7 @@ Constraint = require '../../../../lib/support/constraint'
 SubType    = require '../../../../lib/type/sub_type'
 should     = require 'should'
 _          = require 'underscore'
+{numType}  = require '../../../spec_helpers'
 
 describe "SubType#constructor", ->
 

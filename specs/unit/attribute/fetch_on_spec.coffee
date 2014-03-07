@@ -3,7 +3,8 @@ should    = require 'should'
 {
   ArgumentError
 , KeyError
-} = require '../../../lib/errors'
+}         = require '../../../lib/errors'
+{intType} = require '../../spec_helpers'
 
 describe "Attribute#fetchOn", ->
 

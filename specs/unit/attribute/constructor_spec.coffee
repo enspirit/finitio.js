@@ -1,5 +1,6 @@
 Attribute = require '../../../lib/support/attribute'
 should    = require 'should'
+{intType} = require '../../spec_helpers'
 
 describe "Attribute#constructor", ->
 

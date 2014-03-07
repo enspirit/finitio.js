@@ -1,7 +1,7 @@
-System    = require '../../../lib/system'
-TupleType = require '../../../lib/type/tuple_type'
-
-should = require 'should'
+System      = require '../../../lib/system'
+TupleType   = require '../../../lib/type/tuple_type'
+{numType}   = require '../../spec_helpers'
+should      = require 'should'
 
 describe "System#[]", ->
 

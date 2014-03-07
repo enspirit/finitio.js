@@ -1,8 +1,8 @@
 Attribute     = require '../../../../lib/support/attribute'
 Heading       = require '../../../../lib/support/heading'
 RelationType  = require '../../../../lib/type/relation_type'
-
-should      = require 'should'
+{intType}     = require '../../../spec_helpers'
+should        = require 'should'
 
 describe "RelationType#equality", ->
 

@@ -3,6 +3,7 @@ SeqType         = require '../../../../lib/type/seq_type'
 TypeError}      = require '../../../../lib/errors'
 _               = require 'underscore'
 should          = require 'should'
+{intType}       = require '../../../spec_helpers'
 
 describe "SeqType#include", ->
 

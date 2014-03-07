@@ -1,5 +1,6 @@
 SetType         = require '../../../../lib/type/set_type'
 should          = require 'should'
+{intType}       = require '../../../spec_helpers'
 
 describe "SetType#defaultName", ->
 

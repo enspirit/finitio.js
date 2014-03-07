@@ -1,5 +1,7 @@
-UnionType = require '../../../../lib/type/union_type'
-should    = require 'should'
+UnionType   = require '../../../../lib/type/union_type'
+should      = require 'should'
+{intType,
+floatType}  = require '../../../spec_helpers'
 
 describe "UnionType#defaultName", ->
 

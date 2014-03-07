@@ -2,6 +2,7 @@ Attribute       = require '../../../lib/support/attribute'
 Heading         = require '../../../lib/support/heading'
 {ArgumentError} = require '../../../lib/errors'
 should          = require 'should'
+{intType}       = require '../../spec_helpers'
 
 describe "Heading#constructor", ->
 

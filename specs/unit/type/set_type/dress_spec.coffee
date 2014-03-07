@@ -3,6 +3,7 @@ SetType         = require '../../../../lib/type/set_type'
 TypeError}      = require '../../../../lib/errors'
 _               = require 'underscore'
 should          = require 'should'
+{byteType}      = require '../../../spec_helpers'
 
 describe "SetType#dress", ->
 

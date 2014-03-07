@@ -1,6 +1,8 @@
-Attribute = require '../../../lib/support/attribute'
-Heading   = require '../../../lib/support/heading'
-should    = require 'should'
+Attribute  = require '../../../lib/support/attribute'
+Heading    = require '../../../lib/support/heading'
+should     = require 'should'
+{intType,
+floatType} = require '../../spec_helpers'
 
 describe "Heading#toName", ->
 

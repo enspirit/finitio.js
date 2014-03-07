@@ -1,5 +1,6 @@
 TypeFactory = require '../../../../lib/support/factory'
 should      = require 'should'
+{numType}   = require '../../../spec_helpers'
 
 describe 'TypeFactory#builtin', ->
 

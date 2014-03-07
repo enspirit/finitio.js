@@ -1,8 +1,7 @@
-_        = require 'underscore'
-DataType = require '../../../lib/data_type'
-should   = require 'should'
-
-helpers = require '../../spec_helpers'
+_          = require 'underscore'
+DataType   = require '../../../lib/data_type'
+should     = require 'should'
+{byteType} = require '../../spec_helpers'
 
 describe "Using Q's abstract data types in JavaScript", ->
 

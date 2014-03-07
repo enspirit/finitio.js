@@ -3,6 +3,8 @@ SetType         = require '../../../../lib/type/set_type'
 TypeError}      = require '../../../../lib/errors'
 _               = require 'underscore'
 should          = require 'should'
+{intType,
+floatType}      = require '../../../spec_helpers'
 
 describe "SetType#equality", ->
 
