@@ -29,7 +29,6 @@ module.exports = (grunt) ->
         files:
           'dist/test_bundle.js': ['specs/**/*.coffee']
         options:
-          #external:   ['./lib/**/*.coffee']
           ignore: ['./node_modules/**/*.js']
           transform:  ['coffeeify']
           extensions: ['.coffee']
