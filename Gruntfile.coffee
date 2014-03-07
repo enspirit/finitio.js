@@ -45,7 +45,6 @@ module.exports = (grunt) ->
         files:
           'dist/test_bundle.js': ['specs/**/*.coffee']
         options:
-          #ignore: ['./specs/spec_helpers.coffee']
           transform:  ['coffeeify']
           extensions: ['.coffee']
 
@@ -85,19 +84,18 @@ module.exports = (grunt) ->
             {browserName: 'ipad', version: '6.0', platform: 'OS X 10.8'},
 
             {browserName: 'internet explorer', version: 11, platform: 'Windows 8.1'},
-            {browserName: 'internet explorer', version: 10, platform: 'Windows 8'},
-            {browserName: 'internet explorer', version: 9, platform: 'Windows 7'}
+            {browserName: 'internet explorer', version: 10, platform: 'Windows 8'}
           ]
           testname: "Qjs tests"
           tags: ["master"]
 
   #
-  grunt.registerTask 'default',      ['test']
-  grunt.registerTask 'test',         ['build_parser', 'mochaTest', 'cucumberjs']
+  grunt.registerTask 'default',      ['build_parser', 'browserify', 'test']
+  grunt.registerTask 'test',         ['mochaTest', 'cucumberjs']
   grunt.registerTask 'lint',         ['coffeelint']
 
-  grunt.registerTask 'travis',       ['build_parser', 'browserify', 'connect', 'saucelabs-mocha']
-  grunt.registerTask 'dev',          ['connect', 'watch']
+  grunt.registerTask 'travis',       ['default', 'connect', 'saucelabs-mocha']
+  grunt.registerTask 'dev',          ['default', 'connect', 'watch']
 
   grunt.registerTask 'build_parser', ->
     shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading lib/syntax/parser.pegjs lib/syntax/parser.js'
