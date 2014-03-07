@@ -6,8 +6,14 @@ env:
   - secure: ImoBEzB9z+qXrZzk42ZPYY1eU1AB3owApR+RMcyIGLmRjfkZjRZ+njClMFDKvlAJlD9mt5h9wJthUImTKPfJQqjAOu0bv/hDslsxrMGMO4Sr1BHdPRwwgyPj70QZ84eEdeuAkHc4y9YTMUaPw1Z3eIaKHl+UYdTvHKAIItTyIuQ=
   - secure: LOctRsPRhkQNu/qDlZ0BdVj58enPqOifDaGQh2lrjMImuXhWD8NYhai2KEbxYYkNuRPZzAxnIvasWAlPNt7XLw3pezvJfLTbPJhOt7Vxumy6Z0tffUxHnJW9x7TCwBh7LR89wf4MM0FNWjh5l2OyqnCnsLCAC6xwHmVqwTiVd7Q=
 
-before_install: npm install -g grunt-cli
+before_install:
+- npm install -g grunt-cli
+
 before_script:
 - git submodule update --init --recursive
 
-install: npm install
+install:
+- npm install
+
+script:
+- grunt --stack travis

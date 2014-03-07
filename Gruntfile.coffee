@@ -4,46 +4,6 @@ shell = require 'shelljs'
 
 module.exports = (grunt) ->
 
-  # List of browsers to use with sauce labs
-  browsers = [{
-      browserName: "firefox",
-      platform: "Linux",
-      version: "17"
-  }, {
-      browserName: "firefox",
-      platform: "Linux",
-      version: "16"
-  }, {
-      browserName: "firefox",
-      platform: "Linux",
-      version: "15"
-  }, {
-      browserName: "safari",
-      platform: "Mac 10.6",
-      version: "5"
-  }, {
-      browserName: "chrome",
-      platform: "Windows 2008"
-  }, {
-      browserName: "chrome",
-      platform: "Mac 10.8"
-  }, {
-      browserName: "chrome",
-      platform: "Linux"
-  }, {
-      browserName: "ipad",
-      platform: "Mac 10.8",
-      version: "6"
-  }, {
-      browserName: "iphone",
-      platform: "Mac 10.8",
-      version: "6"
-  }, {
-      browserName: "android",
-      platform: "Linux",
-      version: "4"
-  }]
-
   ## Grunt's main config
   grunt.initConfig
 
@@ -52,7 +12,7 @@ module.exports = (grunt) ->
     connect:
       server:
         options:
-          base: ""
+          base: "."
           port: 9999
 
     watch: {}
@@ -91,19 +51,33 @@ module.exports = (grunt) ->
     "saucelabs-jasmine":
       all:
         options:
-          urls: ["http://127.0.0.1:9999/specs/SpecRunner.html"]
-          tunnelTimeout: 5
-          build: process.env.TRAVIS_JOB_ID,
+          urls: ["http://localhost:9999/specs/SpecRunner.html"]
+          build: process.env.TRAVIS_JOB_ID
+          detailedError: true
           concurrency: 3
-          browsers: browsers
+          browsers: [
+            {browserName: 'chrome'},
+            {browserName: 'firefox'},
+            {browserName: 'firefox', version: '3.6'},
+            {browserName: 'safari', version: 7, platform: 'OS X 10.9'},
+            {browserName: 'safari', version: 6, platform: 'OS X 10.8'},
+            {browserName: 'iphone', version: 6, platform: 'OS X 10.8'},
+            {browserName: 'ipad', version: 6, platform: 'OS X 10.8'},
+            {browserName: 'internet explorer', version: 11, platform: 'Windows 8.1'},
+            {browserName: 'internet explorer', version: 10, platform: 'Windows 8'},
+            {browserName: 'internet explorer', version: 9, platform: 'Windows 7'},
+            {browserName: 'internet explorer', version: 6, platform: 'XP'}
+          ]
           testname: "Qjs tests"
           tags: ["master"]
 
   #
-  grunt.registerTask 'default',      ['test', 'browserify']
+  grunt.registerTask 'default',      ['test']
   grunt.registerTask 'test',         ['build_parser', 'jasmine_node', 'cucumberjs']
   grunt.registerTask 'lint',         ['coffeelint']
-  grunt.registerTask 'sauce',        ['connect', 'saucelabs-jasmine']
+
+  grunt.registerTask 'travis',       ['build_parser', 'browserify', 'connect', 'saucelabs-jasmine']
+  grunt.registerTask 'dev',          ['connect', 'watch']
 
   grunt.registerTask 'build_parser', ->
     shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading lib/syntax/parser.pegjs lib/syntax/parser.js'
