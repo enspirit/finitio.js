@@ -56,7 +56,7 @@ class SubType extends Type
     return false unless other instanceof SubType
     @superType.equals(other.superType) and
       @constraints.length == other.constraints.length and
-      $u.every _.zip(@constraints, other.constraints), (pair)->
+      $u.every $u.zip(@constraints, other.constraints), (pair)->
         pair[0].equals(pair[1])
 
   defaultConstraint: (constraint)->

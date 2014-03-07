@@ -6,9 +6,9 @@ describe "Utils.utility#isArray", ->
   subject = (obj) -> $u.isArray(obj)
 
   describe 'for null or undefined', ->
-    it 'throws an error', ->
+    it 'returns false', ->
       for i, obj of [null, undefined]
-        should(-> subject(obj)).throw(/Object expected, got .*/)
+        subject(obj).should.be.false
 
   describe 'for array', ->
     it 'should return true', ->
