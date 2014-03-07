@@ -27,9 +27,8 @@ module.exports = (grunt) ->
 
       tests:
         files:
-          'dist/test_bundle.js': ['specs/spec_helpers.coffee', 'specs/**/*.coffee']
+          'dist/test_bundle.js': ['specs/**/*.coffee']
         options:
-          #ignore: ['./node_modules/**/*.js']
           alias: './specs/spec_helpers.coffee:helpers'
           transform:  ['coffeeify']
           extensions: ['.coffee']
@@ -42,6 +41,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'default',      ['test', 'browserify']
   grunt.registerTask 'test',         ['build_parser', 'jasmine_node', 'cucumberjs']
   grunt.registerTask 'lint',         ['coffeelint']
+  grunt.registerTask 'testling',     ['build_parser', 'browserify']
 
   grunt.registerTask 'build_parser', ->
     shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading lib/syntax/parser.pegjs lib/syntax/parser.js'

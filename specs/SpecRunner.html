@@ -16,11 +16,8 @@
   </script>
 
   <script type="text/javascript"
-    src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore.js">
+    src="testling/jasmine.tap_reporter.js">
   </script>
-
-  <!-- include source files here... -->
-  <!--<script type="text/javascript" src="../dist/q.js"></script>-->
 
   <!-- include spec files here... -->
   <script type="text/javascript" src="../dist/test_bundle.js"></script>
@@ -30,7 +27,6 @@
       // Load the helpers and put them in the global scope
       var helpers = require("helpers");
       for (var h in helpers){
-        console.log(h);
         window[h] = helpers[h];
       }
 
@@ -38,8 +34,10 @@
       jasmineEnv.updateInterval = 1000;
 
       var htmlReporter = new jasmine.HtmlReporter();
+      var tapReporter = new jasmine.TapReporter();
 
       jasmineEnv.addReporter(htmlReporter);
+      jasmineEnv.addReporter(tapReporter);
 
       jasmineEnv.specFilter = function(spec) {
         return htmlReporter.specFilter(spec);
