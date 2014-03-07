@@ -4,8 +4,7 @@ should          = require 'should'
 
 describe 'TypeFactory#jsType', ->
 
-  factory = new TypeFactory
-  factory.World['X'] = { Y: { z: ( ()-> 12 ) } }
+  factory = new TypeFactory(X: { Y: { z: ( ()-> 12 ) } })
 
   describe 'when used with a JS class', ->
     subject = factory.jsType(Number)

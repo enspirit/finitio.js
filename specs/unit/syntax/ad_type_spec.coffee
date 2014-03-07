@@ -33,3 +33,35 @@ describe "Parser#ad_type", ->
     it 'should return a AdType', ->
       subject.should.be.an.instanceof(AdType)
       (subject.jsType == null).should.be.true
+
+  describe 'when using an external contract', ->
+    source = """
+      <as> .String .MyDresser
+    """
+    myFactory = new TypeFactory('MyDresser': {
+      dress:   (info)-> parseInt(info),
+      undress: (adt)-> info.toString()
+    })
+    subject = Parser.parse(source, startRule: "type", factory: myFactory)
+
+    it 'should return a AdType', ->
+      subject.should.be.an.instanceof(AdType)
+
+    it 'has the correct dresser and undresser', ->
+      subject.dress("12").should.equal(12)
+
+  describe 'when using a qualified external contract', ->
+    source = """
+      <as> .String .X.MyDresser
+    """
+    myFactory = new TypeFactory(X: {MyDresser: {
+      dress:   (info)-> parseInt(info),
+      undress: (adt)-> info.toString()
+    }})
+    subject = Parser.parse(source, startRule: "type", factory: myFactory)
+
+    it 'should return a AdType', ->
+      subject.should.be.an.instanceof(AdType)
+
+    it 'has the correct dresser and undresser', ->
+      subject.dress("12").should.equal(12)

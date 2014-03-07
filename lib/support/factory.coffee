@@ -40,12 +40,14 @@ class TypeFactory
     'type'
   ]
 
-  World: {
-    'Number':  Number,
-    'String':  String,
-    'Boolean': Boolean,
-    'Date':    Date
-  }
+  constructor: (world)->
+    @world = {
+      'Number':  Number,
+      'String':  String,
+      'Boolean': Boolean,
+      'Date':    Date
+    }
+    $u.extend(@world, world)
 
   ################################################################## Factory
 
@@ -81,7 +83,7 @@ class TypeFactory
   jsType: (t) ->
     if typeof(t) == 'string'
       parts = t.split('.')
-      $u.inject parts, @World, (memo, part)->
+      $u.inject parts, @world, (memo, part)->
         throw new ArgumentError("Unknown type #{t}") unless memo[part]
         memo[part]
     else if isNativeType(t) || t instanceof Function
