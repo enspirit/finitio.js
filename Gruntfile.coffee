@@ -45,7 +45,7 @@ module.exports = (grunt) ->
         files:
           'dist/test_bundle.js': ['specs/**/*.coffee']
         options:
-          ignore: ['./specs/spec_helpers.coffee']
+          #ignore: ['./specs/spec_helpers.coffee']
           transform:  ['coffeeify']
           extensions: ['.coffee']
 
@@ -53,7 +53,7 @@ module.exports = (grunt) ->
       lib:   ['lib/**/*.coffee']
       tests: ['specs/**/*.coffee']
 
-    "saucelabs-jasmine":
+    "saucelabs-mocha":
       all:
         options:
           urls: ["http://localhost:9999/specs/SpecRunner.html"]
@@ -96,7 +96,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'test',         ['build_parser', 'mochaTest', 'cucumberjs']
   grunt.registerTask 'lint',         ['coffeelint']
 
-  grunt.registerTask 'travis',       ['build_parser', 'browserify', 'connect', 'saucelabs-jasmine']
+  grunt.registerTask 'travis',       ['build_parser', 'browserify', 'connect', 'saucelabs-mocha']
   grunt.registerTask 'dev',          ['connect', 'watch']
 
   grunt.registerTask 'build_parser', ->
