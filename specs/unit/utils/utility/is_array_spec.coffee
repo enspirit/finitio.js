@@ -1,7 +1,7 @@
 $u      = (require '../../../../lib/support/utils')
 should  = require 'should'
 
-describe "Utils.string#isArray", ->
+describe "Utils.utility#isArray", ->
 
   subject = (obj) -> $u.isArray(obj)
 

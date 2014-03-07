@@ -1,4 +1,4 @@
-_           = require 'underscore'
+$u          = require './support/utils'
 TypeFactory = require './support/factory'
 Parser      = require './syntax/parser'
 
@@ -32,6 +32,6 @@ class Qjs
   @DEFAULT_SYSTEM = require("./Q/default")
 
 ##
-_.extend Qjs, require './errors'
+$u.extend Qjs, require './errors'
 
 module.exports = Qjs

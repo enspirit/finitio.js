@@ -50,7 +50,7 @@ class System
     unless other instanceof System
       throw new ArgumentError("Qjs.System expected, got", other)
 
-    merged_types = _.extend({}, @types, other.types)
+    merged_types = $u.extend({}, @types, other.types)
     merged_main  = other.main || @main
     new System(merged_types, merged_main)
 
@@ -63,7 +63,7 @@ class System
     @main.dress(value)
 
   clone: ->
-    new System(_.clone(@types), @main)
+    new System($u.clone(@types), @main)
 
 #
 module.exports = System
