@@ -4,9 +4,58 @@ shell = require 'shelljs'
 
 module.exports = (grunt) ->
 
+  # List of browsers to use with sauce labs
+  browsers = [{
+      browserName: "firefox",
+      platform: "Linux",
+      version: "17"
+  }, {
+      browserName: "firefox",
+      platform: "Linux",
+      version: "16"
+  }, {
+      browserName: "firefox",
+      platform: "Linux",
+      version: "15"
+  }, {
+      browserName: "safari",
+      platform: "Mac 10.6",
+      version: "5"
+  }, {
+      browserName: "chrome",
+      platform: "Windows 2008"
+  }, {
+      browserName: "chrome",
+      platform: "Mac 10.8"
+  }, {
+      browserName: "chrome",
+      platform: "Linux"
+  }, {
+      browserName: "ipad",
+      platform: "Mac 10.8",
+      version: "6"
+  }, {
+      browserName: "iphone",
+      platform: "Mac 10.8",
+      version: "6"
+  }, {
+      browserName: "android",
+      platform: "Linux",
+      version: "4"
+  }]
+
+  ## Grunt's main config
   grunt.initConfig
 
     pkg: grunt.file.readJSON 'package.json'
+
+    connect:
+      server:
+        options:
+          base: ""
+          port: 9999
+
+    watch: {}
 
     cucumberjs:
       src: './features'
@@ -29,7 +78,9 @@ module.exports = (grunt) ->
         files:
           'dist/test_bundle.js': ['specs/**/*.coffee']
         options:
-          alias: './specs/spec_helpers.coffee:helpers'
+          alias: [
+            './specs/spec_helpers.coffee:helpers'
+          ]
           transform:  ['coffeeify']
           extensions: ['.coffee']
 
@@ -37,11 +88,22 @@ module.exports = (grunt) ->
       lib:   ['lib/**/*.coffee']
       tests: ['specs/**/*.coffee']
 
+    "saucelabs-jasmine":
+      all:
+        options:
+          urls: ["http://127.0.0.1:9999/specs/SpecRunner.html"]
+          tunnelTimeout: 5
+          build: process.env.TRAVIS_JOB_ID,
+          concurrency: 3
+          browsers: browsers
+          testname: "Qjs tests"
+          tags: ["master"]
+
   #
   grunt.registerTask 'default',      ['test', 'browserify']
   grunt.registerTask 'test',         ['build_parser', 'jasmine_node', 'cucumberjs']
   grunt.registerTask 'lint',         ['coffeelint']
-  grunt.registerTask 'testling',     ['build_parser', 'browserify']
+  grunt.registerTask 'sauce',        ['connect', 'saucelabs-jasmine']
 
   grunt.registerTask 'build_parser', ->
     shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading lib/syntax/parser.pegjs lib/syntax/parser.js'
@@ -54,3 +116,6 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-cucumber'
   grunt.loadNpmTasks 'grunt-browserify'
   grunt.loadNpmTasks 'grunt-coffeelint'
+  grunt.loadNpmTasks 'grunt-contrib-connect'
+  grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-saucelabs'

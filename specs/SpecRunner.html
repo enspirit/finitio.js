@@ -15,8 +15,7 @@
     src="http://cdnjs.cloudflare.com/ajax/libs/jasmine/1.3.1/jasmine-html.js">
   </script>
 
-  <script type="text/javascript"
-    src="testling/jasmine.tap_reporter.js">
+  <script type="text/javascript" src="jasmine/jasmine-jsreporter.js">
   </script>
 
   <!-- include spec files here... -->
@@ -34,10 +33,10 @@
       jasmineEnv.updateInterval = 1000;
 
       var htmlReporter = new jasmine.HtmlReporter();
-      var tapReporter = new jasmine.TapReporter();
+      var jsReporter = new jasmine.JSReporter();
 
       jasmineEnv.addReporter(htmlReporter);
-      jasmineEnv.addReporter(tapReporter);
+      jasmineEnv.addReporter(jsReporter);
 
       jasmineEnv.specFilter = function(spec) {
         return htmlReporter.specFilter(spec);
