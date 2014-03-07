@@ -33,5 +33,6 @@ class Qjs
 
 ##
 $u.extend Qjs, require './errors'
+$u.extend Qjs, require './support/contracts'
 
 module.exports = Qjs
