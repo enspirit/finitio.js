@@ -13,7 +13,7 @@ $u          = require './utils'
 class Heading
 
   constructor: (attributes) ->
-    unless _.isArray(attributes) and \
+    unless $u.isArray(attributes) and \
            $u.every(attributes, (a) -> a instanceof Attribute)
       throw new ArgumentError("Array of Attribute expected")
 
