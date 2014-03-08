@@ -132,3 +132,9 @@ module.exports = ->
     unless (result instanceof Date) and (result.toISOString() == expected.toISOString())
       callback.fail new Error("#{result} <> 13st of March 2014")
     callback()
+
+  @Then /^the result should be the 13st of March 2014 at 08:30$/, (callback) ->
+    expected = new Date("2014-03-13T08:30:00");
+    unless (result instanceof Date) and (result.toISOString() == expected.toISOString())
+      callback.fail new Error("#{result} <> 13st of March 2014 at 08:30")
+    callback()

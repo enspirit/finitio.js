@@ -19,7 +19,8 @@ source = """
   String  = .String
 
   # Dates and Time
-  Date = .Date <iso8601> .String .Qjs.Contracts.Date.iso8601
+  Date = .Date <iso8601> .String .Qjs.Contracts.DateTime.iso8601
+  Time = .Date <iso8601> .String .Qjs.Contracts.DateTime.iso8601
   """
 TestSystem = Qjs.parse(source, world: { Qjs: Qjs })
 
