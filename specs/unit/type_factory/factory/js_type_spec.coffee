@@ -30,4 +30,4 @@ describe 'TypeFactory#jsType', ->
       factory.jsType('X.Z')
 
     it 'should raise an error', ->
-      expect(subject).toThrow(new ArgumentError("Unknown type X.Z"))
+      should(subject).throw(new ArgumentError("Unknown type X.Z"))
