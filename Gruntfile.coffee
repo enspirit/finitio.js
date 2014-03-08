@@ -72,16 +72,16 @@ module.exports = (grunt) ->
             {browserName: 'firefox', version: '20', platform: "Windows 8"},
             {browserName: 'firefox', version: '10', platform: "Windows 8"},
 
-            {browserName: 'safari', version: 7, platform: 'OS X 10.9'},
-            {browserName: 'safari', version: 6, platform: 'OS X 10.8'},
+            {browserName: 'safari', version: "7", platform: 'OS X 10.9'},
+            {browserName: 'safari', version: "6", platform: 'OS X 10.8'},
 
-            {browserName: 'iphone', version: '7', platform: 'OS X 10.9'},
-            {browserName: 'iphone', version: '6.1', platform: 'OS X 10.8'},
+            {browserName: 'iphone', version: '7',   platform: 'OS X 10.9'},
             {browserName: 'iphone', version: '6.0', platform: 'OS X 10.8'},
 
-            {browserName: 'ipad', version: '7', platform: 'OS X 10.9'},
-            {browserName: 'ipad', version: '6.1', platform: 'OS X 10.8'},
+            {browserName: 'ipad', version: '7',   platform: 'OS X 10.9'},
             {browserName: 'ipad', version: '6.0', platform: 'OS X 10.8'},
+
+            {browserName: 'android', version: '4.3', platform: 'Linux'},
 
             {browserName: 'internet explorer', version: 11, platform: 'Windows 8.1'},
             {browserName: 'internet explorer', version: 10, platform: 'Windows 8'}
