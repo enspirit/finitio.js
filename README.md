@@ -19,7 +19,7 @@ validating/coercing data against them in an idiomatic javascript way.
 
 Coming very soon now.
 
-## ADTs Internal Information Contracts
+## ADTs with Internal Information Contracts
 
 Abstract Data Types can be defined and dressed using Qjs, provided you
 register them at parsing time for name resolution purposes. Let take the usual
@@ -65,7 +65,7 @@ system = Qjs.parse(schema, { JsColor: Color });
 color = system.getType("QColor").dress({r: 12, g: 125, b: 98});
 ```
 
-## ADTs External Information Contracts
+## ADTs with External Information Contracts
 
 Qjs also allows defining so-called 'external' information contracts for
 situations where implementing the dresser and undresser functions as show
