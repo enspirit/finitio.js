@@ -16,8 +16,8 @@ class Qjs
 
   ## Parsing
 
-  @parse = (source) ->
-    Parser.parse(source)
+  @parse = (source, options) ->
+    Parser.parse(source, options || {})
 
   ## Systems
 
@@ -33,5 +33,6 @@ class Qjs
 
 ##
 $u.extend Qjs, require './errors'
+$u.extend Qjs, require './support/contracts'
 
 module.exports = Qjs

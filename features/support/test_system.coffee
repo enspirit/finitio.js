@@ -1,6 +1,6 @@
 Qjs = require '../../lib/qjs'
 
-TestSystem = Qjs.parse """
+source = """
   # Nil & others
   Any = .
   Nil = .( v | v === null )
@@ -19,7 +19,9 @@ TestSystem = Qjs.parse """
   String  = .String
 
   # Dates and Time
-  Date = .Date <iso8601> .String \\( s | new Date(s)   )
-                                 \\( d | d.toString()  )
+  Date = .Date <iso8601> .String .Qjs.Contracts.DateTime.iso8601
+  Time = .Date <iso8601> .String .Qjs.Contracts.DateTime.iso8601
   """
+TestSystem = Qjs.parse(source, world: { Qjs: Qjs })
+
 module.exports = TestSystem
