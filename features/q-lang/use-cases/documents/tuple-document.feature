@@ -1,4 +1,4 @@
-Feature: Using Q to build formal document schemas
+Feature: Using Q to define a single-tuple document
 
   Background:
 

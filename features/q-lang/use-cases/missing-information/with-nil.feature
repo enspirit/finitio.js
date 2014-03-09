@@ -1,4 +1,4 @@
-Feature: Missing information Using Q
+Feature: Missing information using Nil
 
   Background:
 
@@ -9,31 +9,19 @@ Feature: Missing information Using Q
 
    Scenario: Validating non nil against Integer
 
-    Given I dress the following JSON document with Integer:
-      """
-       12
-       """
-
+     Given I dress JSON's '12' with Integer
      Then it should be a success
      And the result should be the integer 12
 
   Scenario: Validating nil against Integer
 
-    Given I dress the following JSON document with Integer:
-      """
-      null
-      """
-
+    Given I dress JSON's 'null' with Integer
     Then it should be a TypeError as:
       | message                          |
       | Invalid value `null` for Integer |
 
   Scenario: Validating nil against MaybeInt
 
-    Given I dress the following JSON document with MaybeInt:
-      """
-      null
-      """
-
+    Given I dress JSON's 'null' with MaybeInt
     Then it should be a success
     And the result should be a representation for Nil
