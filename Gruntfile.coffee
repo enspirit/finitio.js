@@ -120,7 +120,7 @@ module.exports = (grunt) ->
 
   #
   grunt.registerTask 'default',      ['compile', 'test']
-  grunt.registerTask 'compile',      ['clean', 'coffee', 'copy', 'browserify']
+  grunt.registerTask 'compile',      ['clean', 'build_parser', 'coffee', 'copy', 'browserify']
   grunt.registerTask 'test',         ['mochaTest', 'cucumberjs']
   grunt.registerTask 'lint',         ['coffeelint']
 
