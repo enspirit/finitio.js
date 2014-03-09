@@ -1,6 +1,6 @@
-SetType         = require '../../../../lib/type/set_type'
+SetType         = require '../../../../src/type/set_type'
 {ArgumentError,
-TypeError}      = require '../../../../lib/errors'
+TypeError}      = require '../../../../src/errors'
 _               = require 'underscore'
 should          = require 'should'
 {intType,

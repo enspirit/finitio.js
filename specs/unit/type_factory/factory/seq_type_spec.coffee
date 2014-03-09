@@ -1,5 +1,5 @@
-TypeFactory = require '../../../../lib/support/factory'
-SeqType     = require '../../../../lib/type/seq_type'
+TypeFactory = require '../../../../src/support/factory'
+SeqType     = require '../../../../src/type/seq_type'
 should      = require 'should'
 {numType}   = require '../../../spec_helpers'
 

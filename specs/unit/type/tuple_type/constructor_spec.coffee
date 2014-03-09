@@ -1,9 +1,9 @@
-Attribute   = require '../../../../lib/support/attribute'
-Heading     = require '../../../../lib/support/heading'
-TupleType   = require '../../../../lib/type/tuple_type'
+Attribute   = require '../../../../src/support/attribute'
+Heading     = require '../../../../src/support/heading'
+TupleType   = require '../../../../src/type/tuple_type'
 {intType}   = require '../../../spec_helpers'
 {ArgumentError,
-TypeError}  = require '../../../../lib/errors'
+TypeError}  = require '../../../../src/errors'
 
 should      = require 'should'
 

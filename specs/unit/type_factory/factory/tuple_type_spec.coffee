@@ -1,5 +1,5 @@
-TupleType   = require '../../../../lib/type/tuple_type'
-TypeFactory = require '../../../../lib/support/factory'
+TupleType   = require '../../../../src/type/tuple_type'
+TypeFactory = require '../../../../src/support/factory'
 should      = require 'should'
 
 describe "TypeFactory#tuple", ->

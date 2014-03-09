@@ -1,5 +1,5 @@
-TypeFactory = require '../../../../lib/support/factory'
-AnyType     = require '../../../../lib/type/any_type'
+TypeFactory = require '../../../../src/support/factory'
+AnyType     = require '../../../../src/type/any_type'
 should      = require 'should'
 
 describe "TypeFactory#any", ->

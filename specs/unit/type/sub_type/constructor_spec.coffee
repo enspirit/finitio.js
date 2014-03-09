@@ -1,5 +1,5 @@
-Constraint = require '../../../../lib/support/constraint'
-SubType    = require '../../../../lib/type/sub_type'
+Constraint = require '../../../../src/support/constraint'
+SubType    = require '../../../../src/type/sub_type'
 should     = require 'should'
 _          = require 'underscore'
 {numType}  = require '../../../spec_helpers'

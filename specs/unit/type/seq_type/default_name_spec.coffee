@@ -1,4 +1,4 @@
-SeqType         = require '../../../../lib/type/seq_type'
+SeqType         = require '../../../../src/type/seq_type'
 should          = require 'should'
 {intType}       = require '../../../spec_helpers'
 

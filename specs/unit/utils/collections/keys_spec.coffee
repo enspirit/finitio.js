@@ -1,4 +1,4 @@
-$u      = require '../../../../lib/support/utils'
+$u      = require '../../../../src/support/utils'
 should  = require 'should'
 
 describe "Utils.collection#keys", ->

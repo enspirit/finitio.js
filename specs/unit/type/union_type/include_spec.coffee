@@ -1,4 +1,4 @@
-UnionType = require '../../../../lib/type/union_type'
+UnionType = require '../../../../src/type/union_type'
 should    = require 'should'
 {intType,
 floatType}  = require '../../../spec_helpers'

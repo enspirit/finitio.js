@@ -1,7 +1,7 @@
-TypeFactory = require '../../../../lib/support/factory'
-{TypeError} = require '../../../../lib/errors'
-BuiltinType = require '../../../../lib/type/builtin_type'
-UnionType   = require '../../../../lib/type/union_type'
+TypeFactory = require '../../../../src/support/factory'
+{TypeError} = require '../../../../src/errors'
+BuiltinType = require '../../../../src/type/builtin_type'
+UnionType   = require '../../../../src/type/union_type'
 should      = require 'should'
 
 describe 'TypeFactory#union', ->

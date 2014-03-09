@@ -1,8 +1,8 @@
-Qjs         = require '../../lib/qjs'
-Type        = require '../../lib/type'
-SubType     = require '../../lib/type/sub_type'
-System      = require '../../lib/system'
-{TypeError} = require '../../lib/errors'
+Qjs         = require '../../src/qjs'
+Type        = require '../../src/type'
+SubType     = require '../../src/type/sub_type'
+System      = require '../../src/system'
+{TypeError} = require '../../src/errors'
 
 should   = require 'should'
 

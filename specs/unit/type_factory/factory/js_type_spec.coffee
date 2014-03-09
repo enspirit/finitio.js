@@ -1,5 +1,5 @@
-TypeFactory     = require '../../../../lib/support/factory'
-{TypeError, ArgumentError} = require '../../../../lib/errors'
+TypeFactory     = require '../../../../src/support/factory'
+{TypeError, ArgumentError} = require '../../../../src/errors'
 should          = require 'should'
 
 describe 'TypeFactory#jsType', ->

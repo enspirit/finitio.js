@@ -1,5 +1,5 @@
-{ArgumentError} = require '../../../../lib/errors'
-UnionType       = require '../../../../lib/type/union_type'
+{ArgumentError} = require '../../../../src/errors'
+UnionType       = require '../../../../src/type/union_type'
 should          = require 'should'
 _               = require 'underscore'
 {intType,

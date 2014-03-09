@@ -1,4 +1,4 @@
-AnyType = require '../../../../lib/type/any_type'
+AnyType = require '../../../../src/type/any_type'
 should  = require 'should'
 
 describe 'AnyType#defaultName', ->

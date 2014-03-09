@@ -1,4 +1,4 @@
-BuiltinType = require '../../../../lib/type/builtin_type'
+BuiltinType = require '../../../../src/type/builtin_type'
 should      = require 'should'
 
 describe 'BuiltinType#defaultName', ->

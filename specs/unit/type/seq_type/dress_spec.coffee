@@ -1,6 +1,6 @@
-SeqType         = require '../../../../lib/type/seq_type'
+SeqType         = require '../../../../src/type/seq_type'
 {ArgumentError,
-TypeError}      = require '../../../../lib/errors'
+TypeError}      = require '../../../../src/errors'
 _               = require 'underscore'
 should          = require 'should'
 {byteType}      = require '../../../spec_helpers'

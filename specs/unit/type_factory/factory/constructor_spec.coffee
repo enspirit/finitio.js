@@ -1,4 +1,4 @@
-TypeFactory = require '../../../../lib/support/factory'
+TypeFactory = require '../../../../src/support/factory'
 should      = require 'should'
 
 describe "TypeFactory constructor", ->

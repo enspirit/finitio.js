@@ -1,6 +1,6 @@
-Constraint   = require '../lib/support/constraint'
-BuiltinType  = require '../lib/type/builtin_type'
-SubType      = require '../lib/type/sub_type'
+Constraint   = require '../src/support/constraint'
+BuiltinType  = require '../src/type/builtin_type'
+SubType      = require '../src/type/sub_type'
 _            = require 'underscore'
 
 # Builtins

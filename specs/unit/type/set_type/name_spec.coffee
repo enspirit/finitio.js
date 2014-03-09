@@ -1,4 +1,4 @@
-SetType         = require '../../../../lib/type/set_type'
+SetType         = require '../../../../src/type/set_type'
 _               = require 'underscore'
 should          = require 'should'
 {intType}       = require '../../../spec_helpers'

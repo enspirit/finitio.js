@@ -1,5 +1,5 @@
-{TypeError} = require '../../../../lib/errors'
-UnionType   = require '../../../../lib/type/union_type'
+{TypeError} = require '../../../../src/errors'
+UnionType   = require '../../../../src/type/union_type'
 should      = require 'should'
 {intType,
 floatType}  = require '../../../spec_helpers'

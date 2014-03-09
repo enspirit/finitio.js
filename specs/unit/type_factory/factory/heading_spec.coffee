@@ -1,7 +1,7 @@
-Attribute   = require '../../../../lib/support/attribute'
-Heading     = require '../../../../lib/support/heading'
-TypeFactory = require '../../../../lib/support/factory'
-BuiltinType = require '../../../../lib/type/builtin_type'
+Attribute   = require '../../../../src/support/attribute'
+Heading     = require '../../../../src/support/heading'
+TypeFactory = require '../../../../src/support/factory'
+BuiltinType = require '../../../../src/type/builtin_type'
 should      = require 'should'
 _           = require 'underscore'
 

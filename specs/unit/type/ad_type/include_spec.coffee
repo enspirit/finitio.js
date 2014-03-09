@@ -1,4 +1,4 @@
-AdType         = require '../../../../lib/type/ad_type'
+AdType         = require '../../../../src/type/ad_type'
 should         = require 'should'
 
 describe "AdType#include", ->

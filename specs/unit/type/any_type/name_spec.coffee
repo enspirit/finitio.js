@@ -1,5 +1,5 @@
-AnyType     = require '../../../../lib/type/any_type'
-{TypeError} = require '../../../../lib/errors'
+AnyType     = require '../../../../src/type/any_type'
+{TypeError} = require '../../../../src/errors'
 should      = require 'should'
 
 describe 'AnyType#name', ->

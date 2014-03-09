@@ -1,5 +1,5 @@
-BuiltinType = require '../../../../lib/type/builtin_type'
-{TypeError} = require '../../../../lib/errors'
+BuiltinType = require '../../../../src/type/builtin_type'
+{TypeError} = require '../../../../src/errors'
 should      = require 'should'
 
 describe "BuiltinType#include", ->

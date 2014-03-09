@@ -1,6 +1,6 @@
-AdType         = require '../../../../lib/type/ad_type'
+AdType         = require '../../../../src/type/ad_type'
 {TypeError,
-ArgumentError} = require '../../../../lib/errors'
+ArgumentError} = require '../../../../src/errors'
 should         = require 'should'
 {intType,
 stringType}    = require '../../../spec_helpers'

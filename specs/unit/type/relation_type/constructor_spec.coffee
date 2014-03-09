@@ -1,8 +1,8 @@
-Attribute     = require '../../../../lib/support/attribute'
-Heading       = require '../../../../lib/support/heading'
-RelationType  = require '../../../../lib/type/relation_type'
+Attribute     = require '../../../../src/support/attribute'
+Heading       = require '../../../../src/support/heading'
+RelationType  = require '../../../../src/type/relation_type'
 {intType}     = require '../../../spec_helpers'
-{ArgumentError} = require '../../../../lib/errors'
+{ArgumentError} = require '../../../../src/errors'
 
 should      = require 'should'
 
