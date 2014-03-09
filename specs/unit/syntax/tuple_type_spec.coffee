@@ -1,8 +1,8 @@
-Parser      = require '../../../lib/syntax/parser'
-BuiltinType = require '../../../lib/type/builtin_type'
-TupleType   = require '../../../lib/type/tuple_type'
-Heading     = require '../../../lib/support/heading'
-Attribute   = require '../../../lib/support/attribute'
+Parser      = require '../../../src/syntax/parser'
+BuiltinType = require '../../../src/type/builtin_type'
+TupleType   = require '../../../src/type/tuple_type'
+Heading     = require '../../../src/support/heading'
+Attribute   = require '../../../src/support/attribute'
 should      = require 'should'
 
 describe "Parser#heading", ->

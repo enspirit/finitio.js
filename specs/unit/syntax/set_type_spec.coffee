@@ -1,6 +1,6 @@
-Parser      = require '../../../lib/syntax/parser'
-SetType     = require '../../../lib/type/set_type'
-BuiltinType = require '../../../lib/type/builtin_type'
+Parser      = require '../../../src/syntax/parser'
+SetType     = require '../../../src/type/set_type'
+BuiltinType = require '../../../src/type/builtin_type'
 should      = require 'should'
 
 describe "Parser#set_type", ->

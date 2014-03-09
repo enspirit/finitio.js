@@ -1,6 +1,6 @@
-Parser      = require '../../../lib/syntax/parser'
-SeqType     = require '../../../lib/type/seq_type'
-BuiltinType = require '../../../lib/type/builtin_type'
+Parser      = require '../../../src/syntax/parser'
+SeqType     = require '../../../src/type/seq_type'
+BuiltinType = require '../../../src/type/builtin_type'
 should      = require 'should'
 
 describe "Parser#seq_type", ->

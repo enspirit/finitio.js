@@ -1,9 +1,9 @@
-Attribute = require '../../../lib/support/attribute'
+Attribute = require '../../../src/support/attribute'
 should    = require 'should'
 {
   ArgumentError
 , KeyError
-}         = require '../../../lib/errors'
+}         = require '../../../src/errors'
 {intType} = require '../../spec_helpers'
 
 describe "Attribute#fetchOn", ->

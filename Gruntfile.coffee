@@ -119,16 +119,15 @@ module.exports = (grunt) ->
           tags: ["master"]
 
   #
-  grunt.registerTask 'default',      ['compile', 'test']
+  grunt.registerTask 'default',      ['test']
   grunt.registerTask 'compile',      ['clean', 'build_parser', 'coffee', 'copy', 'browserify']
   grunt.registerTask 'test',         ['mochaTest', 'cucumberjs']
   grunt.registerTask 'lint',         ['coffeelint']
 
-  grunt.registerTask 'travis',       ['default', 'connect', 'saucelabs-mocha']
-  grunt.registerTask 'dev',          ['default', 'connect', 'watch']
+  grunt.registerTask 'travis',       ['compile', 'test', 'connect', 'saucelabs-mocha']
 
   grunt.registerTask 'build_parser', ->
-    shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading lib/syntax/parser.pegjs lib/syntax/parser.js'
+    shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading src/syntax/parser.pegjs src/syntax/parser.js'
 
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-contrib-copy'

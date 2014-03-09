@@ -1,7 +1,7 @@
-Parser      = require '../../../lib/syntax/parser'
-Constraint  = require '../../../lib/support/constraint'
-BuiltinType = require '../../../lib/type/builtin_type'
-SubType     = require '../../../lib/type/sub_type'
+Parser      = require '../../../src/syntax/parser'
+Constraint  = require '../../../src/support/constraint'
+BuiltinType = require '../../../src/type/builtin_type'
+SubType     = require '../../../src/type/sub_type'
 should      = require 'should'
 
 describe "Parser#sub_type", ->

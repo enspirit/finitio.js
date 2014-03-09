@@ -1,6 +1,6 @@
 {ArgumentError,
-Error}    = require '../../../lib/errors'
-System    = require '../../../lib/system'
+Error}    = require '../../../src/errors'
+System    = require '../../../src/system'
 {numType} = require '../../spec_helpers'
 
 should = require 'should'

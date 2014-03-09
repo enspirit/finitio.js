@@ -1,6 +1,6 @@
-{KeyError}  = require '../../../lib/errors'
-System      = require '../../../lib/system'
-TupleType   = require '../../../lib/type/tuple_type'
+{KeyError}  = require '../../../src/errors'
+System      = require '../../../src/system'
+TupleType   = require '../../../src/type/tuple_type'
 {numType}   = require '../../spec_helpers'
 
 should      = require 'should'

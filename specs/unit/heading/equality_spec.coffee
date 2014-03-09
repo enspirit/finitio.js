@@ -1,6 +1,6 @@
-Attribute   = require '../../../lib/support/attribute'
-Heading     = require '../../../lib/support/heading'
-BuiltinType = require '../../../lib/type/builtin_type'
+Attribute   = require '../../../src/support/attribute'
+Heading     = require '../../../src/support/heading'
+BuiltinType = require '../../../src/type/builtin_type'
 should      = require 'should'
 {intType}   = require '../../spec_helpers'
 

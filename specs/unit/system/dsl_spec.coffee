@@ -1,7 +1,7 @@
-{TypeError} = require '../../../lib/errors'
-System      = require '../../../lib/system'
-TupleType   = require '../../../lib/type/tuple_type'
-SubType     = require '../../../lib/type/sub_type'
+{TypeError} = require '../../../src/errors'
+System      = require '../../../src/system'
+TupleType   = require '../../../src/type/tuple_type'
+SubType     = require '../../../src/type/sub_type'
 
 should = require 'should'
 

@@ -1,5 +1,5 @@
-Attribute = require '../../../lib/support/attribute'
-Heading   = require '../../../lib/support/heading'
+Attribute = require '../../../src/support/attribute'
+Heading   = require '../../../src/support/heading'
 should    = require 'should'
 _         = require 'underscore'
 {intType} = require '../../spec_helpers'

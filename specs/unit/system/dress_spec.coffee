@@ -1,6 +1,6 @@
-Qjs         = require '../../../lib/qjs'
-{TypeError} = require '../../../lib/errors'
-System      = require '../../../lib/system'
+Qjs         = require '../../../src/qjs'
+{TypeError} = require '../../../src/errors'
+System      = require '../../../src/system'
 should      = require 'should'
 
 describe 'System#dress', ->

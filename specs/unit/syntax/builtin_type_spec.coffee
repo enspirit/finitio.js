@@ -1,5 +1,5 @@
-Parser      = require '../../../lib/syntax/parser'
-BuiltinType = require '../../../lib/type/builtin_type'
+Parser      = require '../../../src/syntax/parser'
+BuiltinType = require '../../../src/type/builtin_type'
 should      = require 'should'
 
 describe "Parser#builtin_type", ->

@@ -1,8 +1,8 @@
-Qjs         = require '../../../lib/qjs'
-{KeyError}  = require '../../../lib/errors'
-System      = require '../../../lib/system'
-Type        = require '../../../lib/type'
-BuiltinType = require '../../../lib/type/builtin_type'
+Qjs         = require '../../../src/qjs'
+{KeyError}  = require '../../../src/errors'
+System      = require '../../../src/system'
+Type        = require '../../../src/type'
+BuiltinType = require '../../../src/type/builtin_type'
 
 should      = require 'should'
 

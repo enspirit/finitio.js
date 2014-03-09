@@ -1,5 +1,5 @@
-Attribute   = require '../../../lib/support/attribute'
-BuiltinType = require '../../../lib/type/builtin_type'
+Attribute   = require '../../../src/support/attribute'
+BuiltinType = require '../../../src/type/builtin_type'
 should      = require 'should'
 
 describe "Attribute#equality", ->

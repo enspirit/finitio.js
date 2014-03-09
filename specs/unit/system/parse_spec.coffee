@@ -1,7 +1,7 @@
-{KeyError}  = require '../../../lib/errors'
-Qjs         = require '../../../lib/qjs'
-System      = require '../../../lib/system'
-Type        = require '../../../lib/type'
+{KeyError}  = require '../../../src/errors'
+Qjs         = require '../../../src/qjs'
+System      = require '../../../src/system'
+Type        = require '../../../src/type'
 
 should      = require 'should'
 

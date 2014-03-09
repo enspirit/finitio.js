@@ -1,4 +1,4 @@
-Constraint = require '../../../lib/support/constraint'
+Constraint = require '../../../src/support/constraint'
 should     = require 'should'
 
 describe "Constraint#equals", ->

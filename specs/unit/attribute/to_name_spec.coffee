@@ -1,4 +1,4 @@
-Attribute = require '../../../lib/support/attribute'
+Attribute = require '../../../src/support/attribute'
 should    = require 'should'
 {intType} = require '../../spec_helpers'
 

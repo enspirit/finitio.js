@@ -1,5 +1,5 @@
-Parser      = require '../../../lib/syntax/parser'
-AnyType     = require '../../../lib/type/any_type'
+Parser      = require '../../../src/syntax/parser'
+AnyType     = require '../../../src/type/any_type'
 should      = require 'should'
 
 describe "Parser#any_type", ->

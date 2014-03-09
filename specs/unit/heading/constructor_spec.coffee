@@ -1,6 +1,6 @@
-Attribute       = require '../../../lib/support/attribute'
-Heading         = require '../../../lib/support/heading'
-{ArgumentError} = require '../../../lib/errors'
+Attribute       = require '../../../src/support/attribute'
+Heading         = require '../../../src/support/heading'
+{ArgumentError} = require '../../../src/errors'
 should          = require 'should'
 {intType}       = require '../../spec_helpers'
 

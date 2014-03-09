@@ -1,6 +1,6 @@
-Parser      = require '../../../lib/syntax/parser'
-BuiltinType = require '../../../lib/type/builtin_type'
-Attribute   = require '../../../lib/support/attribute'
+Parser      = require '../../../src/syntax/parser'
+BuiltinType = require '../../../src/type/builtin_type'
+Attribute   = require '../../../src/support/attribute'
 should      = require 'should'
 
 describe "Parser#attribute", ->
