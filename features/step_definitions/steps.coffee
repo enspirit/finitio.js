@@ -9,12 +9,12 @@ type        = null
 
 module.exports = ->
 
-  this.Before (callback)->
+  @Before (callback)->
     TestSystem ?= require '../support/test_system'
     system = TestSystem
     callback()
 
-  this.Given /^the System is$/, (source, callback) ->
+  @Given /^the System is$/, (source, callback) ->
     try
       system = TestSystem.parse(source)
     catch e
@@ -36,7 +36,16 @@ module.exports = ->
 
     callback()
 
-  this.Given /^I dress the following JSON document:$/, (doc, callback) ->
+  @Given /^I dress JSON's '(.*?)' with (.*?)$/, (jsonValue, typename, callback) ->
+    try
+      json = JSON.parse(jsonValue)
+      result = system.fetch(typename).dress(json)
+    catch e
+      result = e
+
+    callback()
+
+  @Given /^I dress the following JSON document:$/, (doc, callback) ->
     try
       json = JSON.parse(doc)
       result = system.dress(json)
@@ -45,7 +54,7 @@ module.exports = ->
 
     callback()
 
-  this.Given /^I dress the following JSON document with (.*?):$/, (type, doc, callback) ->
+  @Given /^I dress the following JSON document with (.*?):$/, (type, doc, callback) ->
     try
       json = JSON.parse(doc)
       result = system.fetch(type).dress(json)
@@ -54,7 +63,7 @@ module.exports = ->
 
     callback()
 
-  this.Given /^I validate the following JSON data against (.*?)$/, (type, json, callback) ->
+  @Given /^I validate the following JSON data against (.*?)$/, (type, json, callback) ->
     type = system.fetch(type)
 
     try
@@ -94,7 +103,7 @@ module.exports = ->
 
   this.Then /^it should be a TypeError as:$/, (table, callback) ->
     unless result instanceof Qjs.TypeError
-      callback.fail new Error("#{result} is not a TypeError")
+      callback.fail result
 
     for k, v of table.hashes()[0]
       unless result[k] == v
