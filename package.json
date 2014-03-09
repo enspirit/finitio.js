@@ -1,17 +1,33 @@
 {
-  "name": "Qjs",
-  "version": "0.0.1",
-  "description": "Q - in JavaScript",
+  "name": "q-lang",
+  "version": "0.1.0",
+  "description": "Q is a language for capturing information structure.",
   "main": "index.js",
   "author": "Louis Lambeau <louislambeau@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/llambeau/qjs"
+  },
+  "keywords": [
+    "qlang",
+    "q",
+    "typing",
+    "system",
+    "json",
+    "serialization",
+    "validation"
+  ],
+  "analyze": true,
   "scripts": {
-    "test": "grunt test sauce"
+    "test": "grunt",
+    "build": "grunt compile",
+    "prepublish": "grunt compile"
   },
   "dependencies": {
-    "coffee-script": "~1.7.1"
   },
   "devDependencies": {
+    "coffee-script": "~1.7.1",
     "underscore": "~1.6.0",
     "shelljs": "~0.2.6",
     "should": "~3.1.2",
@@ -26,6 +42,9 @@
     "grunt-coffeelint": "0.0.8",
     "grunt-cucumber": "git://github.com/llambeau/grunt-cucumber-js.git#master",
     "grunt-saucelabs": "~5.0.1",
-    "grunt-mocha-test": "~0.9.4"
+    "grunt-mocha-test": "~0.9.4",
+    "grunt-contrib-coffee": "~0.10.1",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-clean": "~0.5.0"
   }
 }

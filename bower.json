@@ -1,0 +1,29 @@
+{
+  "name": "q-lang",
+  "version": "0.1.0",
+  "homepage": "http://www.q-lang.io/",
+  "authors": [
+    "Louis Lambeau <louislambeau@gmail.com>"
+  ],
+  "description": "Q is a language for capturing information structure.",
+  "keywords": [
+    "qlang",
+    "q",
+    "typing",
+    "system",
+    "json",
+    "serialization",
+    "validation"
+  ],
+  "license": "MIT",
+  "main": "dist/q-lang.js",
+  "ignore": [
+    "**/.*",
+    "dist",
+    "lib",
+    "node_modules",
+    "features",
+    "specs"
+  ],
+  "engines": { "node": ">= 0.10" }
+}

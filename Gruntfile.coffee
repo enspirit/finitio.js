@@ -9,13 +9,42 @@ module.exports = (grunt) ->
 
     pkg: grunt.file.readJSON 'package.json'
 
+    #
+    clean: ['dist', 'lib']
+
+    # Compile the .coffee sources to .js
+    #    from src/ to lib/
+    coffee:
+      all:
+        expand: true
+        bare: true
+        cwd: "src/"
+        src: ['**/*.coffee']
+        dest: "lib/"
+        ext: ".js"
+
+    # Compile the .js sources to .js
+    #    from src/ to lib/
+    copy:
+      main:
+        files: [
+          expand: true
+          cwd: "src/"
+          src: ['**/*.js']
+          dest: 'lib/'
+          filter: 'isFile'
+        ]
+
     connect:
       server:
         options:
           base: "."
           port: 9999
 
-    watch: {}
+    watch:
+      lib:
+        files: ['index.js', 'src/**/*.js', 'src/**/*.coffee'],
+        tasks: 'compile'
 
     cucumberjs:
       src: './features'
@@ -34,7 +63,7 @@ module.exports = (grunt) ->
     browserify:
       main:
         files:
-          'dist/q-lang.js': ['index.coffee']
+          'dist/q-lang.js': ['index.js']
         options:
           standalone: 'Qjs'
           transform:  ['coffeeify']
@@ -90,7 +119,8 @@ module.exports = (grunt) ->
           tags: ["master"]
 
   #
-  grunt.registerTask 'default',      ['build_parser', 'browserify', 'test']
+  grunt.registerTask 'default',      ['compile', 'test']
+  grunt.registerTask 'compile',      ['clean', 'coffee', 'copy', 'browserify']
   grunt.registerTask 'test',         ['mochaTest', 'cucumberjs']
   grunt.registerTask 'lint',         ['coffeelint']
 
@@ -100,6 +130,9 @@ module.exports = (grunt) ->
   grunt.registerTask 'build_parser', ->
     shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading lib/syntax/parser.pegjs lib/syntax/parser.js'
 
+  grunt.loadNpmTasks 'grunt-contrib-clean'
+  grunt.loadNpmTasks 'grunt-contrib-copy'
+  grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-cucumber'
   grunt.loadNpmTasks 'grunt-mocha-test'
   grunt.loadNpmTasks 'grunt-browserify'
