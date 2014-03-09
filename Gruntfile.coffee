@@ -118,17 +118,21 @@ module.exports = (grunt) ->
           testname: "Qjs tests"
           tags: ["master"]
 
-  #
-  grunt.registerTask 'default',      ['test']
-  grunt.registerTask 'compile',      ['clean', 'build_parser', 'coffee', 'copy', 'browserify']
-  grunt.registerTask 'test',         ['mochaTest', 'cucumberjs']
-  grunt.registerTask 'lint',         ['coffeelint']
+  ##
+  grunt.registerTask 'default',          ['build_parser', 'test:unit']
+  grunt.registerTask 'compile',          ['clean', 'build_parser', 'coffee', 'copy', 'browserify']
 
-  grunt.registerTask 'travis',       ['compile', 'test', 'connect', 'saucelabs-mocha']
+  grunt.registerTask 'test',             ['test:unit', 'test:acceptance']
+  grunt.registerTask 'test:unit',        ['mochaTest']
+  grunt.registerTask 'test:acceptance',  ['cucumberjs']
+
+  grunt.registerTask 'lint',             ['coffeelint']
+  grunt.registerTask 'travis',           ['compile', 'test', 'connect', 'saucelabs-mocha']
 
   grunt.registerTask 'build_parser', ->
     shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading src/syntax/parser.pegjs src/syntax/parser.js'
 
+  ##
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
