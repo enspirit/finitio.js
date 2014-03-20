@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/llambeau/finitio.js.png?branch=master)](https://travis-ci.org/llambeau/finitiojs)
+[![Build Status](https://travis-ci.org/llambeau/finitio.js.png?branch=master)](https://travis-ci.org/llambeau/finitio.js)
 [![Jasmine Test Status](https://saucelabs.com/buildstatus/finitiojs)](https://saucelabs.com/u/finitiojs)
 [![Dependency Status](https://david-dm.org/llambeau/finitio.js.png)](https://david-dm.org/llambeau/finitio.js)
 
