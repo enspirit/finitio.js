@@ -1,4 +1,4 @@
-Qjs         = require '../../../src/qjs'
+Finitio         = require '../../../src/finitio'
 {TypeError} = require '../../../src/errors'
 System      = require '../../../src/system'
 should      = require 'should'
@@ -6,7 +6,7 @@ should      = require 'should'
 describe 'System#dress', ->
 
   describe "when a main", ->
-    system = Qjs.parse(".Number")
+    system = Finitio.parse(".Number")
 
     it 'delegates to the main', ->
       system.dress(12).should.equal(12)
@@ -17,7 +17,7 @@ describe 'System#dress', ->
       error.should.be.an.instanceof(TypeError)
 
   describe "when no main", ->
-    system = Qjs.parse("Num = .Number")
+    system = Finitio.parse("Num = .Number")
 
     it 'throws an Error', ->
       try

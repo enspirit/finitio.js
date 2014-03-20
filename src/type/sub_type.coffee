@@ -11,7 +11,7 @@ class SubType extends Type
     @name ?= null
 
     unless @superType instanceof Type
-      throw new ArgumentError("Qjs.Type expected, got", @superType)
+      throw new ArgumentError("Finitio.Type expected, got", @superType)
 
     unless @constraints.constructor == Array
       throw new ArgumentError("Array expected for constraints, got",

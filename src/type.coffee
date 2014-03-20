@@ -1,7 +1,7 @@
 {ArgumentError, NotImplementedError} = require './errors'
 
 #
-# 'Abstract' class for Q types
+# 'Abstract' class for Finitio types
 #
 class Type
 

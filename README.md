@@ -1,19 +1,19 @@
-[![Build Status](https://travis-ci.org/llambeau/qjs.png?branch=master)](https://travis-ci.org/llambeau/qjs)
-[![Jasmine Test Status](https://saucelabs.com/buildstatus/qlangjs)](https://saucelabs.com/u/qlangjs)
-[![Dependency Status](https://david-dm.org/llambeau/qjs.png)](https://david-dm.org/llambeau/qjs)
+[![Build Status](https://travis-ci.org/llambeau/finitiojs.png?branch=master)](https://travis-ci.org/llambeau/finitiojs)
+[![Jasmine Test Status](https://saucelabs.com/buildstatus/finitiojs)](https://saucelabs.com/u/finitiojs)
+[![Dependency Status](https://david-dm.org/llambeau/finitiojs.png)](https://david-dm.org/llambeau/finitiojs)
 
-# Qjs
+# Finitio.js
 
-Q is a language for capturing information structure. Think "JSON/XML schema"
-but the correct way. For more information about Q itself, see
-[www.q-lang.io](http://www.q-lang.io)
+_Finitio_ is a language for capturing information structure. Think "JSON/XML schema"
+but the correct way. For more information about _Finitio_ itself, see
+[www.finitio.io](http://www.finitio.io)
 
-Qjs is the javascript binding of Q. It allows defining Q schemas and
+_Finitio.js_ is the javascript binding of _Finitio_. It allows defining schemas and
 validating/coercing data against them in an idiomatic javascript way.
 
 ## Browser compatibility matrix
 
-[![Compatibility Status](https://saucelabs.com/browser-matrix/qlangjs.svg)](https://saucelabs.com/u/qlangjs)
+[![Compatibility Status](https://saucelabs.com/browser-matrix/finitiojs.svg)](https://saucelabs.com/u/finitiojs)
 
 ## Example
 
@@ -21,16 +21,16 @@ Coming very soon now.
 
 ## ADTs with Internal Information Contracts
 
-Abstract Data Types can be defined and dressed using Qjs, provided you
+Abstract Data Types can be defined and dressed using Finitio.js, provided you
 register them at parsing time for name resolution purposes. Let take the usual
 `Color` example. (We "qualify" type names below only to avoid confusion, in
 practice, one would probably use `Color` everywhere.)
 
-In Q,
+In Finitio,
 
 ```
-QByte  = .Number // should be defined more accurately, of course
-QColor = .JsColor <rgb> { r: QByte, g: QByte, b: QByte }
+Byte  = .Number // should be defined more accurately, of course
+Color = .JsColor <rgb> { r: Byte, g: Byte, b: Byte }
 ```
 
 In Javascript,
@@ -58,24 +58,24 @@ At parsing time:
 ```javascript
 schema = "..." // as shows above
 
-// you must let Qjs know about JsColor, in the following way
-system = Qjs.parse(schema, { JsColor: Color });
+// you must let Finitio.js know about JsColor, in the following way
+system = Finitio.parse(schema, { JsColor: Color });
 
 // dressing will then work as expected
-color = system.getType("QColor").dress({r: 12, g: 125, b: 98});
+color = system.getType("Color").dress({r: 12, g: 125, b: 98});
 ```
 
 ## ADTs with External Information Contracts
 
-Qjs also allows defining so-called 'external' information contracts for
+Finitio.js also allows defining so-called 'external' information contracts for
 situations where implementing the dresser and undresser functions as show
 above is not possible or not wanted.
 
-In Q,
+In Finitio,
 
 ```
-QByte  = .Number // should be defined more accurately, of course
-QColor = .JsColor <rgb> { r: QByte, g: QByte, b: QByte } .ExternalContract
+Byte  = .Number // should be defined more accurately, of course
+Color = .JsColor <rgb> { r: Byte, g: Byte, b: Byte } .ExternalContract
 ```
 
 In Javascript,
@@ -105,16 +105,16 @@ At parsing time:
 ```javascript
 schema = "..." // as shows above
 
-// you must let Qjs know about ExternalContract, in the following way
-system = Qjs.parse(schema, { ExternalContract: ColorContract });
+// you must let Finitio.js know about ExternalContract, in the following way
+system = Finitio.parse(schema, { ExternalContract: ColorContract });
 
 // dressing will then work as expected
-color = system.getType("QColor").dress({r: 12, g: 125, b: 98});
+color = system.getType("Color").dress({r: 12, g: 125, b: 98});
 ```
 
-## Rep: QType -> Javascript Type
+## Rep: Finitio Type -> Javascript Type
 
-The `Rep` representation function mapping Q types to Javascript types is as
+The `Rep` representation function mapping Finitio types to Javascript types is as
 follows:
 
 ```
@@ -136,7 +136,7 @@ Rep(T1 | ... | Tn) = Rep(T1) ^ ... ^ Rep(Tn)
 # Sequences are represented through javascript Arrays.
 Rep([ElmType]) = Array<Rep(ElmType)>
 
-# Sets are represented through javascript Arrays. Qjs checks for duplicates,
+# Sets are represented through javascript Arrays. _Finitio.js_ checks for duplicates,
 # though.
 Rep({ElmType}) = Array<Rep(ElmType)>
 

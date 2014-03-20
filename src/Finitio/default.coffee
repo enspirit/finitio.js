@@ -1,8 +1,8 @@
 factory = new (require '../support/factory')
 
 #
-# This module defines the same system as in "default.q"
-# but using Qjs' API
+# This module defines the same system as in "default.fio"
+# but using Finitio' API
 #
 System = {}
 

@@ -26,4 +26,4 @@ describe "UnionType#constructor", ->
         lambda()
       catch e
         e.should.be.an.instanceof(ArgumentError)
-        e.message.should.equal('Qjs.Type expected, got String')
+        e.message.should.equal('Finitio.Type expected, got String')

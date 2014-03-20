@@ -11,7 +11,7 @@ class UnionType extends Type
 
     $u.each @candidates, (c) ->
       unless c instanceof Type
-        throw new ArgumentError("Qjs.Type expected, got", c)
+        throw new ArgumentError("Finitio.Type expected, got", c)
 
     super(@name)
 

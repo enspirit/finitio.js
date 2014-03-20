@@ -1,16 +1,16 @@
 #
-class QJSError extends Error
+class FinitioError extends Error
 
   constructor: (@message, @cause) ->
     super(@message)
 
 #
-class KeyError extends QJSError
+class KeyError extends FinitioError
   constructor: (@message) ->
     super(@message)
 
 #
-class ArgumentError extends QJSError
+class ArgumentError extends FinitioError
 
   constructor: (@message, @arg) ->
 
@@ -29,13 +29,13 @@ class ArgumentError extends QJSError
     super(@message)
 
 #
-class TypeError extends QJSError
+class TypeError extends FinitioError
   constructor: (@message, @cause, @location) ->
     super(@message, @cause)
     @location ?= ""
 
 #
-class NotImplementedError extends QJSError
+class NotImplementedError extends FinitioError
 
   constructor: (clazz, method) ->
     super "Missing #{clazz.constructor.name}##{method}"

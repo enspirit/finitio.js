@@ -1,14 +1,13 @@
 {
-  "name": "q-lang",
+  "name": "finitio.js",
   "version": "0.1.0",
-  "homepage": "http://www.q-lang.io/",
+  "homepage": "http://www.finitio.io/",
   "authors": [
     "Louis Lambeau <louislambeau@gmail.com>"
   ],
-  "description": "Q is a language for capturing information structure.",
+  "description": "Finitio is a language for capturing information structure.",
   "keywords": [
-    "qlang",
-    "q",
+    "finitio",
     "typing",
     "system",
     "json",
@@ -16,7 +15,7 @@
     "validation"
   ],
   "license": "MIT",
-  "main": "dist/q-lang.js",
+  "main": "dist/finitio.js",
   "ignore": [
     "**/.*",
     "dist",

@@ -3,7 +3,7 @@ TypeFactory = require './support/factory'
 Parser      = require './syntax/parser'
 
 ## base module
-class Qjs
+class Finitio
 
   @VERSION: "0.0.1"
 
@@ -12,7 +12,7 @@ class Qjs
   @FACTORY: new TypeFactory
 
   for method in TypeFactory.PUBLIC_DSL_METHODS
-    Qjs[method] = @FACTORY[method].bind(@FACTORY)
+    Finitio[method] = @FACTORY[method].bind(@FACTORY)
 
   ## Parsing
 
@@ -22,17 +22,17 @@ class Qjs
   ## Systems
 
   @system = (identifier) ->
-    path = Path.join __dirname, "#{identifier}.q"
+    path = Path.join __dirname, "#{identifier}.fio"
     if fs.existsSync(path)
       content = fs.readFileSync(path).toString()
       @parse(content)
     else
       throw new Error("Unknown system #{identifier}")
 
-  @DEFAULT_SYSTEM = require("./Q/default")
+  @DEFAULT_SYSTEM = require("./Finitio/default")
 
 ##
-$u.extend Qjs, require './errors'
-$u.extend Qjs, require './support/contracts'
+$u.extend Finitio, require './errors'
+$u.extend Finitio, require './support/contracts'
 
-module.exports = Qjs
+module.exports = Finitio

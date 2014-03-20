@@ -1,5 +1,5 @@
 {KeyError}  = require '../../../src/errors'
-Qjs         = require '../../../src/qjs'
+Finitio     = require '../../../src/finitio'
 System      = require '../../../src/system'
 Type        = require '../../../src/type'
 
@@ -7,7 +7,7 @@ should      = require 'should'
 
 describe 'System#parse', ->
 
-  system = Qjs.parse('Num = .Number')
+  system = Finitio.parse('Num = .Number')
 
   describe "when the new system does not make cross-references", ->
 

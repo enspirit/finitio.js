@@ -6,7 +6,7 @@ class CollectionType extends Type
 
   constructor: (@elmType, @name) ->
     unless @elmType instanceof Type
-      throw new ArgumentError("Qjs.Type expected, got", @elmType)
+      throw new ArgumentError("Finitio.Type expected, got", @elmType)
 
     super(@name)
 

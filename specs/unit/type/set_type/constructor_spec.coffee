@@ -27,4 +27,4 @@ describe "SetType#initialize", ->
         e
 
       err.should.be.an.instanceof ArgumentError
-      err.message.should.equal('Qjs.Type expected, got String')
+      err.message.should.equal('Finitio.Type expected, got String')

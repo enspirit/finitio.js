@@ -1,3 +1,3 @@
-Qjs = require("./lib/qjs")
-module.exports = Qjs
+Finitio = require("./lib/finitio")
+module.exports = Finitio
 module.exports.VERSION = "0.1.0"

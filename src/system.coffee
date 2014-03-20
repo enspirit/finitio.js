@@ -6,7 +6,7 @@ TypeFactory    = require './support/factory'
 Parser         = require './syntax/parser'
 
 #
-# A System is a collection of named Q types.
+# A System is a collection of named Finitio types.
 #
 class System
 
@@ -25,7 +25,7 @@ class System
 
   addType: (type) ->
     unless type instanceof Type
-      throw new ArgumentError("Qjs.Type expected, got", type)
+      throw new ArgumentError("Finitio.Type expected, got", type)
 
     if @types[type.name]?
       throw new Error("Duplicate type name `#{type.name}`")
@@ -46,7 +46,7 @@ class System
 
   merge: (other) ->
     unless other instanceof System
-      throw new ArgumentError("Qjs.System expected, got", other)
+      throw new ArgumentError("Finitio.System expected, got", other)
 
     merged_types = $u.extend({}, @types, other.types)
     merged_main  = other.main || @main

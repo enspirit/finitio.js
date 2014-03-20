@@ -1,4 +1,4 @@
-Qjs         = require '../../src/qjs'
+Finitio     = require '../../src/finitio'
 Type        = require '../../src/type'
 SubType     = require '../../src/type/sub_type'
 System      = require '../../src/system'
@@ -6,14 +6,14 @@ System      = require '../../src/system'
 
 should   = require 'should'
 
-describe 'Qjs', ->
+describe 'Finitio', ->
 
   it "should have a version number", ->
-    (typeof Qjs.VERSION).should.not.equal('undefined')
-    (Qjs.VERSION?).should.be.true
+    (typeof Finitio.VERSION).should.not.equal('undefined')
+    (Finitio.VERSION?).should.be.true
 
   it 'should have DSL methods', ->
-    t = Qjs.type Number, (i) ->
+    t = Finitio.type Number, (i) ->
       i >= 0
 
     t.should.be.an.instanceof SubType
@@ -30,4 +30,4 @@ describe 'Qjs', ->
       e.should.be.an.instanceof(TypeError)
 
   it 'should have a parse method', ->
-    Qjs.parse(".Number").should.be.an.instanceof System
+    Finitio.parse(".Number").should.be.an.instanceof System

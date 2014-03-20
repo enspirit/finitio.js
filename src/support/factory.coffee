@@ -76,7 +76,7 @@ class TypeFactory
       @tuple(t, name)
 
     else
-      fail("Unable to factor a Qjs.Type from `#{t}`")
+      fail("Unable to factor a Finitio.Type from `#{t}`")
 
   ########################################################### Type Arguments
 

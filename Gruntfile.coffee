@@ -63,9 +63,9 @@ module.exports = (grunt) ->
     browserify:
       main:
         files:
-          'dist/q-lang.js': ['index.js']
+          'dist/finitio.js': ['index.js']
         options:
-          standalone: 'Qjs'
+          standalone: 'Finitio'
           transform:  ['coffeeify']
           extensions: ['.coffee', '.js']
           ignore:     ['./node_modules/**/*.*']
@@ -115,7 +115,7 @@ module.exports = (grunt) ->
             {browserName: 'internet explorer', version: 11, platform: 'Windows 8.1'},
             {browserName: 'internet explorer', version: 10, platform: 'Windows 8'}
           ]
-          testname: "Qjs tests"
+          testname: "Finitio.js tests"
           tags: ["master"]
 
   ##

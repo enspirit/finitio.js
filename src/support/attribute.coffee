@@ -7,7 +7,7 @@ TypeError}  = require '../errors'
 # Helper class for tuple and relation attributes.
 #
 # An attribute is simply a `(name: AttrName, type: Type)` pair, where the
-# type is a Q type.
+# type is a Finitio type.
 #
 class Attribute
 
@@ -19,7 +19,7 @@ class Attribute
       throw new ArgumentError("Type expected for attribute domain, got", @type)
 
 
-  # TODO: remove this, it's totally unnecessary for the JavaScript version of Q
+  # TODO: remove this, it's totally unnecessary for the JavaScript version of Finitio
   #
   fetchOn: (arg, callback) ->
     unless typeof arg == "object"

@@ -1,4 +1,4 @@
-Qjs         = require '../../../src/qjs'
+Finitio     = require '../../../src/finitio'
 {KeyError}  = require '../../../src/errors'
 System      = require '../../../src/system'
 Type        = require '../../../src/type'
@@ -13,8 +13,8 @@ describe 'System#merge', ->
       subject.should.be.an.instanceof System
 
   describe "when disjoint", ->
-    s1 = Qjs.parse("Str = .String")
-    s2 = Qjs.parse("Num = .Number")
+    s1 = Finitio.parse("Str = .String")
+    s2 = Finitio.parse("Num = .Number")
     subject = s1.merge(s2)
 
     it 'should be a System', should_be_a_system(subject)
@@ -24,8 +24,8 @@ describe 'System#merge', ->
       subject['Num'].should.be.an.instanceof Type
 
   describe "with two mains", ->
-    s1 = Qjs.parse(".String")
-    s2 = Qjs.parse(".Number")
+    s1 = Finitio.parse(".String")
+    s2 = Finitio.parse(".Number")
     subject = s1.merge(s2)
 
     it 'should be a System', should_be_a_system(subject)
@@ -35,8 +35,8 @@ describe 'System#merge', ->
       subject.main.jsType.should.equal(Number)
 
   describe "with one main at left", ->
-    s1 = Qjs.parse(".String")
-    s2 = Qjs.parse("Num = .Number")
+    s1 = Finitio.parse(".String")
+    s2 = Finitio.parse("Num = .Number")
     subject = s1.merge(s2)
 
     it 'should be a System', should_be_a_system(subject)
@@ -46,8 +46,8 @@ describe 'System#merge', ->
       subject.main.jsType.should.equal(String)
 
   describe "with one main at right", ->
-    s1 = Qjs.parse("Num = .Number")
-    s2 = Qjs.parse(".String")
+    s1 = Finitio.parse("Num = .Number")
+    s2 = Finitio.parse(".String")
     subject = s1.merge(s2)
 
     it 'should be a System', should_be_a_system(subject)
