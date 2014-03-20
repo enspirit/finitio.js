@@ -19,6 +19,13 @@ $u.isArray = function(obj){
 }
 
 /**
+  * Detects whether the javascript environment is a browser or not (node)
+  */
+$u.isBrowser = function(){
+  return !(typeof exports !== 'undefined' && this.exports !== exports);
+}
+
+/**
   * Returns wheter or not the parameter is an object
   */
 $u.isObject = function(obj){
