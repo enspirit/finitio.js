@@ -3,17 +3,14 @@ node_js:
 - '0.10'
 env:
   global:
-  - secure: Qbov7gMj41NQif8+R+j+xOarIJivIVzIwoXus/pfgAOJ/5ycz65h2CZWnPoPxksZWnWcWY/AUlRw6GNSaE/8tgdKAvAVpVqXl72R+W5rnLm1It9Z3q0uYEEzI3UuzzFyJyDc8vwIH/D8iIKZZCYc21p8UEuHDuoRMYOrcZF5oHM=
-  - secure: KzovArMIau0m+q7wTC7CarJyzOsvNZErn4Ng7UUQYFUISzqt8xTOssMLV7ykp1l9Vjoxg5LjR4WFSVujEF27nZS60idIjuctdl41LIhxHZEgVVTgnHi8hkwd5ffkA0UgETt89h7TQzOwlUuD+/nsaE7CVUr2W3gxj8PR8Fvsbwk=
+  - secure: Ip9lT6ax6hWSEeP4T3iIBff27IXgvJu4NfWAxgz7amIDxg7n110u6+nRJ+kt00xa1FG1BwjNvXlehClffmD8NEHcDI7E4HIRqraUQYnLM5T65B/nPd4vuuIbBSshUGTtRi/krF150H7pr0v5ONNeKkPDCuxtagZ8HebKwkoxtrs=
+  - secure: dj5evmPGspImRM5EPRyU32uryEKcrcQaJbF0G4vCIOqOwLR36tHSIAYQte2P5C3v2BHnihHhRwu5zt5JttbF1Ri613gd60RrENR0O0QCkPx1587GEcKYSlqkn1/0MiZG9VYPMosOaJv9Kd210WAy1PilEXsI8xq5RFaCb/dn8RA=
 
 before_install:
 - npm install -g grunt-cli
-
 before_script:
 - git submodule update --init --recursive
-
 install:
 - npm install
-
 script:
 - grunt --stack travis
