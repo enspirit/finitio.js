@@ -1,5 +1,5 @@
-Qjs          = require '../../lib/qjs'
-should       = require 'should'
+Finitio     = require '../../lib/finitio'
+should      = require 'should'
 
 # Global variables for steps below
 TestSystem  = null
@@ -102,7 +102,7 @@ module.exports = ->
     callback()
 
   this.Then /^it should be a TypeError as:$/, (table, callback) ->
-    unless result instanceof Qjs.TypeError
+    unless result instanceof Finitio.TypeError
       callback.fail result
 
     for k, v of table.hashes()[0]

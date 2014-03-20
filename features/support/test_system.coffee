@@ -1,4 +1,4 @@
-Qjs = require '../../lib/qjs'
+Finitio = require '../../lib/finitio'
 
 source = """
   # Nil & others
@@ -19,9 +19,9 @@ source = """
   String  = .String
 
   # Dates and Time
-  Date = .Date <iso8601> .String .Qjs.Contracts.DateTime.iso8601
-  Time = .Date <iso8601> .String .Qjs.Contracts.DateTime.iso8601
+  Date = .Date <iso8601> .String .Finitio.Contracts.DateTime.iso8601
+  Time = .Date <iso8601> .String .Finitio.Contracts.DateTime.iso8601
   """
-TestSystem = Qjs.parse(source, world: { Qjs: Qjs })
+TestSystem = Finitio.parse(source, world: { Finitio: Finitio })
 
 module.exports = TestSystem
