@@ -17,7 +17,20 @@ validating/coercing data against them in an idiomatic javascript way.
 
 ## Example
 
-Coming very soon now.
+A live example can be found at [http://finitio.io/try](finitio.io/try). Roughly, getting started with finitio.js works as follows:
+
+```
+// parse a schema
+system = Finitio.parse("...");
+try {
+  // dress/validate some data
+  system.dress("...");
+} catch (ex) {
+  // catch any dress exception and log location and message
+  console.log(ex.location);
+  console.log(ex.message);
+}
+```
 
 ## ADTs with Internal Information Contracts
 
