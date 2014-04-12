@@ -18,8 +18,7 @@
   "main": "dist/finitio.js",
   "ignore": [
     "**/.*",
-    "dist",
-    "lib",
+    "src",
     "node_modules",
     "features",
     "specs"

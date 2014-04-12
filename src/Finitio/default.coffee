@@ -29,7 +29,7 @@ System.Integer   = factory.sub_type(System.Number, ((n) -> n % 1 == 0), "Integer
 System.Real      = factory.sub_type(System.Number, ((n) -> !(n % 1 == 0)), "Real")
 
 # String         = .String
-System.string    = factory.builtin(String)
+System.String    = factory.builtin(String)
 
 #
 # TODO: date

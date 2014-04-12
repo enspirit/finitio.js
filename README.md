@@ -69,7 +69,7 @@ Color.prototype.toRgb = function(color){
 At parsing time:
 
 ```javascript
-schema = "..." // as shows above
+schema = "..." // as shown above
 
 // you must let Finitio.js know about JsColor, in the following way
 system = Finitio.parse(schema, { JsColor: Color });
@@ -116,7 +116,7 @@ ColorContract = {
 At parsing time:
 
 ```javascript
-schema = "..." // as shows above
+schema = "..." // as shown above
 
 // you must let Finitio.js know about ExternalContract, in the following way
 system = Finitio.parse(schema, { ExternalContract: ColorContract });
