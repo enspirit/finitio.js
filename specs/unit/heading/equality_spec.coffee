@@ -26,3 +26,9 @@ describe "Heading#equality", ->
 
   it 'should be a total function, with null for non types', ->
     should.equal(h1.equals(12), null)
+
+  it 'should distinguish between extra allowance', ->
+    no_extra = new Heading([r], allowExtra: false)
+    extra    = new Heading([r], allowExtra: true)
+    extra.equals(no_extra).should.be.false
+

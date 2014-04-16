@@ -4,6 +4,14 @@ should    = require 'should'
 
 describe "Attribute#toName", ->
 
-  subject = new Attribute('red', intType).toName()
+  describe 'when required', ->
+    subject = new Attribute('red', intType).toName()
 
-  subject.should.equal("red: intType")
+    it 'should set name accordingly', ->
+      subject.should.equal("red: intType")
+
+  describe 'when not required', ->
+    subject = new Attribute('red', intType, false).toName()
+
+    it 'should set name accordingly', ->
+      subject.should.equal("red :? intType")

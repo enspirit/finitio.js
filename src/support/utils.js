@@ -295,6 +295,37 @@ $u.find = function(obj, callback){
 }
 
 /**
+  * Returns true if any of the iteration over the enumerable pass the predicate truth test
+  *
+  * Uses #each to iterate
+  */
+$u.any = function(obj, callback){
+  // callback can be undefined, but can't be null
+  if (callback === null || callback === undefined){
+    throw new ArgumentError("Function expected, got", callback);
+  }
+
+  // TODO: review this. How can we stop iterating
+  // as soon as possible? (other than using exceptions)
+  try {
+    $u.each(obj, function(v, k){
+      var pass = callback(v, k);
+      if (pass === true){
+        throw "gotcha";
+      }
+    });
+  } catch (e) {
+    // If a real exception was raised, forward it
+    if (e != "gotcha"){
+      throw e;
+    }
+    return true;
+  }
+
+  return false;
+};
+
+/**
   * Returns the values of an enumerable that pass a truth test
   *
   * Uses #each to iterate

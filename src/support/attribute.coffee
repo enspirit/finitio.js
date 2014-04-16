@@ -11,13 +11,17 @@ TypeError}  = require '../errors'
 #
 class Attribute
 
-  constructor: (@name, @type) ->
+  constructor: (@name, @type, @required) ->
     unless typeof @name == "string"
       throw new ArgumentError("String expected for attribute name, got", @name)
 
     unless @type instanceof Type
       throw new ArgumentError("Type expected for attribute domain, got", @type)
 
+    @required ?= true
+
+    unless typeof @required == "boolean"
+      throw new ArgumentError("Boolean expected for parameter required, got", @mandatory)
 
   # TODO: remove this, it's totally unnecessary for the JavaScript version of Finitio
   #
@@ -34,7 +38,10 @@ class Attribute
     return arg[@name]
 
   toName: ->
-    "#{@name}: #{@type}"
+    if @required
+      "#{@name}: #{@type}"
+    else
+      "#{@name} :? #{@type}"
 
   equals: (other) ->
     return null unless other instanceof Attribute

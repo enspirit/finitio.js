@@ -14,5 +14,5 @@ describe "Attribute#equality", ->
   it 'should distinguish different attributes', ->
     attr1.equals(attr3).should.be.false
 
-  it 'should return null if not equal', ->
+  it 'should false against non Attribute', ->
     should.equal(attr1.equals(12), null)
