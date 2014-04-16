@@ -172,8 +172,9 @@ heading =
   / spacing
 
 attribute =
-  n:attribute_name spacing ':' spacing t:type {
-    return Factory.attribute(n, t)
+  n:attribute_name spacing ':' optional:'?'? spacing t:type {
+    var required = (optional !== '?')
+    return Factory.attribute(n, t, required)
   }
 
 // TYPES (collections)

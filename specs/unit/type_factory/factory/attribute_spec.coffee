@@ -15,6 +15,7 @@ describe 'TypeFactory#attribute', ->
       subject.should.be.an.instanceof(Attribute)
       subject.name.should.equal('foo')
       subject.type.should.be.an.instanceof(BuiltinType)
+      subject.required.should.be.true
 
   describe 'when used with a name and a BuiltinType', ->
     subject = factory.attribute('foo', intType)
@@ -23,3 +24,21 @@ describe 'TypeFactory#attribute', ->
       subject.should.be.an.instanceof(Attribute)
       subject.name.should.equal('foo')
       subject.type.should.equal(intType)
+
+  describe 'when the required attribute is set to true', ->
+    subject = factory.attribute('foo', intType, true)
+
+    it 'should work as expected', ->
+      subject.should.be.an.instanceof(Attribute)
+      subject.name.should.equal('foo')
+      subject.type.should.equal(intType)
+      subject.required.should.be.true
+
+  describe 'when the required attribute is set to false', ->
+    subject = factory.attribute('foo', intType, false)
+
+    it 'should work as expected', ->
+      subject.should.be.an.instanceof(Attribute)
+      subject.name.should.equal('foo')
+      subject.type.should.equal(intType)
+      subject.required.should.be.false

@@ -128,8 +128,8 @@ class TypeFactory
 
     constrs
 
-  attribute: (name, type) ->
-    new Attribute(name, @type(type))
+  attribute: (name, type, required) ->
+    new Attribute(name, @type(type), required)
 
   attributes: (attributes) ->
     unless typeof attributes is "object"
