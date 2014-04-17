@@ -182,11 +182,17 @@ attribute =
 collection_type =
     set_type
   / seq_type
+  / struct_type
   / term_type
 
 set_type =
   '{' spacing t:type spacing '}' {
     return Factory.set(t)
+  }
+
+struct_type =
+  '<' head:type tail:(spacing ',' spacing type)* '>' {
+    return Factory.struct(headTailToArray(head, tail));
   }
 
 seq_type =

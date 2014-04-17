@@ -11,6 +11,7 @@ AnyType        = require '../type/any_type'
 AdType         = require '../type/ad_type'
 SeqType        = require '../type/seq_type'
 SetType        = require '../type/set_type'
+StructType     = require '../type/struct_type'
 SubType        = require '../type/sub_type'
 TupleType      = require '../type/tuple_type'
 UnionType      = require '../type/union_type'
@@ -230,6 +231,12 @@ class TypeFactory
     name    = @name(name)
 
     new SetType(elmType, name)
+
+  struct: (componentTypes, name) ->
+    componentTypes = $u.map(componentTypes, (t) => @type(t))
+    name           = @name(name)
+
+    new StructType(componentTypes, name)
 
  #### Tuples and relations
 
