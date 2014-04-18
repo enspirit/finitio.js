@@ -74,34 +74,34 @@ module.exports = ->
 
     callback()
 
-  this.Then /^it should be a success$/, (callback) ->
+  @Then /^it should be a success$/, (callback) ->
     if result instanceof Error
       throw result
       callback.fail(Error)
     else
       callback()
 
-  this.Then /^the result should be a Tuple representation$/, (callback) ->
+  @Then /^the result should be a Tuple representation$/, (callback) ->
     unless result instanceof Object
       callback.fail new Error("#{result} is not an object")
     callback()
 
-  this.Then /^its '(.*)' attribute should be a Date representation$/, (attr, callback) ->
+  @Then /^its '(.*)' attribute should be a Date representation$/, (attr, callback) ->
     unless result[attr] instanceof Date
       callback.fail new Error("attribute is not a Date, got #{result[attr]}")
     callback()
 
-  this.Then /^the result should be a representation for Nil$/, (callback) ->
+  @Then /^the result should be a representation for Nil$/, (callback) ->
     unless result == null
       callback.fail new Error("#{result} is not a representation for Nil")
     callback()
 
-  this.Then /^the result should be a representation for (.*?)$/, (type,callback) ->
+  @Then /^the result should be a representation for (.*?)$/, (type,callback) ->
     unless system.fetch(type).include(result)
       callback.fail new Error("#{JSON.stringify(result)} is not a representation for #{type}")
     callback()
 
-  this.Then /^it should be a TypeError as:$/, (table, callback) ->
+  @Then /^it should be a TypeError as:$/, (table, callback) ->
     unless result instanceof Finitio.TypeError
       callback.fail result
 
@@ -147,3 +147,29 @@ module.exports = ->
     unless (result instanceof Date) and (result.toISOString() == expected.toISOString())
       callback.fail new Error("#{result} <> 13st of March 2014 at 08:30")
     callback()
+
+  #### Parser
+
+  @Given /^the grammar rule is expr$/, (callback) ->
+    callback.pending()
+
+  @Given /^the source is$/, (string, callback) ->
+    callback.pending()
+
+  @Then /^evaluating it should yield (\d+)$/, (arg1, callback) ->
+    callback.pending()
+
+  @Then /^evaluating it with x=(.*) should yield (.*)$/, (x, expected, callback) ->
+    callback.pending()
+
+  @Given /^the grammar rule is literal$/, (callback) ->
+    callback.pending()
+
+  @Then /^it should compile to a (.*)$/, (type, callback) ->
+    callback.pending()
+
+  @Given /^the System source is$/, (string, callback) ->
+    callback.pending()
+
+  @Then /^it should compile fine$/, (callback) ->
+    callback.pending()
