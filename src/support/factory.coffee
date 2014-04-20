@@ -7,16 +7,18 @@ Constraint     = require './constraint'
 $u             = require './utils'
 
 ## Types
-AnyType        = require '../type/any_type'
-AdType         = require '../type/ad_type'
-SeqType        = require '../type/seq_type'
-SetType        = require '../type/set_type'
-StructType     = require '../type/struct_type'
-SubType        = require '../type/sub_type'
-TupleType      = require '../type/tuple_type'
-UnionType      = require '../type/union_type'
-BuiltinType    = require '../type/builtin_type'
-RelationType   = require '../type/relation_type'
+AnyType           = require '../type/any_type'
+AdType            = require '../type/ad_type'
+SeqType           = require '../type/seq_type'
+SetType           = require '../type/set_type'
+StructType        = require '../type/struct_type'
+SubType           = require '../type/sub_type'
+TupleType         = require '../type/tuple_type'
+MultiTupleType    = require '../type/multi_tuple_type'
+UnionType         = require '../type/union_type'
+BuiltinType       = require '../type/builtin_type'
+RelationType      = require '../type/relation_type'
+MultiRelationType = require '../type/multi_relation_type'
 
 ## Errors
 {
@@ -246,11 +248,23 @@ class TypeFactory
 
     new TupleType(heading, name)
 
+  multiTuple: (heading, name) ->
+    heading = @heading(heading)
+    name    = @name(name)
+
+    new MultiTupleType(heading, name)
+
   relation: (heading, name) ->
     heading = @heading(heading)
     name    = @name(name)
 
     new RelationType(heading, name)
+
+  multiRelation: (heading, name) ->
+    heading = @heading(heading)
+    name    = @name(name)
+
+    new MultiRelationType(heading, name)
 
 # 'private' Utility functions
 # (only in the scope of this module)

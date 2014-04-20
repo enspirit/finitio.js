@@ -3,6 +3,8 @@ Heading            = require '../../../../src/support/heading'
 MultiRelationType  = require '../../../../src/type/multi_relation_type'
 {byteType}         = require '../../../spec_helpers'
 
+should             = require 'should'
+
 describe 'MultiRelationType#defaultName', ->
 
   heading = new Heading([
@@ -12,7 +14,7 @@ describe 'MultiRelationType#defaultName', ->
 
   type = new MultiRelationType(heading)
 
-  subject = type.defaultName
+  subject = type.defaultName()
 
   it 'should be correct', ->
     subject.should.equal("{{a: Byte, b :? Byte}}")

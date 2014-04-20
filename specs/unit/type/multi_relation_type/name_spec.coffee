@@ -1,10 +1,10 @@
-Attribute     = require '../../../../src/support/attribute'
-Heading       = require '../../../../src/support/heading'
-RelationType  = require '../../../../src/type/relation_type'
-{byteType}    = require '../../../spec_helpers'
-should        = require 'should'
+Attribute          = require '../../../../src/support/attribute'
+Heading            = require '../../../../src/support/heading'
+MultiRelationType  = require '../../../../src/type/multi_relation_type'
+{byteType}         = require '../../../spec_helpers'
+should             = require 'should'
 
-describe "RelationType#name", ->
+describe "MultiRelationType#name", ->
 
   heading = new Heading([
     new Attribute('a', byteType),

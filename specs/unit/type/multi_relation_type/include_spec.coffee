@@ -1,6 +1,6 @@
 Attribute          = require '../../../../src/support/attribute'
 Heading            = require '../../../../src/support/heading'
-MultiRelationType  = require '../../../../src/type/relation_type'
+MultiRelationType  = require '../../../../src/type/multi_relation_type'
 {intType}          = require '../../../spec_helpers'
 should             = require 'should'
 
@@ -47,7 +47,7 @@ describe "MultiRelationType#include", ->
   context 'when a set containing invalid tuples', ->
     arg = []
 
-    arg.push {a: 12.0}
+    arg.push {a: 12.2}
 
     it 'should be false', ->
       subject(arg).should.be.false

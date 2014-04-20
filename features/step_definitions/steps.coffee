@@ -27,6 +27,8 @@ module.exports = ->
 
     callback()
 
+  # Dressing
+
   @Given /^I dress JSON's '(.*?)'$/, (jsonValue, callback) ->
     try
       json = JSON.parse(jsonValue)
@@ -73,6 +75,8 @@ module.exports = ->
       result = e
 
     callback()
+
+  # Result
 
   @Then /^it should be a success$/, (callback) ->
     if result instanceof Error

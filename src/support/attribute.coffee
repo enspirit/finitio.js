@@ -45,7 +45,9 @@ class Attribute
 
   equals: (other) ->
     return null unless other instanceof Attribute
-    @name==other.name and @type.equals(other.type)
+    @name==other.name and 
+      @required == other.required and
+      @type.equals(other.type)
 
 #
 module.exports = Attribute

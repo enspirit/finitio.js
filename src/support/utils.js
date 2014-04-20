@@ -437,7 +437,14 @@ $u.keys = function(obj){
 $u.size = function(obj){
   var values = $u.values(obj);
   return values.length;
-}
+};
+
+/**
+  * Returns whether or not an enumerable is empty
+  */
+$u.isEmpty = function(obj){
+  return $u.size(obj) === 0;
+};
 
 // Determine if the array or object contains a given value (using `===`).
 // Aliased as `include`.

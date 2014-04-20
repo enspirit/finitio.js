@@ -157,12 +157,20 @@ rel_type =
 
 tuple_type =
   '{' spacing h:heading spacing '}' {
-    return Factory.tuple(h)
+    if (h.multi()){
+      return Factory.multiTuple(h)
+    } else {
+      return Factory.tuple(h)
+    }
   }
 
 relation_type =
   '{{' spacing h:heading spacing '}}' {
-    return Factory.relation(h)
+    if (h.multi()){
+      return Factory.multiRelation(h)
+    } else {
+      return Factory.relation(h)
+    }
   }
 
 heading =

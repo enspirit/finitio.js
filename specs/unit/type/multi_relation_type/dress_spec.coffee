@@ -1,10 +1,10 @@
-Attribute     = require '../../../../src/support/attribute'
-Heading       = require '../../../../src/support/heading'
-RelationType  = require '../../../../src/type/relation_type'
-{TypeError}   = require '../../../../src/errors'
-_             = require 'underscore'
-should        = require 'should'
-{byteType}    = require '../../../spec_helpers'
+Attribute          = require '../../../../src/support/attribute'
+Heading            = require '../../../../src/support/heading'
+MultiRelationType  = require '../../../../src/type/multi_relation_type'
+{TypeError}        = require '../../../../src/errors'
+_                  = require 'underscore'
+should             = require 'should'
+{byteType}         = require '../../../spec_helpers'
 
 describe "MultiRelationType#dress", ->
 
@@ -16,7 +16,7 @@ describe "MultiRelationType#dress", ->
 
   type = new MultiRelationType(heading, "colors")
 
-  subject = (arg) -> type.dress(arg)
+  dress = (arg) -> type.dress(arg)
 
   context 'with a valid array of Hashes', ->
     arg = [
@@ -30,8 +30,8 @@ describe "MultiRelationType#dress", ->
     ]
 
     it 'should coerce to an Array of tuples', ->
-      subject.should.be.an.instanceof(Array)
-      subject.to_a.should.equal(expected)
+      dress(arg).should.be.an.instanceof(Array)
+      dress(arg).should.eql(expected)
 
   context 'with a valid array of Hashes with some optional missing', ->
     arg = [
@@ -44,16 +44,16 @@ describe "MultiRelationType#dress", ->
     ]
 
     it 'should coerce to an Array of tuples', ->
-      subject.should.be.an.instanceof(Array)
-      subject.to_a.should.equal(expected)
+      dress(arg).should.be.an.instanceof(Array)
+      dress(arg).should.eql(expected)
 
   context 'with an empty array', ->
     arg = []
     expected = []
 
     it 'should coerce to an Array of tuples', ->
-      subject.should.be.an.instanceof(Array)
-      subject.to_a.should.equal(expected)
+      dress(arg).should.be.an.instanceof(Array)
+      dress(arg).should.eql(expected)
 
   context 'when raising an error', ->
 
@@ -113,28 +113,28 @@ describe "MultiRelationType#dress", ->
       ]
 
       it 'should raise a TypeError', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Unrecognized attribute `f`")
+        lambda(arg).should.be.an.instanceof(TypeError)
+        lambda(arg).message.should.equal("Unrecognized attribute `f`")
 
       it 'should have no cause', ->
-        should(subject.cause).be.null
+        should(lambda(arg).cause).be.null
 
       it 'should have the correct location', ->
-        subject.location.should.equal('1')
+        lambda(arg).location.should.equal('1')
 
     context 'with a wrong tuple attribute', ->
       arg = [
         { "r": 12, "g": 13, "b": 255  },
-        { "r": 12, "g": 13, "b": 12.0 }
+        { "r": 12, "g": 13, "b": '12' }
       ]
       subject = lambda(arg)
 
       it 'should raise a TypeError', ->
         subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `12.0` for Byte")
+        subject.message.should.equal("Invalid value `12` for Byte")
 
       it 'should have a cause', ->
-        should(subject.cause).be.null
+        should(subject.cause).not.be.null
 
       it 'should have the correct location', ->
         subject.location.should.equal('1/b')
@@ -145,6 +145,7 @@ describe "MultiRelationType#dress", ->
         { "r": 12, "g": 192, "b": 13 },
         { "r": 12, "g": 13, "b": 255 }
       ]
+      subject = lambda(arg)
 
       it 'should raise a TypeError', ->
         subject.should.be.an.instanceof(TypeError)
