@@ -4,11 +4,11 @@ TypeError}      = require '../../../../src/errors'
 _               = require 'underscore'
 should          = require 'should'
 {intType,
-floatType}      = require '../../../spec_helpers'
+stringType}      = require '../../../spec_helpers'
 
 describe "StructType#dress", ->
 
-  type = new StructType([intType, floatType], "point")
+  type = new StructType([intType, stringType], "point")
 
   subject = (arg) ->
     type.dress(arg)
@@ -16,7 +16,7 @@ describe "StructType#dress", ->
   context 'with a valid Array', ->
 
     it 'should coerce to an array', ->
-      arg = [ 12, 14.1 ]
+      arg = [ 12, 'foo' ]
       subject(arg).should.eql(arg)
 
   context 'when raising an error', ->
@@ -54,7 +54,7 @@ describe "StructType#dress", ->
         subject(arg).location.should.equal('')
 
     context 'with an extra attribute', ->
-      arg = [ 12, 14.1, "bar" ]
+      arg = [ 12, 'foo', "bar" ]
 
       it 'should raise a TypeError', ->
         subject(arg).should.be.an.instanceof(TypeError)
@@ -67,13 +67,13 @@ describe "StructType#dress", ->
         subject(arg).location.should.equal('')
 
     context 'with an invalid attribute', ->
-      arg = [ 12, "bar" ]
+      arg = [ 12, 14.2 ]
 
       it 'should raise a TypeError', ->
         subject(arg).should.be.an.instanceof(TypeError)
-        subject(arg).message.should.equal("Invalid value `bar` for floatType")
+        subject(arg).message.should.equal("Invalid value `14.2` for stringType")
 
-      xit 'should have no cause', ->
+      it 'should have no cause', ->
         should(subject(arg).cause).be.null
 
       it 'should have the correct location', ->
