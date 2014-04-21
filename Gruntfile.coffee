@@ -7,7 +7,7 @@ module.exports = (grunt) ->
   ## Grunt's main config
   grunt.initConfig
 
-    pkg: grunt.file.readJSON 'package.json'
+    #pkg: grunt.file.readJSON 'package.json'
 
     #
     clean: ['dist', 'lib']
@@ -68,7 +68,7 @@ module.exports = (grunt) ->
           standalone: 'Finitio'
           transform:  ['coffeeify']
           extensions: ['.coffee', '.js']
-          ignore:     ['./node_modules/**/*.*']
+          ignore:     ['./node_modules/**/*.*', './package.json']
 
       tests:
         files:

@@ -2,10 +2,10 @@ Finitio     = require '../../lib/finitio'
 should      = require 'should'
 
 # Global variables for steps below
-TestSystem  = null
-result      = null
-system      = null
-type        = null
+TestSystem     = null
+result         = null
+system         = null
+type           = null
 
 module.exports = ->
 
@@ -24,7 +24,6 @@ module.exports = ->
 
   @Given /^the type under test is (.*?)$/, (typeName, callback) ->
     type = system.fetch(typeName)
-
     callback()
 
   # Dressing
@@ -151,29 +150,3 @@ module.exports = ->
     unless (result instanceof Date) and (result.toISOString() == expected.toISOString())
       callback.fail new Error("#{result} <> 13st of March 2014 at 08:30")
     callback()
-
-  #### Parser
-
-  @Given /^the grammar rule is expr$/, (callback) ->
-    callback.pending()
-
-  @Given /^the source is$/, (string, callback) ->
-    callback.pending()
-
-  @Then /^evaluating it should yield (\d+)$/, (arg1, callback) ->
-    callback.pending()
-
-  @Then /^evaluating it with x=(.*) should yield (.*)$/, (x, expected, callback) ->
-    callback.pending()
-
-  @Given /^the grammar rule is literal$/, (callback) ->
-    callback.pending()
-
-  @Then /^it should compile to a (.*)$/, (type, callback) ->
-    callback.pending()
-
-  @Given /^the System source is$/, (string, callback) ->
-    callback.pending()
-
-  @Then /^it should compile fine$/, (callback) ->
-    callback.pending()
