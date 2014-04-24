@@ -87,7 +87,7 @@ class TypeFactory
     if typeof(t) == 'string'
       parts = t.split('.')
       $u.inject parts, @world, (memo, part)->
-        throw new ArgumentError("Unknown type #{t}") unless memo[part]
+        throw new ArgumentError("Unknown type #{t} (#{part} not found)") unless memo[part]
         memo[part]
     else if isNativeType(t) || t instanceof Function
       t
