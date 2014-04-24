@@ -288,7 +288,7 @@ attribute_name =
   $([a-z] [a-zA-Z0-9_]*)
 
 type_name =
-  $([A-Z] [a-zA-Z]+)
+  $([A-Z] [a-zA-Z.]*)
 
 builtin_type_name =
   $([a-zA-Z0-9:.]+)
