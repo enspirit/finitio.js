@@ -21,8 +21,7 @@
   "scripts": {
     "test": "grunt",
     "build": "grunt compile",
-    "prepublish": "grunt compile",
-    "postinstall": "grunt compile"
+    "prepublish": "grunt compile"
   },
   "dependencies": {},
   "devDependencies": {
