@@ -1,4 +1,5 @@
 Finitio     = require '../../lib/finitio'
+System      = require '../../lib/system'
 should      = require 'should'
 
 # Global variables for steps below
@@ -24,6 +25,13 @@ module.exports = ->
 
   @Given /^the type under test is (.*?)$/, (typeName, callback) ->
     type = system.fetch(typeName)
+    callback()
+
+  # Language
+
+  @Then /^it compiles fine$/, (callback) ->
+    unless system instanceof System
+      callback.fail new Error("#{result} is not an finitio system")
     callback()
 
   # Dressing
