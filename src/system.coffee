@@ -52,8 +52,10 @@ class System
     merged_main  = other.main || @main
     new System(merged_types, merged_main)
 
-  parse: (source) ->
-    Parser.parse(source, system: @clone())
+  parse: (source, options) ->
+    options ||= {}
+    options.system = @clone()
+    Parser.parse(source, options)
 
   dress: (value) ->
     unless @main
