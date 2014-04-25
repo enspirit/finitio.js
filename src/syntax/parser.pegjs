@@ -114,7 +114,7 @@ type =
   union_type
 
 union_type =
-    head:sub_type tail:('|' sub_type)+ {
+    head:sub_type tail:(pipe sub_type)+ {
       return Factory.union(headTailToArray(head, tail));
     }
   / sub_type
@@ -126,12 +126,12 @@ sub_type =
   / rel_type
 
 constraint_fn =
-  '(' spacing n:var_name spacing '|' spacing c:constraints spacing ')' {
+  '(' spacing n:var_name pipe c:constraints spacing ')' {
     return compileConstraints(n, c)
   }
 
 constraints =
-    head:named_constraint tail:(spacing ',' spacing named_constraint)* {
+    head:named_constraint tail:(opt_comma named_constraint)* opt_comma {
       return headTailToArray(head, tail);
     }
   / c:unnamed_constraint {
@@ -174,7 +174,7 @@ relation_type =
   }
 
 heading =
-    head:attribute tail:(spacing ',' spacing attribute)* {
+    head:attribute tail:(opt_comma attribute)* opt_comma {
       return Factory.heading(headTailToArray(head, tail));
     }
   / spacing
@@ -199,7 +199,7 @@ set_type =
   }
 
 struct_type =
-  '<' head:type tail:(spacing ',' spacing type)* '>' {
+  '<' head:type tail:(opt_comma type)* opt_comma '>' {
     return Factory.struct(headTailToArray(head, tail));
   }
 
@@ -224,7 +224,7 @@ ad_type =
   }
 
 contracts =
-  head:contract tail:(spacing ',' spacing contract)* {
+  head:contract tail:(opt_comma contract)* opt_comma {
     return headTailToArray(head, tail);
   }
 
@@ -293,7 +293,16 @@ type_name =
 builtin_type_name =
   $([a-zA-Z0-9:.]+)
 
-// LEXER (spacing and comments)
+// LEXER (spacing, symbols and comments)
+
+pipe =
+  $(spacing '|' spacing)
+
+comma =
+  $(spacing ',' spacing)
+
+opt_comma =
+  $(comma / spacing)
 
 spacing =
   $((spaces / comment)*)
