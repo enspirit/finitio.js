@@ -1,4 +1,4 @@
-{ArgumentError, NotImplementedError} = require './errors'
+{ArgumentError, NotImplementedError, TypeError} = require './errors'
 
 #
 # 'Abstract' class for Finitio types
@@ -12,12 +12,18 @@ class Type
     @name ?= @defaultName()
 
   #
+  # Returns true if `value` is valid member of this type, false otherwise.
+  #
+  include: (value)->
+    throw new NotImplementedError(this, "include")
+
+  #
   # Dress `value` with this information type and returns the result.
   #
   # @return the dressing result
   # @pre    true
   # @post   this.include(output)
-  # @throws `Finitio.Error` if the dressing fails
+  # @throws `TypeError` if the dressing fails
   #
   dress: (value)->
     throw new NotImplementedError(this, "dress")
@@ -29,13 +35,22 @@ class Type
   # @return the undressed result
   # @pre    this.include(value)
   # @post   as.include(output)
+  # @throw  `TypeError` if undressing fails
   #
   undress: (value, as)->
-    throw new NotImplementedError(this, "undress")
+    return value if this.equals(as)
+    throw new TypeError("Unable to undress `#{value}` to `#{as}`")
 
+  #
+  # Returns a String representation of this Type.
+  #
   toString: ->
     @name.toString()
 
+  #
+  # Returns true if `other` is structurally equivalent to this type, false
+  # otherwise.
+  #
   equal: (other)->
     this is other
 
