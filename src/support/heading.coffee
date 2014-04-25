@@ -56,25 +56,18 @@ class Heading
     $u.map($u.values(@attributes), (a) -> a.name)
 
   equals: (other) ->
-    return null unless other instanceof Heading
+    (this is other) or
+    (other instanceof Heading and @attributesEquals(other) and @optionsEquals(other))
 
-    # check attributes
-    return false unless $u.size(@attributes) == $u.size(other.attributes)
+  attributesEquals: (other) ->
+    $u.size(@attributes) == $u.size(other.attributes) and
+    $u.every @attributes, (attr, name) ->
+      attr.equals(other.attributes[name])
 
-    valid = $u.every @attributes, (attr, name) ->
-      other_attr = other.attributes[name]
-      attr.equals(other_attr)
-
-    return false unless valid
-
-    # check options
-    return false unless $u.size(@options) == $u.size(other.options)
-
-    valid = $u.every @options, (opt, name) ->
-      other_opt = other.options[name]
-      opt == other_opt
-
-    valid
+  optionsEquals: (other) ->
+    $u.size(@options) == $u.size(other.options) and
+    $u.every @options, (opt, name) ->
+      opt == other.options[name]
 
 #
 module.exports = Heading

@@ -16,7 +16,6 @@ class AnyType extends Type
     true
 
   equals: (other) ->
-    return false unless other instanceof AnyType
-    true
+    other instanceof AnyType
 
 module.exports = AnyType

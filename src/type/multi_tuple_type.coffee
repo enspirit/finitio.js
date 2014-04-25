@@ -13,9 +13,6 @@ class MultiTupleType extends Type
 
     super(@name)
 
-  equals: (other) ->
-    other instanceof MultiTupleType && @heading.equals(other.heading)
-
   include: (value) ->
     return false unless typeof(value) == "object"
     return false unless @areAttributesValid(value)
@@ -63,7 +60,12 @@ class MultiTupleType extends Type
   defaultName: ->
     "{#{@heading.toName()}}"
 
+  equals: (other) ->
+    (this is other) or
+    (other instanceof MultiTupleType and @heading.equals(other.heading))
+
   ## 'Private' methods
+
   attributeNames: ->
     $u.map($u.values(@heading.attributes), (a) -> a.name)
 

@@ -11,8 +11,8 @@ class CollectionType extends Type
     super(@name)
 
   equals: (other) ->
-    return false unless other instanceof (this.constructor)
-    @elmType.equals(other.elmType)
+    (this is other) or
+    (other instanceof (this.constructor) and @elmType.equals(other.elmType))
 
 #
 module.exports = CollectionType

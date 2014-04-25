@@ -15,4 +15,4 @@ describe "Attribute#equality", ->
     attr1.equals(attr3).should.be.false
 
   it 'should false against non Attribute', ->
-    should.equal(attr1.equals(12), null)
+    attr1.equals(12).should.be.false

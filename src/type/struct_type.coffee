@@ -46,11 +46,11 @@ class StructType extends Type
     array
 
   equals: (other) ->
-    unless other instanceof StructType
-      return false
+    (this is other) or
+    (other instanceof StructType and @headingEquals(other))
 
-    # Check the componentTypes are equal
-    $u.size(@componentTypes) == $u.size(other.componentTypes) &&
-      $u.every(@componentTypes, (t, i) -> other.componentTypes[i].equals(t))
-#
+  headingEquals: (other)->
+    $u.size(@componentTypes) == $u.size(other.componentTypes) and
+    $u.every(@componentTypes, (t, i) -> other.componentTypes[i].equals(t))
+
 module.exports = StructType

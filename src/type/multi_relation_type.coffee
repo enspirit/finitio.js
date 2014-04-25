@@ -25,9 +25,6 @@ class MultiRelationType extends Type
     else
       new TupleType(@heading)
 
-  equals: (other) ->
-    other instanceof MultiRelationType && @heading.equals(other.heading)
-
   # Apply the corresponding TupleType's `dress` to every element of `value`
   # (any enumerable). Return a Set of transformed tuples. Fail if anything
   # goes wrong transforming tuples or if duplicates are found.
@@ -52,6 +49,10 @@ class MultiRelationType extends Type
 
   defaultName: ->
     "{{#{@heading.toName()}}}"
+
+  equals: (other) ->
+    (this is other) or
+    (other instanceof MultiRelationType and @heading.equals(other.heading))
 
 #
 module.exports = MultiRelationType

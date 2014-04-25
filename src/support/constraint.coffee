@@ -23,8 +23,8 @@ class Constraint
     false
 
   equals: (other)->
-    return false unless other instanceof Constraint
-    @native==other.native
+    (this is other) or
+    (other instanceof Constraint and @native==other.native)
 
 #
 module.exports = Constraint

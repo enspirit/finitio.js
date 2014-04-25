@@ -53,8 +53,7 @@ class TupleType extends Type
     "{#{@heading.toName()}}"
 
   equals: (other) ->
-    return false unless other instanceof TupleType
-    @heading.equals(other.heading)
-
+    (this is other) or
+    (other instanceof TupleType and @heading.equals(other.heading))
 
 module.exports = TupleType

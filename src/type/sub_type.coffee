@@ -52,11 +52,16 @@ class SubType extends Type
     @superType.include(value) && $u.every(@constraints, (c) -> c.accept(value))
 
   equals: (other) ->
-    return false unless other instanceof SubType
-    @superType.equals(other.superType) and
-      @constraints.length == other.constraints.length and
-      $u.every $u.zip(@constraints, other.constraints), (pair)->
-        pair[0].equals(pair[1])
+    (this is other) or
+    (other instanceof SubType and @superTypeEquals(other) and @constraintsEquals(other))
+
+  superTypeEquals: (other) ->
+    @superType.equal(other.superType)
+
+  constraintsEquals: (other) ->
+    @constraints.length == other.constraints.length and
+    $u.every $u.zip(@constraints, other.constraints), (pair)->
+      pair[0].equals(pair[1])
 
   defaultConstraint: (constraint)->
     constraint.isAnonymous() or $u.capitalize(constraint.name) == @name

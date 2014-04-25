@@ -53,8 +53,8 @@ class RelationType extends Type
     $u.values(set)
 
   equals: (other) ->
-    return false unless other instanceof RelationType
-    @heading.equals(other.heading)
+    (this is other) or
+    (other instanceof RelationType and @heading.equals(other.heading))
 
 #
 module.exports = RelationType

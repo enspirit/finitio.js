@@ -11,10 +11,32 @@ class Type
 
     @name ?= @defaultName()
 
-  dress: ->
-    throw new NotImplementedError(this, "up")
+  #
+  # Dress `value` with this information type and returns the result.
+  #
+  # @return the dressing result
+  # @pre    true
+  # @post   this.include(output)
+  # @throws `Finitio.Error` if the dressing fails
+  #
+  dress: (value)->
+    throw new NotImplementedError(this, "dress")
+
+  #
+  # Undress `value` as a member of `as` type.
+  #
+  # @param  `as` another Type instance
+  # @return the undressed result
+  # @pre    this.include(value)
+  # @post   as.include(output)
+  #
+  undress: (value, as)->
+    throw new NotImplementedError(this, "undress")
 
   toString: ->
     @name.toString()
+
+  equal: (other)->
+    this is other
 
 module.exports = Type

@@ -41,12 +41,13 @@ class UnionType extends Type
     $u.map(@candidates, (c) -> c.name).join('|')
 
   equals: (other) ->
-    return false unless other instanceof UnionType
-    return false if $u.size(other.candidates) != $u.size(@candidates)
+    (this is other) or
+    (other instanceof UnionType and @candidatesEquals(other, true))
 
-    $u.each @candidates, (c, i) ->
-      return false unless other.candidates[i].equals(c)
-
+  candidatesEquals: (other, andback) ->
+    return false unless $u.every @candidates, (c)->
+      $u.any other.candidates, (c2)-> c.equals(c2)
     true
+    !andback or other.candidatesEquals(this, false)
 
 module.exports = UnionType
