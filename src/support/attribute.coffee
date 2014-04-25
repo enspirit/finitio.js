@@ -23,8 +23,6 @@ class Attribute
     unless typeof @required == "boolean"
       throw new ArgumentError("Boolean expected for parameter required, got", @mandatory)
 
-  # TODO: remove this, it's totally unnecessary for the JavaScript version of Finitio
-  #
   fetchOn: (arg, callback) ->
     unless typeof arg == "object"
       throw new ArgumentError("Object expected, got", arg)
