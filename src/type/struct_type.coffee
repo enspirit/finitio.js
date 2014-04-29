@@ -54,7 +54,8 @@ class StructType extends Type
 
   equals: (other) ->
     (this is other) or
-    (other instanceof StructType and @headingEquals(other))
+    (other instanceof StructType and @headingEquals(other)) or
+    super
 
   headingEquals: (other)->
     $u.size(@componentTypes) == $u.size(other.componentTypes) and

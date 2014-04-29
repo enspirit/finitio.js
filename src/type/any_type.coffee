@@ -19,6 +19,6 @@ class AnyType extends Type
     true
 
   equals: (other) ->
-    other instanceof AnyType
+    (other instanceof AnyType) or super
 
 module.exports = AnyType

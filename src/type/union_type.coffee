@@ -37,7 +37,7 @@ class UnionType extends Type
     return value if this is as
 
     # find structurally equivalent candidate
-    using = $u.find @candidates, (c)-> c.equal(as)
+    using = $u.find @candidates, (c)-> c.equals(as)
     return using.undress(value, as) if using
 
     # find candidate that includes value
@@ -60,7 +60,8 @@ class UnionType extends Type
 
   equals: (other) ->
     (this is other) or
-    (other instanceof UnionType and @candidatesEquals(other, true))
+    (other instanceof UnionType and @candidatesEquals(other, true)) or
+    super
 
   candidatesEquals: (other, andback) ->
     return false unless $u.every @candidates, (c)->

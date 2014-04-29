@@ -58,10 +58,11 @@ class SubType extends Type
 
   equals: (other) ->
     (this is other) or
-    (other instanceof SubType and @superTypeEquals(other) and @constraintsEquals(other))
+    (other instanceof SubType and @superTypeEquals(other) and @constraintsEquals(other)) or
+    super
 
   superTypeEquals: (other) ->
-    @superType.equal(other.superType)
+    @superType.equals(other.superType)
 
   constraintsEquals: (other) ->
     @constraints.length == other.constraints.length and

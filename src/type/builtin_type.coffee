@@ -26,6 +26,8 @@ class BuiltinType extends Type
     value.constructor == @jsType
 
   equals: (other) =>
-    (this is other) or (other instanceof BuiltinType and other.jsType == @jsType)
+    (this is other) or
+    (other instanceof BuiltinType and other.jsType == @jsType) or
+    super
 
 module.exports = BuiltinType

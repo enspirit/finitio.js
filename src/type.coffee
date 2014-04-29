@@ -70,7 +70,8 @@ class Type
   # Returns true if `other` is structurally equivalent to this type, false
   # otherwise.
   #
-  equal: (other)->
-    this is other
+  equals: (other)->
+    (this is other) or
+    (other.constructor.name == 'AliasType' and @equals(other.type))
 
 module.exports = Type

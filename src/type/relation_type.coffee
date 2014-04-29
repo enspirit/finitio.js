@@ -53,7 +53,8 @@ class RelationType extends Type
 
   equals: (other) ->
     (this is other) or
-    (other instanceof RelationType and @heading.equals(other.heading))
+    (other instanceof RelationType and @heading.equals(other.heading)) or
+    super
 
 #
 module.exports = RelationType

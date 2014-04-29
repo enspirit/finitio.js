@@ -66,7 +66,8 @@ class TupleType extends Type
 
   equals: (other) ->
     (this is other) or
-    (other instanceof TupleType and @heading.equals(other.heading))
+    (other instanceof TupleType and @heading.equals(other.heading)) or
+    super
 
   ## 'Private' methods
 
