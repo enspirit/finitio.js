@@ -6,9 +6,9 @@ source = """
   Nil = .( v | v === null )
 
   # Booleans
-  True    = .( b | b === true )
-  False   = .( b | b === false )
   Boolean = .Boolean
+  True    = .Boolean( b | b === true )
+  False   = .Boolean( b | b === false )
 
   # Numerics
   Numeric = .Number
