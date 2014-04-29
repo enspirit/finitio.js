@@ -14,7 +14,7 @@
 
   // converts head:X tail(... X)* to an array of Xs
   function headTailToArray(head, tail) {
-    var result = [ head ];
+    var result = (head ? [ head ] : []);
     for (var i = 0; i < tail.length; i++) {
       result[i+1] = tail[i][tail[i].length-1];
     }
@@ -166,8 +166,9 @@ relation_type =
   }
 
 heading =
-    head:attribute tail:(opt_comma attribute)* opt_comma {
-      return Factory.heading(headTailToArray(head, tail));
+    head:attribute? tail:(opt_comma attribute)* opt_comma d:dots? {
+      var opts  = { allowExtra: (d ? true : false) };
+      return Factory.heading(headTailToArray(head, tail), opts);
     }
   / spacing
 
@@ -286,6 +287,9 @@ builtin_type_name =
   $([a-zA-Z0-9:.]+)
 
 // LEXER (spacing, symbols and comments)
+
+dots =
+  $(spacing '...' spacing)
 
 pipe =
   $(spacing '|' spacing)

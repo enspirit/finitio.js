@@ -142,14 +142,14 @@ class TypeFactory
 
     attr
 
-  heading: (heading) ->
+  heading: (heading, opts) ->
     return heading if heading instanceof Heading
     return heading.heading if heading.heading?
 
     if heading.constructor == Array
-      new Heading(heading)
+      new Heading(heading, opts)
     else if typeof(heading) is "object"
-      new Heading(@attributes(heading))
+      new Heading(@attributes(heading), opts)
     else
       fail("Heading expected, got", heading)
 
