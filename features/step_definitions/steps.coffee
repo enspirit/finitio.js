@@ -18,6 +18,7 @@ module.exports = ->
   @Given /^the System is$/, (source, callback) ->
     try
       system = TestSystem.parse(source)
+      type   = system.main if system.main
     catch e
       callback.fail(e)
 
