@@ -1,46 +1,61 @@
-Attribute     = require '../../../../src/support/attribute'
-Heading       = require '../../../../src/support/heading'
-RelationType  = require '../../../../src/type/relation_type'
-{TypeError}   = require '../../../../src/errors'
-_             = require 'underscore'
-should        = require 'should'
-{byteType}    = require '../../../spec_helpers'
+Attribute          = require '../../../../src/support/attribute'
+Heading            = require '../../../../src/support/heading'
+RelationType       = require '../../../../src/type/relation_type'
+{TypeError}        = require '../../../../src/errors'
+_                  = require 'underscore'
+should             = require 'should'
+{byteType}         = require '../../../spec_helpers'
 
 describe "RelationType#dress", ->
 
   heading = new Heading([
-      new Attribute('r', byteType),
-      new Attribute('g', byteType),
-      new Attribute('b', byteType)
-    ])
+    new Attribute('r', byteType),
+    new Attribute('g', byteType),
+    new Attribute('b', byteType, false)
+  ])
 
   type = new RelationType(heading, "colors")
 
-  factor = (arg) -> type.dress(arg)
+  dress = (arg) -> type.dress(arg)
 
-  describe 'with a valid array of Hashes', ->
-    subject = factor [
-        { "r": 12, "g": 13, "b": 255 },
-        { "r": 12, "g": 15, "b": 198 }
-      ]
+  context 'with a valid array of Hashes', ->
+    arg = [
+      { "r": 12, "g": 13, "b": 255 },
+      { "r": 12, "g": 15, "b": 198 }
+    ]
 
     expected = [
-        { r: 12, g: 13, b: 255 },
-        { r: 12, g: 15, b: 198 }
-      ]
+      { r: 12, g: 13, b: 255 },
+      { r: 12, g: 15, b: 198 }
+    ]
 
-    it 'should coerce to an array of tuples', ->
-      _.isEqual(subject, expected).should.be.true
+    it 'should coerce to an Array of tuples', ->
+      dress(arg).should.be.an.instanceof(Array)
+      dress(arg).should.eql(expected)
 
-  describe 'with an empty array', ->
-    subject = factor []
+  context 'with a valid array of Hashes with some optional missing', ->
+    arg = [
+      { "r": 12, "g": 13, "b": 255 },
+      { "r": 12, "g": 15 }
+    ]
+    expected = [
+      { r: 12, g: 13, b: 255 },
+      { r: 12, g: 15 }
+    ]
 
+    it 'should coerce to an Array of tuples', ->
+      dress(arg).should.be.an.instanceof(Array)
+      dress(arg).should.eql(expected)
+
+  context 'with an empty array', ->
+    arg = []
     expected = []
 
-    it 'should coerce to an array of tuples', ->
-      _.isEqual(subject, expected).should.be.true
+    it 'should coerce to an Array of tuples', ->
+      dress(arg).should.be.an.instanceof(Array)
+      dress(arg).should.eql(expected)
 
-  describe 'when raising an error', ->
+  context 'when raising an error', ->
 
     lambda = (arg) ->
       try
@@ -48,7 +63,7 @@ describe "RelationType#dress", ->
       catch e
         e
 
-    describe 'with something else than an Array', ->
+    context 'with something else than an Array', ->
       subject = lambda("foo")
 
       it 'should raise a TypeError', ->
@@ -56,70 +71,88 @@ describe "RelationType#dress", ->
         subject.message.should.equal("Invalid value `foo` for colors")
 
       it 'should have no cause', ->
-        should.equal(subject.cause, null)
+        should(subject.cause).be.null
 
       it 'should have an empty location', ->
         subject.location.should.equal('')
 
-    describe 'with Array of non-tuples', ->
+    context 'with Array of non-tuples', ->
       subject = lambda(["foo"])
 
       it 'should raise a TypeError', ->
         subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal \
-          "Invalid value `foo` for {r: Byte, g: Byte, b: Byte}"
+        subject.message.should.equal("Invalid value `foo` for {r: Byte, g: Byte, b :? Byte}")
 
       it 'should have no cause', ->
-        should.equal(subject.cause, null)
+        should(subject.cause).be.null
 
       it 'should have the correct location', ->
         subject.location.should.equal('0')
 
-    describe 'with a wrong tuple', ->
-      subject = lambda [
-          { "r": 12, "g": 13, "b": 255 },
-          { "r": 12, "g": 13 }
-        ]
+    context 'with a wrong tuple', ->
+      arg = [
+        { "r": 12, "g": 13, "b": 255 },
+        { "r": 12, "b": 13 }
+      ]
+      subject = lambda(arg)
 
       it 'should raise a TypeError', ->
         subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Missing attribute `b`")
+        subject.message.should.equal("Missing attribute `g`")
 
       it 'should have no cause', ->
-        should.equal(subject.cause, null)
+        should(subject.cause).be.null
 
       it 'should have the correct location', ->
         subject.location.should.equal('1')
 
-    describe 'with a wrong tuple attribute', ->
-      subject = lambda [
-          { "r": 12, "g": 13, "b": 255  },
-          { "r": 12, "g": 13, "b": '12' }
-        ]
+    context 'with a tuple with extra attribute', ->
+      arg = [
+        { "r": 12, "g": 13, "b": 255 },
+        { "r": 12, "g": 13, "f": 13 }
+      ]
+
+      it 'should raise a TypeError', ->
+        lambda(arg).should.be.an.instanceof(TypeError)
+        lambda(arg).message.should.equal("Unrecognized attribute `f`")
+
+      it 'should have no cause', ->
+        should(lambda(arg).cause).be.null
+
+      it 'should have the correct location', ->
+        lambda(arg).location.should.equal('1')
+
+    context 'with a wrong tuple attribute', ->
+      arg = [
+        { "r": 12, "g": 13, "b": 255  },
+        { "r": 12, "g": 13, "b": '12' }
+      ]
+      subject = lambda(arg)
 
       it 'should raise a TypeError', ->
         subject.should.be.an.instanceof(TypeError)
         subject.message.should.equal("Invalid value `12` for Byte")
 
       it 'should have a cause', ->
-        subject.cause.should.not.be.null
+        should(subject.cause).not.be.null
 
       it 'should have the correct location', ->
         subject.location.should.equal('1/b')
 
-    describe 'with a duplicate tuple', ->
-      subject = lambda [
-          { "r": 12, "g": 13, "b": 255 },
-          { "r": 12, "g": 192, "b": 13 },
-          { "r": 12, "g": 13, "b": 255 }
-        ]
+    context 'with a duplicate tuple', ->
+      arg = [
+        { "r": 12, "g": 13, "b": 255 },
+        { "r": 12, "g": 192, "b": 13 },
+        { "r": 12, "g": 13, "b": 255 }
+      ]
+      subject = lambda(arg)
 
       it 'should raise a TypeError', ->
         subject.should.be.an.instanceof(TypeError)
         subject.message.should.equal("Duplicate tuple")
 
       it 'should have no cause', ->
-        should.equal(subject.cause, null)
+        should(subject.cause).be.null
 
       it 'should have the correct location', ->
         subject.location.should.equal('2')

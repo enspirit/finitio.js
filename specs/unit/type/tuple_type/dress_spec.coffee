@@ -1,86 +1,112 @@
-Attribute   = require '../../../../src/support/attribute'
-Heading     = require '../../../../src/support/heading'
-TupleType   = require '../../../../src/type/tuple_type'
-{TypeError} = require '../../../../src/errors'
-should      = require 'should'
-_           = require 'underscore'
-{byteType}  = require '../../../spec_helpers'
+Attribute        = require '../../../../src/support/attribute'
+Heading          = require '../../../../src/support/heading'
+TupleType        = require '../../../../src/type/tuple_type'
+{TypeError}      = require '../../../../src/errors'
+should           = require 'should'
+_                = require 'underscore'
+{byteType}       = require '../../../spec_helpers'
 
 describe "TupleType#dress", ->
 
-  heading = new Heading([
-      new Attribute('r', byteType),
-      new Attribute('g', byteType),
-      new Attribute('b', byteType)
-    ])
+  r       = new Attribute('r', byteType)
+  g       = new Attribute('g', byteType)
+  maybe_b = new Attribute('b', byteType, false)
 
-  type = new TupleType(heading, "color")
+  context 'when not allowing extra', ->
 
-  lambda = (arg) -> type.dress(arg)
+    heading = new Heading([r, g, maybe_b])
+    type    = new TupleType(heading, "color")
 
-  describe 'with a valid Hash', ->
-    subject = lambda { r: 12, g: 13, b: 255 }
+    dress = (arg) ->
+      type.dress(arg)
 
-    it 'should coerce to a tuple', ->
-      _.isEqual(subject, r: 12, g: 13, b: 255).should.be.true
+    context 'with a valid Hash', ->
+      arg = { "r": 12, "g": 13, "b": 255 }
 
-  describe 'when raising an error', ->
+      it 'should coerce to a tuple', ->
+        dress(arg).should.eql(r: 12, g: 13, b: 255)
 
-    lambda = (arg) ->
-      try
-        type.dress(arg)
-      catch e
-        e
+    context 'with a valid Hash and no optional', ->
+      arg = { "r": 12, "g": 13 }
 
-    describe 'with something else than a Hash', ->
-      subject = lambda("foo")
+      it 'should coerce to a tuple', ->
+        dress(arg).should.eql(r: 12, g: 13)
 
-      it 'should raise a TypeError', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `foo` for color")
+    context 'when raising an error', ->
 
-      it 'should have no cause', ->
-        should.equal(subject.cause, null)
+      lambda = (arg) ->
+        try
+          type.dress(arg)
+        catch e
+          e
 
-      it 'should have an empty location', ->
-        subject.location.should.equal('')
+      context 'with something else than a Hash', ->
+        subject = lambda("foo")
 
-    describe 'with a missing attribute', ->
-      subject = lambda { r: 12, g: 13 }
+        it 'should raise a TypeError', ->
+          subject.should.be.an.instanceof(TypeError)
+          subject.message.should.equal("Invalid value `foo` for color")
 
-      it 'should raise a TypeError', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Missing attribute `b`")
+        it 'should have no cause', ->
+          should(subject.cause).be.null
 
-      it 'should have no cause', ->
-        should.equal(subject.cause, null)
+        it 'should have an empty location', ->
+          subject.location.should.equal('')
 
-      it 'should have an empty location', ->
-        subject.location.should.equal('')
+      context 'with a missing attribute', ->
+        arg = { "r": 12, "b": 13 }
+        subject = lambda(arg)
 
-    describe 'with an extra attribute', ->
-      subject = lambda { r: 12, g: 13, b: 255, extr: 165 }
+        it 'should raise a TypeError', ->
+          subject.should.be.an.instanceof(TypeError)
+          subject.message.should.equal("Missing attribute `g`")
 
-      it 'should raise a TypeError', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Unrecognized attribute `extr`")
+        it 'should have no cause', ->
+          should(subject.cause).be.null
 
-      it 'should have no cause', ->
-        should.equal(subject.cause, null)
+        it 'should have an empty location', ->
+          subject.location.should.equal('')
 
-      it 'should have an empty location', ->
-        subject.location.should.equal('')
+      context 'with an extra attribute', ->
+        arg = { "r": 12, "g": 13, "extr": 165 }
+        subject = lambda(arg)
 
-    describe 'with an invalid attribute', ->
-      subject = lambda { r: 'abc', g: 13, b: 255 }
+        it 'should raise a TypeError', ->
+          subject.should.be.an.instanceof(TypeError)
+          subject.message.should.eql("Unrecognized attribute `extr`")
 
-      it 'should raise a TypeError', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `abc` for Byte")
+        it 'should have no cause', ->
+          should(subject.cause).be.null
 
-      it 'should have the correct cause', ->
-        subject.cause.should.be.an.instanceof(TypeError)
-        subject.cause.message.should.equal("Invalid value `abc` for intType")
+        it 'should have an empty location', ->
+          subject.location.should.equal('')
 
-      it 'should have the correct location', ->
-        subject.location.should.equal("r")
+      context 'with an invalid attribute', ->
+        arg = { "r": 12, "g": 13, "b": '255' }
+        subject = lambda(arg)
+
+        it 'should raise a TypeError', ->
+          subject.should.be.an.instanceof(TypeError)
+          subject.message.should.equal("Invalid value `255` for Byte")
+
+        it 'should have the correct cause', ->
+          subject.cause.should.be.an.instanceof(TypeError)
+          subject.cause.message.should.equal("Invalid value `255` for intType")
+
+        it 'should have the correct location', ->
+          subject.location.should.equal("b")
+
+  context 'when not allowing extra', ->
+    heading = new Heading([r, g, maybe_b], allowExtra: true)
+    type    = new TupleType(heading, "color")
+
+    subject = (arg) -> type.dress(arg)
+
+    context 'with an extra attribute', ->
+      arg = { "r": 12, "g": 13, "extr": 165 }
+
+      it 'should not raise a TypeError', ->
+        subject(arg).should.not.be.an.instanceof(TypeError)
+
+      it 'should return a coerced/projection', ->
+        subject(arg).should.eql({r: 12, g: 13})

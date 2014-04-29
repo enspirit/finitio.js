@@ -1,28 +1,79 @@
-Attribute     = require '../../../../src/support/attribute'
-Heading       = require '../../../../src/support/heading'
-RelationType  = require '../../../../src/type/relation_type'
-{intType}     = require '../../../spec_helpers'
-should        = require 'should'
+Attribute          = require '../../../../src/support/attribute'
+Heading            = require '../../../../src/support/heading'
+RelationType       = require '../../../../src/type/relation_type'
+{intType}          = require '../../../spec_helpers'
+should             = require 'should'
 
 describe "RelationType#include", ->
 
-  heading = new Heading([new Attribute('a', intType)])
+  heading = new Heading([
+    new Attribute('a', intType),
+    new Attribute('b', intType, false)
+  ])
 
   type = new RelationType(heading)
 
   subject = (arg) -> type.include(arg)
 
-  describe 'when a valid relation', ->
-    subject([{a: 12}, {a: 17}]).should.be.true
+  context 'when a empty set', ->
+    arg = []
 
-  describe 'when an empty relation', ->
-    subject([]).should.be.true
+    it 'should be true', ->
+      subject(arg).should.be.true
 
-  describe 'when a relation containing invalid tuples', ->
-    subject([{a: 12}, {a: 'foo'}]).should.be.false
+  context 'when a valid, non empty set', ->
+    arg = []
+    arg.push {a: 12, b: 15}
+    arg.push {a: 15, b: 16}
 
-  describe 'when not an relation at all', ->
-    subject({}).should.be.false
-    subject("foo").should.be.false
-    subject(null).should.be.false
-    type.include().should.be.false
+    it 'should be true', ->
+      subject(arg).should.be.true
+
+  context 'when a valid, non empty set but missing optionals', ->
+
+    arg = []
+    arg.push {a: 12}
+    arg.push {a: 15, b: 16}
+
+    it 'should be true', ->
+      subject(arg).should.be.true
+
+  context 'when not a set', ->
+    arg = "foo"
+
+    it 'should be false', ->
+      subject(arg).should.be.false
+
+  context 'when a set containing invalid tuples', ->
+    arg = []
+
+    arg.push {a: 12.2}
+
+    it 'should be false', ->
+      subject(arg).should.be.false
+
+  context 'when a set containing tuples with missing required', ->
+    arg = []
+
+    arg.push {b: 12}
+
+    it 'should be false', ->
+      subject(arg).should.be.false
+
+  context 'when a set containing tuples with extra', ->
+    arg = []
+
+    arg.push {a: 12, b: 12, c: 15}
+
+    it 'should be false', ->
+      subject(arg).should.be.false
+
+  context 'when a set containing tuples with invalid optional', ->
+    arg = []
+
+    arg.push {a: 12, b: 12.5}
+
+    it 'should be false', ->
+      subject(arg).should.be.false
+
+

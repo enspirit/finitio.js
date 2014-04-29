@@ -1,25 +1,26 @@
-Attribute   = require '../../../../src/support/attribute'
-Heading     = require '../../../../src/support/heading'
-TupleType   = require '../../../../src/type/tuple_type'
-{intType}   = require '../../../spec_helpers'
+Attribute        = require '../../../../src/support/attribute'
+Heading          = require '../../../../src/support/heading'
+TupleType        = require '../../../../src/type/tuple_type'
+{intType}        = require '../../../spec_helpers'
 {ArgumentError,
-TypeError}  = require '../../../../src/errors'
+TypeError}       = require '../../../../src/errors'
 
-should      = require 'should'
+should           = require 'should'
 
 describe "TupleType#constructor", ->
 
   heading = new Heading([new Attribute('a', intType)])
 
-  describe 'with a valid heading', ->
+  context 'with a valid heading', ->
     subject = new TupleType(heading)
 
-    subject.should.be.an.instanceof(TupleType)
+    it 'should be a TupleType', ->
+      subject.should.be.an.instanceof(TupleType)
 
     it 'correctly sets the instance variable', ->
-      subject.heading.equals(heading).should.be.true
+      subject.heading.should.equal(heading)
 
-  describe 'with an invalid heading', ->
+  context 'with an invalid heading', ->
     subject = try
       new TupleType("foo")
     catch e

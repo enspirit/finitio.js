@@ -1,16 +1,20 @@
-Attribute     = require '../../../../src/support/attribute'
-Heading       = require '../../../../src/support/heading'
-RelationType  = require '../../../../src/type/relation_type'
-{byteType}    = require '../../../spec_helpers'
+Attribute          = require '../../../../src/support/attribute'
+Heading            = require '../../../../src/support/heading'
+RelationType       = require '../../../../src/type/relation_type'
+{byteType}         = require '../../../spec_helpers'
 
-should      = require 'should'
+should             = require 'should'
 
-describe "RelationType#default_name", ->
+describe 'RelationType#defaultName', ->
 
-  heading = new Heading([new Attribute('a', byteType)])
+  heading = new Heading([
+      new Attribute('a', byteType),
+      new Attribute('b', byteType, false)
+    ])
 
   type = new RelationType(heading)
 
   subject = type.defaultName()
 
-  subject.should.equal("{{a: Byte}}")
+  it 'should be correct', ->
+    subject.should.equal("{{a: Byte, b :? Byte}}")

@@ -1,14 +1,14 @@
-Attribute   = require '../../../../src/support/attribute'
-Heading     = require '../../../../src/support/heading'
-TupleType   = require '../../../../src/type/tuple_type'
-{TypeError} = require '../../../../src/errors'
-should      = require 'should'
-{intType}   = require '../../../spec_helpers'
+Attribute         = require '../../../../src/support/attribute'
+Heading           = require '../../../../src/support/heading'
+TupleType         = require '../../../../src/type/tuple_type'
+{TypeError}       = require '../../../../src/errors'
+should            = require 'should'
+{intType}         = require '../../../spec_helpers'
 
 describe "TupleType#equality", ->
 
-  h1 = new Heading([new Attribute('r', intType), new Attribute('b', intType)])
-  h2 = new Heading([new Attribute('b', intType), new Attribute('r', intType)])
+  h1 = new Heading([new Attribute('r', intType, false), new Attribute('b', intType)])
+  h2 = new Heading([new Attribute('b', intType), new Attribute('r', intType, false)])
   h3 = new Heading([new Attribute('b', intType)])
 
   type1 = new TupleType(h1)
@@ -23,5 +23,5 @@ describe "TupleType#equality", ->
     type1.equals(type3).should.be.false
     type2.equals(type3).should.be.false
 
-  it 'should be a total function, with null for non types', ->
-    should.equal(type1.equals(12), false)
+  it 'should be a total function, with nil for non types', ->
+    type1.equals(12).should.be.false

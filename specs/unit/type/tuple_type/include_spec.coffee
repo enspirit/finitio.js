@@ -1,25 +1,67 @@
-Attribute   = require '../../../../src/support/attribute'
-Heading     = require '../../../../src/support/heading'
-TupleType   = require '../../../../src/type/tuple_type'
-{intType}   = require '../../../spec_helpers'
-should      = require 'should'
+Attribute        = require '../../../../src/support/attribute'
+Heading          = require '../../../../src/support/heading'
+TupleType        = require '../../../../src/type/tuple_type'
+{intType}        = require '../../../spec_helpers'
+should           = require 'should'
 
 describe "TupleType#include", ->
 
-  heading = new Heading([new Attribute('a', intType)])
+    a       = new Attribute('a', intType)
+    maybe_b = new Attribute('b', intType, false)
 
-  type = new TupleType(heading)
+    context 'without extra allowed', ->
 
-  subject = (arg) -> type.include(arg)
+      heading = new Heading([a, maybe_b])
+      type    = new TupleType(heading)
 
-  describe 'when a valid hash', ->
-    subject(a: 12).should.be.true
+      subject = (arg) -> type.include(arg)
 
-  describe 'when an invalid hash (too many attributes)', ->
-    subject(a: 12, b: 15).should.be.false
+      context 'when a valid hash and both attributes', ->
+        arg = {a: 12, b: 14}
 
-  describe 'when an invalid hash (too few attributes)', ->
-    subject(b: 12).should.be.false
+        it 'should be true', ->
+          subject(arg).should.be.true
 
-  describe 'when an invalid hash (wrong type)', ->
-    subject(a: "12").should.be.false
+      context 'when a valid hash but no optional attribute', ->
+        arg = {a: 12}
+
+        it 'should be true', ->
+          subject(arg).should.be.true
+
+      context 'when an invalid hash (too many attributes)', ->
+        arg = {a: 12, c: 15}
+
+        it 'should be false', ->
+          subject(arg).should.be.false
+
+      context 'when an invalid hash (too few attributes)', ->
+        arg = {b: 12}
+
+        it 'should be false', ->
+          subject(arg).should.be.false
+
+      context 'when an invalid hash (wrong type)', ->
+        arg = {a: 12, b: '15'}
+
+        it 'should be false', ->
+          subject(arg).should.be.false
+
+      context 'when an invalid hash (wrong type II)', ->
+        arg = {a: false, b: 15}
+
+        it 'should be false', ->
+          subject(arg).should.be.false
+
+    context 'with extra allowed', ->
+
+      heading = new Heading([a, maybe_b], allowExtra: true)
+      type    = new TupleType(heading)
+
+      subject = (arg) -> type.include(arg)
+
+      context 'when valid hash, yet with extra attributes', ->
+        arg = {a: 12, c: 15}
+
+        it 'should be true', ->
+          subject(arg).should.be.true
+

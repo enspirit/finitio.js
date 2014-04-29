@@ -1,5 +1,6 @@
 Type            = require '../type'
-TupleType       = require './tuple_type'
+CollectionType  = require '../support/collection_type'
+TupleType       = require '../type/tuple_type'
 Heading         = require '../support/heading'
 DressHelper     = require '../support/dress_helper'
 {ArgumentError} = require '../errors'
@@ -8,27 +9,18 @@ $u              = require '../support/utils'
 class RelationType extends Type
 
   constructor: (@heading, @name) ->
+    super(@name)
+
     unless @heading instanceof Heading
       throw new ArgumentError("Heading expected, got", @heading)
 
-    @tupleType = new TupleType(heading)
-
-    super(@name)
-
-  defaultName: ->
-    "{{#{@heading.toName()}}}"
-
   include: (value) ->
-    if value == null || value == undefined
-      return false
+    value instanceof Array &&
+      $u.every value, (tuple) =>
+        @tupleType().include(tuple)
 
-    unless value.constructor == Array
-      return false
-
-    for v in value
-      return false unless @tupleType.include(v)
-
-    return true
+  tupleType: ->
+    new TupleType(@heading)
 
   # Apply the corresponding TupleType's `dress` to every element of `value`
   # (any enumerable). Return a Set of transformed tuples. Fail if anything
@@ -42,7 +34,7 @@ class RelationType extends Type
     # Up every tuple and keep results in a "Set"
     set = {}
     helper.iterate value, (tuple, index) =>
-      tuple = @tupleType.dress(tuple, helper)
+      tuple = @tupleType().dress(tuple, helper)
       ## TODO: what a terrible way of 'hashing'
       ## shall we invent a real 'Set' class and hash objects?
       key = JSON.stringify(tuple)
@@ -51,6 +43,9 @@ class RelationType extends Type
 
     # Return built tuples
     $u.values(set)
+
+  defaultName: ->
+    "{{#{@heading.toName()}}}"
 
   equals: (other) ->
     (this is other) or

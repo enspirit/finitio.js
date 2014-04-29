@@ -1,7 +1,6 @@
 Parser           = require '../../../src/syntax/parser'
 BuiltinType      = require '../../../src/type/builtin_type'
 TupleType        = require '../../../src/type/tuple_type'
-MultiTupleType   = require '../../../src/type/multi_tuple_type'
 Heading          = require '../../../src/support/heading'
 Attribute        = require '../../../src/support/attribute'
 should           = require 'should'
@@ -29,8 +28,8 @@ describe "Parser#tuple_type", ->
     foo      = new Attribute('foo', new BuiltinType(String))
     maybeBar = new Attribute('bar', new BuiltinType(Number), false)
     heading  = new Heading([foo, maybeBar])
-    expected = new MultiTupleType(heading)
+    expected = new TupleType(heading)
 
-    it 'should return a MultiTupleType', ->
-      subject.should.be.an.instanceof(MultiTupleType)
+    it 'should return a TupleType', ->
+      subject.should.be.an.instanceof(TupleType)
       subject.equals(expected).should.be.true
