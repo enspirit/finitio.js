@@ -11,7 +11,7 @@ type           = null
 module.exports = ->
 
   @Before (callback)->
-    TestSystem ?= require '../support/test_system'
+    TestSystem = require '../support/test_system'
     system = TestSystem
     callback()
 
@@ -32,12 +32,12 @@ module.exports = ->
 
   @Then /^it compiles fine$/, (callback) ->
     unless system instanceof System
-      callback.fail new Error("#{system} is not an finitio system")
+      callback.fail "#{system} is not an finitio system"
     callback()
 
   @Then /^it compiles to a tuple type$/, (callback) ->
     unless system instanceof System
-      callback.fail new Error("#{system} is not an finitio system")
+      callback.fail "#{system} is not an finitio system"
 
     should(type).be.an.instanceOf(Finitio.TupleType)
 
@@ -45,7 +45,7 @@ module.exports = ->
 
   @Then /^it compiles to a relation type$/, (callback) ->
     unless system instanceof System
-      callback.fail new Error("#{system} is not an finitio system")
+      callback.fail "#{system} is not an finitio system"
 
     should(type).be.an.instanceOf(Finitio.RelationType)
 
@@ -186,22 +186,22 @@ module.exports = ->
 
   @Then /^the result should be a Tuple representation$/, (callback) ->
     unless result instanceof Object
-      callback.fail new Error("#{result} is not an object")
+      callback.fail "#{result} is not an object"
     callback()
 
   @Then /^its '(.*)' attribute should be a Date representation$/, (attr, callback) ->
     unless result[attr] instanceof Date
-      callback.fail new Error("attribute is not a Date, got #{result[attr]}")
+      callback.fail "attribute is not a Date, got #{result[attr]}"
     callback()
 
   @Then /^the result should be a representation for Nil$/, (callback) ->
     unless result == null
-      callback.fail new Error("#{result} is not a representation for Nil")
+      callback.fail "#{result} is not a representation for Nil"
     callback()
 
   @Then /^the result should be a representation for (.*?)$/, (type,callback) ->
     unless system.fetch(type).include(result)
-      callback.fail new Error("#{JSON.stringify(result)} is not a representation for #{type}")
+      callback.fail "#{JSON.stringify(result)} is not a representation for #{type}"
     callback()
 
   @Then /^it should be a TypeError$/, (callback) ->
@@ -215,43 +215,43 @@ module.exports = ->
 
     for k, v of table.hashes()[0]
       unless result[k] == v
-        callback.fail new Error("TypeError##{k}: `#{result[k]}` expected, got `#{v}`")
+        callback.fail "TypeError##{k}: `#{result[k]}` expected, got `#{v}`"
 
     callback()
 
   @Then /^the result should be the integer (\d+)$/, (expected, callback) ->
     unless result == parseInt(expected)
-      callback.fail new Error("#{result} <> #{expected}")
+      callback.fail "#{result} <> #{expected}"
     callback()
 
   @Then /^the result should be the Boolean true$/, (callback) ->
     unless result == true
-      callback.fail new Error("#{result} <> true")
+      callback.fail "#{result} <> true"
     callback()
 
   @Then /^the result should be the Boolean false$/, (callback) ->
     unless result == false
-      callback.fail new Error("#{result} <> false")
+      callback.fail "#{result} <> false"
     callback()
 
   @Then /^the result should be the real (\d+\.\d+)$/, (expected, callback) ->
     unless result == parseFloat(expected)
-      callback.fail new Error("#{result} <> #{expected}")
+      callback.fail "#{result} <> #{expected}"
     callback()
 
   @Then /^the result should be the string '(.*)'$/, (expected, callback) ->
     unless result == expected
-      callback.fail new Error("#{result} <> #{expected}")
+      callback.fail "#{result} <> #{expected}"
     callback()
 
   @Then /^the result should be the 13st of March 2014$/, (callback) ->
     expected = new Date("2014-03-13");
     unless (result instanceof Date) and (result.toISOString() == expected.toISOString())
-      callback.fail new Error("#{result} <> 13st of March 2014")
+      callback.fail "#{result} <> 13st of March 2014"
     callback()
 
   @Then /^the result should be the 13st of March 2014 at 08:30$/, (callback) ->
     expected = new Date("2014-03-13T08:30:00");
     unless (result instanceof Date) and (result.toISOString() == expected.toISOString())
-      callback.fail new Error("#{result} <> 13st of March 2014 at 08:30")
+      callback.fail "#{result} <> 13st of March 2014 at 08:30"
     callback()
