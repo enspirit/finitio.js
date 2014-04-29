@@ -161,6 +161,20 @@ module.exports = ->
 
     callback()
 
+  # Undressing
+
+  @Given /^I undress JSON's '(.*?)' from (.*?) to (.*?)$/, (json, from, to, callback) ->
+    try
+      from  = system.fetch(from)
+      to    = system.fetch(to)
+      json  = JSON.parse(json)
+      value = from.dress(json)
+      result = from.undress(value, to)
+    catch e
+      result = e
+
+    callback()
+
   # Result
 
   @Then /^it should be a success$/, (callback) ->

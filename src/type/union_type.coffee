@@ -33,6 +33,19 @@ class UnionType extends Type
     # No one succeed, just fail
     helper.failed(this, value)
 
+  undress: (value, as) ->
+    return value if this is as
+
+    # find structurally equivalent candidate
+    using = $u.find @candidates, (c)-> c.equal(as)
+    return using.undress(value, as) if using
+
+    # find candidate that includes value
+    using = $u.find @candidates, (c)-> c.include(value)
+    return using.undress(value, as) if using
+
+    throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+
   include: (value) ->
     found = $u.find @candidates, (c) -> c.include(value)
     found?

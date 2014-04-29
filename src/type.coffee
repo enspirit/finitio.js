@@ -38,7 +38,12 @@ class Type
   # @throw  `TypeError` if undressing fails
   #
   undress: (value, as)->
-    return value if this.equals(as)
+    # if `as` is a supertype of myself, then
+    #   pre                 => post
+    #   this.include(value) => as.include(value)
+    return value if as.isSuperTypeOf(this)
+
+    # otherwise, just fail
     throw new TypeError("Unable to undress `#{value}` to `#{as}`")
 
   #
