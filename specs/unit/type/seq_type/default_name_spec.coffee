@@ -4,6 +4,6 @@ should          = require 'should'
 
 describe "SeqType#defaultName", ->
 
-  type = new SeqType(intType, "foo")
-  subject = type.defaultName()
-  subject.should.equal('[intType]')
+  it 'returns the expected', ->
+    type = new SeqType(intType, "foo")
+    should(type.defaultName()).equal('[intType]')
