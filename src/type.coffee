@@ -48,6 +48,20 @@ class Type
     @name.toString()
 
   #
+  # Returns true of `this` is a super type of `other`, false otherwise.
+  #
+  isSuperTypeOf: (other)->
+    this.equals(other) or other.isSubTypeOf(this)
+
+  #
+  # Returns true if `this` is a subtype of `other`, false otherwise.
+  #
+  # This method MAY NOT call `isSuperTypeOf` to implement the contract.
+  #
+  isSubTypeOf: (other)->
+    false
+
+  #
   # Returns true if `other` is structurally equivalent to this type, false
   # otherwise.
   #

@@ -60,6 +60,10 @@ class TupleType extends Type
   defaultName: ->
     "{#{@heading.toName()}}"
 
+  isSuperTypeOf: (other)->
+    (this is other) or
+    (other instanceof TupleType and @heading.isSuperHeadingOf(other.heading))
+
   equals: (other) ->
     (this is other) or
     (other instanceof TupleType and @heading.equals(other.heading))

@@ -40,6 +40,11 @@ class UnionType extends Type
   defaultName: ->
     $u.map(@candidates, (c) -> c.name).join('|')
 
+  isSuperTypeOf: (other)->
+    (this is other) or
+    ($u.any @candidates, (c) -> c.isSuperTypeOf(other)) or
+    super
+
   equals: (other) ->
     (this is other) or
     (other instanceof UnionType and @candidatesEquals(other, true))

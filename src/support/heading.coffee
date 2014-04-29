@@ -55,6 +55,16 @@ class Heading
   names: ->
     $u.map($u.values(@attributes), (a) -> a.name)
 
+  isSuperHeadingOf: (other) ->
+    return true if (this is other)
+    return false unless other instanceof Heading
+    [s, l, r] = $u.triSplit(@attributes, other.attributes)
+    #
+    $u.every(s, (pair)-> pair[0].isSuperAttributeOf(pair[1])) and
+    $u.every(l, (a)-> not(a.required)) and
+    (@allowExtra() or not(other.allowExtra())) and
+    (@allowExtra() or $u.isEmpty(r))
+
   equals: (other) ->
     (this is other) or
     (other instanceof Heading and @attributesEquals(other) and @optionsEquals(other))

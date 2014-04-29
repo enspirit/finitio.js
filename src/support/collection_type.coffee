@@ -14,5 +14,10 @@ class CollectionType extends Type
     (this is other) or
     (other instanceof (this.constructor) and @elmType.equals(other.elmType))
 
+  isSuperTypeOf: (other)->
+    (this is other) or
+    (other instanceof (this.constructor) and @elmType.isSuperTypeOf(other.elmType)) or
+    super
+
 #
 module.exports = CollectionType

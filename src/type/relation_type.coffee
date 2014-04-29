@@ -47,6 +47,10 @@ class RelationType extends Type
   defaultName: ->
     "{{#{@heading.toName()}}}"
 
+  isSuperTypeOf: (other)->
+    (this is other) or
+    (other instanceof RelationType and @heading.isSuperHeadingOf(other.heading))
+
   equals: (other) ->
     (this is other) or
     (other instanceof RelationType and @heading.equals(other.heading))

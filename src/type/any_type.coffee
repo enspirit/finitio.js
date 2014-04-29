@@ -15,6 +15,9 @@ class AnyType extends Type
   include: (value) ->
     true
 
+  isSuperTypeOf: (other)->
+    true
+
   equals: (other) ->
     other instanceof AnyType
 

@@ -41,6 +41,12 @@ class Attribute
     else
       "#{@name} :? #{@type}"
 
+  isSuperAttributeOf: (other) ->
+    (this is other) or
+    (@name == other.name and
+     (not(@required) or other.required) and
+     @type.isSuperTypeOf(other.type))
+
   equals: (other) ->
     (this is other) or
     (other instanceof Attribute and

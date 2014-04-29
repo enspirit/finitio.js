@@ -45,6 +45,13 @@ class StructType extends Type
       array.push(@componentTypes[index].dress(elm, helper))
     array
 
+  isSuperTypeOf: (other) ->
+    (this is other) or
+    (other instanceof StructType and
+    $u.size(@componentTypes) == $u.size(other.componentTypes) and
+    $u.every $u.zip(@componentTypes, other.componentTypes), (cs)->
+      cs[0].isSuperTypeOf(cs[1]))
+
   equals: (other) ->
     (this is other) or
     (other instanceof StructType and @headingEquals(other))
