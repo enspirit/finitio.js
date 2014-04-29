@@ -215,7 +215,7 @@ module.exports = ->
 
     for k, v of table.hashes()[0]
       unless result[k] == v
-        callback.fail "TypeError##{k}: `#{result[k]}` expected, got `#{v}`"
+        callback.fail "TypeError##{k}: `#{v}` expected, got `#{result[k]}`"
 
     callback()
 
