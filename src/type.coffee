@@ -9,7 +9,13 @@ class Type
     if @name? and typeof(@name) isnt "string"
       throw new ArgumentError("String expected, got", @name)
 
+    @anonymous = not(@name?)
     @name ?= @defaultName()
+
+  setName: (name)->
+    throw "Name already set" unless @anonymous
+    @name = name
+    @anonymous = false
 
   #
   # Returns true if `value` is valid member of this type, false otherwise.

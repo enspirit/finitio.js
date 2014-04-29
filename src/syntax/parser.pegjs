@@ -103,7 +103,7 @@ definitions =
 
 type_def =
   n:type_name spacing '=' spacing t:type {
-    t.name = n;
+    t = Factory.alias(t, n)
     options.system.addType(t);
     return t;
   }
