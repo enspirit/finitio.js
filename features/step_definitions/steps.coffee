@@ -32,7 +32,84 @@ module.exports = ->
 
   @Then /^it compiles fine$/, (callback) ->
     unless system instanceof System
-      callback.fail new Error("#{result} is not an finitio system")
+      callback.fail new Error("#{system} is not an finitio system")
+    callback()
+
+  @Then /^it compiles to a tuple type$/, (callback) ->
+    unless system instanceof System
+      callback.fail new Error("#{system} is not an finitio system")
+
+    should(type).be.an.instanceOf(Finitio.TupleType)
+
+    callback()
+
+  @Then /^it compiles to a relation type$/, (callback) ->
+    unless system instanceof System
+      callback.fail new Error("#{system} is not an finitio system")
+
+    should(type).be.an.instanceOf(Finitio.RelationType)
+
+    callback()
+
+  @Then /^`(.*?)` and `(.*?)` are mandatory$/, (a1, a2, callback) ->
+    if type.heading == undefined
+      callback.fail("Heading based type expected, got `#{type}`")
+    else if type.heading.attributes[a1] == undefined
+      callback.fail("`#{a1}` attribute expected, got `#{type.heading.toName()}`")
+    else if type.heading.attributes[a2] == undefined
+      callback.fail("`#{a2}` attribute expected, got `#{type.heading.toName()}`")
+    else
+      should(type.heading.attributes[a1].required).be.true
+      should(type.heading.attributes[a2].required).be.true
+    callback()
+
+  @Then /^`(.*?)` is mandatory, but `(.*?)` is optional$/, (a1, a2, callback) ->
+    if type.heading == undefined
+      callback.fail("Heading based type expected, got `#{type}`")
+    else if type.heading.attributes[a1] == undefined
+      callback.fail("`#{a1}` attribute expected, got `#{type.heading.toName()}`")
+    else if type.heading.attributes[a2] == undefined
+      callback.fail("`#{a2}` attribute expected, got `#{type.heading.toName()}`")
+    else
+      should(type.heading.attributes[a1].required).be.true
+      should(type.heading.attributes[a2].required).be.false
+    callback()
+
+  @Then /^`(.*?)` is mandatory$/, (a1, callback) ->
+    if type.heading == undefined
+      callback.fail("Heading based type expected, got `#{type}`")
+    else if type.heading.attributes[a1] == undefined
+      callback.fail("`#{a1}` attribute expected, got `#{type.heading.toName()}`")
+    else
+      should(type.heading.attributes[a1].required).be.true
+    callback()
+
+  @Then /^it allows extra attributes$/, (callback) ->
+    if type.heading == undefined
+      callback.fail("Heading based type expected, got `#{type}`")
+    else
+      should(type.heading.allowExtra()).be.true
+    callback()
+
+  @Then /^it does not allow extra attributes$/, (callback) ->
+    if type.heading == undefined
+      callback.fail("Heading based type expected, got `#{type}`")
+    else
+      should(type.heading.allowExtra()).be.false
+    callback()
+
+  # Hierarchy
+
+  @Then /^(.*?) is (not )?a super type of (.*?)$/, (source, neg, target, callback) ->
+    try
+      s    = system.fetch(source)
+      t    = system.fetch(target)
+      neg  = ((neg == undefined) ? false : true)
+      isIt = s.isSuperTypeOf(t)
+      unless isIt == neg
+        callback.fail("Expected #{source} #{(if neg then 'not' else '')} to be a super type of #{target}")
+    catch e
+      callback.fail(e)
     callback()
 
   # Dressing
@@ -111,6 +188,11 @@ module.exports = ->
   @Then /^the result should be a representation for (.*?)$/, (type,callback) ->
     unless system.fetch(type).include(result)
       callback.fail new Error("#{JSON.stringify(result)} is not a representation for #{type}")
+    callback()
+
+  @Then /^it should be a TypeError$/, (callback) ->
+    unless result instanceof Finitio.TypeError
+      callback.fail "TypeError expected, got `#{result}`"
     callback()
 
   @Then /^it should be a TypeError as:$/, (table, callback) ->
