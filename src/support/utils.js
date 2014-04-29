@@ -93,6 +93,36 @@ $u.extend = function(obj) {
   return obj;
 };
 
+$u.triSplit = function(x, y) {
+  var attrs = null,
+      shared = {},
+      left = {},
+      right = {},
+      cur = null;
+
+  // start with x
+  attrs = $u.keys(x)
+  for (var i=0; i<attrs.length; i++){
+    cur = attrs[i];
+    if (y[cur] === undefined){
+      left[cur] = x[cur];
+    } else {
+      shared[cur] = [x[cur], y[cur]];
+    }
+  }
+
+  // continue with y
+  attrs = $u.keys(y)
+  for (var i=0; i<attrs.length; i++){
+    cur = attrs[i];
+    if (shared[cur] === undefined){
+      right[cur] = y[cur];
+    }
+  }
+
+  return [shared, left, right];
+}
+
 //******* ARRAY
 
 $u.zip = function(dest) {
