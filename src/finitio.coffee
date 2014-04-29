@@ -35,6 +35,7 @@ class Finitio
 $u.extend Finitio, require './errors'
 $u.extend Finitio, require './support/contracts'
 ##
+Finitio.AliasType    = require './type/alias_type'
 Finitio.AdType       = require './type/ad_type'
 Finitio.AnyType      = require './type/any_type'
 Finitio.BuiltinType  = require './type/builtin_type'

@@ -7,6 +7,7 @@ Constraint     = require './constraint'
 $u             = require './utils'
 
 ## Types
+AliasType         = require '../type/alias_type'
 AnyType           = require '../type/any_type'
 AdType            = require '../type/ad_type'
 SeqType           = require '../type/seq_type'
@@ -29,6 +30,7 @@ class TypeFactory
 
   @PUBLIC_DSL_METHODS: [
     'jsType',
+    'alias',
     'any',
     'builtin',
     'adt',
@@ -165,6 +167,16 @@ class TypeFactory
     contracts
 
   ########################################################## Type generators
+
+  alias: (type, name) ->
+    name = @name(name)
+    type = @type(type)
+
+    if type.anonymous
+      type.setName(name)
+      type
+    else
+      new AliasType(type, name)
 
   any: (name) ->
     name     ?= null
