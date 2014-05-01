@@ -62,14 +62,20 @@ class Type
   # Returns true of `this` is a super type of `other`, false otherwise.
   #
   isSuperTypeOf: (other)->
-    this.equals(other) or other.isSubTypeOf(this)
+    this.equals(other) or other._isSubTypeOf(this)
 
   #
-  # Returns true if `this` is a subtype of `other`, false otherwise.
+  # Returns true if `this` is known to be a subtype of `other`, false
+  # otherwise.
   #
-  # This method MAY NOT call `isSuperTypeOf` to implement the contract.
+  # This method is private and should not be called directly. It is a fallback
+  # strategy for isSuperTypeOf.
   #
-  isSubTypeOf: (other)->
+  # The implementation MAY NOT call `isSuperTypeOf` to meet the contract. So
+  # if you wonder whether `x.isSubTypeOf(y)`, use `y.isSuperTypeOf(x)`
+  # instead.
+  #
+  _isSubTypeOf: (other)->
     false
 
   #

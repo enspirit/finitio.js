@@ -51,7 +51,7 @@ class SubType extends Type
   include: (value) ->
     @superType.include(value) && $u.every(@constraints, (c) -> c.accept(value))
 
-  isSubTypeOf: (other)->
+  _isSubTypeOf: (other)->
     # if my supertype is itself a subtype of other, then its ok
     # otherwise, we just know nothing unless the constraint can be analyzed.
     other.isSuperTypeOf(@superType)

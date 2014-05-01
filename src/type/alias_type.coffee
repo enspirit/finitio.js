@@ -24,7 +24,7 @@ class AliasType extends Type
     (other instanceof AliasType and @type.isSuperTypeOf(other.type)) or
     super
 
-  isSubTypeOf: (other)->
+  _isSubTypeOf: (other)->
     other.isSuperTypeOf(@type)
 
   equals: (other)->
