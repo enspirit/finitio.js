@@ -1,4 +1,5 @@
 Finitio     = require '../../lib/finitio'
+{TypeError} = require '../../lib/errors'
 System      = require '../../lib/system'
 should      = require 'should'
 
@@ -205,8 +206,8 @@ module.exports = ->
     callback()
 
   @Then /^it should be a TypeError$/, (callback) ->
-    unless result instanceof Finitio.TypeError
-      callback.fail "TypeError expected, got `#{result}`"
+    unless result instanceof TypeError
+      callback.fail "TypeError expected, got `#{result}` (#{result.constructor})"
     callback()
 
   @Then /^it should be a TypeError as:$/, (table, callback) ->

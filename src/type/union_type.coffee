@@ -36,15 +36,16 @@ class UnionType extends Type
   undress: (value, as) ->
     return value if this is as
 
-    # find structurally equivalent candidate
-    using = $u.find @candidates, (c)-> c.equals(as)
-    return using.undress(value, as) if using
+    # find a candidate which is a subtype of as
+    if (using = $u.find @candidates, (c)-> as.isSuperTypeOf(c))
+      return using.undress(value, as)
 
     # find candidate that includes value
-    using = $u.find @candidates, (c)-> c.include(value)
-    return using.undress(value, as) if using
+    else if (using = $u.find @candidates, (c)-> c.include(value))
+      return using.undress(value, as)
 
-    throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+    else
+      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
 
   include: (value) ->
     found = $u.find @candidates, (c) -> c.include(value)
