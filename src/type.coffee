@@ -49,6 +49,9 @@ class Type
     #   this.include(value) => as.include(value)
     return value if as.isSuperTypeOf(this)
 
+    # Fall back to checking post condition explicitely
+    return value if as.include(value)
+
     # otherwise, just fail
     throw new TypeError("Unable to undress `#{value}` to `#{as}`")
 
