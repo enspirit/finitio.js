@@ -19,6 +19,9 @@ class AliasType extends Type
   dress: (value, helper)->
     @type.dress(value, helper)
 
+  undress: (value, as)->
+    @type.undress(value, as)
+
   isSuperTypeOf: (other)->
     (this is other) or
     (other instanceof AliasType and @type.isSuperTypeOf(other.type)) or
