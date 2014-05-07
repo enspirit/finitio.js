@@ -1,7 +1,8 @@
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
-{ArgumentError} = require '../errors'
+{ArgumentError,
+TypeError}      = require '../errors'
 $u              = require '../support/utils'
 
 class StructType extends Type
@@ -20,6 +21,9 @@ class StructType extends Type
     componentNames = $u.map(@componentTypes, (t) -> t.name)
     "<" + componentNames.join(', ') + ">"
 
+  size: ->
+    $u.size(@componentTypes)
+
   include: (value) ->
     $u.isArray(value) &&
       $u.size(value) == $u.size(@componentTypes) &&
@@ -36,7 +40,7 @@ class StructType extends Type
     helper.failed(this, value) unless value instanceof Array
 
     # check the size
-    [cs, vs] = [$u.size(@componentTypes), $u.size(value)]
+    [cs, vs] = [@size(), $u.size(value)]
     helper.fail("Struct size mismatch (#{vs} for #{cs})") unless cs == vs
 
     # dress components
@@ -44,6 +48,18 @@ class StructType extends Type
     helper.iterate value, (elm, index) =>
       array.push(@componentTypes[index].dress(elm, helper))
     array
+
+  undress: (value, as) ->
+    unless as instanceof StructType
+      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+
+    unless as.size() == @size()
+      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+
+    from = @componentTypes
+    to   = as.componentTypes
+    $u.map value, (v, i)->
+      from[i].undress(v, to[i])
 
   isSuperTypeOf: (other) ->
     (this is other) or
