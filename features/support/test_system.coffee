@@ -19,8 +19,8 @@ source = """
   String  = .String
 
   # Dates and Time
-  Date = .Date <iso8601> .String .Finitio.Contracts.DateTime.iso8601
-  Time = .Date <iso8601> .String .Finitio.Contracts.DateTime.iso8601
+  Date = .Date <iso8601> .String .Finitio.Contracts.Date.iso8601
+  Time = .Date <iso8601> .String .Finitio.Contracts.Time.iso8601
   """
 TestSystem = Finitio.parse(source, world: { Finitio: Finitio })
 
