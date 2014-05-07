@@ -1,7 +1,8 @@
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
-{ArgumentError} = require '../errors'
+{ArgumentError,
+TypeError}      = require '../errors'
 $u              = require '../support/utils'
 
 class SeqType extends CollectionType
@@ -21,6 +22,11 @@ class SeqType extends CollectionType
     helper.iterate value, (elm, index) =>
       array.push @elmType.dress(elm, helper)
     array
+
+  undress: (value, as)->
+    unless as instanceof SeqType
+      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+    super
 
   defaultName: ->
     "[#{@elmType.name}]"

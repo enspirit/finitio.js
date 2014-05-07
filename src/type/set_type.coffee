@@ -1,7 +1,8 @@
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
-{ArgumentError} = require '../errors'
+{ArgumentError,
+TypeError}      = require '../errors'
 $u              = require '../support/utils'
 
 class SetType extends CollectionType
@@ -27,6 +28,11 @@ class SetType extends CollectionType
       else
         array.push dressed
     array
+
+  undress: (value, as)->
+    unless as instanceof CollectionType
+      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+    super
 
   defaultName: ->
     "{#{@elmType.name}}"

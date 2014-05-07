@@ -194,28 +194,33 @@ module.exports = ->
   # Result
 
   @Then /^it should be a success$/, (callback) ->
-    if result instanceof Error
-      throw result
-      callback.fail(Error)
-    else
-      callback()
+    callback.fail(error) if error?
+    callback()
 
   @Then /^the result should be a Tuple representation$/, (callback) ->
+    callback.fail(error) if error?
+
     unless result instanceof Object
       callback.fail "#{result} is not an object"
     callback()
 
   @Then /^its '(.*)' attribute should be a Date representation$/, (attr, callback) ->
+    callback.fail(error) if error?
+
     unless result[attr] instanceof Date
       callback.fail "attribute is not a Date, got #{result[attr]}"
     callback()
 
   @Then /^the result should be a representation for Nil$/, (callback) ->
+    callback.fail(error) if error?
+
     unless result == null
       callback.fail "#{result} is not a representation for Nil"
     callback()
 
   @Then /^the result should be a representation for (.*?)$/, (type,callback) ->
+    callback.fail(error) if error?
+
     unless system.fetch(type).include(result)
       callback.fail "#{JSON.stringify(result)} is not a representation for #{type}"
     callback()

@@ -36,7 +36,7 @@ class RelationType extends Type
     helper.iterate value, (tuple, index) =>
       tuple = @tupleType().dress(tuple, helper)
       ## TODO: what a terrible way of 'hashing'
-      ## shall we invent a real 'Set' class and hash objects?
+      ## shall we invent a real 'Set' class and hash objects?
       key = JSON.stringify(tuple)
       helper.fail("Duplicate tuple") if set[key]?
       set[key] = tuple

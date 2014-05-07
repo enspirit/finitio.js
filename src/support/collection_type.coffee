@@ -1,5 +1,6 @@
 Type            = require '../type'
-{ArgumentError} = require '../errors'
+{ArgumentError,
+TypeError}      = require '../errors'
 
 # mixin
 class CollectionType extends Type
@@ -19,6 +20,15 @@ class CollectionType extends Type
     (this is other) or
     (other instanceof (this.constructor) and @elmType.isSuperTypeOf(other.elmType)) or
     super
+
+  undress: (value, as)->
+    from = @elmType
+    to   = as.elmType
+
+    return value if to.isSuperTypeOf(from)
+
+    $u.map value, (v)->
+      from.undress(v, to)
 
 #
 module.exports = CollectionType
