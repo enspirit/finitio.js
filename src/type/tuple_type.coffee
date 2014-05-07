@@ -60,22 +60,22 @@ class TupleType extends Type
 
   undress: (value, as) ->
     unless as instanceof TupleType
-      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+      throw new TypeError("Tuple cannot undress to `#{as}` (#{as.constructor}).")
 
     # Check heading compatibility
     [s, l, r] = $u.triSplit(@heading.attributes, as.heading.attributes)
 
     # left non empty? do we allow projection undressings?
     unless $u.isEmpty(l)
-      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+      throw new TypeError("Tuple undress does not allow projecting #{l}")
 
     # right non empty? do we allow missing attributes?
     unless $u.isEmpty(r)
-      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+      throw new TypeError("Tuple undress does not support missing #{r}")
 
     # Do we allow disagreements on required?
     unless $u.every(s, (pair)-> pair[0].required == pair[1].required)
-      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+      throw new TypeError("Tuple undress requires optional attributes to agree")
 
     # let undress each attribute in turn
     undressed = {}

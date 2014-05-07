@@ -53,7 +53,7 @@ class Type
     return value if as.include(value)
 
     # otherwise, just fail
-    throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+    throw new TypeError("Unable to undress `#{value}` from #{this} to `#{as}`")
 
   #
   # Returns a String representation of this Type.
