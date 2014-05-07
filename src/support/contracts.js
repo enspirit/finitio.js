@@ -44,7 +44,7 @@ $cs.Date = {
         var dd  = d.getDate().toString();
         return yyyy + "-" + (mm[1]?mm:"0"+mm[0]) + "-" + (dd[1]?dd:"0"+dd[0]);
       } else {
-        throw new ArgumentError("Invalid Date `" + s + "`");
+        throw new ArgumentError("Invalid Date `" + d + "`");
       }
     }
 

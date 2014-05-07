@@ -8,6 +8,7 @@ TestSystem     = null
 result         = null
 system         = null
 type           = null
+error          = null
 
 module.exports = ->
 
@@ -21,6 +22,7 @@ module.exports = ->
       system = TestSystem.parse(source)
       type   = system.main if system.main
     catch e
+      error = e
       callback.fail(e)
 
     callback()
@@ -110,6 +112,7 @@ module.exports = ->
       unless isIt == neg
         callback.fail("Expected #{source} #{(if neg then 'not' else '')} to be a super type of #{target}")
     catch e
+      error = e
       callback.fail(e)
     callback()
 
@@ -117,36 +120,44 @@ module.exports = ->
 
   @Given /^I dress JSON's '(.*?)'$/, (jsonValue, callback) ->
     try
+      error = null
       json = JSON.parse(jsonValue)
       result = type.dress(json)
     catch e
+      error = e
       result = e
 
     callback()
 
   @Given /^I dress JSON's '(.*?)' with (.*?)$/, (jsonValue, typename, callback) ->
     try
+      error = null
       json = JSON.parse(jsonValue)
       result = system.fetch(typename).dress(json)
     catch e
+      error = e
       result = e
 
     callback()
 
   @Given /^I dress the following JSON document:$/, (doc, callback) ->
     try
+      error = null
       json = JSON.parse(doc)
       result = system.dress(json)
     catch e
+      error = e
       result = e
 
     callback()
 
   @Given /^I dress the following JSON document with (.*?):$/, (type, doc, callback) ->
     try
+      error = null
       json = JSON.parse(doc)
       result = system.fetch(type).dress(json)
     catch e
+      error = e
       result = e
 
     callback()
@@ -155,9 +166,11 @@ module.exports = ->
     type = system.fetch(type)
 
     try
+      error = null
       json = JSON.parse(json)
       result = types.dress(json)
     catch e
+      error = e
       result = e
 
     callback()
@@ -166,12 +179,14 @@ module.exports = ->
 
   @Given /^I undress JSON's '(.*?)' from (.*?) to (.*?)$/, (json, from, to, callback) ->
     try
+      error = null
       from  = system.fetch(from)
       to    = system.fetch(to)
       json  = JSON.parse(json)
       value = from.dress(json)
       result = from.undress(value, to)
     catch e
+      error = e
       result = e
 
     callback()
@@ -255,4 +270,11 @@ module.exports = ->
     expected = new Date("2014-03-13T08:30:00");
     unless (result instanceof Date) and (result.toISOString() == expected.toISOString())
       callback.fail "#{result} <> 13st of March 2014 at 08:30"
+    callback()
+
+  @Then /^the result should not have a '(.*?)' attribute$/, (name, callback) ->
+    if error?
+      callback.fail(error)
+    if result[name]?
+      callback.fail "Unexpected attribute `#{name}`, got it."
     callback()

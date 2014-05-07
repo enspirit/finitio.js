@@ -2,7 +2,8 @@ Type            = require '../type'
 Heading         = require '../support/heading'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
-{ArgumentError} = require '../errors'
+{TypeError,
+ ArgumentError} = require '../errors'
 $u              = require '../support/utils'
 
 class TupleType extends Type
@@ -56,6 +57,37 @@ class TupleType extends Type
         uped[attribute.name] = attribute.type.dress(val, helper)
 
     uped
+
+  undress: (value, as) ->
+    unless as instanceof TupleType
+      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+
+    # Check heading compatibility
+    [s, l, r] = $u.triSplit(@heading.attributes, as.heading.attributes)
+
+    # left non empty? do we allow projection undressings?
+    unless $u.isEmpty(l)
+      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+
+    # right non empty? do we allow missing attributes?
+    unless $u.isEmpty(r)
+      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+
+    # Do we allow disagreements on required?
+    unless $u.every(s, (pair)-> pair[0].required == pair[1].required)
+      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+
+    # let undress each attribute in turn
+    undressed = {}
+    @heading.each (attribute) ->
+      attrName  = attribute.name
+      attrType  = attribute.type
+      attrValue = value[attrName]
+      unless attrValue is undefined
+        targType  = as.heading.attributes[attrName].type
+        undressed[attribute.name] = attrType.undress(attrValue, targType)
+
+    undressed
 
   defaultName: ->
     "{#{@heading.toName()}}"
