@@ -3,7 +3,8 @@ CollectionType  = require '../support/collection_type'
 TupleType       = require '../type/tuple_type'
 Heading         = require '../support/heading'
 DressHelper     = require '../support/dress_helper'
-{ArgumentError} = require '../errors'
+{ArgumentError,
+TypeError}      = require '../errors'
 $u              = require '../support/utils'
 
 class RelationType extends Type
@@ -43,6 +44,15 @@ class RelationType extends Type
 
     # Return built tuples
     $u.values(set)
+
+  undress: (value, as) ->
+    unless as instanceof RelationType or as instanceof CollectionType
+      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+
+    from = @tupleType()
+    to   = if as instanceof RelationType then as.tupleType() else as.elmType
+    $u.map value, (val)->
+      from.undress(val, to)
 
   defaultName: ->
     "{{#{@heading.toName()}}}"
