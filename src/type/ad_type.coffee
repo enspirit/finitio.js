@@ -68,10 +68,16 @@ class AdType extends Type
 
     infotype  = null
     undresser = null
-    $u.find @contracts, (contract, name) ->
-      [infotype, dresser, undresser] = contract
-      infotype.isSuperTypeOf(as)
 
+    # locate what contract to use
+    if $u.size(@contracts)==1
+      [infotype, dresser, undresser] = $u.values(@contracts)[0]
+    else
+      $u.find @contracts, (contract, name) ->
+        [infotype, dresser, undresser] = contract
+        infotype.isSuperTypeOf(as)
+
+    # undress if found
     if undresser?
       infotype.undress(undresser(value), as)
     else
