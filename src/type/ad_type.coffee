@@ -63,5 +63,19 @@ class AdType extends Type
     # No one succeeded, just fail
     helper.failed(this, value)
 
+  undress: (value, as) ->
+    return value unless @jsType
+
+    infotype  = null
+    undresser = null
+    $u.find @contracts, (contract, name) ->
+      [infotype, dresser, undresser] = contract
+      infotype.isSuperTypeOf(as)
+
+    if undresser?
+      infotype.undress(undresser(value), as)
+    else
+      super
+
 #
 module.exports = AdType
