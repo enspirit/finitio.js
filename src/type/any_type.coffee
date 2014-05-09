@@ -2,6 +2,7 @@ Type                  = require '../type'
 
 #
 class AnyType extends Type
+  generator: 'any'
 
   constructor: (@name) ->
     super(@name)

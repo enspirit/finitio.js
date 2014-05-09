@@ -6,6 +6,7 @@ TypeError}      = require '../errors'
 $u              = require '../support/utils'
 
 class StructType extends Type
+  generator: 'struct'
 
   constructor: (@componentTypes, @name) ->
     super(@name)

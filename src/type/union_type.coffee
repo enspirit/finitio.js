@@ -5,6 +5,7 @@ DressHelper     = require '../support/dress_helper'
 $u              = require '../support/utils'
 
 class UnionType extends Type
+  generator: 'union'
 
   constructor: (@candidates, @name) ->
     @name ?= null

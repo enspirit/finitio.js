@@ -5,6 +5,7 @@ Type         = require '../type'
 $u           = require '../support/utils'
 
 class AdType extends Type
+  generator: 'adt'
 
   constructor: (@jsType, @contracts, @name) ->
     if @jsType and not(@jsType instanceof Function)
@@ -24,6 +25,7 @@ class AdType extends Type
       throw new ArgumentError("Invalid contracts `#{invalid}`")
 
     super(@name)
+
 
   contractNames: ->
     $u.keys(@contracts)

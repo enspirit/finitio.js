@@ -6,6 +6,7 @@ TypeError}      = require '../errors'
 $u              = require '../support/utils'
 
 class SetType extends CollectionType
+  generator: 'set'
 
   include: (value) ->
     return false unless value instanceof Array

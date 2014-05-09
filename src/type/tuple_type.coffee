@@ -7,6 +7,7 @@ DressHelper     = require '../support/dress_helper'
 $u              = require '../support/utils'
 
 class TupleType extends Type
+  generator: 'tuple'
 
   constructor: (@heading, @name) ->
     unless @heading instanceof Heading

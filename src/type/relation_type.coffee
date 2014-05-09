@@ -8,6 +8,7 @@ TypeError}      = require '../errors'
 $u              = require '../support/utils'
 
 class RelationType extends Type
+  generator: 'relation'
 
   constructor: (@heading, @name) ->
     super(@name)

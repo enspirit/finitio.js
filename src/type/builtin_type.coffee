@@ -4,6 +4,7 @@ Type                  = require '../type'
 
 #
 class BuiltinType extends Type
+  generator: 'builtin'
 
   constructor: (@jsType, @name) ->
     super(@name)

@@ -6,6 +6,7 @@ DressHelper     = require '../support/dress_helper'
 $u              = require '../support/utils'
 
 class SubType extends Type
+  generator: 'sub'
 
   constructor: (@superType, @constraints, @name) ->
     @name ?= null

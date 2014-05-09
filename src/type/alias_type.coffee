@@ -9,6 +9,7 @@ class AliasType extends Type
     unless @name
       throw new ArgumentError("Name cannot be null on AliasType")
     super(@name)
+    @generator = @type.generator
 
   defaultName: ->
     @name

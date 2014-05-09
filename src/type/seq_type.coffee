@@ -6,6 +6,7 @@ TypeError}      = require '../errors'
 $u              = require '../support/utils'
 
 class SeqType extends CollectionType
+  generator: 'seq'
 
   include: (value) ->
     value instanceof Array and $u.every(value, (v) => @elmType.include(v))
