@@ -77,6 +77,11 @@ module.exports = (grunt) ->
           transform:  ['coffeeify']
           extensions: ['.coffee']
 
+    uglify:
+      my_target:
+        files:
+          'dist/finitio.min.js': ['dist/finitio.js']
+
     coffeelint:
       lib:   ['lib/**/*.coffee']
       tests: ['specs/**/*.coffee']
@@ -120,7 +125,7 @@ module.exports = (grunt) ->
 
   ##
   grunt.registerTask 'default',          ['build_parser', 'test:unit']
-  grunt.registerTask 'compile',          ['clean', 'build_parser', 'coffee', 'copy', 'browserify']
+  grunt.registerTask 'compile',          ['clean', 'build_parser', 'coffee', 'copy', 'browserify', 'uglify']
 
   grunt.registerTask 'test',             ['test:unit', 'test:acceptance']
   grunt.registerTask 'test:unit',        ['mochaTest']
@@ -139,6 +144,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-cucumber'
   grunt.loadNpmTasks 'grunt-mocha-test'
   grunt.loadNpmTasks 'grunt-browserify'
+  grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-contrib-connect'
   grunt.loadNpmTasks 'grunt-contrib-watch'
