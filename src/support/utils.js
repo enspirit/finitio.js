@@ -236,7 +236,7 @@ $u.each = function(obj, callback){
 
   // no date, regexp, undefined or null please
   if (!($u.isEnumerable(obj))) {
-    throw new ArgumentError("Enumerable (Array, Object, String) expected, got", obj);
+    throw new Error("Enumerable (Array, Object, String) expected, got " + obj);
   }
 
   // Strings
