@@ -21,7 +21,8 @@ describe "Parser#relation_type", ->
 
   describe 'when using optional attributes', ->
 
-    subject   = Parser.parse("{{foo: .String, bar :? .Number}}", startRule: "type")
+    src       = "{{foo: .String, bar :? .Number}}"
+    subject   = Parser.parse(src, startRule: "type")
     foo       = new Attribute('foo', new BuiltinType(String))
     maybeBar  = new Attribute('bar', new BuiltinType(Number), false)
     heading   = new Heading([foo, maybeBar])

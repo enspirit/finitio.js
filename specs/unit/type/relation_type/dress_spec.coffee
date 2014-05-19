@@ -80,8 +80,9 @@ describe "RelationType#dress", ->
       subject = lambda(["foo"])
 
       it 'should raise a TypeError', ->
+        exp = "Invalid value `foo` for {r: Byte, g: Byte, b :? Byte}"
         subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `foo` for {r: Byte, g: Byte, b :? Byte}")
+        subject.message.should.equal(exp)
 
       it 'should have no cause', ->
         should(subject.cause).be.null

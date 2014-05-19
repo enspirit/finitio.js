@@ -5,7 +5,8 @@ should     = require 'should'
 floatType} = require '../../../spec_helpers'
 
 describe "StructType#defaultName", ->
-    subject = new StructType([intType, floatType]).defaultName()
 
-    it 'should be correct', ->
-      subject.should.equal("<intType, floatType>")
+  subject = new StructType([intType, floatType]).defaultName()
+
+  it 'should be correct', ->
+    subject.should.equal("<intType, floatType>")

@@ -12,12 +12,14 @@ class CollectionType extends Type
 
   equals: (other) ->
     (this is other) or
-    (other instanceof (this.constructor) and @elmType.equals(other.elmType)) or
+    (other instanceof (this.constructor) and
+      @elmType.equals(other.elmType)) or
     super
 
   isSuperTypeOf: (other)->
     (this is other) or
-    (other instanceof (this.constructor) and @elmType.isSuperTypeOf(other.elmType)) or
+    (other instanceof (this.constructor) and
+      @elmType.isSuperTypeOf(other.elmType)) or
     super
 
   undress: (value, as)->

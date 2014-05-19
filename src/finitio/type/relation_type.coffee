@@ -15,9 +15,8 @@ class RelationType extends Type
       $u.argumentError("Heading expected, got:", @heading)
 
   include: (value) ->
-    value instanceof Array &&
-      $u.every value, (tuple) =>
-        @tupleType().include(tuple)
+    value instanceof Array and
+      $u.every value, (tuple)=> @tupleType().include(tuple)
 
   tupleType: ->
     new TupleType(@heading)

@@ -7,9 +7,12 @@ should            = require 'should'
 
 describe "TupleType#equality", ->
 
-  h1 = new Heading([new Attribute('r', intType, false), new Attribute('b', intType)])
-  h2 = new Heading([new Attribute('b', intType), new Attribute('r', intType, false)])
-  h3 = new Heading([new Attribute('b', intType)])
+  maybe_r = new Attribute('r', intType, false)
+  b = new Attribute('b', intType)
+
+  h1 = new Heading([maybe_r, b])
+  h2 = new Heading([b, maybe_r])
+  h3 = new Heading([b])
 
   type1 = new TupleType(h1)
   type2 = new TupleType(h2)

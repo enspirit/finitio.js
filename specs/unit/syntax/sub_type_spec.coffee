@@ -41,7 +41,8 @@ describe "Parser#sub_type", ->
         e
 
   describe 'with multiple, named constraints', ->
-    subject = Parser.parse(".Number( i | positive: i >= 0, small: i <= 255 )", startRule: "type")
+    src     = ".Number( i | positive: i >= 0, small: i <= 255 )"
+    subject = Parser.parse(src, startRule: "type")
 
     it 'should return a SubType', ->
       subject.should.be.an.instanceof(SubType)
@@ -62,7 +63,8 @@ describe "Parser#sub_type", ->
         e
 
   describe 'with a complex constraint expression', ->
-    subject = Parser.parse(".Number( i | noDot: i.toString().indexOf('.') == -1 )", startRule: "type")
+    src     = ".Number( i | noDot: i.toString().indexOf('.') == -1 )"
+    subject = Parser.parse(src, startRule: "type")
 
     it 'should return a SubType', ->
       subject.should.be.an.instanceof(SubType)

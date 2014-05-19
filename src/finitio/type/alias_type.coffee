@@ -1,6 +1,6 @@
-Type            = require '../type'
-DressHelper     = require '../support/dress_helper'
-$u              = require '../support/utils'
+Type        = require '../type'
+DressHelper = require '../support/dress_helper'
+$u          = require '../support/utils'
 
 class AliasType extends Type
 

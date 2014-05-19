@@ -64,7 +64,9 @@ class Heading
 
   equals: (other) ->
     (this is other) or
-    (other instanceof Heading and @attributesEquals(other) and @optionsEquals(other))
+    (other instanceof Heading and
+      @attributesEquals(other) and
+      @optionsEquals(other))
 
   attributesEquals: (other) ->
     $u.size(@attributes) == $u.size(other.attributes) and

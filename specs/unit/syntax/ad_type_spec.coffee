@@ -57,7 +57,7 @@ describe "Parser#ad_type", ->
     abstraction.as = (s)->
       new abstraction("Seen #{s}")
     abstraction.prototype.toAs = (a)->
-      @internal.slice(5);
+      @internal.slice(5)
 
     source = """
       .JsAbstraction <as> .String

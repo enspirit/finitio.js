@@ -13,7 +13,7 @@ class Type
     @name ?= @defaultName()
 
   setName: (name)->
-    throw "Name already set" unless @anonymous
+    throw new Error("Name already set") unless @anonymous
     @name = name
     @anonymous = false
 

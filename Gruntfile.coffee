@@ -21,7 +21,7 @@ module.exports = (grunt) ->
   ###################################################################### Tasks
 
   grunt.registerTask 'default', [
-    'parser:build',
+    'peg:build',
     'test:unit'
   ]
 

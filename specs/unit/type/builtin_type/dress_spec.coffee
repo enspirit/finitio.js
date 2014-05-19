@@ -10,8 +10,12 @@ describe "BuiltinType#dress", ->
     type.dress(arg)
 
   it 'is robust enough', ->
-    should(-> type.dress(null)).throw(new TypeError("Invalid value `null` for num"))
-    should(-> type.dress()).throw(new TypeError("Invalid value `undefined` for num"))
+    exp = new TypeError("Invalid value `null` for num")
+    should(-> type.dress(null)).throw(exp)
+
+  it 'is robust enough II', ->
+    exp = new TypeError("Invalid value `undefined` for num")
+    should(-> type.dress()).throw(exp)
 
   it 'with an integer', ->
     subject(12).should.equal(12)

@@ -4,7 +4,7 @@ Feature: SubType
 
     Given the System is
       """
-      Posint = Integer( i | i >= 0 )
+      Posint = Integer( i | i>= 0 )
       """
 
   Scenario: Dressing a valid integer

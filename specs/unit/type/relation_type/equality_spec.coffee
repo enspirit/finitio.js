@@ -6,10 +6,14 @@ should             = require 'should'
 
 describe "RelationType#equality", ->
 
-  h1 = new Heading([new Attribute('r', intType), new Attribute('b', intType, false)])
-  h2 = new Heading([new Attribute('b', intType, false), new Attribute('r', intType)])
-  h3 = new Heading([new Attribute('b', intType)])
-  h4 = new Heading([new Attribute('b', intType), new Attribute('r', intType)])
+  r       = new Attribute('r', intType)
+  b       = new Attribute('b', intType)
+  maybe_b = new Attribute('b', intType, false)
+
+  h1 = new Heading([r, maybe_b])
+  h2 = new Heading([maybe_b, r])
+  h3 = new Heading([b])
+  h4 = new Heading([b, r])
 
   type1 = new RelationType(h1)
   type2 = new RelationType(h2)

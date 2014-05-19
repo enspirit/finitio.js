@@ -57,9 +57,9 @@ class UnionType extends Type
     (this is other) or
     ($u.any @candidates, (c) -> c.isSuperTypeOf(other)) or
     (other instanceof UnionType and
-      $u.every other.candidates, (d) =>
-        $u.any @candidates, (c) ->
-          c.isSuperTypeOf(d)) or
+    $u.every other.candidates, (d)=>
+      $u.any @candidates, (c) ->
+        c.isSuperTypeOf(d)) or
     super
 
   equals: (other) ->

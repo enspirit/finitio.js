@@ -24,14 +24,11 @@ class StructType extends Type
     $u.size(@componentTypes)
 
   include: (value) ->
-    $u.isArray(value) &&
-      $u.size(value) == $u.size(@componentTypes) &&
-      $u.every(
-        $u.zip(value, @componentTypes),
-        (valueAndKey) ->
-          [value, type] = valueAndKey
-          type.include(value)
-      )
+    $u.isArray(value) and
+    $u.size(value) == $u.size(@componentTypes) and
+    $u.every $u.zip(value, @componentTypes), (valueAndKey)->
+      [value, type] = valueAndKey
+      type.include(value)
 
   dress: (value, helper) ->
     helper ?= new DressHelper

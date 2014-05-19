@@ -19,7 +19,7 @@ class Attribute
     @required ?= true
 
     unless typeof @required == "boolean"
-      $u.argumentError("Boolean expected for parameter required, got:", @mandatory)
+      $u.argumentError("Boolean expected for required, got:", @mandatory)
 
   fetchOn: (arg, callback) ->
     unless typeof arg == "object"

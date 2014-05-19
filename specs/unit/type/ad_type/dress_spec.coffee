@@ -43,7 +43,7 @@ describe "AdType#dress", ->
 
     describe 'when the upper raises an error', ->
       type = new AdType(Date, [
-        Contract.explicit('foo', intType, ((t) -> throw new Error), ((d)-> null))
+        Contract.explicit('foo', intType, ((t) -> throw new Error), f)
       ])
 
       it 'should hide the error', ->

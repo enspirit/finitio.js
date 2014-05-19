@@ -1,4 +1,4 @@
-TypeError = require('../errors').TypeError;
+TypeError = require('../errors').TypeError
 $u = require './utils'
 
 class DressHelper

@@ -6,12 +6,12 @@ should     = require 'should'
 
 describe "TupleType#defaultName", ->
 
-    heading = new Heading([
-      new Attribute('a', byteType, true),
-      new Attribute('b', byteType, false)
-    ])
+  heading = new Heading([
+    new Attribute('a', byteType, true),
+    new Attribute('b', byteType, false)
+  ])
 
-    subject = new TupleType(heading).defaultName()
+  subject = new TupleType(heading).defaultName()
 
-    it 'should be the default name', ->
-      subject.should.equal "{a: Byte, b :? Byte}"
+  it 'should be the default name', ->
+    subject.should.equal "{a: Byte, b :? Byte}"

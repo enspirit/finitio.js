@@ -35,7 +35,7 @@ class Contract
     dresser = clazz[name]
 
     # undresser: type.prototype.toContractName(...)
-    undName = 'to' + $u.capitalize(name);
+    undName = 'to' + $u.capitalize(name)
     unless $u.isFunction(clazz.prototype[undName])
       $u.argumentError("Unable to find undresser #{undName} on", clazz)
     undresser = (value)->

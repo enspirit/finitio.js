@@ -10,18 +10,18 @@ describe "Utils.collection#every", ->
 
   it 'behaves like #each', ->
 
-      test = (enumerable, expected) ->
-        result = {}
-        $u.every enumerable, (v, k) ->
-          result[k] = v
-          true
+    test = (enumerable, expected) ->
+      result = {}
+      $u.every enumerable, (v, k) ->
+        result[k] = v
+        true
 
-        should(result).eql(expected)
+      should(result).eql(expected)
 
-      #
-      test ['a', 'b', 'c'], {0: 'a', 1: 'b', 2: 'c'}
-      test {foo: 'bar'}, {foo: 'bar'}
-      test "foo", {0: 'f', 1: 'o', 2: 'o'}
+    #
+    test ['a', 'b', 'c'], {0: 'a', 1: 'b', 2: 'c'}
+    test {foo: 'bar'}, {foo: 'bar'}
+    test "foo", {0: 'f', 1: 'o', 2: 'o'}
 
   describe "When used with a predicate", ->
 

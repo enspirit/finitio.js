@@ -65,9 +65,9 @@ describe 'TypeFactory#sub_type', ->
 
   describe 'when used with a super type and an hash of constraints', ->
     subject = factory.sub_type numType, {
-        first: (i) -> i > 0,
-        second: (i) => i < 100
-      }
+      first:  (i) -> i > 0
+      second: (i) -> i < 100
+    }
 
     it 'should be a subtype', ->
       subject.should.be.an.instanceof(SubType)
