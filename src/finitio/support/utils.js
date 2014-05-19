@@ -31,6 +31,13 @@ module.exports = (function(){
   };
 
   /**
+    * Returns wheter or not the parameter is a string
+    */
+  $u.isString = function(arg){
+    return Object.prototype.toString.call(arg) == "[object String]";
+  };
+
+  /**
     * Returns wheter or not the parameter is a function
     */
   $u.isFunction = function(arg){
