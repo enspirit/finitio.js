@@ -292,7 +292,6 @@ module.exports = ->
     callback()
 
   this.Given /^the source is$/, (src, callback)->
-    console.log("Source: |#{src}|")
     @parsing_source = src
     callback()
 

@@ -172,7 +172,6 @@ module.exports = (grunt) ->
       src: './features'
 
       options:
-        format: 'pretty'
         steps: 'features/step_definitions'
 
     # Serve test files for CI testing with travis/soucelabs
