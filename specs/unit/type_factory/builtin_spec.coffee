@@ -1,6 +1,6 @@
-TypeFactory = require '../../../../src/finitio/support/factory'
+TypeFactory = require '../../../src/finitio/support/factory'
 should      = require 'should'
-{numType}   = require '../../../spec_helpers'
+{numType}   = require '../../spec_helpers'
 
 describe 'TypeFactory#builtin', ->
 

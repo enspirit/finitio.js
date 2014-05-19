@@ -1,4 +1,4 @@
-TypeFactory = require '../../../../src/finitio/support/factory'
+TypeFactory = require '../../../src/finitio/support/factory'
 should      = require 'should'
 
 describe 'TypeFactory#jsType', ->

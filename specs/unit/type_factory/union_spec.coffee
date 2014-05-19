@@ -1,7 +1,7 @@
-TypeFactory = require '../../../../src/finitio/support/factory'
-{TypeError} = require '../../../../src/finitio/errors'
-BuiltinType = require '../../../../src/finitio/type/builtin_type'
-UnionType   = require '../../../../src/finitio/type/union_type'
+TypeFactory = require '../../../src/finitio/support/factory'
+{TypeError} = require '../../../src/finitio/errors'
+BuiltinType = require '../../../src/finitio/type/builtin_type'
+UnionType   = require '../../../src/finitio/type/union_type'
 should      = require 'should'
 
 describe 'TypeFactory#union', ->

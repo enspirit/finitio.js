@@ -1,5 +1,5 @@
-TupleType   = require '../../../../src/finitio/type/tuple_type'
-TypeFactory = require '../../../../src/finitio/support/factory'
+TupleType   = require '../../../src/finitio/type/tuple_type'
+TypeFactory = require '../../../src/finitio/support/factory'
 should      = require 'should'
 
 describe "TypeFactory#tuple", ->

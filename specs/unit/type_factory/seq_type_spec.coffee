@@ -1,7 +1,7 @@
-TypeFactory = require '../../../../src/finitio/support/factory'
-SeqType     = require '../../../../src/finitio/type/seq_type'
+TypeFactory = require '../../../src/finitio/support/factory'
+SeqType     = require '../../../src/finitio/type/seq_type'
 should      = require 'should'
-{numType}   = require '../../../spec_helpers'
+{numType}   = require '../../spec_helpers'
 
 describe "TypeFactory#seq", ->
 
