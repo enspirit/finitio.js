@@ -22,18 +22,17 @@ class AliasType extends Type
   undress: (value, as)->
     @type.undress(value, as)
 
-  isSuperTypeOf: (other)->
-    (this is other) or
-    (other instanceof AliasType and @type.isSuperTypeOf(other.type)) or
-    super
+  isSuperTypeOf: (child)->
+    @type.isSuperTypeOf(child)
 
-  _isSubTypeOf: (other)->
-    other.isSuperTypeOf(@type)
+  _isSubTypeOf: (sup)->
+    @type._isSubTypeOf(sup)
 
-  equals: (other)->
-    (this is other) or
-    (other instanceof AliasType and @type.equals(other.type)) or
-    @type.equals(other)
+  isFake: ()->
+    true
+
+  trueOne: ()->
+    @type
 
 #
 module.exports = AliasType

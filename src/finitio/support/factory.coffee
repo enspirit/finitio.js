@@ -9,6 +9,7 @@ $u             = require './utils'
 
 ## Types
 AliasType      = require '../type/alias_type'
+ProxyType      = require '../type/proxy_type'
 AnyType        = require '../type/any_type'
 AdType         = require '../type/ad_type'
 SeqType        = require '../type/seq_type'
@@ -32,6 +33,8 @@ class TypeFactory
     'heading',
     #
     'alias',
+    'proxy',
+    #
     'any',
     'builtin',
     'adt',
@@ -192,6 +195,12 @@ class TypeFactory
       type
     else
       new AliasType(type, name)
+
+  proxy: (targetName, name) ->
+    typeName = @name(name)
+    name = @name(name)
+
+    new ProxyType(targetName, null, name)
 
   any: (name) ->
     name     ?= null

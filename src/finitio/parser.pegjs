@@ -207,7 +207,7 @@ builtin_type =
 
 type_ref =
    n:type_name {
-    return compiler.fetch(n);
+    return compiler.typeRef(n);
   }
 
 // EXPRESSIONS

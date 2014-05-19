@@ -82,11 +82,27 @@ class Type
     false
 
   #
+  # Returns true for fake types, false otherwise.
+  #
+  # Fake types are Alias and Proxy.
+  #
+  isFake: ()->
+    false
+
+  #
+  # Returns the true type to be used in comparisons and hierachy queries
+  #
+  trueOne: ()->
+    this
+
+  #
   # Returns true if `other` is structurally equivalent to this type, false
   # otherwise.
   #
   equals: (other)->
     (this is other) or
-    (other.constructor.name == 'AliasType' and @equals(other.type))
+    (@isFake() and @trueOne().equals(other)) or
+    (other.isFake and other.isFake() and @equals(other.trueOne())) or
+    false
 
 module.exports = Type
