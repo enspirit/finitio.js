@@ -221,6 +221,33 @@ paren_expression =
 any_expression =
   $((![(,)] .)+)
 
+// LITERALS
+
+literal =
+    string_literal
+  / real_literal
+  / integer_literal
+  / boolean_literal
+
+string_literal =
+  s:$(["] ([\\]["] / !["] .)* ["]) {
+    return s.substring(1, s.length-1).replace(/\\"/, '"');
+  }
+
+integer_literal =
+  s:$([1-9][0-9]* / [0] / [-] integer_literal) {
+    return parseInt(s);
+  }
+
+real_literal =
+  s:$(integer_literal? '.' [0-9]+) {
+    return parseFloat(s);
+  }
+
+boolean_literal =
+    "true"  { return true;  }
+  / "false" { return false; }
+
 // LEXER (names)
 
 var_name =

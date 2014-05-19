@@ -108,7 +108,7 @@ module.exports = (grunt) ->
         dest: "src/finitio/parser.js"
         options:
           cache: true
-          allowedStartRules: [ 'system', 'type', 'attribute', 'heading' ]
+          allowedStartRules: [ 'system', 'type', 'attribute', 'heading', 'literal' ]
 
     ############################################################## Compilation
 
@@ -164,7 +164,7 @@ module.exports = (grunt) ->
       test:
         src: ['specs/**/*.coffee']
         options:
-          reporter: 'spec'
+          reporter: 'progress'
           require: 'coffee-script/register'
 
     # Acceptance testing with cucumber

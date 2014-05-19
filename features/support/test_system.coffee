@@ -12,7 +12,7 @@ source = """
 
   # Numerics
   Numeric = .Number
-  Real    = .Number( n | !(n % 1 === 0) )
+  Real    = .Number( n | (n===0.0) || !(n % 1 === 0) )
   Integer = .Number( n | n % 1 === 0    )
 
   # String

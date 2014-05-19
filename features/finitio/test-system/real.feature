@@ -9,6 +9,12 @@ Feature: TestSystem.Real
     Then the result should be a representation for Real
     And  the result should be the real 12.5
 
+  Scenario: Against zero
+
+    Given I dress JSON's '0.00'
+    Then the result should be a representation for Real
+    And  the result should be the real 0.0
+
   Scenario: Against an integer
 
     Given I dress JSON's '12'

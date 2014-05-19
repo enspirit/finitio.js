@@ -1,4 +1,5 @@
 Finitio   = require '../../src/finitio'
+Parser    = require '../../src/finitio/parser'
 TypeError = Finitio.TypeError
 System    = Finitio.System
 should    = require 'should'
@@ -282,4 +283,22 @@ module.exports = ->
       callback.fail(error)
     if result[name]?
       callback.fail "Unexpected attribute `#{name}`, got it."
+    callback()
+
+  # Grammar rules
+
+  this.Given /^the grammar rule is (.*?)$/, (rulename, callback)->
+    @grammarRule = rulename
+    callback()
+
+  this.Given /^the source is$/, (src, callback)->
+    console.log("Source: |#{src}|")
+    @parsing_source = src
+    callback()
+
+  this.Then /^it evaluates to a (.*)$/, (type, callback)->
+    t = system.fetch(type)
+    r = Parser.parse(@parsing_source, { startRule: @grammarRule, compiler: this })
+    unless t.include(r)
+      callback.fail("Expected #{@parsing_source} to evaluate to #{type}")
     callback()
