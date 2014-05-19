@@ -17,7 +17,7 @@ tmp
 npm-debug.log
 node_modules
 
-src/syntax/parser.js
+src/finitio/parser.js
 
 build/*
 dist/*

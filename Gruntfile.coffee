@@ -39,6 +39,7 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'test', [
+    'peg:build',
     'test:unit',
     'test:acceptance'
   ]
@@ -70,17 +71,10 @@ module.exports = (grunt) ->
       parser:
         files: [ 'src/**/*.pegjs' ]
         tasks: [ 'peg:build' ]
-      # Build the .coffee source when they change
-      coffeesrc:
-        files: [ 'src/**/*.coffee', 'specs/**/*.coffee' ]
-        tasks: [ 'coffee:build' ]
-      # Build the .js source when they change
-      jssrc:
-        files: [ 'src/**/*.js', 'specs/**/*.js' ]
-        tasks: [ 'copy:build' ]
-      # Run unit tests as soon as something change in the build
+      # Run the unit tests when .js sources change
       testing:
-        files: [ 'build/**/*.js' ]
+        files: [ 'src/**/*.js',   'src/**/*.coffee',
+                 'specs/**/*.js', 'specs/**/*.coffee' ]
         tasks: [ 'test:unit' ]
 
     #################################################################### Build
@@ -110,8 +104,8 @@ module.exports = (grunt) ->
     # Build the parser from .pegjs in src/ to .js in build/src
     peg:
       build:
-        src: "src/finitio/parser.pegjs"
-        dest: "build/src/finitio/parser.js"
+        src:  "src/finitio/parser.pegjs"
+        dest: "src/finitio/parser.js"
         options:
           cache: true
           allowedStartRules: [ 'system', 'type', 'attribute', 'heading' ]
@@ -168,9 +162,10 @@ module.exports = (grunt) ->
     # Unit testing using mocha
     mochaTest:
       test:
-        src: ['build/specs/**/*.js']
+        src: ['specs/**/*.coffee']
         options:
           reporter: 'spec'
+          require: 'coffee-script/register'
 
     # Acceptance testing with cucumber
     cucumberjs:

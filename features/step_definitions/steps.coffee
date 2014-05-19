@@ -1,4 +1,4 @@
-Finitio   = require '../../build/src/finitio'
+Finitio   = require '../../src/finitio'
 TypeError = Finitio.TypeError
 System    = Finitio.System
 should    = require 'should'

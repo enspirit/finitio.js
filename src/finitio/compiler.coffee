@@ -1,6 +1,6 @@
 TypeFactory = require './support/factory'
-Parser = require './parser'
-$u = require './support/utils'
+Parser      = require './parser'
+$u          = require './support/utils'
 
 class Compiler
 
