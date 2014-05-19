@@ -24,7 +24,6 @@ class AdType extends Type
 
     super(@name)
 
-
   contractNames: ->
     $u.keys(@contracts)
 
