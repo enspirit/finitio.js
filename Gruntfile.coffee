@@ -4,48 +4,157 @@ shell = require 'shelljs'
 
 module.exports = (grunt) ->
 
+  grunt.loadNpmTasks 'grunt-contrib-clean'
+  grunt.loadNpmTasks 'grunt-contrib-copy'
+  grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-cucumber'
+  grunt.loadNpmTasks 'grunt-peg'
+  grunt.loadNpmTasks 'grunt-mocha-test'
+  grunt.loadNpmTasks 'grunt-browserify'
+  grunt.loadNpmTasks 'grunt-contrib-uglify'
+  grunt.loadNpmTasks 'grunt-coffeelint'
+  grunt.loadNpmTasks 'grunt-contrib-connect'
+  grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-saucelabs'
+
+  ###################################################################### Tasks
+
+  grunt.registerTask 'default', [
+    'parser:build',
+    'test:unit'
+  ]
+
+  grunt.registerTask 'build', [
+    'peg:build',
+    'copy:build',
+    'coffee:build'
+  ]
+
+  grunt.registerTask 'compile', [
+    'clean',
+    'build',
+    'browserify',
+    'uglify'
+  ]
+
+  grunt.registerTask 'test', [
+    'test:unit',
+    'test:acceptance'
+  ]
+  grunt.registerTask 'test:unit', [
+    'mochaTest'
+  ]
+  grunt.registerTask 'test:acceptance', [
+    'cucumberjs'
+  ]
+
+  grunt.registerTask 'lint', [
+    'coffeelint'
+  ]
+
+  grunt.registerTask 'travis', [
+    'compile',
+    'test',
+    'connect',
+    'saucelabs-mocha'
+  ]
+
   ## Grunt's main config
   grunt.initConfig
 
-    #pkg: grunt.file.readJSON 'package.json'
+    #################################################################### Watch
 
-    #
-    clean: ['dist', 'lib']
+    watch:
+      # Rebuild the parser ASAP
+      parser:
+        files: [ 'src/**/*.pegjs' ]
+        tasks: [ 'peg:build' ]
+      # Build the .coffee source when they change
+      coffeesrc:
+        files: [ 'src/**/*.coffee', 'specs/**/*.coffee' ]
+        tasks: [ 'coffee:build', 'coffeelint' ]
+      # Build the .js source when they change
+      jssrc:
+        files: [ 'src/**/*.js', 'specs/**/*.js' ]
+        tasks: [ 'copy:build' ]
+      # Run unit tests as soon as something change in the build
+      testing:
+        files: [ 'build/**/*.js' ]
+        tasks: [ 'test:unit' ]
 
-    # Compile the .coffee sources to .js
-    #    from src/ to lib/
+    #################################################################### Build
+
+    # Cleans compilation results
+    clean: [ 'build', 'dist' ]
+
+    # Build .coffee sources to .js, from src/ to build/
     coffee:
-      all:
+      build:
         expand: true
         bare: true
-        cwd: "src/"
-        src: ['**/*.coffee']
-        dest: "lib/"
+        src: [ 'src/**/*.coffee', 'specs/**/*.coffee' ]
+        dest: "build/"
         ext: ".js"
 
-    # Compile the .js sources to .js
-    #    from src/ to lib/
+    # Build .js sources to .js, from src/ to build/
     copy:
-      main:
+      build:
         files: [
           expand: true
-          cwd: "src/"
-          src: ['**/*.js']
-          dest: 'lib/'
+          src: [ 'src/**/*.js', 'specs/**/*.js' ]
+          dest: 'build/'
           filter: 'isFile'
         ]
 
-    connect:
-      server:
+    # Build the parser from .pegjs in src/ to .js in build/src
+    peg:
+      build:
+        src: "src/syntax/parser.pegjs"
+        dest: "build/src/syntax/parser.js"
         options:
-          base: "."
-          port: 9999
+          cache: true
+          allowedStartRules: [ 'system', 'type', 'attribute', 'heading' ]
 
-    watch:
-      lib:
-        files: ['index.js', 'src/**/*.js', 'src/**/*.coffee'],
-        tasks: 'compile'
+    ############################################################## Compilation
 
+    # Browserify sources for main dist and CI tests
+    browserify:
+      main:
+        files:
+          'dist/finitio.js': ['index.js']
+        options:
+          standalone: 'Finitio'
+          extensions: ['.js']
+          ignore:     ['./node_modules/**/*.*', './package.json']
+
+      tests:
+        files:
+          'dist/finitio.tests.js': ['build/specs/**/*.js']
+        options:
+          extensions: ['.js']
+
+    # Minify distributed library
+    uglify:
+      my_target:
+        files:
+          'dist/finitio.min.js': [ 'dist/finitio.js' ]
+
+    ######################################################## Metrics & Quality
+
+    coffeelint:
+      src:   ['src/**/*.coffee']
+      tests: ['specs/**/*.coffee']
+
+    ##################################################################### Test
+
+    # Unit testing using mocha
+    mochaTest:
+      test:
+        src: ['build/specs/**/*.js']
+        options:
+          reporter: 'spec'
+
+    # Acceptance testing with cucumber
     cucumberjs:
       src: './features'
 
@@ -53,39 +162,14 @@ module.exports = (grunt) ->
         format: 'pretty'
         steps: 'features/step_definitions'
 
-    mochaTest:
-      test:
-        src: ['specs/**/*.coffee']
+    # Serve test files for CI testing with travis/soucelabs
+    connect:
+      server:
         options:
-          reporter: 'spec'
-          require: 'coffee-script/register'
+          base: "."
+          port: 9999
 
-    browserify:
-      main:
-        files:
-          'dist/finitio.js': ['index.js']
-        options:
-          standalone: 'Finitio'
-          transform:  ['coffeeify']
-          extensions: ['.coffee', '.js']
-          ignore:     ['./node_modules/**/*.*', './package.json']
-
-      tests:
-        files:
-          'dist/test_bundle.js': ['specs/**/*.coffee']
-        options:
-          transform:  ['coffeeify']
-          extensions: ['.coffee']
-
-    uglify:
-      my_target:
-        files:
-          'dist/finitio.min.js': ['dist/finitio.js']
-
-    coffeelint:
-      lib:   ['lib/**/*.coffee']
-      tests: ['specs/**/*.coffee']
-
+    # Continuous-integration testing through soucelabs
     "saucelabs-mocha":
       all:
         options:
@@ -122,30 +206,3 @@ module.exports = (grunt) ->
           ]
           testname: "Finitio.js tests"
           tags: ["master"]
-
-  ##
-  grunt.registerTask 'default',          ['build_parser', 'test:unit']
-  grunt.registerTask 'compile',          ['clean', 'build_parser', 'coffee', 'copy', 'browserify', 'uglify']
-
-  grunt.registerTask 'test',             ['test:unit', 'test:acceptance']
-  grunt.registerTask 'test:unit',        ['mochaTest']
-  grunt.registerTask 'test:acceptance',  ['cucumberjs']
-
-  grunt.registerTask 'lint',             ['coffeelint']
-  grunt.registerTask 'travis',           ['compile', 'test', 'connect', 'saucelabs-mocha']
-
-  grunt.registerTask 'build_parser', ->
-    shell.exec 'pegjs --allowed-start-rules system,type,attribute,heading src/syntax/parser.pegjs src/syntax/parser.js'
-
-  ##
-  grunt.loadNpmTasks 'grunt-contrib-clean'
-  grunt.loadNpmTasks 'grunt-contrib-copy'
-  grunt.loadNpmTasks 'grunt-contrib-coffee'
-  grunt.loadNpmTasks 'grunt-cucumber'
-  grunt.loadNpmTasks 'grunt-mocha-test'
-  grunt.loadNpmTasks 'grunt-browserify'
-  grunt.loadNpmTasks 'grunt-contrib-uglify'
-  grunt.loadNpmTasks 'grunt-coffeelint'
-  grunt.loadNpmTasks 'grunt-contrib-connect'
-  grunt.loadNpmTasks 'grunt-contrib-watch'
-  grunt.loadNpmTasks 'grunt-saucelabs'

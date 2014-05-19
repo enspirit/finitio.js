@@ -9,14 +9,15 @@ lib-cov
 *.pid
 *.gz
 
-lib
 pids
 logs
 results
+tmp
 
 npm-debug.log
 node_modules
 
 src/syntax/parser.js
 
+build/*
 dist/*

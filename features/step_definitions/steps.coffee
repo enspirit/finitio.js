@@ -1,6 +1,6 @@
-Finitio     = require '../../lib/finitio'
-{TypeError} = require '../../lib/errors'
-System      = require '../../lib/system'
+Finitio     = require '../../build/src/finitio'
+{TypeError} = require '../../build/src/errors'
+System      = require '../../build/src/system'
 should      = require 'should'
 
 # Global variables for steps below

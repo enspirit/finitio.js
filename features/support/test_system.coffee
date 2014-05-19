@@ -1,4 +1,4 @@
-Finitio = require '../../lib/finitio'
+Finitio = require '../../build/src/finitio'
 
 source = """
   # Nil & others
