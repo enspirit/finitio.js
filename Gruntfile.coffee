@@ -25,13 +25,13 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'build', [
+    'clean',
     'peg:build',
     'copy:build',
     'coffee:build'
   ]
 
   grunt.registerTask 'compile', [
-    'clean',
     'build',
     'browserify',
     'uglify'
