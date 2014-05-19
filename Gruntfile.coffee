@@ -7,11 +7,12 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-contrib-jshint'
+  grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-cucumber'
   grunt.loadNpmTasks 'grunt-peg'
   grunt.loadNpmTasks 'grunt-mocha-test'
   grunt.loadNpmTasks 'grunt-browserify'
-  grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-coffeelint'
   grunt.loadNpmTasks 'grunt-contrib-connect'
   grunt.loadNpmTasks 'grunt-contrib-watch'
@@ -140,6 +141,23 @@ module.exports = (grunt) ->
           'dist/finitio.min.js': [ 'dist/finitio.js' ]
 
     ######################################################## Metrics & Quality
+
+    jshint:
+      src: [
+        'index.js',
+        'src/**/*.js'
+      ]
+      test: [
+        'specs/**/*.js'
+      ]
+      options:
+        curly: true
+        immed: true
+        newcap: true
+        noarg: true
+        sub: true
+        boss: true
+        eqnull: true
 
     coffeelint:
       src:   ['src/**/*.coffee']

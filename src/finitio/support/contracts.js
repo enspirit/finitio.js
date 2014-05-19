@@ -8,7 +8,7 @@ var $cs = {};
 $cs.isValidDate = function(d) {
   var toString = Object.prototype.toString;
   return (toString.call(d) === "[object Date]") && !isNaN(d.getTime());
-}
+};
 
 $cs.Date = {
 
@@ -49,7 +49,7 @@ $cs.Date = {
 
   }
 
-}
+};
 
 $cs.Time = {
 
@@ -87,6 +87,8 @@ $cs.Time = {
 
   }
 
-}
+};
 
-module.exports = {Contracts: $cs}
+module.exports = {
+  Contracts: $cs
+};
