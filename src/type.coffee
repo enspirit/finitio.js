@@ -1,4 +1,4 @@
-{ArgumentError, NotImplementedError, TypeError} = require './errors'
+$u = require('./support/utils')
 
 #
 # 'Abstract' class for Finitio types
@@ -7,7 +7,7 @@ class Type
 
   constructor: (@name)->
     if @name? and typeof(@name) isnt "string"
-      throw new ArgumentError("String expected, got", @name)
+      $u.argumentError("String expected, got", @name)
 
     @anonymous = not(@name?)
     @name ?= @defaultName()
@@ -21,7 +21,7 @@ class Type
   # Returns true if `value` is valid member of this type, false otherwise.
   #
   include: (value)->
-    throw new NotImplementedError(this, "include")
+    $u.notImplemented(this, "include")
 
   #
   # Dress `value` with this information type and returns the result.
@@ -32,7 +32,7 @@ class Type
   # @throws `TypeError` if the dressing fails
   #
   dress: (value)->
-    throw new NotImplementedError(this, "dress")
+    $u.notImplemented(this, "dress")
 
   #
   # Undress `value` as a member of `as` type.
@@ -53,7 +53,7 @@ class Type
     return value if as.include(value)
 
     # otherwise, just fail
-    throw new TypeError("Unable to undress `#{value}` from #{this} to `#{as}`")
+    $u.undressError("Unable to undress `#{value}` from #{this} to `#{as}`")
 
   #
   # Returns a String representation of this Type.

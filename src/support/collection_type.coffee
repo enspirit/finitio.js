@@ -1,13 +1,12 @@
-Type            = require '../type'
-{ArgumentError,
-TypeError}      = require '../errors'
+$u   = require './utils'
+Type = require '../type'
 
 # mixin
 class CollectionType extends Type
 
   constructor: (@elmType, @name) ->
     unless @elmType instanceof Type
-      throw new ArgumentError("Finitio.Type expected, got", @elmType)
+      $u.argumentError("Finitio.Type expected, got:", @elmType)
 
     super(@name)
 

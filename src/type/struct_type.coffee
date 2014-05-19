@@ -1,8 +1,6 @@
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
-{ArgumentError,
-TypeError}      = require '../errors'
 $u              = require '../support/utils'
 
 class StructType extends Type
@@ -12,11 +10,11 @@ class StructType extends Type
     super(@name)
 
     unless $u.isArray(@componentTypes)
-      throw new ArgumentError("[Finitio::Type] expected, got", @componentTypes)
+      $u.argumentError("[Finitio::Type] expected, got:", @componentTypes)
 
     wrongType = $u.find(@componentTypes, (t) -> !(t instanceof Type))
     if wrongType?
-      throw new ArgumentError("[Finitio::Type] expected, got", wrongType)
+      $u.argumentError("[Finitio::Type] expected, got:", wrongType)
 
   defaultName: ->
     componentNames = $u.map(@componentTypes, (t) -> t.name)
@@ -52,10 +50,10 @@ class StructType extends Type
 
   undress: (value, as) ->
     unless as instanceof StructType
-      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+      $u.undressError("Unable to undress `#{value}` to `#{as}`")
 
     unless as.size() == @size()
-      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+      $u.undressError("Unable to undress `#{value}` to `#{as}`")
 
     from = @componentTypes
     to   = as.componentTypes

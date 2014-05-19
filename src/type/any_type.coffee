@@ -1,4 +1,4 @@
-Type                  = require '../type'
+Type = require '../type'
 
 #
 class AnyType extends Type

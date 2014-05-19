@@ -1,7 +1,7 @@
-SetType         = require '../../../../src/type/set_type'
-_               = require 'underscore'
-should          = require 'should'
-{intType}       = require '../../../spec_helpers'
+SetType   = require '../../../../src/type/set_type'
+_         = require 'underscore'
+should    = require 'should'
+{intType} = require '../../../spec_helpers'
 
 describe "SetType#name", ->
 

@@ -1,9 +1,8 @@
-SetType         = require '../../../../src/type/set_type'
-{ArgumentError,
-TypeError}      = require '../../../../src/errors'
-_               = require 'underscore'
-should          = require 'should'
-{byteType}      = require '../../../spec_helpers'
+SetType     = require '../../../../src/type/set_type'
+{TypeError} = require '../../../../src/errors'
+_           = require 'underscore'
+should      = require 'should'
+{byteType}  = require '../../../spec_helpers'
 
 describe "SetType#dress", ->
 

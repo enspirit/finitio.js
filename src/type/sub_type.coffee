@@ -1,9 +1,7 @@
-Type            = require '../type'
-Constraint      = require '../support/constraint'
-DressHelper     = require '../support/dress_helper'
-{ArgumentError} = require '../errors'
-
-$u              = require '../support/utils'
+Type        = require '../type'
+Constraint  = require '../support/constraint'
+DressHelper = require '../support/dress_helper'
+$u          = require '../support/utils'
 
 class SubType extends Type
   generator: 'sub'
@@ -12,18 +10,16 @@ class SubType extends Type
     @name ?= null
 
     unless @superType instanceof Type
-      throw new ArgumentError("Finitio.Type expected, got", @superType)
+      $u.argumentError("Finitio.Type expected, got", @superType)
 
     unless @constraints.constructor == Array
-      throw new ArgumentError("Array expected for constraints, got",
-        @constraints)
+      $u.argumentError("Array expected for constraints, got", @constraints)
 
     unless @constraints.length > 0
-      throw new ArgumentError("Empty constraints not allowed on SubType")
+      $u.argumentError("Empty constraints not allowed on SubType")
 
     unless $u.every(@constraints, (c)-> c.constructor == Constraint)
-      throw new ArgumentError("Array of constraints expected, got",
-        @constraints)
+      $u.argumentError("Array of constraints expected, got", @constraints)
 
     super(@name)
 

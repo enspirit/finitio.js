@@ -1,10 +1,8 @@
-SetType         = require '../../../../src/type/set_type'
-{ArgumentError,
-TypeError}      = require '../../../../src/errors'
-_               = require 'underscore'
-should          = require 'should'
+SetType    = require '../../../../src/type/set_type'
+_          = require 'underscore'
+should     = require 'should'
 {intType,
-floatType}      = require '../../../spec_helpers'
+floatType} = require '../../../spec_helpers'
 
 describe "SetType#equality", ->
 

@@ -1,9 +1,7 @@
-SeqType         = require '../../../../src/type/seq_type'
-{ArgumentError,
-TypeError}      = require '../../../../src/errors'
-_               = require 'underscore'
-should          = require 'should'
-{intType}       = require '../../../spec_helpers'
+SeqType   = require '../../../../src/type/seq_type'
+_         = require 'underscore'
+should    = require 'should'
+{intType} = require '../../../spec_helpers'
 
 describe "SeqType#include", ->
 

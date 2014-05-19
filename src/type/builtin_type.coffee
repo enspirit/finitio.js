@@ -1,6 +1,5 @@
-{NotImplementedError} = require '../errors'
-DressHelper           = require '../support/dress_helper'
-Type                  = require '../type'
+DressHelper = require '../support/dress_helper'
+Type        = require '../type'
 
 #
 class BuiltinType extends Type

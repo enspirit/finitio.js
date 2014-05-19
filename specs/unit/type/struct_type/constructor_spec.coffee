@@ -1,9 +1,7 @@
-StructType      = require '../../../../src/type/struct_type'
-{ArgumentError,
-TypeError}      = require '../../../../src/errors'
-_               = require 'underscore'
-should          = require 'should'
-{intType}       = require '../../../spec_helpers'
+StructType = require '../../../../src/type/struct_type'
+_          = require 'underscore'
+should     = require 'should'
+{intType}  = require '../../../spec_helpers'
 
 describe "StructType#constructor", ->
 
@@ -25,5 +23,4 @@ describe "StructType#constructor", ->
       catch e
         e
 
-      err.should.be.an.instanceof ArgumentError
-      err.message.should.equal("[Finitio::Type] expected, got String")
+      err.message.should.equal("[Finitio::Type] expected, got: foo")

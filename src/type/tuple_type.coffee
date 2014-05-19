@@ -2,8 +2,6 @@ Type            = require '../type'
 Heading         = require '../support/heading'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
-{TypeError,
- ArgumentError} = require '../errors'
 $u              = require '../support/utils'
 
 class TupleType extends Type
@@ -11,7 +9,7 @@ class TupleType extends Type
 
   constructor: (@heading, @name) ->
     unless @heading instanceof Heading
-      throw new ArgumentError("Heading expected, got", @heading)
+      $u.argumentError("Heading expected, got:", @heading)
 
     super(@name)
 
@@ -61,22 +59,22 @@ class TupleType extends Type
 
   undress: (value, as) ->
     unless as instanceof TupleType
-      throw new TypeError("Tuple cannot undress to `#{as}` (#{as.constructor}).")
+      $u.undressError("Tuple cannot undress to `#{as}` (#{as.constructor}).")
 
     # Check heading compatibility
     [s, l, r] = $u.triSplit(@heading.attributes, as.heading.attributes)
 
     # left non empty? do we allow projection undressings?
     unless $u.isEmpty(l)
-      throw new TypeError("Tuple undress does not allow projecting #{l}")
+      $u.undressError("Tuple undress does not allow projecting #{l}")
 
     # right non empty? do we allow missing attributes?
     unless $u.isEmpty(r)
-      throw new TypeError("Tuple undress does not support missing #{r}")
+      $u.undressError("Tuple undress does not support missing #{r}")
 
     # Do we allow disagreements on required?
     unless $u.every(s, (pair)-> pair[0].required == pair[1].required)
-      throw new TypeError("Tuple undress requires optional attributes to agree")
+      $u.undressError("Tuple undress requires optional attributes to agree")
 
     # let undress each attribute in turn
     undressed = {}

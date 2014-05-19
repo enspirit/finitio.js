@@ -1,7 +1,5 @@
-{ArgumentError,
-TypeError}  = require '../errors'
-Attribute   = require './attribute'
-$u          = require './utils'
+Attribute = require './attribute'
+$u        = require './utils'
 
 #
 # Helper class for tuple and relation types.
@@ -18,22 +16,21 @@ class Heading
   constructor: (attributes, options) ->
     unless $u.isArray(attributes) and \
            $u.every(attributes, (a) -> a instanceof Attribute)
-      throw new ArgumentError("Array of Attribute expected")
+      $u.argumentError("Array of Attribute expected")
 
     @attributes = {}
     $u.each attributes, (attr) =>
       if @attributes[attr.name]?
-        throw new ArgumentError("Attribute names must be unique")
+        $u.argumentError("Attribute names must be unique")
       @attributes[attr.name] = attr
 
     unless options?
       options = {}
     unless $u.isObject(options)
-      throw new ArgumentError("Hash of options expected")
+      $u.argumentError("Hash of options expected")
 
     @options = $u.extend({}, DEFAULT_OPTIONS, options)
 
-  # TODO: Use getters and setters
   size: ->
     $u.size(@attributes)
 

@@ -1,11 +1,8 @@
-Attribute          = require '../../../../src/support/attribute'
-Heading            = require '../../../../src/support/heading'
-RelationType       = require '../../../../src/type/relation_type'
-{intType}          = require '../../../spec_helpers'
-{ArgumentError,
-TypeError}         = require '../../../../src/errors'
-
-should             = require 'should'
+Attribute    = require '../../../../src/support/attribute'
+Heading      = require '../../../../src/support/heading'
+RelationType = require '../../../../src/type/relation_type'
+{intType}    = require '../../../spec_helpers'
+should       = require 'should'
 
 describe 'RelationType#constructor', ->
 
@@ -29,5 +26,4 @@ describe 'RelationType#constructor', ->
 
     it 'should raise an error', ->
       e = lambda()
-      e.should.be.an.instanceof(ArgumentError)
-      e.message.should.equal('Heading expected, got String')
+      e.message.should.equal('Heading expected, got: foo')

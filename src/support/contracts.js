@@ -1,5 +1,4 @@
-ArgumentError = require("../errors").TypeError;
-DressHelper   = require("./dress_helper")
+$u = require("./utils");
 
 var $cs = {};
 
@@ -29,7 +28,7 @@ $cs.Date = {
       if ($cs.isValidDate(d)) {
         return d;
       } else {
-        throw new ArgumentError("Invalid Date string `" + s + "`");
+        $u.dressError("Invalid Date string `" + s + "`");
       }
     },
 
@@ -44,7 +43,7 @@ $cs.Date = {
         var dd  = d.getDate().toString();
         return yyyy + "-" + (mm[1]?mm:"0"+mm[0]) + "-" + (dd[1]?dd:"0"+dd[0]);
       } else {
-        throw new ArgumentError("Invalid Date `" + d + "`");
+        $u.undressError("Invalid Date `" + d + "`");
       }
     }
 
@@ -70,7 +69,7 @@ $cs.Time = {
       if ($cs.isValidDate(d)) {
         return d;
       } else {
-        throw new ArgumentError("Invalid Date string `" + s + "`");
+        $u.dressError("Invalid Date string `" + s + "`");
       }
     },
 
@@ -82,7 +81,7 @@ $cs.Time = {
       if ($cs.isValidDate(d)) {
         return d.toISOString();
       } else {
-        throw new ArgumentError("Invalid Date `" + s + "`");
+        $u.undressError("Invalid Date `" + s + "`");
       }
     }
 

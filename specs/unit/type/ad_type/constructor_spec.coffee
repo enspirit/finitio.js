@@ -1,6 +1,4 @@
 AdType         = require '../../../../src/type/ad_type'
-{TypeError,
-ArgumentError} = require '../../../../src/errors'
 should         = require 'should'
 {intType,
 stringType}    = require '../../../spec_helpers'
@@ -29,8 +27,7 @@ describe "AdType#constructor", ->
       catch e
         e
 
-      err.should.be.an.instanceof ArgumentError
-      err.message.should.equal 'Constructor (function) expected, got String'
+      err.message.should.equal 'Constructor (function) expected, got: foo'
 
   describe 'with invalid arguments (II)', ->
     lambda = -> new AdType(Date, "bar")
@@ -43,5 +40,4 @@ describe "AdType#constructor", ->
       catch e
         e
 
-      err.should.be.an.instanceof ArgumentError
-      err.message.should.equal "Hash expected, got String"
+      err.message.should.equal "Hash expected, got: bar"

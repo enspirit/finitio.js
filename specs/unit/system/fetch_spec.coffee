@@ -1,8 +1,6 @@
-{KeyError}  = require '../../../src/errors'
 System      = require '../../../src/system'
 TupleType   = require '../../../src/type/tuple_type'
 {numType}   = require '../../spec_helpers'
-
 should      = require 'should'
 
 describe 'System#fetch', ->
@@ -32,8 +30,7 @@ describe 'System#fetch', ->
       catch e
         e
 
-      err.should.be.an.instanceof KeyError
-      err.message.should.match /noSuchOne/
+      err.message.should.match /No such type `noSuchOne`/
 
   describe 'with a non existing type name and a callback', ->
     lambda = ->

@@ -1,8 +1,7 @@
-Attribute       = require '../../../src/support/attribute'
-Heading         = require '../../../src/support/heading'
-{ArgumentError} = require '../../../src/errors'
-should          = require 'should'
-{intType}       = require '../../spec_helpers'
+Attribute  = require '../../../src/support/attribute'
+Heading    = require '../../../src/support/heading'
+should     = require 'should'
+{intType}  = require '../../spec_helpers'
 
 describe "Heading#constructor", ->
 
@@ -27,6 +26,6 @@ describe "Heading#constructor", ->
       should(lambda).throw()
       try
         lambda()
+        true.should.equal(false)
       catch e
-        e.should.be.an.instanceof ArgumentError
         e.message.should.equal("Attribute names must be unique")

@@ -1,13 +1,12 @@
 Type            = require '../type'
 DressHelper     = require '../support/dress_helper'
-{ArgumentError} = require '../errors'
 $u              = require '../support/utils'
 
 class AliasType extends Type
 
   constructor: (@type, @name) ->
     unless @name
-      throw new ArgumentError("Name cannot be null on AliasType")
+      $u.argumentError("Name cannot be null on AliasType")
     super(@name)
     @generator = @type.generator
 

@@ -1,9 +1,7 @@
-AliasType         = require '../../../../src/type/alias_type'
-{ArgumentError,
-TypeError}      = require '../../../../src/errors'
-_               = require 'underscore'
-should          = require 'should'
-{intType}       = require '../../../spec_helpers'
+AliasType = require '../../../../src/type/alias_type'
+_         = require 'underscore'
+should    = require 'should'
+{intType} = require '../../../spec_helpers'
 
 describe "AliasType#initialize", ->
 
@@ -13,4 +11,4 @@ describe "AliasType#initialize", ->
 
   it 'raises without name', ->
     l = ()-> new AliasType(intType)
-    should(l).throw(ArgumentError)
+    should(l).throw()

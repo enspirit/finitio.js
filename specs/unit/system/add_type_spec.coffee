@@ -1,8 +1,5 @@
-{ArgumentError,
-Error}    = require '../../../src/errors'
 System    = require '../../../src/system'
 {numType} = require '../../spec_helpers'
-
 should = require 'should'
 
 describe "System#addType", ->
@@ -31,8 +28,7 @@ describe "System#addType", ->
       catch e
         e
 
-      err.should.be.an.instanceof ArgumentError
-      err.message.should.equal 'Finitio.Type expected, got String'
+      err.message.should.equal 'Finitio.Type expected, got: foo'
 
   describe 'with a duplicate type name', ->
     system = new System
@@ -49,5 +45,4 @@ describe "System#addType", ->
       catch e
         e
 
-      err.should.be.an.instanceof Error
-      err.message.should.equal "Duplicate type name `numType`"
+      err.message.should.equal "Duplicate type `numType`"

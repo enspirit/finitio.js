@@ -1,10 +1,9 @@
-StructType      = require '../../../../src/type/struct_type'
-{ArgumentError,
-TypeError}      = require '../../../../src/errors'
-_               = require 'underscore'
-should          = require 'should'
+StructType  = require '../../../../src/type/struct_type'
+{TypeError} = require '../../../../src/errors'
+_           = require 'underscore'
+should      = require 'should'
 {intType,
-stringType}      = require '../../../spec_helpers'
+stringType} = require '../../../spec_helpers'
 
 describe "StructType#dress", ->
 

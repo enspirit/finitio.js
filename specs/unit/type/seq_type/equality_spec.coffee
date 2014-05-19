@@ -1,10 +1,8 @@
-SeqType         = require '../../../../src/type/seq_type'
-{ArgumentError,
-TypeError}      = require '../../../../src/errors'
-_               = require 'underscore'
-should          = require 'should'
+SeqType    = require '../../../../src/type/seq_type'
+_          = require 'underscore'
+should     = require 'should'
 {intType,
-floatType}      = require '../../../spec_helpers'
+floatType} = require '../../../spec_helpers'
 
 describe "SeqType#equality", ->
 

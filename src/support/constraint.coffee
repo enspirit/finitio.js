@@ -1,5 +1,4 @@
-{ArgumentError,
-TypeError}  = require '../errors'
+$u = require './utils'
 
 #
 # Helper class for constraints.
@@ -8,7 +7,7 @@ class Constraint
 
   constructor: (@name, @native) ->
     unless typeof @name == "string"
-      throw new ArgumentError("String expected for constraint name, got", @name)
+      $u.argumentError("String expected for constraint name, got: ", @name)
 
   isAnonymous: ->
     @name == 'default'

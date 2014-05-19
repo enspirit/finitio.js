@@ -1,5 +1,5 @@
-{TypeError} = require '../errors'
-$u          = require './utils'
+TypeError = require('../errors').TypeError;
+$u = require './utils'
 
 class DressHelper
 
@@ -51,11 +51,11 @@ class DressHelper
   failed: (type, value, cause) ->
     cause ?= null
     msg = @defaultErrorMessage(type, value)
-    throw new TypeError(msg, cause, @location())
+    $u.dressError(msg, cause, @location())
 
   fail: (msg, cause) ->
     cause ?= null
-    throw new TypeError(msg, cause, @location())
+    $u.dressError(msg, cause, @location())
 
   defaultErrorMessage: (type, value) ->
     [ value_s, type_s ] = [ _valueToString(value), _typeToString(type) ]
@@ -65,8 +65,7 @@ class DressHelper
     @stack.join('/')
 
 
-# "private methods"
-# (= utility functions only visible in the scope of this module)
+# Private methods
 
 _valueToString = (value) ->
   return 'undefined' if value == undefined

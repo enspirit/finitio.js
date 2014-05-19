@@ -19,23 +19,11 @@ class Finitio
   @parse = (source, options) ->
     Parser.parse(source, options || {})
 
-  ## Systems
-
-  @system = (identifier) ->
-    path = Path.join __dirname, "#{identifier}.fio"
-    if fs.existsSync(path)
-      content = fs.readFileSync(path).toString()
-      @parse(content)
-    else
-      throw new Error("Unknown system #{identifier}")
-
-  @DEFAULT_SYSTEM = require("./Finitio/default")
-
 ##
 $u.extend Finitio, require './errors'
 $u.extend Finitio, require './support/contracts'
 ##
-Finitio.System = require './system'
+Finitio.System       = require './system'
 ##
 Finitio.AliasType    = require './type/alias_type'
 Finitio.AdType       = require './type/ad_type'

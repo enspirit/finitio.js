@@ -1,5 +1,4 @@
 Finitio     = require '../../../src/finitio'
-{KeyError}  = require '../../../src/errors'
 System      = require '../../../src/system'
 Type        = require '../../../src/type'
 BuiltinType = require '../../../src/type/builtin_type'

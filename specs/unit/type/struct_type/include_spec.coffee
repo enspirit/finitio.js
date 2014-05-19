@@ -1,10 +1,8 @@
-StructType      = require '../../../../src/type/struct_type'
-{ArgumentError,
-TypeError}      = require '../../../../src/errors'
-_               = require 'underscore'
-should          = require 'should'
+StructType = require '../../../../src/type/struct_type'
+_          = require 'underscore'
+should     = require 'should'
 {intType,
-floatType}      = require '../../../spec_helpers'
+floatType} = require '../../../spec_helpers'
 
 describe "StructType#include", ->
 

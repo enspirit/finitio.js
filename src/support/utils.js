@@ -1,5 +1,3 @@
-var ArgumentError = require("../errors").ArgumentError;
-
 //
 var Utilities = $u = {};
 
@@ -38,7 +36,7 @@ $u.isObject = function(obj){
   */
 $u.deepClone = function(obj) {
   if (obj === null || obj === undefined) {
-    throw new ArgumentError("Object expected, got", obj);
+    $u.argumentError("Object expected, got", obj);
   }
 
   if (!$u.isObject(obj)){
@@ -68,7 +66,7 @@ $u.deepClone = function(obj) {
   */
 $u.clone = function(obj) {
   if (obj === null || obj === undefined){
-    throw new ArgumentError("Object expected, got", obj);
+    $u.argumentError("Object expected, got", obj);
   }
 
   if (!$u.isObject(obj)){
@@ -127,7 +125,7 @@ $u.triSplit = function(x, y) {
 
 $u.zip = function(dest) {
   if (!($u.isArray(dest))) {
-    throw new ArgumentError("Array expected, got", dest);
+    $u.argumentError("Array expected, got", dest);
   }
 
   //
@@ -136,10 +134,10 @@ $u.zip = function(dest) {
   // Check validity first
   $u.each(sources, function(source){
     if (!($u.isArray(source))) {
-      throw new ArgumentError("Array expected, got", source);
+      $u.argumentError("Array expected, got", source);
     }
     if ($u.size(source) != $u.size(dest)) {
-      throw new ArgumentError("Source(s) and destination Arrays must have same size");
+      $u.argumentError("Source(s) and destination Arrays must have same size");
     }
   })
 
@@ -158,11 +156,11 @@ $u.zip = function(dest) {
 
 $u.difference = function(objA, objB) {
   if (!($u.isArray(objA))) {
-    throw new ArgumentError("Array expected, got", objA);
+    $u.argumentError("Array expected, got", objA);
   }
 
   if (!($u.isArray(objB))) {
-    throw new ArgumentError("Array expected, got", objB);
+    $u.argumentError("Array expected, got", objB);
   }
 
   return $u.filter(objA, function(v){
@@ -172,7 +170,7 @@ $u.difference = function(objA, objB) {
 
 $u.uniq = function(array, isSorted){
   if (!($u.isArray(array))) {
-    throw new ArgumentError("Array expected, got", array);
+    $u.argumentError("Array expected, got", array);
   }
   if (typeof(isSorted) == "undefined"){
     isSorted = false;
@@ -193,7 +191,7 @@ $u.uniq = function(array, isSorted){
 $u.inject = function(obj, start, callback){
   // no date, regexp, undefined or null please
   if (!(obj instanceof Array)) {
-    throw new ArgumentError("Array expected, got", obj);
+    $u.argumentError("Array expected, got", obj);
   }
   res = start
   for (var i=0; i<obj.length; i++) {
@@ -269,7 +267,7 @@ $u.each = function(obj, callback){
 $u.every = function(obj, callback){
   // callback can be undefined, but can't be null
   if (callback === null || callback === undefined){
-    throw new ArgumentError("Function expected, got", callback)
+    $u.argumentError("Function expected, got", callback)
   }
 
   // TODO: review this. How can we stop iterating
@@ -301,7 +299,7 @@ $u.every = function(obj, callback){
 $u.find = function(obj, callback){
   // callback can be undefined, but can't be null
   if (callback === null || callback === undefined){
-    throw new ArgumentError("Function expected, got", callback)
+    $u.argumentError("Function expected, got", callback)
   }
 
   // TODO: review this. How can we stop iterating
@@ -332,7 +330,7 @@ $u.find = function(obj, callback){
 $u.any = function(obj, callback){
   // callback can be undefined, but can't be null
   if (callback === null || callback === undefined){
-    throw new ArgumentError("Function expected, got", callback);
+    $u.argumentError("Function expected, got", callback);
   }
 
   // TODO: review this. How can we stop iterating
@@ -364,7 +362,7 @@ $u.any = function(obj, callback){
 $u.filter = function(obj, callback){
   // callback can be undefined, but can't be null
   if (callback === null || callback === undefined){
-    throw new ArgumentError("Function expected, got", callback)
+    $u.argumentError("Function expected, got", callback)
   }
 
   var values = [];
@@ -386,7 +384,7 @@ $u.filter = function(obj, callback){
 $u.reject = function(obj, callback){
   // callback can be undefined, but can't be null
   if (callback === null || callback === undefined){
-    throw new ArgumentError("Function expected, got", callback)
+    $u.argumentError("Function expected, got", callback)
   }
 
   var values = [];
@@ -408,7 +406,7 @@ $u.reject = function(obj, callback){
 $u.map = function(obj, callback){
   // callback can be undefined, but can't be null
   if (callback === null || callback === undefined){
-    throw new ArgumentError("Function expected, got", callback)
+    $u.argumentError("Function expected, got", callback)
   }
   var values = [];
   $u.each(obj, function(v, k){
@@ -480,7 +478,7 @@ $u.isEmpty = function(obj){
 // Aliased as `include`.
 $u.contains = $u.include = function(obj, target) {
   if (!$u.isEnumerable(obj)){
-    throw new ArgumentError("Enumerable (Array, Object, String) expected, got", obj);
+    $u.argumentError("Enumerable (Array, Object, String) expected, got", obj);
   }
   var nativeIndexOf = Array.prototype.indexOf;
   if (nativeIndexOf && obj.indexOf === nativeIndexOf) return obj.indexOf(target) != -1;
@@ -502,7 +500,7 @@ $u.contains = $u.include = function(obj, target) {
   **/
 $u.capitalize = function(obj){
   if (typeof(obj) != "string"){
-    throw new ArgumentError("String expected, got", obj)
+    $u.argumentError("String expected, got", obj)
   }
   if (obj.trim() == ""){
     return obj;
@@ -537,6 +535,42 @@ $u.capitalize = function(obj){
   string = string[0].toUpperCase() + string.slice(1);
   return string;
 }
+
+// ---------------------------------------------------------- Error Management
+
+$u.argumentError = function(){
+  var msg = "";
+  var toString = function(arg){
+    if (arg === null) {
+      return "null"
+    } else if (arg === undefined){
+      return "undefined"
+    } else {
+      return arg.toString();
+    }
+  }
+  $u.each(arguments, function(arg){
+    if (msg.length != 0){
+      msg += " ";
+    }
+    msg += toString(arg);
+  });
+  throw new Error(msg);
+}
+
+$u.notImplemented = function(obj, meth){
+  throw new Error(obj.constructor.name + "#" + meth);
+};
+
+$u.dressError = function(msg, cause, location){
+  var E = require("../errors").TypeError;
+  throw new E(msg, cause, location);
+};
+
+$u.undressError = function(msg, cause, location){
+  var E = require("../errors").TypeError;
+  throw new E(msg, cause, location);
+};
 
 //
 module.exports = Utilities

@@ -1,9 +1,8 @@
-AdType         = require '../../../../src/type/ad_type'
-{TypeError,
-ArgumentError} = require '../../../../src/errors'
-should         = require 'should'
+AdType      = require '../../../../src/type/ad_type'
+{TypeError} = require '../../../../src/errors'
+should      = require 'should'
 {intType,
-stringType}    = require '../../../spec_helpers'
+stringType} = require '../../../spec_helpers'
 
 describe "AdType#dress", ->
 
@@ -51,7 +50,7 @@ describe "AdType#dress", ->
 
     describe 'when the upper raises an error', ->
       type = new AdType(Date,
-        timestamp: [intType, ((t) -> throw new ArgumentError), ((d)-> null)])
+        timestamp: [intType, ((t) -> throw new Error), ((d)-> null)])
 
       it 'should hide the error', ->
 

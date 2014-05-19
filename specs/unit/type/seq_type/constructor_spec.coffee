@@ -1,9 +1,6 @@
-SeqType         = require '../../../../src/type/seq_type'
-{ArgumentError,
-TypeError}      = require '../../../../src/errors'
-_               = require 'underscore'
-should          = require 'should'
-{intType}       = require '../../../spec_helpers'
+SeqType   = require '../../../../src/type/seq_type'
+should    = require 'should'
+{intType} = require '../../../spec_helpers'
 
 describe "SeqType#initialize", ->
 
@@ -26,5 +23,5 @@ describe "SeqType#initialize", ->
       catch e
         e
 
-      err.should.be.an.instanceof ArgumentError
-      err.message.should.equal('Finitio.Type expected, got String')
+      err.should.be.an.instanceof(Error)
+      err.message.should.equal('Finitio.Type expected, got: foo')

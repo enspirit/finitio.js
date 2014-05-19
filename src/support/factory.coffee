@@ -7,23 +7,17 @@ Constraint     = require './constraint'
 $u             = require './utils'
 
 ## Types
-AliasType         = require '../type/alias_type'
-AnyType           = require '../type/any_type'
-AdType            = require '../type/ad_type'
-SeqType           = require '../type/seq_type'
-SetType           = require '../type/set_type'
-StructType        = require '../type/struct_type'
-SubType           = require '../type/sub_type'
-TupleType         = require '../type/tuple_type'
-UnionType         = require '../type/union_type'
-BuiltinType       = require '../type/builtin_type'
-RelationType      = require '../type/relation_type'
-
-## Errors
-{
-  NotImplementedError,
-  ArgumentError
-} = require '../errors'
+AliasType      = require '../type/alias_type'
+AnyType        = require '../type/any_type'
+AdType         = require '../type/ad_type'
+SeqType        = require '../type/seq_type'
+SetType        = require '../type/set_type'
+StructType     = require '../type/struct_type'
+SubType        = require '../type/sub_type'
+TupleType      = require '../type/tuple_type'
+UnionType      = require '../type/union_type'
+BuiltinType    = require '../type/builtin_type'
+RelationType   = require '../type/relation_type'
 
 # Typefactory
 class TypeFactory
@@ -87,10 +81,11 @@ class TypeFactory
     if typeof(t) == 'string'
       parts = t.split('.')
       $u.inject parts, @world, (memo, part)->
-        throw new ArgumentError("Unknown type #{t} (#{part} not found)") unless memo[part]
-        memo[part]
+        memo[part] || throw new Error("Unknown type #{t} (#{part} not found)")
+
     else if isNativeType(t) || t instanceof Function
       t
+
     else
       fail("JS primitive expected, got `#{t}`")
 
@@ -266,6 +261,7 @@ class TypeFactory
 
 # 'private' Utility functions
 # (only in the scope of this module)
+
 isNativeType = (t) ->
   return false unless t?
   match = $u.find [Number, Boolean, String], (primitive) ->
@@ -279,9 +275,9 @@ isRegexp = (t) ->
 
 fail = (msg, type) ->
   if type?
-    throw new ArgumentError(msg, type)
+    throw new Error(msg, type)
   else
-    throw new ArgumentError(msg)
+    throw new Error(msg)
 
 #
 module.exports = TypeFactory

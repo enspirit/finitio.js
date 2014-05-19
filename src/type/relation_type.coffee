@@ -3,8 +3,6 @@ CollectionType  = require '../support/collection_type'
 TupleType       = require '../type/tuple_type'
 Heading         = require '../support/heading'
 DressHelper     = require '../support/dress_helper'
-{ArgumentError,
-TypeError}      = require '../errors'
 $u              = require '../support/utils'
 
 class RelationType extends Type
@@ -14,7 +12,7 @@ class RelationType extends Type
     super(@name)
 
     unless @heading instanceof Heading
-      throw new ArgumentError("Heading expected, got", @heading)
+      $u.argumentError("Heading expected, got:", @heading)
 
   include: (value) ->
     value instanceof Array &&
@@ -48,7 +46,7 @@ class RelationType extends Type
 
   undress: (value, as) ->
     unless as instanceof RelationType or as instanceof CollectionType
-      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+      $u.undressError("Unable to undress `#{value}` to `#{as}`")
 
     from = @tupleType()
     to   = if as instanceof RelationType then as.tupleType() else as.elmType

@@ -1,8 +1,6 @@
-Type            = require '../type'
-DressHelper     = require '../support/dress_helper'
-{ArgumentError} = require '../errors'
-
-$u              = require '../support/utils'
+Type        = require '../type'
+DressHelper = require '../support/dress_helper'
+$u          = require '../support/utils'
 
 class UnionType extends Type
   generator: 'union'
@@ -12,7 +10,7 @@ class UnionType extends Type
 
     $u.each @candidates, (c) ->
       unless c instanceof Type
-        throw new ArgumentError("Finitio.Type expected, got", c)
+        $u.argumentError("Finitio.Type expected, got:", c)
 
     super(@name)
 
@@ -46,7 +44,7 @@ class UnionType extends Type
       return using.undress(value, as)
 
     else
-      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+      $u.undressError("Unable to undress `#{value}` to `#{as}`")
 
   include: (value) ->
     found = $u.find @candidates, (c) -> c.include(value)

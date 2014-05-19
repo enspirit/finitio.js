@@ -1,9 +1,7 @@
-SetType         = require '../../../../src/type/set_type'
-{ArgumentError,
-TypeError}      = require '../../../../src/errors'
-_               = require 'underscore'
-should          = require 'should'
-{intType}       = require '../../../spec_helpers'
+SetType   = require '../../../../src/type/set_type'
+_         = require 'underscore'
+should    = require 'should'
+{intType} = require '../../../spec_helpers'
 
 describe "SetType#initialize", ->
 
@@ -26,5 +24,5 @@ describe "SetType#initialize", ->
       catch e
         e
 
-      err.should.be.an.instanceof ArgumentError
-      err.message.should.equal('Finitio.Type expected, got String')
+      err.should.be.an.instanceof(Error)
+      err.message.should.equal('Finitio.Type expected, got: foo')

@@ -1,9 +1,7 @@
-{KeyError}  = require '../../../src/errors'
-Finitio     = require '../../../src/finitio'
-System      = require '../../../src/system'
-Type        = require '../../../src/type'
-
-should      = require 'should'
+Finitio = require '../../../src/finitio'
+System  = require '../../../src/system'
+Type    = require '../../../src/type'
+should  = require 'should'
 
 describe 'System#parse', ->
 

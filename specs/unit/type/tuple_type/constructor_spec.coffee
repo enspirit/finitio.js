@@ -1,11 +1,8 @@
-Attribute        = require '../../../../src/support/attribute'
-Heading          = require '../../../../src/support/heading'
-TupleType        = require '../../../../src/type/tuple_type'
-{intType}        = require '../../../spec_helpers'
-{ArgumentError,
-TypeError}       = require '../../../../src/errors'
-
-should           = require 'should'
+Attribute = require '../../../../src/support/attribute'
+Heading   = require '../../../../src/support/heading'
+TupleType = require '../../../../src/type/tuple_type'
+{intType} = require '../../../spec_helpers'
+should    = require 'should'
 
 describe "TupleType#constructor", ->
 
@@ -27,5 +24,4 @@ describe "TupleType#constructor", ->
       e
 
     it 'should raise an error', ->
-      subject.should.be.an.instanceof ArgumentError
-      subject.message.should.equal "Heading expected, got String"
+      subject.message.should.equal "Heading expected, got: foo"

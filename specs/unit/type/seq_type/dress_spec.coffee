@@ -1,9 +1,8 @@
-SeqType         = require '../../../../src/type/seq_type'
-{ArgumentError,
-TypeError}      = require '../../../../src/errors'
-_               = require 'underscore'
-should          = require 'should'
-{byteType}      = require '../../../spec_helpers'
+SeqType     = require '../../../../src/type/seq_type'
+{TypeError} = require '../../../../src/errors'
+_           = require 'underscore'
+should      = require 'should'
+{byteType}  = require '../../../spec_helpers'
 
 describe "SeqType#dress", ->
 

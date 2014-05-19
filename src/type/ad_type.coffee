@@ -1,5 +1,3 @@
-{ArgumentError
-TypeError}   = require '../errors'
 DressHelper  = require '../support/dress_helper'
 Type         = require '../type'
 $u           = require '../support/utils'
@@ -9,10 +7,10 @@ class AdType extends Type
 
   constructor: (@jsType, @contracts, @name) ->
     if @jsType and not(@jsType instanceof Function)
-      throw new ArgumentError("Constructor (function) expected, got", @jsType)
+      $u.argumentError("Constructor (function) expected, got:", @jsType)
 
     unless typeof @contracts is "object"
-      throw new ArgumentError("Hash expected, got", @contracts)
+      $u.argumentError("Hash expected, got:", @contracts)
 
     invalid = $u.reject($u.values(@contracts), (v) ->
       v instanceof Array and
@@ -22,7 +20,7 @@ class AdType extends Type
         v[2] instanceof Function)
 
     unless invalid.length == 0
-      throw new ArgumentError("Invalid contracts `#{invalid}`")
+      $u.argumentError("Invalid contracts:", invalid)
 
     super(@name)
 

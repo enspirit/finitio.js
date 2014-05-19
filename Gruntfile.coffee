@@ -72,7 +72,7 @@ module.exports = (grunt) ->
       # Build the .coffee source when they change
       coffeesrc:
         files: [ 'src/**/*.coffee', 'specs/**/*.coffee' ]
-        tasks: [ 'coffee:build', 'coffeelint' ]
+        tasks: [ 'coffee:build' ]
       # Build the .js source when they change
       jssrc:
         files: [ 'src/**/*.js', 'specs/**/*.js' ]

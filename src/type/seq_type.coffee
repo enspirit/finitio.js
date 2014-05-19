@@ -1,8 +1,6 @@
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
-{ArgumentError,
-TypeError}      = require '../errors'
 $u              = require '../support/utils'
 
 class SeqType extends CollectionType
@@ -26,7 +24,7 @@ class SeqType extends CollectionType
 
   undress: (value, as)->
     unless as instanceof SeqType
-      throw new TypeError("Unable to undress `#{value}` to `#{as}`")
+      $u.undressError("Unable to undress `#{value}` to `#{as}`")
     super
 
   defaultName: ->

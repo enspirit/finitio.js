@@ -1,9 +1,7 @@
-{Error,
-KeyError,
-ArgumentError} = require './errors'
-Type           = require './type'
-TypeFactory    = require './support/factory'
-Parser         = require './syntax/parser'
+$u          = require './support/utils'
+Type        = require './type'
+TypeFactory = require './support/factory'
+Parser      = require './syntax/parser'
 
 #
 # A System is a collection of named Finitio types.
@@ -25,10 +23,10 @@ class System
 
   addType: (type) ->
     unless type instanceof Type
-      throw new ArgumentError("Finitio.Type expected, got", type)
+      $u.argumentError("Finitio.Type expected, got:", type)
 
     if @types[type.name]?
-      throw new Error("Duplicate type name `#{type.name}`")
+      $u.argumentError("Duplicate type `#{type.name}`")
 
     @types[type.name] = type
     this[type.name] = type
@@ -40,13 +38,13 @@ class System
     return @types[name] if @types[name]?
 
     unless callback?
-      throw new KeyError("No type found: #{name}")
+      throw new Error("No such type `#{name}`")
 
     callback()
 
   merge: (other) ->
     unless other instanceof System
-      throw new ArgumentError("Finitio.System expected, got", other)
+      $u.argumentError("Finitio.System expected, got:", other)
 
     merged_types = $u.extend({}, @types, other.types)
     merged_main  = other.main || @main

@@ -1,4 +1,3 @@
-{ArgumentError} = require '../../../../src/errors'
 UnionType       = require '../../../../src/type/union_type'
 should          = require 'should'
 _               = require 'underscore'
@@ -21,9 +20,8 @@ describe "UnionType#constructor", ->
     it 'should throw an error', ->
       should(lambda).throw()
 
-    it 'should throw an ArgumentError', ->
+    it 'should throw an error', ->
       try
         lambda()
       catch e
-        e.should.be.an.instanceof(ArgumentError)
-        e.message.should.equal('Finitio.Type expected, got String')
+        e.message.should.equal('Finitio.Type expected, got: bar')
