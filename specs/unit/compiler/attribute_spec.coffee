@@ -1,18 +1,20 @@
-Parser  = require '../../../src/finitio/syntax/parser'
+Finitio     = require '../../../src/finitio'
+Parser      = require '../../../src/finitio/parser'
 BuiltinType = require '../../../src/finitio/type/builtin_type'
 Attribute   = require '../../../src/finitio/support/attribute'
 should      = require 'should'
 
 describe "Parser#attribute", ->
 
-  factor = (input) ->
-    Parser.parse(input, startRule: "attribute")
+  compile = (source, options) ->
+    options.compiler = Finitio.compiler(options)
+    Parser.parse(source, options)
 
   describe "Compilation result", ->
 
     describe "a: .String", ->
 
-      compiled = factor("a: .String")
+      compiled = compile("a: .String", startRule: "attribute")
 
       it 'compiles to a mandatory Attribute', ->
         compiled.should.be.an.instanceof(Attribute)
@@ -23,7 +25,7 @@ describe "Parser#attribute", ->
 
     describe "a :? .String", ->
 
-      compiled = factor("a :? .String")
+      compiled = compile("a :? .String", startRule: "attribute")
 
       it 'compiles to an optional Attribute', ->
         compiled.should.be.an.instanceof(Attribute)

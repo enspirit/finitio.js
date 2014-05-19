@@ -1,4 +1,5 @@
-Parser      = require '../../../src/finitio/syntax/parser'
+Finitio     = require '../../../src/finitio'
+Parser      = require '../../../src/finitio/parser'
 Constraint  = require '../../../src/finitio/support/constraint'
 BuiltinType = require '../../../src/finitio/type/builtin_type'
 SubType     = require '../../../src/finitio/type/sub_type'
@@ -6,8 +7,12 @@ should      = require 'should'
 
 describe "Parser#sub_type", ->
 
+  compile = (source, options) ->
+    options.compiler = Finitio.compiler(options)
+    Parser.parse(source, options)
+
   describe 'with a single constraint', ->
-    subject = Parser.parse(".Number( i | i >= 0 )", startRule: "type")
+    subject = compile(".Number( i | i >= 0 )", startRule: "type")
 
     it 'should return a SubType', ->
       subject.should.be.an.instanceof(SubType)
@@ -27,7 +32,7 @@ describe "Parser#sub_type", ->
         e
 
   describe 'with a constraint on an AnyType', ->
-    subject = Parser.parse(".( v | v === null )", startRule: "type")
+    subject = compile(".( v | v === null )", startRule: "type")
 
     it 'should return a SubType', ->
       subject.should.be.an.instanceof(SubType)
@@ -42,7 +47,7 @@ describe "Parser#sub_type", ->
 
   describe 'with multiple, named constraints', ->
     src     = ".Number( i | positive: i >= 0, small: i <= 255 )"
-    subject = Parser.parse(src, startRule: "type")
+    subject = compile(src, startRule: "type")
 
     it 'should return a SubType', ->
       subject.should.be.an.instanceof(SubType)
@@ -64,7 +69,7 @@ describe "Parser#sub_type", ->
 
   describe 'with a complex constraint expression', ->
     src     = ".Number( i | noDot: i.toString().indexOf('.') == -1 )"
-    subject = Parser.parse(src, startRule: "type")
+    subject = compile(src, startRule: "type")
 
     it 'should return a SubType', ->
       subject.should.be.an.instanceof(SubType)

@@ -12,10 +12,18 @@ class Finitio
   for method in TypeFactory.PUBLIC_DSL_METHODS
     Finitio[method] = @FACTORY[method].bind(@FACTORY)
 
-  ## Parsing
+  @compiler = (options)->
+    options         ?= { }
+    options.world   ?= { Finitio: this }
+    options.factory ?= new this.TypeFactory(options.world)
+    options.system  ?= new this.System({}, null, options.factory)
+    new this.Compiler(options.system)
+
+  @compile = (source, options) ->
+    @compiler(options).compile(source)
 
   @parse = (source, options) ->
-    Finitio.Parser.parse(source, options || {})
+    @compiler(options).compile(source)
 
 ##
 Finitio.Utils = require './finitio/support/utils'
@@ -23,7 +31,8 @@ Finitio.Utils.extend Finitio, require './finitio/errors'
 Finitio.Utils.extend Finitio, require './finitio/support/contracts'
 ##
 Finitio.System       = require './finitio/system'
-Finitio.Parser       = require './finitio/syntax/parser'
+Finitio.Parser       = require './finitio/parser'
+Finitio.Compiler     = require './finitio/compiler'
 Finitio.TypeFactory  = require './finitio/support/factory'
 ##
 Finitio.AliasType    = require './finitio/type/alias_type'

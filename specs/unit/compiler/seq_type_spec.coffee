@@ -1,11 +1,16 @@
-Parser      = require '../../../src/finitio/syntax/parser'
+Finitio     = require '../../../src/finitio'
+Parser      = require '../../../src/finitio/parser'
 SeqType     = require '../../../src/finitio/type/seq_type'
 BuiltinType = require '../../../src/finitio/type/builtin_type'
 should      = require 'should'
 
 describe "Parser#seq_type", ->
 
-  subject = Parser.parse("[.String]", startRule: "type")
+  compile = (source, options) ->
+    options.compiler = Finitio.compiler(options)
+    Parser.parse(source, options)
+
+  subject = compile("[.String]", startRule: "type")
 
   it 'should return a SeqType', ->
     subject.should.be.an.instanceof(SeqType)

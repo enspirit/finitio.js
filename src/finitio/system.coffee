@@ -1,17 +1,17 @@
 $u          = require './support/utils'
 Type        = require './type'
 TypeFactory = require './support/factory'
-Parser      = require './syntax/parser'
+Compiler    = require './compiler'
 
 #
 # A System is a collection of named Finitio types.
 #
 class System
 
-  constructor: (@types, @main) ->
+  constructor: (@types, @main, @factory) ->
     @types   ?= {}
     @main    ?= null
-    @factory ?= new TypeFactory
+    @factory ?= new TypeFactory()
 
     # include types as attribute of the system
     for name,type of @types
@@ -50,10 +50,8 @@ class System
     merged_main  = other.main || @main
     new System(merged_types, merged_main)
 
-  parse: (source, options) ->
-    options ||= {}
-    options.system = @clone()
-    Parser.parse(source, options)
+  parse: (source) ->
+    (new Compiler(@clone())).compile(source)
 
   dress: (value) ->
     unless @main
@@ -61,7 +59,7 @@ class System
     @main.dress(value)
 
   clone: ->
-    new System($u.clone(@types), @main)
+    new System($u.clone(@types), @main, @factory)
 
 #
 module.exports = System

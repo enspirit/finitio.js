@@ -1,12 +1,17 @@
-Parser      = require '../../../src/finitio/syntax/parser'
+Finitio     = require '../../../src/finitio'
+Parser      = require '../../../src/finitio/parser'
 System      = require '../../../src/finitio/system'
 BuiltinType = require '../../../src/finitio/type/builtin_type'
 should      = require 'should'
 
 describe "Parser#system", ->
 
+  compile = (source, options) ->
+    options.compiler = Finitio.compiler(options)
+    Parser.parse(source, options)
+
   describe 'when a single type', ->
-    subject = Parser.parse(".String", startRule: "system")
+    subject = compile(".String", startRule: "system")
 
     it 'should return a System', ->
       subject.should.be.an.instanceof(System)
@@ -18,7 +23,7 @@ describe "Parser#system", ->
       subject.main.should.be.an.instanceof(BuiltinType)
 
   describe 'with some definitions and a main type', ->
-    subject = Parser.parse("Str = .String\nStr", startRule: "system")
+    subject = compile("Str = .String\nStr", startRule: "system")
 
     it 'should return a System', ->
       subject.should.be.an.instanceof(System)
@@ -31,7 +36,7 @@ describe "Parser#system", ->
       subject.main.should.be.an.instanceof(BuiltinType)
 
   describe 'with some definitions but no main type', ->
-    subject = Parser.parse("Str = .String\nInt = .Number", startRule: "system")
+    subject = compile("Str = .String\nInt = .Number", startRule: "system")
 
     it 'should return a System', ->
       subject.should.be.an.instanceof(System)

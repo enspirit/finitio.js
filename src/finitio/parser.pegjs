@@ -1,16 +1,8 @@
 {
-  if (!options.world) {
-    options.world = {};
+  compiler = options.compiler;
+  if (!compiler){
+    throw new Error("Missing compiler in Parser");
   }
-  if (!options.system) {
-    System = require('../system');
-    options.system = new System();
-  }
-  if (!options.factory) {
-    TypeFactory = require('../support/factory');
-    options.factory = new TypeFactory(options.world);
-  }
-  Factory = options.factory;
 
   // converts head:X tail(... X)* to an array of Xs
   function headTailToArray(head, tail) {
@@ -38,7 +30,7 @@
       var name = defs[i][0];
       var expr = defs[i][1];
       var fn   = compileLambda(varname, expr);
-      cs[i] = Factory.constraint(name, fn);
+      cs[i] = compiler.constraint(name, fn);
     }
     return cs;
   }
@@ -50,7 +42,7 @@
       if (cs[i].length < 3 && jsType){
         cs[i].push(jsType);
       }
-      contracts.push(Factory.contract.apply(Factory, cs[i]));
+      contracts.push(compiler.contract.apply(compiler, cs[i]));
     }
     return contracts;
   }
@@ -60,8 +52,10 @@
 
 system =
   definitions spacing m:type? spacing eof {
-    if (m){ options.system.main = m }
-    return options.system;
+    if (m){
+      compiler.setMain(m);
+    }
+    return compiler.system;
   }
 
 definitions =
@@ -69,9 +63,7 @@ definitions =
 
 type_def =
   n:type_name spacing '=' spacing t:type {
-    t = Factory.alias(t, n)
-    options.system.addType(t);
-    return t;
+    return compiler.addType(compiler.alias(t, n));
   }
 
 // TYPES (low priority)
@@ -81,13 +73,13 @@ type =
 
 union_type =
     head:sub_type tail:(pipe sub_type)+ {
-      return Factory.union(headTailToArray(head, tail));
+      return compiler.union(headTailToArray(head, tail));
     }
   / sub_type
 
 sub_type =
     t:rel_type c:constraint_fn {
-      return Factory.sub_type(t, c)
+      return compiler.sub_type(t, c)
     }
   / rel_type
 
@@ -123,25 +115,25 @@ rel_type =
 
 tuple_type =
   '{' spacing h:heading spacing '}' {
-    return Factory.tuple(h)
+    return compiler.tuple(h)
   }
 
 relation_type =
   '{{' spacing h:heading spacing '}}' {
-    return Factory.relation(h)
+    return compiler.relation(h)
   }
 
 heading =
     head:attribute? tail:(opt_comma attribute)* opt_comma d:dots? {
       var opts  = { allowExtra: (d ? true : false) };
-      return Factory.heading(headTailToArray(head, tail), opts);
+      return compiler.heading(headTailToArray(head, tail), opts);
     }
   / spacing
 
 attribute =
   n:attribute_name spacing ':' optional:'?'? spacing t:type {
     var required = (optional !== '?')
-    return Factory.attribute(n, t, required)
+    return compiler.attribute(n, t, required)
   }
 
 // TYPES (collections)
@@ -154,17 +146,17 @@ collection_type =
 
 set_type =
   '{' spacing t:type spacing '}' {
-    return Factory.set(t)
+    return compiler.set(t)
   }
 
 struct_type =
   '<' head:type tail:(opt_comma type)* opt_comma '>' {
-    return Factory.struct(headTailToArray(head, tail));
+    return compiler.struct(headTailToArray(head, tail));
   }
 
 seq_type =
   '[' spacing t:type spacing ']' {
-    return Factory.seq(t)
+    return compiler.seq(t)
   }
 
 // TYPES (higher priority)
@@ -177,9 +169,9 @@ term_type =
 
 ad_type =
   t:('.' builtin_type_name)? spacing cs:contracts {
-    var jsType = (t) ? Factory.jsType(t[1]) : null;
+    var jsType = (t) ? compiler.jsType(t[1]) : null;
     var contracts = compileContracts(cs, jsType);
-    return Factory.adt(jsType, contracts);
+    return compiler.adt(jsType, contracts);
   }
 
 contracts =
@@ -192,7 +184,7 @@ contract =
     return [ n, t, up, down ];
   }
 / '<' n:contract_name '>' spacing t:type spacing '.' b:builtin_type_name {
-    return [ n, t, Factory.jsType(b) ];
+    return [ n, t, compiler.jsType(b) ];
   }
 / '<' n:contract_name '>' spacing t:type {
     return [ n, t ];
@@ -205,17 +197,17 @@ lambda_expr =
 
 any_type =
   '.' {
-    return Factory.any();
+    return compiler.any();
   }
 
 builtin_type =
   '.' name:builtin_type_name {
-    return Factory.builtin(name);
+    return compiler.builtin(name);
   }
 
 type_ref =
    n:type_name {
-    return options.system.fetch(n);
+    return compiler.fetch(n);
   }
 
 // EXPRESSIONS

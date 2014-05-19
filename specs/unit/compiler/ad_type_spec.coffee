@@ -1,17 +1,21 @@
 Finitio = require '../../../src/finitio'
+Parser = require '../../../src/finitio/parser'
 TypeFactory = require '../../../src/finitio/support/factory'
-Parser  = require '../../../src/finitio/syntax/parser'
 AdType  = require '../../../src/finitio/type/ad_type'
 should  = require 'should'
 
 describe "Parser#ad_type", ->
+
+  compile = (source, options) ->
+    options.compiler = Finitio.compiler(options)
+    Parser.parse(source, options)
 
   describe 'when bound to a class with dresser/undresser', ->
     source = """
       .Date <as> .String \\( s | new Date(s) ) \\( d | d.toISOString() )
     """
     subject = ()->
-      Parser.parse(source, startRule: "type")
+      compile(source, startRule: "type")
 
     it 'should return a AdType', ->
       should(subject()).be.an.instanceof(AdType)
@@ -25,7 +29,7 @@ describe "Parser#ad_type", ->
       .Date <as> .String .Fin.Contracts.Date.iso8601
     """
     subject = ()->
-      Parser.parse(source, startRule: "type", world: {
+      compile(source, startRule: "type", world: {
         Fin: Finitio
       })
 
@@ -41,7 +45,7 @@ describe "Parser#ad_type", ->
       <as> .String
     """
     subject = ()->
-      Parser.parse(source, startRule: "type")
+      compile(source, startRule: "type")
 
     it 'should return a AdType', ->
       should(subject()).be.an.instanceof(AdType)
@@ -64,7 +68,7 @@ describe "Parser#ad_type", ->
     """
 
     subject = ()->
-      Parser.parse(source, startRule: "type", world: {
+      compile(source, startRule: "type", world: {
         "JsAbstraction": abstraction
       })
 
@@ -90,7 +94,7 @@ describe "Parser#ad_type", ->
       undress: (adt)-> info.toString()
     })
     subject = ()->
-      Parser.parse(source, startRule: "type", factory: myFactory)
+      compile(source, startRule: "type", factory: myFactory)
 
     it 'should return a AdType', ->
       should(subject()).be.an.instanceof(AdType)
@@ -107,7 +111,7 @@ describe "Parser#ad_type", ->
       undress: (adt)-> info.toString()
     }})
     subject = ()->
-      Parser.parse(source, startRule: "type", factory: myFactory)
+      compile(source, startRule: "type", factory: myFactory)
 
     it 'should return a AdType', ->
       should(subject()).be.an.instanceof(AdType)

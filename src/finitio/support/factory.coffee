@@ -25,6 +25,12 @@ class TypeFactory
 
   @PUBLIC_DSL_METHODS: [
     'jsType',
+    #
+    'contract',
+    'constraint',
+    'attribute',
+    'heading',
+    #
     'alias',
     'any',
     'builtin',
@@ -35,6 +41,7 @@ class TypeFactory
     'set',
     'tuple',
     'relation',
+    'struct',
     'type'
   ]
 
