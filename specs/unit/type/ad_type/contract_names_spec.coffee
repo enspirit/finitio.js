@@ -1,19 +1,18 @@
-AdType         = require '../../../../src/finitio/type/ad_type'
-should         = require 'should'
+Contract    = require '../../../../src/finitio/support/contract'
+AdType      = require '../../../../src/finitio/type/ad_type'
+should      = require 'should'
 {intType,
-stringType}    = require '../../../spec_helpers'
+stringType} = require '../../../spec_helpers'
 
 
 describe "AdType#contractNames", ->
 
-  adtype = new AdType(Date, {
-    timestamp:  [intType,    Date, Date]
-    utc_string: [stringType, Date, Date]})
+  f = (arg)->
 
-  subject = adtype.contractNames()
+  adtype = new AdType(Date, [
+    Contract.explicit('timestamp', intType, f, f)
+    Contract.explicit('utc',       stringType, f, f)
+  ])
 
   it 'should be as expected', ->
-    subject.should.be.an.instanceof(Array)
-    subject.length.should.equal(2)
-    subject[0].should.equal('timestamp')
-    subject[1].should.equal('utc_string')
+    should(adtype.contractNames()).eql(['timestamp', 'utc'])

@@ -1,3 +1,4 @@
+Contract    = require '../../../../src/finitio/support/contract'
 AdType      = require '../../../../src/finitio/type/ad_type'
 {TypeError} = require '../../../../src/finitio/errors'
 should      = require 'should'
@@ -6,30 +7,28 @@ stringType} = require '../../../spec_helpers'
 
 describe "AdType#dress", ->
 
-  contracts = {
-    timestamp:  [intType,    ((i) -> i*2),   (d)-> null ]
-    utc_string: [stringType, ((s) -> "foo"), (d)-> null ]
-  }
+  f = (arg)->
+
+  contracts = [
+    Contract.explicit('timestamp', intType,    ((i) -> i*2),   f)
+    Contract.explicit('utc',       stringType, ((s) -> "foo"), f)
+  ]
 
   describe 'when not bound to a javascript type', ->
     type = new AdType(null, contracts)
 
-    subject = (arg) -> type.dress(arg)
-
     it 'with a string', ->
-      subject("bar").should.equal("foo")
+      type.dress("bar").should.equal("foo")
 
   describe 'when bound to a javascript type', ->
     type = new AdType(Date, contracts)
 
-    subject = (arg) -> type.dress(arg)
-
     it 'with a date', ->
       d = new Date()
-      subject(d).should.equal(d)
+      type.dress(d).should.equal(d)
 
     describe 'with an unrecognized', ->
-      lambda = -> subject []
+      lambda = -> type.dress([])
 
       it 'should raise an error', ->
         should(lambda).throw()
@@ -43,8 +42,9 @@ describe "AdType#dress", ->
         err.message.should.equal "Invalid value `[]` for Date"
 
     describe 'when the upper raises an error', ->
-      type = new AdType(Date,
-        timestamp: [intType, ((t) -> throw new Error), ((d)-> null)])
+      type = new AdType(Date, [
+        Contract.explicit('foo', intType, ((t) -> throw new Error), ((d)-> null))
+      ])
 
       it 'should hide the error', ->
 

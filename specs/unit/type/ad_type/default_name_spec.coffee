@@ -1,14 +1,17 @@
-AdType  = require '../../../../src/finitio/type/ad_type'
+Contract    = require '../../../../src/finitio/support/contract'
+AdType      = require '../../../../src/finitio/type/ad_type'
 should  = require 'should'
 {intType,
 stringType}    = require '../../../spec_helpers'
 
 describe "AdType#defaultName", ->
 
-  contracts = {
-    timestamp:  [intType,    Date, Date]
-    utc_string: [stringType, Date, Date]
-  }
+  f = (arg)->
+
+  contracts = [
+    Contract.explicit('timestamp', intType, f, f)
+    Contract.explicit('utc',       stringType, f, f)
+  ]
 
   it 'when not anonymous', ->
     type = new AdType(Date, contracts)

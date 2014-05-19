@@ -43,48 +43,14 @@
     return cs;
   }
 
-  // Extract dress/undress function from `from`
-  function extractExternalDressers(from) {
-    if (from && from.dress instanceof Function && from.undress instanceof Function) {
-      return [ from.dress, from.undress ];
-    } else {
-      error("Invalid information contractor `" + from + "`");
-    }
-  }
-
-  // Extract dress/undress internal functions from `from`
-  function extractInternalDressers(contractName, from) {
-    if (from && from[contractName] instanceof Function) {
-      var undName = 'to' + contractName.charAt(0).toUpperCase()
-                         + contractName.slice(1);
-      var undresser = function(value) {
-        return value[undName]();
-      }
-      return [ from[contractName], undresser ];
-    } else {
-      error("Invalid information contractor `" + from + "`");
-    }
-  }
-
-  // compile a [ name, type, [dress, undres]? ] to a contract representation
-  function compileContract(c, jsType) {
-    if (c[2] === null) {
-      if (jsType) {
-        c[2] = extractInternalDressers(c[0], jsType);
-      } else {
-        var identity = function(x){ return x; }
-        c[2] = [ identity, identity ];
-      }
-    }
-    return [ c[1], c[2][0], c[2][1] ];
-  }
-
-  // compile a [ [ name, type, [dress, undress]? ] ] to an object with
-  // contracts by name
+  // compile a [ [ ... ], ... ] to contracts
   function compileContracts(cs, jsType) {
-    var contracts = {};
+    var contracts = [];
     for (var i = 0; i<cs.length; i++) {
-      contracts[cs[i][0]] = compileContract(cs[i], jsType);
+      if (cs[i].length < 3 && jsType){
+        cs[i].push(jsType);
+      }
+      contracts.push(Factory.contract.apply(Factory, cs[i]));
     }
     return contracts;
   }
@@ -222,17 +188,14 @@ contracts =
   }
 
 contract =
-  '<' n:contract_name '>' spacing t:type spacing d:dressers? {
-    return [ n, t, d ];
+  '<' n:contract_name '>' spacing t:type spacing '\\' up:lambda_expr spacing '\\' down:lambda_expr {
+    return [ n, t, up, down ];
   }
-
-dressers =
-    '\\' up:lambda_expr spacing '\\' down:lambda_expr {
-      return [ up, down ];
-    }
-  / '.' t:builtin_type_name {
-    pair = Factory.jsType(t);
-    return extractExternalDressers(pair);
+/ '<' n:contract_name '>' spacing t:type spacing '.' b:builtin_type_name {
+    return [ n, t, Factory.jsType(b) ];
+  }
+/ '<' n:contract_name '>' spacing t:type {
+    return [ n, t ];
   }
 
 lambda_expr =

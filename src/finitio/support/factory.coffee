@@ -4,6 +4,7 @@ Type           = require '../type'
 Attribute      = require './attribute'
 Heading        = require './heading'
 Constraint     = require './constraint'
+Contract       = require './contract'
 $u             = require './utils'
 
 ## Types
@@ -150,16 +151,28 @@ class TypeFactory
     else
       fail("Heading expected, got", heading)
 
-  contracts: (contracts) ->
-    unless typeof contracts is "object"
-      fail("Hash expected, got", contracts)
+  contract: (name, type, dresser, undresser) ->
+    return name if name instanceof Contract
 
-    invalid = $u.filter($u.keys(contracts), (k) -> k instanceof String)
+    if undresser?
+      Contract.explicit(name, type, dresser, undresser)
+    else if dresser?
+      if dresser.dress && dresser.undress
+        Contract.external(name, type, dresser)
+      else
+        Contract.internal(name, type, dresser)
+    else
+      Contract.identity(name, type)
 
-    if invalid.length > 0
-      fail("Invalid contract names `#{invalid}`")
-
-    contracts
+  contracts: (cs)->
+    if $u.isArray(cs)
+      $u.map cs, ()=>
+        @contract.apply(this, arguments)
+    else if $u.isObject(cs)
+      $u.map cs, (value, name)=>
+        @contract.apply(this, [name, value[0], value[1], value[2]])
+    else
+      $u.argumentError("Array expected, got:", cs)
 
   ########################################################## Type generators
 
@@ -189,8 +202,7 @@ class TypeFactory
     primitive = @jsType(primitive) if primitive?
     contracts = @contracts(_contracts)
     _name     = @name(_name)
-
-    new AdType(primitive, _contracts, _name)
+    new AdType(primitive, contracts, _name)
 
 
   #### Sub and union

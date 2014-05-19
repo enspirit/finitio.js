@@ -1,3 +1,4 @@
+Contract     = require '../support/contract'
 DressHelper  = require '../support/dress_helper'
 Type         = require '../type'
 $u           = require '../support/utils'
@@ -9,23 +10,16 @@ class AdType extends Type
     if @jsType and not(@jsType instanceof Function)
       $u.argumentError("Constructor (function) expected, got:", @jsType)
 
-    unless typeof @contracts is "object"
-      $u.argumentError("Hash expected, got:", @contracts)
+    unless $u.isArray(@contracts)
+      $u.argumentError("[Contract] expected, got:", @contracts)
 
-    invalid = $u.reject($u.values(@contracts), (v) ->
-      v instanceof Array and
-        v.length == 3 and
-        v[0] instanceof Type and
-        v[1] instanceof Function and
-        v[2] instanceof Function)
-
-    unless invalid.length == 0
-      $u.argumentError("Invalid contracts:", invalid)
+    unless $u.every(@contracts, (c)-> c instanceof Contract)
+      $u.argumentError("[Contract] expected, got:", @contracts)
 
     super(@name)
 
   contractNames: ->
-    $u.keys(@contracts)
+    $u.map @contracts, (c)-> c.name
 
   defaultName: ->
     (@jsType && @jsType.name) || "Anonymous"
@@ -43,20 +37,14 @@ class AdType extends Type
     # the next candidate could be the good one! Return the
     # first successfully uped.
     uped = null
-    candidate = $u.find @contracts, (contract, name) ->
-      [infotype, upper] = contract
-
-      # First make the dress transformation on the information type
+    candidate = $u.find @contracts, (contract) ->
       [success, uped] = helper.justTry ->
-        infotype.dress(value, helper)
+        contract.infoType.dress(value, helper)
       return success
 
     if candidate?
-      [infoType, upper] = candidate
-      # Seems nice, just try to get one stage higher now
       [success, uped] = helper.justTry Error, ->
-        upper(uped)
-
+        candidate.dress(uped)
       return uped if success
 
     # No one succeeded, just fail
@@ -65,20 +53,17 @@ class AdType extends Type
   undress: (value, as) ->
     return value unless @jsType
 
-    infotype  = null
-    undresser = null
-
-    # locate what contract to use
+    candidate = null
     if $u.size(@contracts)==1
-      [infotype, dresser, undresser] = $u.values(@contracts)[0]
+      # if only one contract let it do its job
+      candidate = @contracts[0]
     else
-      $u.find @contracts, (contract, name) ->
-        [infotype, dresser, undresser] = contract
-        infotype.isSuperTypeOf(as)
+      # otherwise, find the good one
+      candidate = $u.find @contracts, (c) ->
+        c.infoType.isSuperTypeOf(as)
 
-    # undress if found
-    if undresser?
-      infotype.undress(undresser(value), as)
+    if candidate?
+      candidate.infoType.undress(candidate.undress(value), as)
     else
       super
 
