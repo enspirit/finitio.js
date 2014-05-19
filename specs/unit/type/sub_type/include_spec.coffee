@@ -12,14 +12,14 @@ describe "SubType#include", ->
 
   subject = (arg) -> type.include(arg)
 
-  describe 'when included on int', ->
+  it 'when included on int', ->
     subject(12).should.be.true
 
-  describe 'when not included on int (I)', ->
+  it 'when not included on int (I)', ->
     subject(-12).should.be.false
 
-  describe 'when not included on int (II)', ->
+  it 'when not included on int (II)', ->
     subject(255).should.be.false
 
-  describe 'when not included', ->
+  it 'when not included', ->
     subject("12").should.be.false

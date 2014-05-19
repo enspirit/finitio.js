@@ -16,7 +16,7 @@ describe "AdType#dress", ->
 
     subject = (arg) -> type.dress(arg)
 
-    describe 'with a string', ->
+    it 'with a string', ->
       subject("bar").should.equal("foo")
 
   describe 'when bound to a javascript type', ->
@@ -24,15 +24,9 @@ describe "AdType#dress", ->
 
     subject = (arg) -> type.dress(arg)
 
-    describe 'with a date', ->
+    it 'with a date', ->
       d = new Date()
       subject(d).should.equal(d)
-
-    describe 'with an integer', ->
-      subject(12).should.equal(24)
-
-    describe 'with a string', ->
-      subject("bar").should.equal("foo")
 
     describe 'with an unrecognized', ->
       lambda = -> subject []

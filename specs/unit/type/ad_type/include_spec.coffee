@@ -5,8 +5,8 @@ describe "AdType#include", ->
 
   type = new AdType(Date, {})
 
-  describe 'when not included', ->
+  it 'when not included', ->
     type.include("12").should.be.false
 
-  describe 'when included', ->
+  it 'when included', ->
     type.include(new Date()).should.be.true

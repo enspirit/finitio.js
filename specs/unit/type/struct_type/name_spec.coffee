@@ -10,12 +10,12 @@ describe "StructType#name", ->
   subject = ->
     type.name
 
-  context 'when not provided', ->
+  it 'when not provided', ->
     type = new StructType([intType])
 
     subject().should.equal("<intType>")
 
-  context 'when provided', ->
+  it 'when provided', ->
     type = new StructType([intType], "myStruct")
 
     subject().should.equal("myStruct")

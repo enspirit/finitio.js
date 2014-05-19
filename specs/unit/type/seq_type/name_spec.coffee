@@ -5,12 +5,12 @@ should    = require 'should'
 
 describe "SeqType#name", ->
 
-  describe 'when not specified', ->
+  it 'when not specified', ->
     type = new SeqType(intType)
 
     type.name.should.equal('[intType]')
 
-  describe 'when specified', ->
+  it 'when specified', ->
     type = new SeqType(intType, "foo")
 
     type.name.should.equal('foo')

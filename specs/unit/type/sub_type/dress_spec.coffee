@@ -14,7 +14,7 @@ describe "SubType#dress", ->
   factor = (arg) ->
     type.dress(arg)
 
-  describe 'with a valid Number', ->
+  it 'with a valid Number', ->
     factor(12).should.equal(12)
 
   describe 'when raising an Error', ->

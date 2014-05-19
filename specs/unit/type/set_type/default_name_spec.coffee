@@ -4,6 +4,7 @@ should          = require 'should'
 
 describe "SetType#defaultName", ->
 
-  type = new SetType(intType, "foo")
-  subject = type.defaultName()
-  subject.should.equal('{intType}')
+  it 'works', ->
+    type = new SetType(intType, "foo")
+    subject = type.defaultName()
+    subject.should.equal('{intType}')

@@ -8,8 +8,8 @@ describe "BuiltinType#include", ->
 
   subject = (arg) -> type.include(arg)
 
-  describe 'when not included', ->
+  it 'when not included', ->
     subject("12").should.be.false
 
-  describe 'when included', ->
+  it 'when included', ->
     subject(12).should.be.true

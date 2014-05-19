@@ -7,10 +7,10 @@ describe "Heading#constructor", ->
 
   subject = (attributes) -> new Heading(attributes)
 
-  describe 'with no attribute', ->
+  it 'with no attribute', ->
     subject([]).should.be.an.instanceof Heading
 
-  describe 'with valid attributes', ->
+  it 'with valid attributes', ->
     attrs = [ new Attribute('red', intType) ]
     subject(attrs).should.be.an.instanceof Heading
 

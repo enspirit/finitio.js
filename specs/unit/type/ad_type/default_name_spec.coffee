@@ -10,12 +10,12 @@ describe "AdType#defaultName", ->
     utc_string: [stringType, Date, Date]
   }
 
-  describe 'when not anonymous', ->
+  it 'when not anonymous', ->
     type = new AdType(Date, contracts)
 
     type.name.should.equal('Date')
 
-  describe 'when anonymous', ->
+  it 'when anonymous', ->
     type = new AdType(null, contracts)
 
     type.name.should.equal('Anonymous')

@@ -9,11 +9,11 @@ describe "UnionType#include", ->
 
   subject = (arg) -> type.include(arg)
 
-  describe 'when not included', ->
+  it 'when not included', ->
     subject("12").should.be.false
 
-  describe 'when included on int', ->
+  it 'when included on int', ->
     subject(12).should.be.true
 
-  describe 'when included on float', ->
+  it 'when included on float', ->
     subject(12.0).should.be.true

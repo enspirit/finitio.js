@@ -10,15 +10,15 @@ describe "SeqType#dress", ->
 
   subject = (arg) -> type.dress(arg)
 
-  describe 'with an empty array', ->
+  it 'with an empty array', ->
     res = subject([])
     _.isEqual(res, []).should.be.true
 
-  describe 'with a valid array', ->
+  it 'with a valid array', ->
     res = subject([12, 16])
     _.isEqual(res, [12, 16]).should.be.true
 
-  describe 'with something else than array', ->
+  it 'with something else than array', ->
     lambda = -> subject("foo")
 
     should(lambda).throw()
@@ -29,7 +29,7 @@ describe "SeqType#dress", ->
       e.should.be.an.instanceof(TypeError)
       e.message.should.equal("Invalid value `foo` for [Byte]")
 
-  describe 'with an array with non bytes', ->
+  it 'with an array with non bytes', ->
     arg = [2, 4, -12]
 
     subject =

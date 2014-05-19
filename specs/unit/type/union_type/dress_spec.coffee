@@ -9,11 +9,11 @@ describe "UnionType#dress", ->
   # Let's reinvent JS' Number, shall we?
   type = new UnionType([intType, floatType], "union")
 
-  describe 'with an Integer', ->
+  it 'with an Integer', ->
     subject = type.dress(12)
     subject.should.equal(12)
 
-  describe 'with a Float', ->
+  it 'with a Float', ->
     subject = type.dress(3.14)
     subject.should.equal(3.14)
 

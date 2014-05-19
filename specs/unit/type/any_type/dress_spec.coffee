@@ -10,16 +10,16 @@ describe "AnyType#dress", ->
   subject = (arg) ->
     type.dress(arg)
 
-  describe 'with a Number', ->
+  it 'with a Number', ->
     subject(42).should.equal(42)
 
-  describe 'with a String', ->
+  it 'with a String', ->
     subject("foo").should.equal("foo")
 
-  describe 'with null', ->
+  it 'with null', ->
     res = subject(null)
     should(res).eql(null)
 
-  describe 'with undefined', ->
+  it 'with undefined', ->
     res = subject(undefined)
     should(res).eql(undefined)

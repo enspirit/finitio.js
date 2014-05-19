@@ -8,18 +8,16 @@ describe "SetType#dress", ->
 
   type = new SetType(byteType)
 
-  subject = (arg) -> type.dress(arg)
+  it 'with an empty array', ->
+    res = type.dress([])
+    should(res).eql([])
 
-  describe 'with an empty array', ->
-    res = subject([])
-    _.isEqual(res, []).should.be.true
+  it 'with a valid array', ->
+    res = type.dress([12, 16])
+    should(res).eql([12, 16])
 
-  describe 'with a valid array', ->
-    res = subject([12, 16])
-    _.isEqual(res, [12, 16]).should.be.true
-
-  describe 'with something else than array', ->
-    lambda = -> subject("foo")
+  it 'with something else than array', ->
+    lambda = -> type.dress("foo")
 
     should(lambda).throw()
 
@@ -29,36 +27,30 @@ describe "SetType#dress", ->
       e.should.be.an.instanceof(TypeError)
       e.message.should.equal("Invalid value `foo` for {Byte}")
 
-  describe 'when invalid', ->
+  describe 'with an array with non bytes', ->
+    subject =
+      try
+        type.dress([2, 4, -12])
+      catch e
+        e
 
-    describe 'with an array with non bytes', ->
-      arg = [2, 4, -12]
+    it 'should raise an error', ->
+      subject.should.be.an.instanceof(TypeError)
+      subject.message.should.equal("Invalid value `-12` for Byte")
 
-      subject =
-        try
-          type.dress(arg)
-        catch e
-          e
+    it 'should have correct location', ->
+      subject.location.should.equal("2")
 
-      it 'should raise an error', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `-12` for Byte")
+  describe 'with an array with duplicates', ->
+    subject2 =
+      try
+        type.dress([2, 4, 2])
+      catch e
+        e
 
-      it 'should have correct location', ->
-        subject.location.should.equal("2")
+    it 'should raise an error', ->
+      subject2.should.be.an.instanceof(TypeError)
+      subject2.message.should.equal("Duplicate value `2`")
 
-    describe 'with an array with duplicates', ->
-      arg2 = [2, 4, 2]
-
-      subject2 =
-        try
-          type.dress(arg2)
-        catch e
-          e
-
-      it 'should raise an error', ->
-        subject2.should.be.an.instanceof(TypeError)
-        subject2.message.should.equal("Duplicate value `2`")
-
-      it 'should have correct location', ->
-        subject2.location.should.equal("2")
+    it 'should have correct location', ->
+      subject2.location.should.equal("2")

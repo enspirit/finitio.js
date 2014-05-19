@@ -13,10 +13,10 @@ describe "BuiltinType#dress", ->
     should(-> type.dress(null)).throw(new TypeError("Invalid value `null` for num"))
     should(-> type.dress()).throw(new TypeError("Invalid value `undefined` for num"))
 
-  describe 'with an integer', ->
+  it 'with an integer', ->
     subject(12).should.equal(12)
 
-  describe 'with a float', ->
+  it 'with a float', ->
     subject(3.14).should.equal(3.14)
 
   describe 'with a String', ->

@@ -9,14 +9,14 @@ describe "SeqType#include", ->
 
   subject = (arg) -> type.include(arg)
 
-  describe 'when included on empty array', ->
+  it 'when included on empty array', ->
     subject([]).should.be.true
 
-  describe 'when included on non empty array', ->
+  it 'when included on non empty array', ->
     subject([12]).should.be.true
 
-  describe 'when not an array', ->
+  it 'when not an array', ->
     subject({}).should.be.false
 
-  describe 'when an array with non ints', ->
+  it 'when an array with non ints', ->
     subject([12, "foo"]).should.be.false

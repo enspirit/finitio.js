@@ -8,14 +8,14 @@ describe "Heading#toName", ->
 
   subject = (attributes) -> new Heading(attributes).toName()
 
-  describe 'with no attribute', ->
+  it 'with no attribute', ->
     subject([]).should.equal('')
 
-  describe 'with one attribute', ->
+  it 'with one attribute', ->
     attributes = [ new Attribute('red', intType) ]
     subject(attributes).should.equal('red: intType')
 
-  describe 'with multiple attributes', ->
+  it 'with multiple attributes', ->
     attributes = [
         new Attribute('red', intType),
         new Attribute('blue', floatType)
