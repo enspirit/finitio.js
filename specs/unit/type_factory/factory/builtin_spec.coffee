@@ -1,4 +1,4 @@
-TypeFactory = require '../../../../src/support/factory'
+TypeFactory = require '../../../../src/finitio/support/factory'
 should      = require 'should'
 {numType}   = require '../../../spec_helpers'
 

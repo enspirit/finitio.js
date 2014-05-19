@@ -1,4 +1,4 @@
-AdType         = require '../../../../src/type/ad_type'
+AdType         = require '../../../../src/finitio/type/ad_type'
 should         = require 'should'
 {intType,
 stringType}    = require '../../../spec_helpers'

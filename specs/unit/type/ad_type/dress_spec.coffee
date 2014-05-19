@@ -1,5 +1,5 @@
-AdType      = require '../../../../src/type/ad_type'
-{TypeError} = require '../../../../src/errors'
+AdType      = require '../../../../src/finitio/type/ad_type'
+{TypeError} = require '../../../../src/finitio/errors'
 should      = require 'should'
 {intType,
 stringType} = require '../../../spec_helpers'

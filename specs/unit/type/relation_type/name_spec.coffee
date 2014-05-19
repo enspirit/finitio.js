@@ -1,6 +1,6 @@
-Attribute          = require '../../../../src/support/attribute'
-Heading            = require '../../../../src/support/heading'
-RelationType       = require '../../../../src/type/relation_type'
+Attribute          = require '../../../../src/finitio/support/attribute'
+Heading            = require '../../../../src/finitio/support/heading'
+RelationType       = require '../../../../src/finitio/type/relation_type'
 {byteType}         = require '../../../spec_helpers'
 should             = require 'should'
 

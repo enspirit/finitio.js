@@ -1,8 +1,8 @@
-Parser           = require '../../../src/syntax/parser'
-BuiltinType      = require '../../../src/type/builtin_type'
-TupleType        = require '../../../src/type/tuple_type'
-Heading          = require '../../../src/support/heading'
-Attribute        = require '../../../src/support/attribute'
+Parser           = require '../../../src/finitio/syntax/parser'
+BuiltinType      = require '../../../src/finitio/type/builtin_type'
+TupleType        = require '../../../src/finitio/type/tuple_type'
+Heading          = require '../../../src/finitio/support/heading'
+Attribute        = require '../../../src/finitio/support/attribute'
 should           = require 'should'
 
 describe "Parser#tuple_type", ->

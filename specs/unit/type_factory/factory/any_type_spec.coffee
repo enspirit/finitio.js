@@ -1,5 +1,5 @@
-TypeFactory = require '../../../../src/support/factory'
-AnyType     = require '../../../../src/type/any_type'
+TypeFactory = require '../../../../src/finitio/support/factory'
+AnyType     = require '../../../../src/finitio/type/any_type'
 should      = require 'should'
 
 describe "TypeFactory#any", ->

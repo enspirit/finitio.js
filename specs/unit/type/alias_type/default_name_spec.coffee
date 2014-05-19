@@ -1,4 +1,4 @@
-AliasType       = require '../../../../src/type/alias_type'
+AliasType       = require '../../../../src/finitio/type/alias_type'
 should          = require 'should'
 {intType}       = require '../../../spec_helpers'
 

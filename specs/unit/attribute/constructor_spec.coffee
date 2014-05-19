@@ -1,4 +1,4 @@
-Attribute = require '../../../src/support/attribute'
+Attribute = require '../../../src/finitio/support/attribute'
 should    = require 'should'
 {intType} = require '../../spec_helpers'
 

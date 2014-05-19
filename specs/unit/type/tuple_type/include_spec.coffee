@@ -1,6 +1,6 @@
-Attribute        = require '../../../../src/support/attribute'
-Heading          = require '../../../../src/support/heading'
-TupleType        = require '../../../../src/type/tuple_type'
+Attribute        = require '../../../../src/finitio/support/attribute'
+Heading          = require '../../../../src/finitio/support/heading'
+TupleType        = require '../../../../src/finitio/type/tuple_type'
 {intType}        = require '../../../spec_helpers'
 should           = require 'should'
 

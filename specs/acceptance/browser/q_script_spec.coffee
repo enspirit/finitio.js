@@ -1,7 +1,7 @@
-Finitio     = require '../../../src/finitio'
-$u          = require '../../../src/support/utils'
+Finitio = require '../../../src/finitio'
+$u      = Finitio.Utils
 
-# Skip the whole suite if not running in a browser
+# Skip the whole suite if not running in a browser
 # TODO: use zombie when the suite is running on node.js
 describe_suite = if $u.isBrowser() then describe else describe.skip
 

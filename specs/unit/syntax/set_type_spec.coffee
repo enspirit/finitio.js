@@ -1,6 +1,6 @@
-Parser      = require '../../../src/syntax/parser'
-SetType     = require '../../../src/type/set_type'
-BuiltinType = require '../../../src/type/builtin_type'
+Parser      = require '../../../src/finitio/syntax/parser'
+SetType     = require '../../../src/finitio/type/set_type'
+BuiltinType = require '../../../src/finitio/type/builtin_type'
 should      = require 'should'
 
 describe "Parser#set_type", ->

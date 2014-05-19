@@ -1,4 +1,4 @@
-$u      = require '../../../../src/support/utils'
+$u      = require '../../../../src/finitio/support/utils'
 should  = require 'should'
 
 describe "Utils.collection#reject", ->

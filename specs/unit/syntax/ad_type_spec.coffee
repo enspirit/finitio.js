@@ -1,5 +1,5 @@
-Parser  = require '../../../src/syntax/parser'
-AdType  = require '../../../src/type/ad_type'
+Parser  = require '../../../src/finitio/syntax/parser'
+AdType  = require '../../../src/finitio/type/ad_type'
 should  = require 'should'
 
 describe "Parser#ad_type", ->

@@ -1,7 +1,7 @@
 Finitio     = require '../../../src/finitio'
-System      = require '../../../src/system'
-Type        = require '../../../src/type'
-BuiltinType = require '../../../src/type/builtin_type'
+System      = require '../../../src/finitio/system'
+Type        = require '../../../src/finitio/type'
+BuiltinType = require '../../../src/finitio/type/builtin_type'
 
 should      = require 'should'
 

@@ -1,6 +1,6 @@
-Attribute   = require '../../../../src/support/attribute'
-TypeFactory = require '../../../../src/support/factory'
-BuiltinType = require '../../../../src/type/builtin_type'
+Attribute   = require '../../../../src/finitio/support/attribute'
+TypeFactory = require '../../../../src/finitio/support/factory'
+BuiltinType = require '../../../../src/finitio/type/builtin_type'
 should      = require 'should'
 {intType}   = require '../../../spec_helpers'
 

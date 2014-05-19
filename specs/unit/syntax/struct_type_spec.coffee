@@ -1,6 +1,6 @@
-Parser      = require '../../../src/syntax/parser'
-StructType  = require '../../../src/type/struct_type'
-BuiltinType = require '../../../src/type/builtin_type'
+Parser      = require '../../../src/finitio/syntax/parser'
+StructType  = require '../../../src/finitio/type/struct_type'
+BuiltinType = require '../../../src/finitio/type/builtin_type'
 should      = require 'should'
 {numType,
 stringType}  = require '../../spec_helpers'

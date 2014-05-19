@@ -1,5 +1,5 @@
-Attribute   = require '../../../src/support/attribute'
-BuiltinType = require '../../../src/type/builtin_type'
+Attribute   = require '../../../src/finitio/support/attribute'
+BuiltinType = require '../../../src/finitio/type/builtin_type'
 should      = require 'should'
 
 describe "Attribute#equality", ->

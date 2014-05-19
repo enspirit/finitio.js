@@ -1,5 +1,5 @@
-StructType  = require '../../../../src/type/struct_type'
-{TypeError} = require '../../../../src/errors'
+StructType  = require '../../../../src/finitio/type/struct_type'
+{TypeError} = require '../../../../src/finitio/errors'
 _           = require 'underscore'
 should      = require 'should'
 {intType,

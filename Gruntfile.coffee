@@ -109,8 +109,8 @@ module.exports = (grunt) ->
     # Build the parser from .pegjs in src/ to .js in build/src
     peg:
       build:
-        src: "src/syntax/parser.pegjs"
-        dest: "build/src/syntax/parser.js"
+        src: "src/finitio/syntax/parser.pegjs"
+        dest: "build/src/finitio/syntax/parser.js"
         options:
           cache: true
           allowedStartRules: [ 'system', 'type', 'attribute', 'heading' ]

@@ -1,8 +1,8 @@
 Finitio     = require '../../src/finitio'
-Type        = require '../../src/type'
-SubType     = require '../../src/type/sub_type'
-System      = require '../../src/system'
-{TypeError} = require '../../src/errors'
+Type        = require '../../src/finitio/type'
+SubType     = require '../../src/finitio/type/sub_type'
+System      = require '../../src/finitio/system'
+{TypeError} = require '../../src/finitio/errors'
 
 should   = require 'should'
 

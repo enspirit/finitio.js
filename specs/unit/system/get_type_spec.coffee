@@ -1,5 +1,5 @@
-System      = require '../../../src/system'
-TupleType   = require '../../../src/type/tuple_type'
+System      = require '../../../src/finitio/system'
+TupleType   = require '../../../src/finitio/type/tuple_type'
 {numType}   = require '../../spec_helpers'
 should      = require 'should'
 

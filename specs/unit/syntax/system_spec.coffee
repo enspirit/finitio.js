@@ -1,6 +1,6 @@
-Parser      = require '../../../src/syntax/parser'
-System      = require '../../../src/system'
-BuiltinType = require '../../../src/type/builtin_type'
+Parser      = require '../../../src/finitio/syntax/parser'
+System      = require '../../../src/finitio/system'
+BuiltinType = require '../../../src/finitio/type/builtin_type'
 should      = require 'should'
 
 describe "Parser#system", ->

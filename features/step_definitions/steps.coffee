@@ -1,7 +1,7 @@
-Finitio     = require '../../build/src/finitio'
-{TypeError} = require '../../build/src/errors'
-System      = require '../../build/src/system'
-should      = require 'should'
+Finitio   = require '../../build/src/finitio'
+TypeError = Finitio.TypeError
+System    = Finitio.System
+should    = require 'should'
 
 # Global variables for steps below
 TestSystem     = null

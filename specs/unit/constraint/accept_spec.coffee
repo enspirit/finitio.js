@@ -1,4 +1,4 @@
-Constraint = require '../../../src/support/constraint'
+Constraint = require '../../../src/finitio/support/constraint'
 should     = require 'should'
 
 describe "Constraint#accept", ->

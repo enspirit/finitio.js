@@ -1,4 +1,4 @@
-AnyType = require '../../../../src/type/any_type'
+AnyType = require '../../../../src/finitio/type/any_type'
 should  = require 'should'
 
 describe "AnyType#constructor", ->

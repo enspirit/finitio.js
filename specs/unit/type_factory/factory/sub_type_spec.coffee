@@ -1,8 +1,8 @@
-TypeFactory = require '../../../../src/support/factory'
-Constraint  = require '../../../../src/support/constraint'
-{TypeError} = require '../../../../src/errors'
-BuiltinType = require '../../../../src/type/builtin_type'
-SubType     = require '../../../../src/type/sub_type'
+TypeFactory = require '../../../../src/finitio/support/factory'
+Constraint  = require '../../../../src/finitio/support/constraint'
+{TypeError} = require '../../../../src/finitio/errors'
+BuiltinType = require '../../../../src/finitio/type/builtin_type'
+SubType     = require '../../../../src/finitio/type/sub_type'
 should      = require 'should'
 {numType}   = require '../../../spec_helpers'
 

@@ -1,5 +1,5 @@
-Attribute  = require '../../../src/support/attribute'
-Heading    = require '../../../src/support/heading'
+Attribute = require '../../../src/finitio/support/attribute'
+Heading   = require '../../../src/finitio/support/heading'
 should     = require 'should'
 {intType,
 floatType,

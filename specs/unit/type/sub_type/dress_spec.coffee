@@ -1,6 +1,6 @@
-Constraint  = require '../../../../src/support/constraint'
-SubType     = require '../../../../src/type/sub_type'
-{TypeError} = require '../../../../src/errors'
+Constraint  = require '../../../../src/finitio/support/constraint'
+SubType     = require '../../../../src/finitio/type/sub_type'
+{TypeError} = require '../../../../src/finitio/errors'
 should      = require 'should'
 {numType}   = require '../../../spec_helpers'
 

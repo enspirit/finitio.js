@@ -1,4 +1,4 @@
-SetType         = require '../../../../src/type/set_type'
+SetType         = require '../../../../src/finitio/type/set_type'
 should          = require 'should'
 {intType}       = require '../../../spec_helpers'
 

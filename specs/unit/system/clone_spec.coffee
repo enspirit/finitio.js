@@ -1,4 +1,4 @@
-System      = require '../../../src/system'
+System      = require '../../../src/finitio/system'
 should      = require 'should'
 {numType,
 stringType} = require '../../spec_helpers'

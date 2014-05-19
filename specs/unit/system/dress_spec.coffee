@@ -1,6 +1,6 @@
 Finitio         = require '../../../src/finitio'
-{TypeError} = require '../../../src/errors'
-System      = require '../../../src/system'
+{TypeError} = require '../../../src/finitio/errors'
+System      = require '../../../src/finitio/system'
 should      = require 'should'
 
 describe 'System#dress', ->

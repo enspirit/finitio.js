@@ -1,6 +1,6 @@
 Finitio = require '../../../src/finitio'
-System  = require '../../../src/system'
-Type    = require '../../../src/type'
+System  = require '../../../src/finitio/system'
+Type    = require '../../../src/finitio/type'
 should  = require 'should'
 
 describe 'System#parse', ->

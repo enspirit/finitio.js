@@ -1,5 +1,5 @@
-AnyType     = require '../../../../src/type/any_type'
-{TypeError} = require '../../../../src/errors'
+AnyType     = require '../../../../src/finitio/type/any_type'
+{TypeError} = require '../../../../src/finitio/errors'
 
 should = require("should")
 

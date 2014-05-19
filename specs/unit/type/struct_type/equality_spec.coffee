@@ -1,4 +1,4 @@
-StructType  = require '../../../../src/type/struct_type'
+StructType  = require '../../../../src/finitio/type/struct_type'
 _           = require 'underscore'
 should      = require 'should'
 {intType,

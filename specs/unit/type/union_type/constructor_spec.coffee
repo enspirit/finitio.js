@@ -1,4 +1,4 @@
-UnionType       = require '../../../../src/type/union_type'
+UnionType       = require '../../../../src/finitio/type/union_type'
 should          = require 'should'
 _               = require 'underscore'
 {intType,

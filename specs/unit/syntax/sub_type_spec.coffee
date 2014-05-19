@@ -1,7 +1,7 @@
-Parser      = require '../../../src/syntax/parser'
-Constraint  = require '../../../src/support/constraint'
-BuiltinType = require '../../../src/type/builtin_type'
-SubType     = require '../../../src/type/sub_type'
+Parser      = require '../../../src/finitio/syntax/parser'
+Constraint  = require '../../../src/finitio/support/constraint'
+BuiltinType = require '../../../src/finitio/type/builtin_type'
+SubType     = require '../../../src/finitio/type/sub_type'
 should      = require 'should'
 
 describe "Parser#sub_type", ->

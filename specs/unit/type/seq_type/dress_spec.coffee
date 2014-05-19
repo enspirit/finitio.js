@@ -1,5 +1,5 @@
-SeqType     = require '../../../../src/type/seq_type'
-{TypeError} = require '../../../../src/errors'
+SeqType     = require '../../../../src/finitio/type/seq_type'
+{TypeError} = require '../../../../src/finitio/errors'
 _           = require 'underscore'
 should      = require 'should'
 {byteType}  = require '../../../spec_helpers'

@@ -1,5 +1,5 @@
-Constraint  = require '../../../../src/support/constraint'
-SubType     = require '../../../../src/type/sub_type'
+Constraint  = require '../../../../src/finitio/support/constraint'
+SubType     = require '../../../../src/finitio/type/sub_type'
 should      = require 'should'
 {numType}   = require '../../../spec_helpers'
 

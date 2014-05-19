@@ -1,6 +1,6 @@
-Parser      = require '../../../src/syntax/parser'
-AnyType     = require '../../../src/type/any_type'
-should      = require 'should'
+Parser  = require '../../../src/finitio/syntax/parser'
+AnyType = require '../../../src/finitio/type/any_type'
+should  = require 'should'
 
 describe "Parser#any_type", ->
 

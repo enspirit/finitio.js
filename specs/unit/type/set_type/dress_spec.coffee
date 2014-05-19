@@ -1,5 +1,5 @@
-SetType     = require '../../../../src/type/set_type'
-{TypeError} = require '../../../../src/errors'
+SetType     = require '../../../../src/finitio/type/set_type'
+{TypeError} = require '../../../../src/finitio/errors'
 _           = require 'underscore'
 should      = require 'should'
 {byteType}  = require '../../../spec_helpers'

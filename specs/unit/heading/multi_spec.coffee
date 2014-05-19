@@ -1,6 +1,6 @@
-Attribute   = require '../../../src/support/attribute'
-Heading     = require '../../../src/support/heading'
-BuiltinType = require '../../../src/type/builtin_type'
+Attribute = require '../../../src/finitio/support/attribute'
+Heading   = require '../../../src/finitio/support/heading'
+BuiltinType = require '../../../src/finitio/type/builtin_type'
 should      = require 'should'
 {intType}   = require '../../spec_helpers'
 

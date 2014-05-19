@@ -1,5 +1,5 @@
-Constraint  = require '../../../../src/support/constraint'
-TypeFactory = require '../../../../src/support/factory'
+Constraint  = require '../../../../src/finitio/support/constraint'
+TypeFactory = require '../../../../src/finitio/support/factory'
 should      = require 'should'
 
 describe 'TypeFactory#constraint', ->

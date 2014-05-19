@@ -1,6 +1,6 @@
-Parser      = require '../../../src/syntax/parser'
-UnionType   = require '../../../src/type/union_type'
-BuiltinType = require '../../../src/type/builtin_type'
+Parser      = require '../../../src/finitio/syntax/parser'
+UnionType   = require '../../../src/finitio/type/union_type'
+BuiltinType = require '../../../src/finitio/type/builtin_type'
 should      = require 'should'
 
 describe "Parser#union_type", ->

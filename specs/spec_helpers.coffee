@@ -1,6 +1,6 @@
-Constraint   = require '../src/support/constraint'
-BuiltinType  = require '../src/type/builtin_type'
-SubType      = require '../src/type/sub_type'
+Constraint   = require '../src/finitio/support/constraint'
+BuiltinType  = require '../src/finitio/type/builtin_type'
+SubType      = require '../src/finitio/type/sub_type'
 _            = require 'underscore'
 
 # Builtins

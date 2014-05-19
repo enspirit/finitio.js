@@ -1,7 +1,7 @@
-Attribute         = require '../../../../src/support/attribute'
-Heading           = require '../../../../src/support/heading'
-TupleType         = require '../../../../src/type/tuple_type'
-{TypeError}       = require '../../../../src/errors'
+Attribute         = require '../../../../src/finitio/support/attribute'
+Heading           = require '../../../../src/finitio/support/heading'
+TupleType         = require '../../../../src/finitio/type/tuple_type'
+{TypeError}       = require '../../../../src/finitio/errors'
 should            = require 'should'
 {intType}         = require '../../../spec_helpers'
 

@@ -1,5 +1,5 @@
-BuiltinType = require '../../../../src/type/builtin_type'
-{TypeError} = require '../../../../src/errors'
+BuiltinType = require '../../../../src/finitio/type/builtin_type'
+{TypeError} = require '../../../../src/finitio/errors'
 should      = require 'should'
 
 describe 'BuiltinType#name', ->
