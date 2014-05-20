@@ -1,4 +1,4 @@
-Parser      = require '../../../src/finitio/parser'
+Parser      = require '../../../../src/finitio/parser'
 should      = require 'should'
 
 describe "Parser#real_literal", ->
