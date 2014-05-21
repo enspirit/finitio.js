@@ -18,6 +18,9 @@ class Contract
       console.log(@undresser)
       $u.argumentError("Function expected, got:", @undresser)
 
+  fetchType: ()->
+    @infoType
+
   dress: (value, helper)->
     @dresser(value)
 

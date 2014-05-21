@@ -14,7 +14,7 @@ describe 'TypeFactory#proxy', ->
 
     it 'builds the type', ->
       should(subject).be.an.instanceof(ProxyType)
-      should(subject.targetName).equal('base')
+      should(subject.targetPath).equal('base')
       should(subject.target).equal(null)
       should(subject.name).equal('base')
 
@@ -23,6 +23,6 @@ describe 'TypeFactory#proxy', ->
 
     it 'builds the type', ->
       should(subject).be.an.instanceof(ProxyType)
-      should(subject.targetName).equal('base')
+      should(subject.targetPath).equal('base')
       should(subject.target).equal(null)
       should(subject.name).equal("foo")

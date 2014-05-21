@@ -86,6 +86,12 @@ class Type
     false
 
   #
+  # Returns this
+  #
+  fetchType: ()->
+    this
+
+  #
   # Returns true for fake types, false otherwise.
   #
   # Fake types are Alias and Proxy.

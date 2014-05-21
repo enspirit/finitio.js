@@ -13,9 +13,9 @@ class Compiler
     @proxies = {}
 
     # Install delegation to system
-    this.addType = @system.addType.bind(@system)
-    this.getType = @system.getType.bind(@system)
-    this.fetch   = @system.fetch.bind(@system)
+    this.addType   = @system.addType.bind(@system)
+    this.fetch     = @system.fetch.bind(@system)
+    this.fetchPath = @system.fetchPath.bind(@system)
 
   compile: (source, options)->
     options ?= {}
@@ -40,9 +40,9 @@ class Compiler
       @alias(type, name, metadata)
 
   typeRef: (name)->
-    type  = @getType(name)
-    type ?= @proxy(name)
-    type
+    fetched = @fetchPath name, ()=>
+      @proxy(name)
+    fetched.fetchType()
 
   resolveProxies: ()->
     $u.each @proxies, (proxy, name)=>

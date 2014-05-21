@@ -29,8 +29,8 @@ describe "Parser#system", ->
       subject.should.be.an.instanceof(System)
 
     it 'should have a type', ->
-      subject.getType('Str').should.be.an.instanceof(BuiltinType)
-      subject.getType('Str').name.should.equal('Str')
+      subject.fetch('Str').should.be.an.instanceof(BuiltinType)
+      subject.fetch('Str').name.should.equal('Str')
 
     it 'should have a main type', ->
       subject.main.should.be.an.instanceof(BuiltinType)
@@ -42,8 +42,8 @@ describe "Parser#system", ->
       subject.should.be.an.instanceof(System)
 
     it 'should have the types', ->
-      subject.getType('Str').should.be.an.instanceof(BuiltinType)
-      subject.getType('Int').should.be.an.instanceof(BuiltinType)
+      subject.fetch('Str').should.be.an.instanceof(BuiltinType)
+      subject.fetch('Int').should.be.an.instanceof(BuiltinType)
 
     it 'should have no main type', ->
       should(subject.main).be.null

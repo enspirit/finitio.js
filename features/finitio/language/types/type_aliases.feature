@@ -17,4 +17,3 @@ Feature: Support for type aliases
       Alias     = Timestamp/epoch
       """
     Then it compiles fine
-

@@ -21,6 +21,9 @@ class Attribute
     unless typeof @required == "boolean"
       $u.argumentError("Boolean expected for required, got:", @mandatory)
 
+  fetchType: ()->
+    @type
+
   fetchOn: (arg, callback) ->
     unless typeof arg == "object"
       $u.argumentError("Object expected, got:", arg)

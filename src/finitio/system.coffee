@@ -1,3 +1,4 @@
+Fetchable   = require './support/fetchable'
 $u          = require './support/utils'
 Type        = require './type'
 TypeFactory = require './support/factory'
@@ -21,6 +22,8 @@ class System
     for method in TypeFactory.PUBLIC_DSL_METHODS
       this[method] = @factory[method].bind(@factory)
 
+  Fetchable this, "types", "type"
+
   setMain: (main)->
     if @main?
       throw new Error("Main type already set")
@@ -36,17 +39,6 @@ class System
 
     @types[type.name] = type
     this[type.name] = type
-
-  getType: (name) ->
-    @types[name]
-
-  fetch: (name, callback) ->
-    return @types[name] if @types[name]?
-
-    unless callback?
-      throw new Error("No such type `#{name}`")
-
-    callback()
 
   merge: (other) ->
     unless other instanceof System

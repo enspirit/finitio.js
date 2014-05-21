@@ -221,8 +221,8 @@ builtin_type =
   }
 
 type_ref =
-  n:type_name {
-    return compiler.typeRef(n);
+  p:type_path {
+    return compiler.typeRef(p);
   }
 
 // EXPRESSIONS
@@ -299,6 +299,9 @@ attribute_name =
 
 type_name =
   $([A-Z] [a-zA-Z.]*)
+
+type_path =
+  $(type_name ('/' [a-zA-Z0-9_]+)*)
 
 builtin_type_name =
   $([a-zA-Z0-9:.]+)
