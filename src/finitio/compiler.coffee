@@ -25,7 +25,7 @@ class Compiler
     @system
 
   setMain: (main)->
-    @system.main = main;
+    @system.setMain(main);
 
   proxy: (name)->
     @proxies[name] ?= @system.proxy(name)

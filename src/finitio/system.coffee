@@ -21,6 +21,12 @@ class System
     for method in TypeFactory.PUBLIC_DSL_METHODS
       this[method] = @factory[method].bind(@factory)
 
+  setMain: (main)->
+    if @main?
+      throw new Error("Main type already set")
+    @main = main
+    @types['Main'] = main
+
   addType: (type) ->
     unless type instanceof Type
       $u.argumentError("Finitio.Type expected, got:", type)

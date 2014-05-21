@@ -1,7 +1,7 @@
-Finitio     = require '../../../../src/finitio'
-Parser      = require '../../../../src/finitio/parser'
-System      = require '../../../../src/finitio/system'
-BuiltinType = require '../../../../src/finitio/type/builtin_type'
+Finitio     = require '../../../src/finitio'
+Parser      = require '../../../src/finitio/parser'
+System      = require '../../../src/finitio/system'
+BuiltinType = require '../../../src/finitio/type/builtin_type'
 should      = require 'should'
 
 describe "Parser#system", ->
@@ -16,8 +16,8 @@ describe "Parser#system", ->
     it 'should return a System', ->
       subject.should.be.an.instanceof(System)
 
-    it 'should not have any type', ->
-      subject.types.should.be.empty
+    it 'should have the main type set', ->
+      subject.types.should.eql({ 'Main': subject.main })
 
     it 'should have a main type', ->
       subject.main.should.be.an.instanceof(BuiltinType)
