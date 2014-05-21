@@ -9,8 +9,8 @@ describe "AdType#defaultName", ->
   f = (arg)->
 
   contracts = [
-    Contract.explicit('timestamp', intType, f, f)
-    Contract.explicit('utc',       stringType, f, f)
+    new Contract('timestamp', intType, f, f)
+    new Contract('utc',       stringType, f, f)
   ]
 
   it 'when not anonymous', ->

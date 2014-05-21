@@ -9,8 +9,8 @@ describe "AdType#constructor", ->
   f = (arg)->
 
   subject = new AdType(Date, [
-    Contract.explicit('timestamp', intType, f, f)
-    Contract.explicit('utc',       stringType, f, f)
+    new Contract('timestamp', intType, f, f)
+    new Contract('utc',       stringType, f, f)
   ])
 
   describe 'with valid arguments', ->

@@ -21,31 +21,6 @@ class Contract
       console.log(@undresser)
       $u.argumentError("Function expected, got:", @undresser)
 
-  @identity: (name, type)->
-    new Contract(name, type, @IDENTITY, @IDENTITY)
-
-  @explicit: (name, type, dresser, undresser)->
-    new Contract(name, type, dresser, undresser)
-
-  @internal: (name, type, clazz)->
-    unless clazz.prototype
-      $u.argumentError("Prototyped expected, got:", clazz)
-
-    # dresser: type.contractName(...)
-    dresser = clazz[name]
-
-    # undresser: type.prototype.toContractName(...)
-    undName = 'to' + $u.capitalize(name)
-    unless $u.isFunction(clazz.prototype[undName])
-      $u.argumentError("Unable to find undresser #{undName} on", clazz)
-    undresser = (value)->
-      value[undName](value)
-
-    new Contract(name, type, dresser, undresser)
-
-  @external: (name, type, clazz)->
-    new Contract(name, type, clazz.dress, clazz.undress)
-
   dress: (value, helper)->
     @dresser(value)
 
