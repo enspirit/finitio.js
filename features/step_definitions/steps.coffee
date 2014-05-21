@@ -204,6 +204,18 @@ module.exports = ->
 
     callback()
 
+  @When /^I undress the result from (.*?) to (.*?)$/, (from, to, callback) ->
+    try
+      error = null
+      from  = system.fetch(from)
+      to    = system.fetch(to)
+      result = from.undress(result, to)
+    catch e
+      error = e
+      result = e
+
+    callback()
+
   # Result
 
   @Then /^it should be a success$/, (callback) ->
@@ -217,11 +229,25 @@ module.exports = ->
       callback.fail "#{result} is not an object"
     callback()
 
+  @Then /^its '(.*)' attribute should be a String representation$/, (attr, callback) ->
+    callback.fail(error) if error?
+
+    unless typeof(result[attr]) == 'string'
+      callback.fail "attribute is not a String, got #{result[attr]}"
+    callback()
+
   @Then /^its '(.*)' attribute should be a Date representation$/, (attr, callback) ->
     callback.fail(error) if error?
 
     unless result[attr] instanceof Date
       callback.fail "attribute is not a Date, got #{result[attr]}"
+    callback()
+
+  @Then /^its '(.*)' attribute should be a Time representation$/, (attr, callback) ->
+    callback.fail(error) if error?
+
+    unless result[attr] instanceof Date
+      callback.fail "attribute is not a Time, got #{result[attr]}"
     callback()
 
   @Then /^the result should be a representation for Nil$/, (callback) ->
@@ -299,15 +325,15 @@ module.exports = ->
 
   # Grammar rules
 
-  this.Given /^the grammar rule is (.*?)$/, (rulename, callback)->
+  @Given /^the grammar rule is (.*?)$/, (rulename, callback)->
     @grammarRule = rulename
     callback()
 
-  this.Given /^the source is$/, (src, callback)->
+  @Given /^the source is$/, (src, callback)->
     @parsing_source = src
     callback()
 
-  this.Then /^it evaluates to a (.*)$/, (type, callback)->
+  @Then /^it evaluates to a (.*)$/, (type, callback)->
     t = system.fetch(type)
     r = Parser.parse(@parsing_source, { startRule: @grammarRule, compiler: this })
     unless t.include(r)
