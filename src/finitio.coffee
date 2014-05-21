@@ -36,6 +36,8 @@ Finitio.Compiler     = require './finitio/compiler'
 Finitio.TypeFactory  = require './finitio/support/factory'
 ##
 Finitio.AliasType    = require './finitio/type/alias_type'
+Finitio.ProxyType    = require './finitio/type/proxy_type'
+##
 Finitio.AdType       = require './finitio/type/ad_type'
 Finitio.AnyType      = require './finitio/type/any_type'
 Finitio.BuiltinType  = require './finitio/type/builtin_type'
