@@ -3,6 +3,7 @@ Parser    = require '../../src/finitio/parser'
 TypeError = Finitio.TypeError
 System    = Finitio.System
 should    = require 'should'
+_         = require 'underscore'
 
 # Global variables for steps below
 TestSystem     = null
@@ -100,6 +101,17 @@ module.exports = ->
       callback.fail("Heading based type expected, got `#{type}`")
     else
       should(type.heading.allowExtra()).be.false
+    callback()
+
+  @Then /^metadata at (.*) should be as follows$/, (path, table, callback) ->
+    should(table.hashes().length).equal(1)
+    expected = table.hashes()[0]
+
+    reducer = (memo, elm)-> memo.fetch(elm)
+    victim  = _.reduce(path.split('/'), reducer, system)
+
+    should(victim.metadata).eql(expected)
+
     callback()
 
   # Hierarchy

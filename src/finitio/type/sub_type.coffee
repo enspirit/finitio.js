@@ -7,7 +7,7 @@ $u          = require '../support/utils'
 class SubType extends Type
   generator: 'sub'
 
-  constructor: (@superType, @constraints, @name) ->
+  constructor: (@superType, @constraints, @name, @metadata) ->
     @name ?= null
 
     unless @superType instanceof Type
@@ -22,7 +22,7 @@ class SubType extends Type
     unless $u.every(@constraints, (c)-> c.constructor == Constraint)
       $u.argumentError("Array of constraints expected, got", @constraints)
 
-    super(@name)
+    super(@name, @metadata)
 
   Fetchable this, "constraints", "constraint", (name)->
     $u.find @constraints, (c)-> c.name == name

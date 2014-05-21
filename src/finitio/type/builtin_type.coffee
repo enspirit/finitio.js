@@ -5,8 +5,8 @@ Type        = require '../type'
 class BuiltinType extends Type
   generator: 'builtin'
 
-  constructor: (@jsType, @name) ->
-    super(@name)
+  constructor: (@jsType, @name, @metadata) ->
+    super(@name, @metadata)
 
   dress: (value, helper) ->
     helper ?= new DressHelper

@@ -7,11 +7,11 @@ $u              = require '../support/utils'
 class TupleType extends Type
   generator: 'tuple'
 
-  constructor: (@heading, @name) ->
+  constructor: (@heading, @name, @metadata) ->
     unless @heading instanceof Heading
       $u.argumentError("Heading expected, got:", @heading)
 
-    super(@name)
+    super(@name, @metadata)
 
   fetch: ()->
     @heading.fetch.apply(@heading, arguments)

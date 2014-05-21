@@ -108,7 +108,16 @@ module.exports = (grunt) ->
         dest: "src/finitio/parser.js"
         options:
           cache: true
-          allowedStartRules: [ 'system', 'type', 'attribute', 'heading', 'literal' ]
+          allowedStartRules: [
+            'system',
+            'type',
+            'heading',
+            'attribute',
+            'contract',
+            'constraint',
+            'literal',
+            'metadata'
+          ]
 
     ############################################################## Compilation
 

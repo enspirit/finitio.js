@@ -9,7 +9,7 @@ Type = require '../type'
 #
 class Attribute
 
-  constructor: (@name, @type, @required) ->
+  constructor: (@name, @type, @required, @metadata) ->
     unless typeof @name == "string"
       $u.argumentError("String expected for attribute name, got:", @name)
 

@@ -6,8 +6,8 @@ $u              = require '../support/utils'
 class StructType extends Type
   generator: 'struct'
 
-  constructor: (@componentTypes, @name) ->
-    super(@name)
+  constructor: (@componentTypes, @name, @metadata) ->
+    super(@name, @metadata)
 
     unless $u.isArray(@componentTypes)
       $u.argumentError("[Finitio::Type] expected, got:", @componentTypes)

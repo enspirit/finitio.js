@@ -4,11 +4,11 @@ Type = require '../type'
 # mixin
 class CollectionType extends Type
 
-  constructor: (@elmType, @name) ->
+  constructor: (@elmType, @name, @metadata) ->
     unless @elmType instanceof Type
       $u.argumentError("Finitio.Type expected, got:", @elmType)
 
-    super(@name)
+    super(@name, @metadata)
 
   equals: (other) ->
     (this is other) or

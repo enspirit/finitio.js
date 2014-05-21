@@ -24,6 +24,8 @@ RelationType   = require '../type/relation_type'
 # Typefactory
 class TypeFactory
 
+  @IDENTITY = (arg)-> arg
+
   @PUBLIC_DSL_METHODS: [
     'jsType',
     #
@@ -47,6 +49,16 @@ class TypeFactory
     'struct',
     'type'
   ]
+
+  @factory: (name, fn)->
+    fallback = this.prototype[name]
+    this.prototype[name] = ()->
+      if fn.length == arguments.length
+        fn.apply(this, arguments)
+      else if typeof(fallback) == 'function'
+        fallback.apply(this, arguments)
+      else
+        throw new Error("No such signature #{name}/#{arguments.length}")
 
   constructor: (world)->
     @world = {
@@ -110,13 +122,18 @@ class TypeFactory
     else
       null
 
-  constraint: (_name, _native) ->
-    return _name if _name instanceof Constraint
+  metadata: (arg) ->
+    unless arg == undefined || arg == null || $u.isObject(arg)
+      $u.argumentError("Invalid metadata:", arg)
+    arg
 
-    if typeof(_name) isnt "string"
-      [_name, _native] = ['default', _name]
+  constraint: (name, nativ, metadata) ->
+    return name if name instanceof Constraint
 
-    new Constraint(_name, _native)
+    if typeof(name) isnt "string"
+      [name, nativ, metadata] = ['default', name, nativ]
+
+    new Constraint(name, nativ, metadata)
 
   constraints: (constraints, callback) ->
     constrs = []
@@ -137,8 +154,8 @@ class TypeFactory
 
     constrs
 
-  attribute: (name, type, required) ->
-    new Attribute(name, @type(type), required)
+  attribute: (name, type, required, metadata) ->
+    new Attribute(name, @type(type), required, metadata)
 
   attributes: (attributes) ->
     unless typeof attributes is "object"
@@ -161,131 +178,148 @@ class TypeFactory
     else
       fail("Heading expected, got", heading)
 
-  contract: (name, type, dresser, undresser) ->
-    return name if name instanceof Contract
+  # Handles the full-featured Contract signature
+  @factory 'contract', (name, infoType, dresser, undresser, metadata)->
+    new Contract(name, infoType, dresser, undresser, metadata)
 
-    if undresser?
-      Contract.explicit(name, type, dresser, undresser)
-    else if dresser?
-      if dresser.dress && dresser.undress
-        Contract.external(name, type, dresser)
-      else
-        Contract.internal(name, type, dresser)
+  # Handles the no-metadata signature
+  @factory 'contract', (name, infoType, dresser, undresser)->
+    new Contract(name, infoType, dresser, undresser)
+
+  # Handles the following cases:
+  #
+  #   Contract(name:String, infoType:Finitio.Type, external:JsType)
+  #   Contract(name:String, infoType:Finitio.Type, internal:JsType)
+  #   Contract(name:String, infoType:Finitio.Type, metadata:Metadata)
+  #
+  @factory 'contract', (name, infoType, handler)->
+    if (handler.dress && handler.undress)
+      new Contract(name, infoType, handler.dress, handler.undress)
+    else if (typeof(handler) == 'function')
+      dresser   = handler[name]
+      undresser = (value)->
+        value['to' + $u.capitalize(name)]();
+      new Contract(name, infoType, dresser, undresser)
     else
-      Contract.identity(name, type)
+      new Contract(name, infoType, TypeFactory.IDENTITY, TypeFactory.IDENTITY, handler)
+
+  # Handles only a name and an info type (no converters, no metadata)
+  @factory 'contract', (name, infoType)->
+    new Contract(name, infoType, TypeFactory.IDENTITY, TypeFactory.IDENTITY)
+
+  # Handles the following cases:
+  #
+  #    Contract(Contract)
+  #    Contract({ name: .., infoType: ..., ... })
+  #
+  @factory 'contract', (a)->
+    if a instanceof Contract
+      return a
+    else if (a.name && a.infoType)
+      a.dresser   ?= TypeFactory.IDENTITY
+      a.undresser ?= TypeFactory.IDENTITY
+      new Contract(a.name, a.infoType, a.dresser, a.undresser, a.metadata)
+    else
+      fail("Unrecognized contract: #{a}")
 
   contracts: (cs)->
     if $u.isArray(cs)
-      $u.map cs, ()=>
-        @contract.apply(this, arguments)
-    else if $u.isObject(cs)
-      $u.map cs, (value, name)=>
-        @contract.apply(this, [name, value[0], value[1], value[2]])
+      $u.map cs, (c)=>
+        @contract(c)
     else
       $u.argumentError("Array expected, got:", cs)
 
   ########################################################## Type generators
 
-  alias: (type, name) ->
-    name = @name(name)
-    type = @type(type)
+  alias: (type, name, metadata) ->
+    name     = @name(name)
+    type     = @type(type)
+    metadata = @metadata(metadata)
 
-    if type.anonymous
-      type.setName(name)
-      type
-    else
-      new AliasType(type, name)
+    new AliasType(type, name, metadata)
 
-  proxy: (targetName, name) ->
+  proxy: (targetName, name, metadata) ->
     typeName = @name(name)
-    name = @name(name)
+    name     = @name(name)
+    metadata = @metadata(metadata)
 
-    new ProxyType(targetName, null, name)
+    new ProxyType(targetName, null, name, metadata)
 
-  any: (name) ->
-    name     ?= null
+  any: (name, metadata) ->
     name      = @name(name)
-    new AnyType(name)
+    metadata  = @metadata(metadata)
 
-  builtin: (primitive, _name) ->
-    _name    ?= null
+    new AnyType(name, metadata)
+
+  builtin: (primitive, name, metadata) ->
     primitive = @jsType(primitive)
-    _name     = @name(_name)
-    new BuiltinType(primitive, _name)
+    name      = @name(name)
+    metadata  = @metadata(metadata)
 
-  adt: (primitive, _contracts, _name) ->
-    _name    ?= null
+    new BuiltinType(primitive, name, metadata)
+
+  adt: (primitive, contracts, name, metadata) ->
     primitive = @jsType(primitive) if primitive?
-    contracts = @contracts(_contracts)
-    _name     = @name(_name)
-    new AdType(primitive, contracts, _name)
+    contracts = @contracts(contracts)
+    name      = @name(name)
+    metadata  = @metadata(metadata)
 
+    new AdType(primitive, contracts, name, metadata)
 
   #### Sub and union
 
-  sub_type: (superType, _constraints, _name, callback) ->
-    unless callback?
-      if typeof _name == "function"
-        [callback, _name] = [_name, callback]
+  sub_type: (superType, constraints, name, metadata) ->
+    superType   = @type(superType)
+    constraints = @constraints(constraints)
+    name        = @name(name)
+    metadata    = @metadata(metadata)
 
-    unless callback?
-      if typeof _constraints == "function"
-        [callback, _constraints] = [_constraints, callback]
+    new SubType(superType, constraints, name, metadata)
 
-    superType    = @type(superType)
-    _constraints = @constraints(_constraints, callback)
-    _name        = @name(_name)
+  union: (candidates, name, metadata) ->
+    name       = @name(name)
+    candidates = $u.map candidates, (t) => @type(t)
 
-    new SubType(superType, _constraints, _name)
-
-  union: (args...) ->
-    [candidates, _name] = [[], null]
-
-    $u.each args, (arg) =>
-      if arg.constructor == Array
-        candidates = $u.map arg, (t) => @type(t)
-
-      else if arg.constructor == String
-        _name = @name(_name)
-
-      else
-        candidates.push(arg)
-
-    new UnionType(candidates, _name)
+    new UnionType(candidates, name, metadata)
 
   #### Collections
 
-  seq: (elmType, name) ->
-    elmType = @type(elmType)
-    name    = @name(name)
+  seq: (elmType, name, metadata) ->
+    elmType  = @type(elmType)
+    name     = @name(name)
+    metadata = @metadata(metadata)
 
-    new SeqType(elmType, name)
+    new SeqType(elmType, name, metadata)
 
-  set: (elmType, name) ->
-    elmType = @type(elmType)
-    name    = @name(name)
+  set: (elmType, name, metadata) ->
+    elmType  = @type(elmType)
+    name     = @name(name)
+    metadata = @metadata(metadata)
 
-    new SetType(elmType, name)
+    new SetType(elmType, name, metadata)
 
-  struct: (componentTypes, name) ->
+  struct: (componentTypes, name, metadata) ->
     componentTypes = $u.map(componentTypes, (t) => @type(t))
     name           = @name(name)
+    metadata       = @metadata(metadata)
 
-    new StructType(componentTypes, name)
+    new StructType(componentTypes, name, metadata)
 
  #### Tuples and relations
 
-  tuple: (heading, name) ->
-    heading = @heading(heading)
-    name    = @name(name)
+  tuple: (heading, name, metadata) ->
+    heading  = @heading(heading)
+    name     = @name(name)
+    metadata = @metadata(metadata)
 
-    new TupleType(heading, name)
+    new TupleType(heading, name, metadata)
 
-  relation: (heading, name) ->
-    heading = @heading(heading)
-    name    = @name(name)
+  relation: (heading, name, metadata) ->
+    heading  = @heading(heading)
+    name     = @name(name)
+    metadata = @metadata(metadata)
 
-    new RelationType(heading, name)
+    new RelationType(heading, name, metadata)
 
 # 'private' Utility functions
 # (only in the scope of this module)

@@ -5,14 +5,14 @@ $u          = require '../support/utils'
 class UnionType extends Type
   generator: 'union'
 
-  constructor: (@candidates, @name) ->
+  constructor: (@candidates, @name, @metadata) ->
     @name ?= null
 
     $u.each @candidates, (c) ->
       unless c instanceof Type
         $u.argumentError("Finitio.Type expected, got:", c)
 
-    super(@name)
+    super(@name, @metadata)
 
   # Invoke `dress` on each candidate type in turn. Return the value
   # returned by the first one that does not fail. Fail with an TypeError if no

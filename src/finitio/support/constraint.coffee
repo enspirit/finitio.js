@@ -5,7 +5,7 @@ $u = require './utils'
 #
 class Constraint
 
-  constructor: (@name, @native) ->
+  constructor: (@name, @native, @metadata) ->
     unless typeof @name == "string"
       $u.argumentError("String expected for constraint name, got: ", @name)
 

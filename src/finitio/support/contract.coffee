@@ -3,10 +3,7 @@ Type = require '../type'
 
 class Contract
 
-  @IDENTITY = (arg)-> arg
-
-  constructor: (@name, @infoType, @dresser, @undresser)->
-
+  constructor: (@name, @infoType, @dresser, @undresser, @metadata)->
     unless $u.isString(@name)
       $u.argumentError("String expected, got:", @name)
 

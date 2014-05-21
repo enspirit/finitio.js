@@ -9,17 +9,14 @@ describe 'TypeFactory#alias', ->
 
   factory = new TypeFactory
 
-  describe 'when used with an unnamed type', ->
+  it 'creates an AliasType when not named', ->
     base    = factory.builtin(Number)
     subject = factory.alias(base, "foo")
+    should(subject).be.an.instanceof(AliasType)
+    should(subject.name).equal('foo')
 
-    it 'sets the name on the type', ->
-      should(subject).be.an.instanceof(BuiltinType)
-      should(subject.name).equal('foo')
-
-  describe 'when used with a named type', ->
+  it 'creates an AliasType when already named', ->
     subject = factory.alias(intType, "foo")
-
-    it 'creates an AliasType', ->
-      should(subject).be.an.instanceof(AliasType)
-      should(subject.name).equal('foo')
+    should(subject).be.an.instanceof(AliasType)
+    should(subject.name).equal('foo')
+    should(intType.name).equal('intType')

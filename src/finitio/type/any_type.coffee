@@ -4,8 +4,8 @@ Type = require '../type'
 class AnyType extends Type
   generator: 'any'
 
-  constructor: (@name) ->
-    super(@name)
+  constructor: (@name, @metadata) ->
+    super(@name, @metadata)
 
   dress: (value, helper) ->
     value

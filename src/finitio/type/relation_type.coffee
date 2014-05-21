@@ -8,8 +8,8 @@ $u              = require '../support/utils'
 class RelationType extends Type
   generator: 'relation'
 
-  constructor: (@heading, @name) ->
-    super(@name)
+  constructor: (@heading, @name, @metadata) ->
+    super(@name, @metadata)
 
     unless @heading instanceof Heading
       $u.argumentError("Heading expected, got:", @heading)

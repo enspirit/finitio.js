@@ -31,6 +31,14 @@ class Compiler
     @proxies[name] ?= @system.proxy(name)
     @proxies[name]
 
+  typeDef: (type, name, metadata)->
+    if type.anonymous && !type.metadata
+      type.setName(name)
+      type.setMetadata(metadata)
+      type
+    else
+      @alias(type, name, metadata)
+
   typeRef: (name)->
     type  = @getType(name)
     type ?= @proxy(name)

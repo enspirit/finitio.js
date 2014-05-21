@@ -23,6 +23,11 @@ describe 'TypeFactory#contract', ->
     c = new Contract('iso', intType, dresser, undresser)
     should(factory.contract(c)).equal(c)
 
+  it 'with five arguments', ->
+    c = factory.contract('iso', intType, dresser, undresser, {description: "Foo"})
+    should(c).be.an.instanceof(Contract)
+    should(c.metadata).eql({ description: "Foo" })
+
   it 'with four arguments', ->
     c = factory.contract('iso', intType, dresser, undresser)
     should(c).be.an.instanceof(Contract)

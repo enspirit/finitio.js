@@ -5,7 +5,7 @@ $u = require('./support/utils')
 #
 class Type
 
-  constructor: (@name)->
+  constructor: (@name, @metadata)->
     if @name? and typeof(@name) isnt "string"
       $u.argumentError("String expected, got", @name)
 
@@ -16,6 +16,10 @@ class Type
     throw new Error("Name already set") unless @anonymous
     @name = name
     @anonymous = false
+
+  setMetadata: (metadata)->
+    throw new Error("Metadata already set") if @metadata
+    @metadata = metadata
 
   #
   # Returns true if `value` is valid member of this type, false otherwise.

@@ -23,12 +23,11 @@
 
   // compile a [ [n1, expr1], ... ] to an array of constraints
   function compileConstraints(varname, defs) {
-    var cs = [];
+    var cs = [], def;
     for (var i = 0; i < defs.length; i++) {
-      var name = defs[i][0];
-      var expr = defs[i][1];
-      var fn   = compileLambda(varname, expr);
-      cs[i] = compiler.constraint(name, fn);
+      def = defs[i];
+      def.expression = compileLambda(varname, def.expression);
+      cs[i] = compiler.constraint(def.name, def.expression, def.metadata);
     }
     return cs;
   }
@@ -37,10 +36,14 @@
   function compileContracts(cs, jsType) {
     var contracts = [];
     for (var i = 0; i<cs.length; i++) {
-      if (cs[i].length < 3 && jsType){
-        cs[i].push(jsType);
+      c = cs[i];
+      if (!c.dresser && jsType){
+        c.dresser   = jsType[c.name];
+        c.undresser = function(value){
+          return value['to' + $u.capitalize(c.name)]();
+        };
       }
-      contracts.push(compiler.contract.apply(compiler, cs[i]));
+      contracts.push(compiler.contract(c));
     }
     return contracts;
   }
@@ -60,8 +63,8 @@ definitions =
   (spacing type_def)*
 
 type_def =
-  n:type_name spacing '=' spacing t:type {
-    return compiler.addType(compiler.alias(t, n));
+  m:metadata? n:type_name spacing '=' spacing t:type {
+    return compiler.addType(compiler.typeDef(t, n, m));
   }
 
 // TYPES (low priority)
@@ -70,18 +73,18 @@ type =
   union_type
 
 union_type =
-    head:sub_type tail:(pipe sub_type)+ {
-      return compiler.union(headTailToArray(head, tail));
+    m:metadata? head:sub_type tail:(pipe sub_type)+ {
+      return compiler.union(headTailToArray(head, tail), m);
     }
   / sub_type
 
 sub_type =
-    t:rel_type c:constraint_fn {
-      return compiler.sub_type(t, c)
+    m:metadata? t:rel_type c:constraint {
+      return compiler.sub_type(t, c, null, m)
     }
   / rel_type
 
-constraint_fn =
+constraint =
   '(' spacing n:var_name pipe c:constraints spacing ')' {
     return compileConstraints(n, c)
   }
@@ -95,13 +98,13 @@ constraints =
   }
 
 named_constraint =
-  n:constraint_name ':' spacing e:expression {
-    return [n, e];
+  m:metadata? n:constraint_name ':' spacing e:expression {
+    return { metadata: m, name: n, expression: e};
   }
 
 unnamed_constraint =
   e:expression {
-    return ['default', e];
+    return { name: 'default', expression: e };
   }
 
 // TYPES (relational)
@@ -112,13 +115,13 @@ rel_type =
   / collection_type
 
 tuple_type =
-  '{' spacing h:heading spacing '}' {
-    return compiler.tuple(h)
+  m:metadata? '{' spacing h:heading spacing '}' {
+    return compiler.tuple(h, null, m)
   }
 
 relation_type =
-  '{{' spacing h:heading spacing '}}' {
-    return compiler.relation(h)
+  m:metadata? '{{' spacing h:heading spacing '}}' {
+    return compiler.relation(h, null, m)
   }
 
 heading =
@@ -129,9 +132,9 @@ heading =
   / spacing
 
 attribute =
-  n:attribute_name spacing ':' optional:'?'? spacing t:type {
-    var required = (optional !== '?')
-    return compiler.attribute(n, t, required)
+  m:metadata? n:attribute_name spacing ':' optional:'?'? spacing t:type {
+    var required = (optional !== '?');
+    return compiler.attribute(n, t, required, m);
   }
 
 // TYPES (collections)
@@ -143,18 +146,18 @@ collection_type =
   / term_type
 
 set_type =
-  '{' spacing t:type spacing '}' {
-    return compiler.set(t)
+  m:metadata? '{' spacing t:type spacing '}' {
+    return compiler.set(t, null, m);
   }
 
 struct_type =
-  '<' head:type tail:(opt_comma type)* opt_comma '>' {
-    return compiler.struct(headTailToArray(head, tail));
+  m:metadata? '<' head:type tail:(opt_comma type)* opt_comma '>' {
+    return compiler.struct(headTailToArray(head, tail), m);
   }
 
 seq_type =
-  '[' spacing t:type spacing ']' {
-    return compiler.seq(t)
+  m:metadata? '[' spacing t:type spacing ']' {
+    return compiler.seq(t, null, m);
   }
 
 // TYPES (higher priority)
@@ -166,10 +169,16 @@ term_type =
   / type_ref
 
 ad_type =
-  t:('.' builtin_type_name)? spacing cs:contracts {
-    var jsType = (t) ? compiler.jsType(t[1]) : null;
+  p:ad_type_preamble? spacing cs:contracts {
+    var metadata = p && p.metadata;
+    var jsType   = p && p.jsType;
     var contracts = compileContracts(cs, jsType);
-    return compiler.adt(jsType, contracts);
+    return compiler.adt(jsType, contracts, null, metadata);
+  }
+
+ad_type_preamble =
+  m:metadata? t:('.' builtin_type_name) {
+    return { metadata: m, jsType: (t) ? compiler.jsType(t[1]) : null }
   }
 
 contracts =
@@ -178,14 +187,22 @@ contracts =
   }
 
 contract =
-  '<' n:contract_name '>' spacing t:type spacing '\\' up:lambda_expr spacing '\\' down:lambda_expr {
-    return [ n, t, up, down ];
+  b:contract_base spacing '\\' up:lambda_expr spacing '\\' down:lambda_expr {
+    b.dresser = up;
+    b.undresser = down;
+    return b;
   }
-/ '<' n:contract_name '>' spacing t:type spacing '.' b:builtin_type_name {
-    return [ n, t, compiler.jsType(b) ];
+/ b:contract_base spacing '.' t:builtin_type_name {
+    var jsType  = compiler.jsType(t);
+    b.dresser   = jsType.dress;
+    b.undresser = jsType.undress;
+    return b;
   }
-/ '<' n:contract_name '>' spacing t:type {
-    return [ n, t ];
+/ contract_base
+
+contract_base =
+  m:metadata? '<' n:contract_name '>' spacing t:type {
+    return { metadata: m, name: n, infoType: t };
   }
 
 lambda_expr =
@@ -194,17 +211,17 @@ lambda_expr =
   }
 
 any_type =
-  '.' {
-    return compiler.any();
+  m:metadata? '.' {
+    return compiler.any(null, m);
   }
 
 builtin_type =
-  '.' name:builtin_type_name {
-    return compiler.builtin(name);
+  m:metadata? '.' name:builtin_type_name {
+    return compiler.builtin(name, null, m);
   }
 
 type_ref =
-   n:type_name {
+  n:type_name {
     return compiler.typeRef(n);
   }
 
@@ -218,6 +235,26 @@ paren_expression =
 
 any_expression =
   $((![(,)] .)+)
+
+// METADATA
+
+metadata =
+    '/-' spacing head:metaattr tail:(opt_comma metaattr)* spacing '-/' spacing {
+      var attrs = headTailToArray(head, tail);
+      var metadata = {};
+      for (var i=0; i<attrs.length; i++){
+        metadata[attrs[i][0]] = attrs[i][1];
+      }
+      return metadata;
+    }
+  / '/-' t:$(!'-/' .)+ '-/' spacing {
+    return{ description: t.toString().trim() };
+  }
+
+metaattr =
+  n:attribute_name spaces? ':' spaces? v:literal {
+    return [ n, v ];
+  }
 
 // LITERALS
 

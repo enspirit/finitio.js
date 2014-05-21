@@ -9,3 +9,12 @@ Feature: Support for type aliases
       """
     Then it compiles fine
 
+  Scenario: Aliasing through information contracts
+
+    Given the System is
+      """
+      Timestamp = <epoch> Integer
+      Alias     = Timestamp/epoch
+      """
+    Then it compiles fine
+

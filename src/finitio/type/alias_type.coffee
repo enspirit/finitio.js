@@ -4,10 +4,10 @@ $u          = require '../support/utils'
 
 class AliasType extends Type
 
-  constructor: (@type, @name) ->
+  constructor: (@type, @name, @metadata) ->
     unless @name
       $u.argumentError("Name cannot be null on AliasType")
-    super(@name)
+    super(@name, @metadata)
     @generator = @type.generator
 
   fetch: ()->

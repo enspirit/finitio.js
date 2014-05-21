@@ -7,7 +7,7 @@ $u           = require '../support/utils'
 class AdType extends Type
   generator: 'adt'
 
-  constructor: (@jsType, @contracts, @name) ->
+  constructor: (@jsType, @contracts, @name, @metadata) ->
     if @jsType and not(@jsType instanceof Function)
       $u.argumentError("Constructor (function) expected, got:", @jsType)
 
@@ -17,7 +17,7 @@ class AdType extends Type
     unless $u.every(@contracts, (c)-> c instanceof Contract)
       $u.argumentError("[Contract] expected, got:", @contracts)
 
-    super(@name)
+    super(@name, @metadata)
 
   Fetchable this, "contracts", "contract", (name)->
     $u.find @contracts, (c)-> c.name == name
