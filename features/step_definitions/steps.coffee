@@ -335,7 +335,7 @@ module.exports = ->
 
   @Then /^it evaluates to a (.*)$/, (type, callback)->
     t = system.fetch(type)
-    r = Parser.parse(@parsing_source, { startRule: @grammarRule, compiler: this })
+    r = Parser.parse(@parsing_source, { startRule: @grammarRule })
     unless t.include(r)
       callback.fail("Expected #{@parsing_source} to evaluate to #{type}")
     callback()
