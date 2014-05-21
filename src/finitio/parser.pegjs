@@ -298,7 +298,10 @@ attribute_name =
   $([a-z] [a-zA-Z0-9_]*)
 
 type_name =
-  $([A-Z] [a-zA-Z.]*)
+  $((type_qualifier '.')? [A-Z] [a-zA-Z]*)
+
+type_qualifier =
+  [a-z][a-z0-9]*
 
 type_path =
   $(type_name ('/' [a-zA-Z0-9_]+)*)
