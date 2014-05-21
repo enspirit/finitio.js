@@ -52,11 +52,19 @@
 // SYSTEM
 
 system =
-  definitions spacing m:type? spacing eof {
+  imports definitions spacing m:type? spacing eof {
     if (m){
       compiler.setMain(m);
     }
     return compiler.system;
+  }
+
+imports =
+  (spacing import_def)*
+
+import_def =
+  '@import' spaces from:system_from as:(spaces 'as' spaces type_qualifier)? {
+    return compiler.import(from, as && as[3]);
   }
 
 definitions =
@@ -301,13 +309,16 @@ type_name =
   $((type_qualifier '.')? [A-Z] [a-zA-Z]*)
 
 type_qualifier =
-  [a-z][a-z0-9]*
+  $([a-z][a-z0-9]*)
 
 type_path =
   $(type_name ('/' [a-zA-Z0-9_]+)*)
 
 builtin_type_name =
   $([a-zA-Z0-9:.]+)
+
+system_from =
+  $((![ ] .)+)
 
 // LEXER (spacing, symbols and comments)
 

@@ -9,18 +9,16 @@ Compiler    = require './compiler'
 #
 class System
 
-  constructor: (@types, @main, @factory) ->
+  @REF_RGX = /^(?:([a-z][a-z0-9]*)\.)?(.*?)$/
+
+  constructor: (@imports, @uses, @types, @main) ->
+    @imports ?= []
+    @uses    ?= {}
     @types   ?= {}
     @main    ?= null
-    @factory ?= new TypeFactory()
 
-    # include types as attribute of the system
-    for name,type of @types
-      this[type.name] = type
-
-    ## Decorate prototype with factory methods
-    for method in TypeFactory.PUBLIC_DSL_METHODS
-      this[method] = @factory[method].bind(@factory)
+    # install all types directly
+    $u.extend(this, @types)
 
   Fetchable this, "types", "type"
 
@@ -37,16 +35,20 @@ class System
     if @types[type.name]?
       $u.argumentError("Duplicate type `#{type.name}`")
 
-    @types[type.name] = type
-    this[type.name] = type
+    this[type.name] = @types[type.name] = type
 
-  merge: (other) ->
-    unless other instanceof System
-      $u.argumentError("Finitio.System expected, got:", other)
+  import: (other) ->
+    @imports.push(other)
 
-    merged_types = $u.extend({}, @types, other.types)
-    merged_main  = other.main || @main
-    new System(merged_types, merged_main)
+  use: (other, as) ->
+    @uses[as] = other
+
+  resolve: (ref, callback) ->
+    match = ref.match(System.REF_RGX)
+    if match[1]
+      @_resolveQualified(match, callback)
+    else
+      @_resolveImported([this].concat(@imports), ref, callback)
 
   parse: (source, options) ->
     options ?= {}
@@ -59,7 +61,30 @@ class System
     @main.dress(value)
 
   clone: ->
-    new System($u.clone(@types), @main, @factory)
+    new System($u.clone(@imports), $u.clone(@uses), $u.clone(@types), @main)
+
+  # Private
+
+  _resolveQualified: (match, callback)->
+    callback ?= @_onResolveFailure(match[0])
+    if sub = @uses[match[1]]
+      @_resolveSingle sub, match[2], callback
+    else
+      @_onResolveFailure(match[0])()
+
+  _resolveImported: (chain, ref, callback)->
+    callback ?= @_onResolveFailure(ref)
+    chain[0].fetchPath ref, ()=>
+      if chain.length>1
+        @_resolveImported(chain.slice(1), ref, callback)
+      else
+        callback()
+
+  _resolveSingle: (system, ref, callback)->
+    system.fetchPath ref, callback
+
+  _onResolveFailure: (ref)->
+    ()-> throw new Error("No such type `#{ref}`")
 
 #
 module.exports = System

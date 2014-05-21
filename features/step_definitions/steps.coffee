@@ -11,6 +11,12 @@ result         = null
 system         = null
 type           = null
 error          = null
+systems        = {}
+resolver       = (from)->
+  if src = systems[from]
+    TestSystem.parse(src, resolver: resolver)
+  else
+    throw new Error("Unknown system `#{from}`")
 
 module.exports = ->
 
@@ -21,7 +27,7 @@ module.exports = ->
 
   @Given /^the System is$/, (source, callback) ->
     try
-      system = TestSystem.parse(source)
+      system = TestSystem.parse(source, resolver: resolver)
       type   = system.main if system.main
     catch e
       error = e
@@ -55,6 +61,22 @@ module.exports = ->
     should(type).be.an.instanceOf(Finitio.RelationType)
 
     callback()
+
+  @Then /^it includes a type named (.*?)$/, (name, callback) ->
+    try
+      should(system.resolve(name)).be.an.instanceof(Finitio.Type)
+    catch e
+      error = e
+      callback.fail(e)
+    callback()
+
+  @Then /^it does not include a type named (.*?)$/, (name, callback) ->
+    try
+      system.resolve(name)
+      callback.fail(new Error('Expected a system fetch failure'))
+    catch e
+      error = e
+      callback()
 
   @Then /^`(.*?)` and `(.*?)` are mandatory$/, (a1, a2, callback) ->
     if type.heading == undefined
@@ -338,4 +360,15 @@ module.exports = ->
     r = Parser.parse(@parsing_source, { startRule: @grammarRule })
     unless t.include(r)
       callback.fail("Expected #{@parsing_source} to evaluate to #{type}")
+    callback()
+
+  # Import
+
+  @Given /^the following system is known as '(.*)'$/, (name, src, callback) ->
+    try
+      systems[name] = src
+    catch e
+      error = e
+      callback.fail(e)
+
     callback()

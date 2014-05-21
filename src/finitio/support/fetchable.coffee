@@ -21,4 +21,4 @@ module.exports = (clazz, plural, singular, extractor)->
     else if callback?
       callback()
     else
-      throw new Error("No such element `#{path}`")
+      throw new Error("No such #{singular} `#{path}`")

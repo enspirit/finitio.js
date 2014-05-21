@@ -7,19 +7,22 @@ class Compiler
   constructor: (options)->
     $u.extend(this, options)
 
+    # Install default collaborators
+    @world   ?= {}
+    @factory ?= new TypeFactory(@world)
+    @system  ?= new System()
+    @proxies ?= {}
+
     # Install the factory methods
     for method in TypeFactory.PUBLIC_DSL_METHODS
-      this[method] = @system[method].bind(@system) unless method == 'proxy'
-
-    # created proxies
-    @proxies = {}
+      this[method] = @factory[method].bind(@factory) unless method == 'proxy'
 
     # Install delegation to system
-    this.addType   = @system.addType.bind(@system)
-    this.fetch     = @system.fetch.bind(@system)
-    this.fetchPath = @system.fetchPath.bind(@system)
+    @addType   = @system.addType.bind(@system)
+    @resolve   = @system.resolve.bind(@system)
 
   compile: (source)->
+    @proxies = {}
     Parser.parse(source, { compiler: this })
     @resolveProxies()
     @system
@@ -28,7 +31,7 @@ class Compiler
     @system.setMain(main);
 
   proxy: (name)->
-    @proxies[name] ?= @system.proxy(name)
+    @proxies[name] ?= @factory.proxy(name)
     @proxies[name]
 
   typeDef: (type, name, metadata)->
@@ -39,13 +42,22 @@ class Compiler
     else
       @alias(type, name, metadata)
 
-  typeRef: (name)->
-    fetched = @fetchPath name, ()=>
-      @proxy(name)
-    fetched.fetchType()
+  typeRef: (ref)->
+    @resolve(ref, ()=> @proxy(ref)).fetchType()
 
   resolveProxies: ()->
     $u.each @proxies, (proxy, name)=>
       proxy.resolve(@system)
+    @proxies = {}
+
+  import: (from, as)->
+    unless @resolver
+      throw new Error("No import resolver set.")
+
+    sub = @resolver(from)
+    if as
+      @system.use(sub, as)
+    else
+      @system.import(sub)
 
 module.exports = Compiler

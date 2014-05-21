@@ -28,6 +28,7 @@ Finitio.Parser       = require './finitio/parser'
 Finitio.Compiler     = require './finitio/compiler'
 Finitio.TypeFactory  = require './finitio/support/factory'
 ##
+Finitio.Type         = require './finitio/type'
 Finitio.AliasType    = require './finitio/type/alias_type'
 Finitio.ProxyType    = require './finitio/type/proxy_type'
 ##
