@@ -10,13 +10,13 @@ describe "Compiler#typeRef", ->
 
   id = ()->
 
-  system   = new System
+  system = new System
   system.addType(intType)
   system.addType(new AdType(Date, [
     new Contract('timestamp', intType, id, id)
   ], 'Date'))
 
-  compiler = new Compiler(system)
+  compiler = new Compiler({ system: system })
 
   it 'returns the type if type exists', ->
     should(compiler.typeRef(intType.name)).equal(intType)

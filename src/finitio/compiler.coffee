@@ -4,7 +4,9 @@ $u          = require './support/utils'
 
 class Compiler
 
-  constructor: (@system)->
+  constructor: (options)->
+    $u.extend(this, options)
+
     # Install the factory methods
     for method in TypeFactory.PUBLIC_DSL_METHODS
       this[method] = @system[method].bind(@system) unless method == 'proxy'
@@ -17,10 +19,8 @@ class Compiler
     this.fetch     = @system.fetch.bind(@system)
     this.fetchPath = @system.fetchPath.bind(@system)
 
-  compile: (source, options)->
-    options ?= {}
-    options.compiler = this
-    Parser.parse(source, options)
+  compile: (source)->
+    Parser.parse(source, { compiler: this })
     @resolveProxies()
     @system
 

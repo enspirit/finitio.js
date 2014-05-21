@@ -17,7 +17,7 @@ class Finitio
     options.world   ?= { Finitio: this }
     options.factory ?= new this.TypeFactory(options.world)
     options.system  ?= new this.System({}, null, options.factory)
-    new this.Compiler(options.system)
+    new this.Compiler(options)
 
   @compile = (source, options) ->
     @compiler(options).compile(source)
