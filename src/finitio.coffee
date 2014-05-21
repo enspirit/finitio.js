@@ -5,18 +5,11 @@ class Finitio
 
   @VERSION: "0.0.1"
 
-  ## DSL
-
-  @FACTORY: new TypeFactory
-
-  for method in TypeFactory.PUBLIC_DSL_METHODS
-    Finitio[method] = @FACTORY[method].bind(@FACTORY)
-
   @compiler = (options)->
     options         ?= { }
     options.world   ?= { Finitio: this }
     options.factory ?= new this.TypeFactory(options.world)
-    options.system  ?= new this.System({}, null, options.factory)
+    options.system  ?= new this.System()
     new this.Compiler(options)
 
   @compile = (source, options) ->
