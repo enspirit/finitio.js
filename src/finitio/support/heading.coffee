@@ -1,3 +1,4 @@
+Fetchable = require './fetchable'
 Attribute = require './attribute'
 $u        = require './utils'
 
@@ -30,6 +31,8 @@ class Heading
       $u.argumentError("Hash of options expected")
 
     @options = $u.extend({}, DEFAULT_OPTIONS, options)
+
+  Fetchable this, "attributes"
 
   size: ->
     $u.size(@attributes)

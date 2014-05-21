@@ -1,3 +1,4 @@
+Fetchable    = require '../support/fetchable'
 Contract     = require '../support/contract'
 DressHelper  = require '../support/dress_helper'
 Type         = require '../type'
@@ -17,6 +18,9 @@ class AdType extends Type
       $u.argumentError("[Contract] expected, got:", @contracts)
 
     super(@name)
+
+  Fetchable this, "contracts", "contract", (name)->
+    $u.find @contracts, (c)-> c.name == name
 
   contractNames: ->
     $u.map @contracts, (c)-> c.name

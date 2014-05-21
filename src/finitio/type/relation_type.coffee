@@ -14,6 +14,9 @@ class RelationType extends Type
     unless @heading instanceof Heading
       $u.argumentError("Heading expected, got:", @heading)
 
+  fetch: ()->
+    @heading.fetch.apply(@heading, arguments)
+
   include: (value) ->
     value instanceof Array and
       $u.every value, (tuple)=> @tupleType().include(tuple)

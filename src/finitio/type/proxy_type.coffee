@@ -9,6 +9,10 @@ class ProxyType extends Type
       $u.argumentError("Proxied name cannot be null on ProxyType")
     super(@name || @target && @target.name)
 
+  fetch: ()->
+    r = @resolved()
+    r.fetch.apply(r, arguments)
+
   defaultName: ->
     (@target and @target.defaultName()) or @targetName
   

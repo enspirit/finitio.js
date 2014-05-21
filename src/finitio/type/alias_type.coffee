@@ -10,6 +10,9 @@ class AliasType extends Type
     super(@name)
     @generator = @type.generator
 
+  fetch: ()->
+    @type.fetch.apply(@type, arguments)
+
   defaultName: ->
     @name
 

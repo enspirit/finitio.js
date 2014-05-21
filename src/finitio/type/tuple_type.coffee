@@ -13,6 +13,9 @@ class TupleType extends Type
 
     super(@name)
 
+  fetch: ()->
+    @heading.fetch.apply(@heading, arguments)
+
   include: (value) ->
     return false unless typeof(value) == "object"
     return false unless @areAttributesValid(value)

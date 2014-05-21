@@ -1,3 +1,4 @@
+Fetchable   = require '../support/fetchable'
 Type        = require '../type'
 Constraint  = require '../support/constraint'
 DressHelper = require '../support/dress_helper'
@@ -22,6 +23,9 @@ class SubType extends Type
       $u.argumentError("Array of constraints expected, got", @constraints)
 
     super(@name)
+
+  Fetchable this, "constraints", "constraint", (name)->
+    $u.find @constraints, (c)-> c.name == name
 
   # Check that `value` can be uped through the supertype, then verify all
   # constraints. Raise an error if anything goes wrong.
