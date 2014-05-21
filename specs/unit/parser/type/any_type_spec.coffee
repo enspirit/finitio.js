@@ -1,6 +1,6 @@
-Finitio = require '../../../src/finitio'
-Parser  = require '../../../src/finitio/parser'
-AnyType = require '../../../src/finitio/type/any_type'
+Finitio = require '../../../../src/finitio'
+Parser  = require '../../../../src/finitio/parser'
+AnyType = require '../../../../src/finitio/type/any_type'
 should  = require 'should'
 
 describe "Parser#any_type", ->

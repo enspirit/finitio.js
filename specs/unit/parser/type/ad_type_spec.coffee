@@ -1,7 +1,7 @@
-Finitio = require '../../../src/finitio'
-Parser = require '../../../src/finitio/parser'
-TypeFactory = require '../../../src/finitio/support/factory'
-AdType  = require '../../../src/finitio/type/ad_type'
+Finitio = require '../../../../src/finitio'
+Parser = require '../../../../src/finitio/parser'
+TypeFactory = require '../../../../src/finitio/support/factory'
+AdType  = require '../../../../src/finitio/type/ad_type'
 should  = require 'should'
 
 describe "Parser#ad_type", ->

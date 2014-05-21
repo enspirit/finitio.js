@@ -1,8 +1,8 @@
-Finitio     = require '../../../src/finitio'
-Parser      = require '../../../src/finitio/parser'
-BuiltinType = require '../../../src/finitio/type/builtin_type'
-Heading     = require '../../../src/finitio/support/heading'
-Attribute   = require '../../../src/finitio/support/attribute'
+Finitio     = require '../../../../src/finitio'
+Parser      = require '../../../../src/finitio/parser'
+BuiltinType = require '../../../../src/finitio/type/builtin_type'
+Heading     = require '../../../../src/finitio/support/heading'
+Attribute   = require '../../../../src/finitio/support/attribute'
 should      = require 'should'
 
 describe "Parser#heading", ->
