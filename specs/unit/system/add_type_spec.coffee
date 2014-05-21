@@ -13,7 +13,7 @@ describe "System#addType", ->
       res.should.equal(numType)
 
     it 'should add the type', ->
-      system[numType.name].should.equal(numType)
+      should(system[numType.name]).equal(numType)
 
   describe 'with an invalid type', ->
     system = new System
