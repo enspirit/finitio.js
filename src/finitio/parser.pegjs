@@ -1,8 +1,6 @@
 {
+  $u = require('./support/utils');
   compiler = options.compiler;
-  if (!compiler){
-    throw new Error("Missing compiler in Parser");
-  }
 
   // converts head:X tail(... X)* to an array of Xs
   function headTailToArray(head, tail) {

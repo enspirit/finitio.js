@@ -4,7 +4,7 @@ should      = require 'should'
 describe "Parser#integer_literal", ->
 
   parse = (source) ->
-    Parser.parse(source, { startRule: "literal", compiler: this })
+    Parser.parse(source, { startRule: "literal" })
 
   it 'works with single-digit positive integer', ()->
     s = parse('2')

@@ -4,7 +4,7 @@ should      = require 'should'
 describe "Parser#boolean_literal", ->
 
   parse = (source) ->
-    Parser.parse(source, { startRule: "literal", compiler: this })
+    Parser.parse(source, { startRule: "literal" })
 
   it 'works with true', ()->
     s = parse('true')

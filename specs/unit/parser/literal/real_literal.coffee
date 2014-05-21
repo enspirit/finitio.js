@@ -4,7 +4,7 @@ should      = require 'should'
 describe "Parser#real_literal", ->
 
   parse = (source) ->
-    Parser.parse(source, { startRule: "literal", compiler: this })
+    Parser.parse(source, { startRule: "literal" })
 
   it 'works positive real', ()->
     s = parse('12.5')

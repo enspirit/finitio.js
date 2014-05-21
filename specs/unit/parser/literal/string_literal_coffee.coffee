@@ -4,7 +4,7 @@ should      = require 'should'
 describe "Parser#string_literal", ->
 
   parse = (source) ->
-    Parser.parse(source, { startRule: "literal", compiler: this })
+    Parser.parse(source, { startRule: "literal" })
 
   it 'works with a doubly-quoted string', ()->
     s = parse('"Hello"')
