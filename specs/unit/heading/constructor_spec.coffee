@@ -16,9 +16,9 @@ describe "Heading#constructor", ->
 
   describe 'with invalid attributes', ->
     attributes = [
-        new Attribute('red', intType),
-        new Attribute('red', intType)
-      ]
+      new Attribute('red', intType),
+      new Attribute('red', intType)
+    ]
 
     lambda = -> subject(attributes)
 
