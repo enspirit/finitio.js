@@ -133,7 +133,10 @@ class TypeFactory
     if typeof(name) isnt "string"
       [name, nativ, metadata] = ['default', name, nativ]
 
-    new Constraint(name, nativ, metadata)
+    if typeof(nativ) == 'function'
+      new Constraint.Native(name, nativ, metadata)
+    else
+      new Constraint.Regexp(name, nativ, metadata)
 
   constraints: (constraints, callback) ->
     constrs = []

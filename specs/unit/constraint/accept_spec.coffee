@@ -4,7 +4,7 @@ should     = require 'should'
 describe "Constraint#accept", ->
 
   describe 'with a function', ->
-    constraint = new Constraint 'positive', (i)-> i>0
+    constraint = new Constraint.Native 'positive', (i)-> i>0
 
     it 'accepts positive numbers', ->
       constraint.accept(12).should.be.true
@@ -13,7 +13,7 @@ describe "Constraint#accept", ->
       constraint.accept(-12).should.be.false
 
   describe 'with a regexp', ->
-    constraint = new Constraint 'word', /[a-z]+/
+    constraint = new Constraint.Regexp 'word', /[a-z]+/
 
     it 'accepts words', ->
       constraint.accept("abgd").should.be.true

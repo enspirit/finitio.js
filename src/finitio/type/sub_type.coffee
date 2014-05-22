@@ -19,7 +19,7 @@ class SubType extends Type
     unless @constraints.length > 0
       $u.argumentError("Empty constraints not allowed on SubType")
 
-    unless $u.every(@constraints, (c)-> c.constructor == Constraint)
+    unless $u.every(@constraints, (c)-> c instanceof Constraint)
       $u.argumentError("Array of constraints expected, got", @constraints)
 
     super(@name, @metadata)

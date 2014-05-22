@@ -6,8 +6,8 @@ _          = require 'underscore'
 
 describe "SubType#constructor", ->
 
-  c1 = new Constraint('a', (i) -> i > 0)
-  c2 = new Constraint('b', (i) -> i < 255)
+  c1 = new Constraint.Native('a', (i) -> i > 0)
+  c2 = new Constraint.Native('b', (i) -> i < 255)
 
   sub = new SubType(numType, [c1, c2])
 

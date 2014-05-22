@@ -6,8 +6,8 @@ should     = require 'should'
 describe "SubType#include", ->
 
   type = new SubType(intType, [
-      new Constraint('default', (i) -> i>0),
-      new Constraint('small', (i) -> i<255)
+      new Constraint.Native('default', (i) -> i>0),
+      new Constraint.Native('small', (i) -> i<255)
     ], "byte")
 
   subject = (arg) -> type.include(arg)

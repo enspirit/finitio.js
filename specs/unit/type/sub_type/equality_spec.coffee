@@ -8,9 +8,9 @@ describe 'SubType#equals', ->
 
   fn1 = (i) -> i > 0
   fn2 = (i) -> i < 255
-  c1 = new Constraint('default', fn1)
-  c2 = new Constraint('anothername', fn1)
-  c3 = new Constraint('small', fn2)
+  c1 = new Constraint.Native('default', fn1)
+  c2 = new Constraint.Native('anothername', fn1)
+  c3 = new Constraint.Native('small', fn2)
 
   type  = new SubType(numType, [c1])
   type2 = new SubType(numType, [c1])

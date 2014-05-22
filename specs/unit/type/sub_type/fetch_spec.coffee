@@ -6,8 +6,8 @@ stringType} = require '../../../spec_helpers'
 
 describe "SubType#fetch", ->
 
-  _default = new Constraint('default', (i) -> i > 0)
-  _small   = new Constraint('small', (i) -> i < 255)
+  _default = new Constraint.Native('default', (i) -> i > 0)
+  _small   = new Constraint.Native('small', (i) -> i < 255)
 
   t = new SubType(numType, [_default, _small], "byte")
 

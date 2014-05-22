@@ -13,17 +13,22 @@ class Constraint
     @name == 'default'
 
   accept: (arg) ->
-    if typeof @native is "function"
-      return true if @native(arg)
-
-    else if @native.constructor == RegExp
-      return true if @native.test(arg)
-
-    false
+    throw new Error("Constraint is an abstract class")
 
   equals: (other)->
     (this is other) or
     (other instanceof Constraint and @native==other.native)
 
+class Constraint.Native extends Constraint
+  kind: 'native'
+
+  accept: (arg) ->
+    @native(arg)
+
+class Constraint.Regexp extends Constraint
+  kind: 'regexp'
+
+  accept: (arg) ->
+    @native.test(arg)
 #
 module.exports = Constraint

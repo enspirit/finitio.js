@@ -8,14 +8,14 @@ describe "SubType#name", ->
   get = (type) -> type.name
 
   describe 'when provided', ->
-    c = new Constraint("default", (i)-> true)
+    c = new Constraint.Native("default", (i)-> true)
     subject = get(new SubType(numType, [ c ], "Foo"))
 
     it 'uses the specified one', ->
       subject.should.equal("Foo")
 
   describe 'when not provided', ->
-    c = new Constraint('byte', (i)->)
+    c = new Constraint.Native('byte', (i)->)
     subject = get(new SubType(numType, [c]))
 
     it 'uses the first constraint name', ->

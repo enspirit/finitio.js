@@ -52,7 +52,7 @@ describe 'TypeFactory#sub_type', ->
         e.should.be.an.instanceof(TypeError)
 
   describe 'when used with a super type and an array of constraints', ->
-    subject = factory.sub_type numType, [ new Constraint('foo', (i)-> i>0) ]
+    subject = factory.sub_type numType, [ new Constraint.Native('foo', (i)-> i>0) ]
 
     it 'should be a subtype', ->
       subject.should.be.an.instanceof(SubType)

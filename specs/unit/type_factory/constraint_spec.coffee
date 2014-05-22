@@ -44,7 +44,7 @@ describe 'TypeFactory#constraint', ->
       subject.accept("word").should.be.true
 
   describe 'with a constraint', ->
-    c = new Constraint('def', (i)-> i>0)
+    c = new Constraint.Native('def', (i)-> i>0)
     subject = factory.constraint(c)
 
     it 'should work as expected', ->
