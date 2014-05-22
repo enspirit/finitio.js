@@ -65,7 +65,7 @@ class TupleType extends Type
       $u.undressError("Tuple cannot undress to `#{as}` (#{as.constructor}).")
 
     # Check heading compatibility
-    [s, l, r] = $u.triSplit(@heading.attributes, as.heading.attributes)
+    [s, l, r] = $u.triSplit(_attributesHash(@heading), _attributesHash(as.heading))
 
     # left non empty? do we allow projection undressings?
     unless $u.isEmpty(l)
@@ -86,7 +86,7 @@ class TupleType extends Type
       attrType  = attribute.type
       attrValue = value[attrName]
       unless attrValue is undefined
-        targType  = as.heading.attributes[attrName].type
+        targType  = as.heading.getAttr(attrName).type
         undressed[attribute.name] = attrType.undress(attrValue, targType)
 
     undressed
@@ -105,8 +105,13 @@ class TupleType extends Type
 
   ## 'Private' methods
 
+  _attributesHash = (heading)->
+    h = {}
+    heading.each (a)-> h[a.name] = a
+    h
+
   attributeNames: ->
-    $u.map($u.values(@heading.attributes), (a) -> a.name)
+    $u.map(@heading.attributes, (a) -> a.name)
 
   requiredAttributeNames: ->
     $u.map(

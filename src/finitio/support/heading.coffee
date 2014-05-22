@@ -9,33 +9,36 @@ $u        = require './utils'
 # attributes have the same name.
 #
 class Heading
+  Fetchable  this, 'attributes', 'attribute', (name)-> this.getAttr(name)
 
   DEFAULT_OPTIONS = {
     allowExtra: false
   }
 
-  constructor: (attributes, options) ->
-    unless $u.isArray(attributes) and \
-           $u.every(attributes, (a) -> a instanceof Attribute)
+  constructor: (@attributes, @options) ->
+    # Check the attributes
+    unless $u.isArray(@attributes) and \
+           $u.every(@attributes, (a) -> a instanceof Attribute)
       $u.argumentError("Array of Attribute expected")
 
-    @attributes = {}
-    $u.each attributes, (attr) =>
-      if @attributes[attr.name]?
+    # Check unique names
+    names = {}
+    $u.each @attributes, (attr) =>
+      if names[attr.name]?
         $u.argumentError("Attribute names must be unique")
-      @attributes[attr.name] = attr
+      names[attr.name] = attr
 
-    unless options?
-      options = {}
-    unless $u.isObject(options)
+    # Check the options
+    @options ?= {}
+    unless $u.isObject(@options)
       $u.argumentError("Hash of options expected")
-
     @options = $u.extend({}, DEFAULT_OPTIONS, options)
 
-  Fetchable this, "attributes"
+  getAttr: (name)->
+    $u.find @attributes, (a)-> a.name == name
 
   size: ->
-    $u.size(@attributes)
+    @attributes.length
 
   isEmpty: ->
     @size() == 0
@@ -47,18 +50,18 @@ class Heading
     @options['allowExtra'] || $u.any(@attributes, (a) -> !a.required)
 
   each: (callback) ->
-    $u.each($u.values(@attributes), callback)
+    $u.each(@attributes, callback)
 
   toName: ->
-    $u.map($u.values(@attributes), (a) -> a.toName()).join(', ')
+    $u.map(@attributes, (a) -> a.toName()).join(', ')
 
   names: ->
-    $u.map($u.values(@attributes), (a) -> a.name)
+    $u.map(@attributes, (a) -> a.name)
 
   isSuperHeadingOf: (other) ->
     return true if (this is other)
     return false unless other instanceof Heading
-    [s, l, r] = $u.triSplit(@attributes, other.attributes)
+    [s, l, r] = $u.triSplit(_attributesByName(this), _attributesByName(other))
     #
     $u.every(s, (pair)-> pair[0].isSuperAttributeOf(pair[1])) and
     $u.every(l, (a)-> not(a.required)) and
@@ -72,14 +75,22 @@ class Heading
       @optionsEquals(other))
 
   attributesEquals: (other) ->
-    $u.size(@attributes) == $u.size(other.attributes) and
-    $u.every @attributes, (attr, name) ->
-      attr.equals(other.attributes[name])
+    @attributes.length == other.attributes.length and
+    $u.every @attributes, (attr) ->
+      attr.equals(other.getAttr(attr.name))
 
   optionsEquals: (other) ->
     $u.size(@options) == $u.size(other.options) and
     $u.every @options, (opt, name) ->
       opt == other.options[name]
+
+  # private
+
+  _attributesByName = (self)->
+    h = {}
+    $u.each self.attributes, (a)->
+      h[a.name] = a
+    h
 
 #
 module.exports = Heading

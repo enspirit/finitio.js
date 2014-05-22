@@ -81,34 +81,34 @@ module.exports = ->
   @Then /^`(.*?)` and `(.*?)` are mandatory$/, (a1, a2, callback) ->
     if type.heading == undefined
       callback.fail("Heading based type expected, got `#{type}`")
-    else if type.heading.attributes[a1] == undefined
+    else if type.heading.getAttr(a1) == undefined
       callback.fail("`#{a1}` attribute expected, got `#{type.heading.toName()}`")
-    else if type.heading.attributes[a2] == undefined
+    else if type.heading.getAttr(a2) == undefined
       callback.fail("`#{a2}` attribute expected, got `#{type.heading.toName()}`")
     else
-      should(type.heading.attributes[a1].required).be.true
-      should(type.heading.attributes[a2].required).be.true
+      should(type.heading.getAttr(a1).required).be.true
+      should(type.heading.getAttr(a2).required).be.true
     callback()
 
   @Then /^`(.*?)` is mandatory, but `(.*?)` is optional$/, (a1, a2, callback) ->
     if type.heading == undefined
       callback.fail("Heading based type expected, got `#{type}`")
-    else if type.heading.attributes[a1] == undefined
+    else if type.heading.getAttr(a1) == undefined
       callback.fail("`#{a1}` attribute expected, got `#{type.heading.toName()}`")
-    else if type.heading.attributes[a2] == undefined
+    else if type.heading.getAttr(a2) == undefined
       callback.fail("`#{a2}` attribute expected, got `#{type.heading.toName()}`")
     else
-      should(type.heading.attributes[a1].required).be.true
-      should(type.heading.attributes[a2].required).be.false
+      should(type.heading.getAttr(a1).required).be.true
+      should(type.heading.getAttr(a2).required).be.false
     callback()
 
   @Then /^`(.*?)` is mandatory$/, (a1, callback) ->
     if type.heading == undefined
       callback.fail("Heading based type expected, got `#{type}`")
-    else if type.heading.attributes[a1] == undefined
+    else if type.heading.getAttr(a1) == undefined
       callback.fail("`#{a1}` attribute expected, got `#{type.heading.toName()}`")
     else
-      should(type.heading.attributes[a1].required).be.true
+      should(type.heading.getAttr(a1).required).be.true
     callback()
 
   @Then /^it allows extra attributes$/, (callback) ->
