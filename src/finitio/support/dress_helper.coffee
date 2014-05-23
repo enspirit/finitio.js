@@ -5,6 +5,7 @@ class DressHelper
 
   constructor: ->
     @stack = []
+    @error = null
 
   iterate: (value, callback) ->
     $u.each value, (elm, index) =>
@@ -34,6 +35,7 @@ class DressHelper
     try
       return [true, callback()]
     catch err
+      @error = err
       if err instanceof rescueOn
         return [false, null]
       else
@@ -49,7 +51,7 @@ class DressHelper
         throw err
 
   failed: (type, value, cause) ->
-    cause ?= null
+    cause ?= @error || null
     msg = @defaultErrorMessage(type, value)
     $u.dressError(msg, cause, @location())
 
