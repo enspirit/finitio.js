@@ -140,7 +140,7 @@ module.exports = ->
       t    = system.fetch(target)
       neg  = (neg? ? true : false)
       isIt = s.isSuperTypeOf(t)
-      unless isIt == neg
+      unless isIt != neg
         callback.fail("Expected #{source}#{(if neg then ' not' else '')} to be a super type of #{target}")
     catch e
       error = e
