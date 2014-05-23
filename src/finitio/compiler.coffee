@@ -28,19 +28,14 @@ class Compiler
     @system
 
   setMain: (main)->
-    @system.setMain(main);
+    @system.addType(@typeDef(main, 'Main'));
 
   proxy: (name)->
     @proxies[name] ?= @factory.proxy(name)
     @proxies[name]
 
   typeDef: (type, name, metadata)->
-    if type.anonymous && !type.metadata
-      type.setName(name)
-      type.setMetadata(metadata)
-      type
-    else
-      @alias(type, name, metadata)
+    @setTypeMetadata(@setTypeName(type, name), metadata)
 
   typeRef: (ref)->
     @resolve(ref, ()=> @proxy(ref)).fetchType()
@@ -59,5 +54,19 @@ class Compiler
       @system.use(sub, as)
     else
       @system.import(sub)
+
+  #
+
+  setTypeName: (type, name)->
+    return type unless name?
+    return @alias(type, name) unless type.anonymous
+    type.setName(name)
+    type
+
+  setTypeMetadata: (type, metadata)->
+    return type unless metadata?
+    return @alias(type, null, metadata) if type.metadata
+    type.setMetadata(metadata)
+    type
 
 module.exports = Compiler

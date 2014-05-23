@@ -28,7 +28,7 @@ module.exports = ->
   @Given /^the System is$/, (source, callback) ->
     try
       system = TestSystem.parse(source, resolver: resolver)
-      type   = system.main if system.main
+      type   = system.Main if system.Main
     catch e
       error = e
       callback.fail(e)
@@ -128,12 +128,8 @@ module.exports = ->
   @Then /^metadata at (.*) should be as follows$/, (path, table, callback) ->
     should(table.hashes().length).equal(1)
     expected = table.hashes()[0]
-
-    reducer = (memo, elm)-> memo.fetch(elm)
-    victim  = _.reduce(path.split('/'), reducer, system)
-
+    victim  = system.fetchPath(path)
     should(victim.metadata).eql(expected)
-
     callback()
 
   # Hierarchy

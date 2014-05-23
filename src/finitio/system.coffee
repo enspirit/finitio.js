@@ -11,31 +11,26 @@ class System
 
   @REF_RGX = /^(?:([a-z][a-z0-9]*)\.)?(.*?)$/
 
-  constructor: (@imports, @uses, @types, @main) ->
+  constructor: (@imports, @uses, @types) ->
     @imports ?= []
     @uses    ?= {}
-    @types   ?= {}
-    @main    ?= null
+    @types   ?= []
 
     # install all types directly
-    $u.extend(this, @types)
+    $u.each @types, (t)=> this[t.name] = t
 
-  Fetchable this, "types", "type"
-
-  setMain: (main)->
-    if @main?
-      throw new Error("Main type already set")
-    @main = main
-    @types['Main'] = main
+  Fetchable this, "types", "type", (name)->
+    $u.find @types, (t)-> t.name == name
 
   addType: (type) ->
     unless type instanceof Type
       $u.argumentError("Finitio.Type expected, got:", type)
 
-    if @types[type.name]?
+    if this[type.name]?
       $u.argumentError("Duplicate type `#{type.name}`")
 
-    this[type.name] = @types[type.name] = type
+    @types.push(type)
+    this[type.name] = type
 
   import: (other) ->
     @imports.push(other)
@@ -56,12 +51,12 @@ class System
     (new Compiler(options)).compile(source)
 
   dress: (value) ->
-    unless @main
+    unless this.Main
       throw new Error("No main on System")
-    @main.dress(value)
+    this.Main.dress(value)
 
   clone: ->
-    new System($u.clone(@imports), $u.clone(@uses), $u.clone(@types), @main)
+    new System($u.clone(@imports), $u.clone(@uses), $u.clone(@types))
 
   # Private
 

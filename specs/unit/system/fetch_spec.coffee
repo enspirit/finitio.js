@@ -1,5 +1,5 @@
 System      = require '../../../src/finitio/system'
-TupleType   = require '../../../src/finitio/type/tuple_type'
+AliasType   = require '../../../src/finitio/type/alias_type'
 {numType}   = require '../../spec_helpers'
 should      = require 'should'
 
@@ -10,31 +10,22 @@ describe 'System#fetch', ->
   beforeEach ->
     system = new System
     system.addType(numType)
+    system.addType(new AliasType(numType, 'Main'))
 
   subject = (name) -> system.fetch(name)
 
-  describe 'with an existing type name', ->
-    it 'should return the type', ->
-      subject("numType").should.equal(numType)
+  it 'returns a type by name', ->
+    should(subject("numType")).equal(numType)
 
-  describe 'with a non existing type name and no callback', ->
-    name = "noSuchOne"
+  it 'returns Main as well', ->
+    should(subject("Main")).be.an.instanceof(AliasType)
 
-    lambda = -> subject(name)
+  it 'throws with a non existing type name and no callback', ->
+    lambda = -> subject("noSuchOne")
+    should(lambda).throw(/No such type `noSuchOne`/)
 
-    it 'should raise an error', ->
-      should(lambda).throw()
-
-      err = try
-        lambda()
-      catch e
-        e
-
-      err.message.should.match /No such type `noSuchOne`/
-
-  describe 'with a non existing type name and a callback', ->
+  it 'yields the callback otherwise', ->
     lambda = ->
       system.fetch("noSuchOne", -> "bar")
-
-    it 'should call the callback', ->
-      lambda().should.equal("bar")
+    should(lambda).not.throw()
+    should(lambda()).equal("bar")

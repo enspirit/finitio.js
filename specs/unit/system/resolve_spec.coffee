@@ -5,33 +5,40 @@ should      = require 'should'
 
 describe 'System#resolve', ->
 
+  a = { name: 'A' }
+  b = { name: 'B' }
+  c = { name: 'C' }
+  d = { name: 'D' }
+  e = { name: 'E' }
+  f = { name: 'F' }
+
   system = new System [ 
       new System([
-          new System([], {}, {'E': 'e'})
+          new System([], {}, [e])
         ],
         {},
-        {'A': 'a'}
+        [a]
       ),
-      new System([], {}, {'B': 'b'}),
+      new System([], {}, [b]),
     ],
     {
       x: new System([
-          new System([], {}, {'F': 'f'})
+          new System([], {}, [f])
         ],
         {},
-        {'C': 'c'})
+        [c])
     },
-    { 'D' : 'd' }
+    [d]
 
   it 'resolves a direct unqualified name correctly', ->
-    should(system.resolve('D')).eql('d')
+    should(system.resolve('D')).equal(d)
 
   it 'resolves a indirect unqualified name correctly', ->
-    should(system.resolve('A')).eql('a')
-    should(system.resolve('B')).eql('b')
+    should(system.resolve('A')).equal(a)
+    should(system.resolve('B')).equal(b)
 
   it 'resolves a qualified name correctly', ->
-    should(system.resolve('x.C')).eql('c')
+    should(system.resolve('x.C')).equal(c)
 
   it 'throws immediately when a qualifier is unknown', ->
     l = ()-> system.resolve('y.C', ()-> 12)
