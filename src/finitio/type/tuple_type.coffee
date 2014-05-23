@@ -1,11 +1,12 @@
+{TypeType}      = require '../support/ic'
+$u              = require '../support/utils'
 Type            = require '../type'
 Heading         = require '../support/heading'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
-$u              = require '../support/utils'
 
 class TupleType extends Type
-  generator: 'tuple'
+  TypeType this, 'tuple', ['heading', 'name', 'metadata']
 
   constructor: (@heading, @name, @metadata) ->
     unless @heading instanceof Heading

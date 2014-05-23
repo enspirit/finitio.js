@@ -1,4 +1,5 @@
-$u = require './utils'
+$u             = require './utils'
+{AbstractType} = require './ic'
 
 #
 # Helper class for constraints.
@@ -6,6 +7,7 @@ $u = require './utils'
 class Constraint
 
   constructor: (@name, @native, @metadata) ->
+    @name ?= 'default'
     unless typeof @name == "string"
       $u.argumentError("String expected for constraint name, got: ", @name)
 
@@ -30,5 +32,10 @@ class Constraint.Regexp extends Constraint
 
   accept: (arg) ->
     @native.test(arg)
+
+AbstractType Constraint,
+  [ Constraint.Native, Constraint.Regexp ],
+  [ 'name', 'native', 'metadata' ], 1
+
 #
 module.exports = Constraint

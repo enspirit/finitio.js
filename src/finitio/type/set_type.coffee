@@ -1,10 +1,11 @@
+{TypeType}      = require '../support/ic'
+$u              = require '../support/utils'
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
-$u              = require '../support/utils'
 
 class SetType extends CollectionType
-  generator: 'set'
+  TypeType this, 'set', ['elmType', 'name', 'metadata']
 
   include: (value) ->
     return false unless value instanceof Array

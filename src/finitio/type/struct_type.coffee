@@ -1,10 +1,11 @@
+{TypeType}      = require '../support/ic'
+$u              = require '../support/utils'
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
-$u              = require '../support/utils'
 
 class StructType extends Type
-  generator: 'struct'
+  TypeType this, 'struct', ['componentTypes', 'name', 'metadata']
 
   constructor: (@componentTypes, @name, @metadata) ->
     super(@name, @metadata)

@@ -1,9 +1,10 @@
+{TypeType}  = require '../support/ic'
 DressHelper = require '../support/dress_helper'
 Type        = require '../type'
 
 #
 class BuiltinType extends Type
-  generator: 'builtin'
+  TypeType this, 'builtin', ['jsType', 'name', 'metadata']
 
   constructor: (@jsType, @name, @metadata) ->
     super(@name, @metadata)

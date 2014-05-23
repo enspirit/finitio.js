@@ -1,3 +1,4 @@
+{TypeType}      = require '../support/ic'
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 TupleType       = require '../type/tuple_type'
@@ -6,7 +7,7 @@ DressHelper     = require '../support/dress_helper'
 $u              = require '../support/utils'
 
 class RelationType extends Type
-  generator: 'relation'
+  TypeType this, 'relation', ['heading', 'name', 'metadata']
 
   constructor: (@heading, @name, @metadata) ->
     super(@name, @metadata)

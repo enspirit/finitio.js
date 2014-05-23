@@ -1,5 +1,6 @@
-$u   = require './utils'
-Type = require '../type'
+$u           = require './utils'
+{ObjectType} = require './ic'
+Type         = require '../type'
 
 #
 # Helper class for tuple and relation attributes.
@@ -8,6 +9,7 @@ Type = require '../type'
 # type is a Finitio type.
 #
 class Attribute
+  ObjectType this, ['name', 'type', 'required', 'metadata']
 
   constructor: (@name, @type, @required, @metadata) ->
     unless typeof @name == "string"

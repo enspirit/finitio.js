@@ -1,7 +1,9 @@
-$u = require './utils'
-Type = require '../type'
+{ObjectType} = require './ic'
+$u           = require './utils'
+Type         = require '../type'
 
 class Contract
+  ObjectType this, ['name', 'infoType', 'dresser', 'undresser', 'metadata']
 
   constructor: (@name, @infoType, @dresser, @undresser, @metadata)->
     unless $u.isString(@name)

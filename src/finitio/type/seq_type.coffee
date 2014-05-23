@@ -1,10 +1,11 @@
+{TypeType}      = require '../support/ic'
+$u              = require '../support/utils'
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 DressHelper     = require '../support/dress_helper'
-$u              = require '../support/utils'
 
 class SeqType extends CollectionType
-  generator: 'seq'
+  TypeType this, 'seq', ['elmType', 'name', 'metadata']
 
   include: (value) ->
     value instanceof Array and $u.every(value, (v) => @elmType.include(v))

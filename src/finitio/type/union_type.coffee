@@ -1,9 +1,10 @@
+{TypeType}  = require '../support/ic'
+$u          = require '../support/utils'
 Type        = require '../type'
 DressHelper = require '../support/dress_helper'
-$u          = require '../support/utils'
 
 class UnionType extends Type
-  generator: 'union'
+  TypeType this, 'union', ['candidates', 'name', 'metadata']
 
   constructor: (@candidates, @name, @metadata) ->
     @name ?= null

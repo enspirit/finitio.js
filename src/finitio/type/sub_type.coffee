@@ -1,11 +1,12 @@
+{TypeType}  = require '../support/ic'
+$u          = require '../support/utils'
 Fetchable   = require '../support/fetchable'
 Type        = require '../type'
 Constraint  = require '../support/constraint'
 DressHelper = require '../support/dress_helper'
-$u          = require '../support/utils'
 
 class SubType extends Type
-  generator: 'sub'
+  TypeType this, 'sub', ['superType', 'constraints', 'name', 'metadata']
 
   constructor: (@superType, @constraints, @name, @metadata) ->
     @name ?= null

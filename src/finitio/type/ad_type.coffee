@@ -1,11 +1,12 @@
+{TypeType}   = require '../support/ic'
+$u           = require '../support/utils'
 Fetchable    = require '../support/fetchable'
 Contract     = require '../support/contract'
 DressHelper  = require '../support/dress_helper'
 Type         = require '../type'
-$u           = require '../support/utils'
 
 class AdType extends Type
-  generator: 'adt'
+  TypeType this, 'adt', ['jsType', 'contracts', 'name', 'metadata']
 
   constructor: (@jsType, @contracts, @name, @metadata) ->
     if @jsType and not(@jsType instanceof Function)

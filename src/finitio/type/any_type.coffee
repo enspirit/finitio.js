@@ -1,8 +1,9 @@
-Type = require '../type'
+{TypeType} = require '../support/ic'
+Type       = require '../type'
 
 #
 class AnyType extends Type
-  generator: 'any'
+  TypeType this, 'any', ['name', 'metadata']
 
   constructor: (@name, @metadata) ->
     super(@name, @metadata)

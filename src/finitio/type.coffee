@@ -12,6 +12,14 @@ class Type
     @anonymous = not(@name?)
     @name ?= @defaultName()
 
+  @factor: (from)->
+    from[Object.keys(from)[0]]
+
+  toFactor: ()->
+    to = { }
+    to[@generator] = this
+    to
+
   setName: (name)->
     throw new Error("Name already set") unless @anonymous
     @name = name

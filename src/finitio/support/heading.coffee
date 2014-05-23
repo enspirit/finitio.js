@@ -1,6 +1,7 @@
-Fetchable = require './fetchable'
-Attribute = require './attribute'
-$u        = require './utils'
+{ObjectType} = require './ic'
+$u           = require './utils'
+Fetchable    = require './fetchable'
+Attribute    = require './attribute'
 
 #
 # Helper class for tuple and relation types.
@@ -9,6 +10,7 @@ $u        = require './utils'
 # attributes have the same name.
 #
 class Heading
+  ObjectType this, ['attributes', 'options']
   Fetchable  this, 'attributes', 'attribute', (name)-> this.getAttr(name)
 
   DEFAULT_OPTIONS = {
