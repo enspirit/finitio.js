@@ -173,7 +173,7 @@ module.exports = (grunt) ->
       test:
         src: ['specs/**/*.coffee']
         options:
-          reporter: 'progress'
+          #reporter: 'progress'
           require: 'coffee-script/register'
 
     # Acceptance testing with cucumber
