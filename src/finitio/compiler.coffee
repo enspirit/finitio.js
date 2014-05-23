@@ -38,7 +38,7 @@ class Compiler
     @setTypeMetadata(@setTypeName(type, name), metadata)
 
   typeRef: (ref)->
-    @resolve(ref, ()=> @proxy(ref)).fetchType()
+    @proxy(ref)
 
   resolveProxies: ()->
     $u.each @proxies, (proxy, name)=>

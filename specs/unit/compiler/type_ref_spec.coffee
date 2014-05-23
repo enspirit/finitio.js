@@ -18,14 +18,11 @@ describe "Compiler#typeRef", ->
 
   compiler = new Compiler({ system: system })
 
-  it 'returns the type if type exists', ->
-    should(compiler.typeRef(intType.name)).equal(intType)
+  it 'creates a proxy if the type exists', ->
+    should(compiler.typeRef(intType.name)).be.an.instanceof(ProxyType)
 
   it 'creates a proxy if type does not exists', ->
     should(compiler.typeRef('nosuchone')).be.an.instanceof(ProxyType)
 
   it 'supports denoting types through information contracts', ->
-    should(compiler.typeRef('Date/timestamp')).equal(intType)
-
-  it 'creates a proxy if information contract does not exists', ->
-    should(compiler.typeRef('Date/iso')).be.an.instanceof(ProxyType)
+    should(compiler.typeRef('Date/timestamp')).be.an.instanceof(ProxyType)

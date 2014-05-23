@@ -3,6 +3,7 @@ Parser      = require '../../../src/finitio/parser'
 System      = require '../../../src/finitio/system'
 BuiltinType = require '../../../src/finitio/type/builtin_type'
 AliasType   = require '../../../src/finitio/type/alias_type'
+ProxyType   = require '../../../src/finitio/type/proxy_type'
 should      = require 'should'
 
 describe "Parser#system", ->
@@ -31,7 +32,7 @@ describe "Parser#system", ->
       should(subject.fetch('Str').name).equal('Str')
 
     it 'should have a main type', ->
-      should(subject.Main).be.an.instanceof(AliasType)
+      should(subject.Main).be.an.instanceof(ProxyType)
 
   describe 'with some definitions but no main type', ->
     subject = compile("Str = .String\nInt = .Number", startRule: "system")
