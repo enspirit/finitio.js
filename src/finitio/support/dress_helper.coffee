@@ -73,8 +73,12 @@ _valueToString = (value) ->
   return 'undefined' if value == undefined
   return 'null'      if value == null
   s = value.toString()
-  s = "#{s.substring(0, 25)}..." if s.length>25
-  s = "[#{s}]" if value instanceof Array
+  if s == "[object Object]"
+    s = JSON.stringify(value)
+  if s.length>30
+    s = "#{s.substring(0, 30)}..."
+  if value instanceof Array
+    s = "[#{s}]"
   s
 
 _typeToString = (type) ->
