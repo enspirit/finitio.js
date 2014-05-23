@@ -138,10 +138,10 @@ module.exports = ->
     try
       s    = system.fetch(source)
       t    = system.fetch(target)
-      neg  = ((neg == undefined) ? false : true)
+      neg  = (neg? ? true : false)
       isIt = s.isSuperTypeOf(t)
       unless isIt == neg
-        callback.fail("Expected #{source} #{(if neg then 'not' else '')} to be a super type of #{target}")
+        callback.fail("Expected #{source}#{(if neg then ' not' else '')} to be a super type of #{target}")
     catch e
       error = e
       callback.fail(e)
