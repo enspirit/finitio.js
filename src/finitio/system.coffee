@@ -1,13 +1,15 @@
-Fetchable   = require './support/fetchable'
-$u          = require './support/utils'
-Type        = require './type'
-TypeFactory = require './support/factory'
-Compiler    = require './compiler'
+{ObjectType} = require './support/ic'
+$u           = require './support/utils'
+Fetchable    = require './support/fetchable'
+Type         = require './type'
+TypeFactory  = require './support/factory'
+Compiler     = require './compiler'
 
 #
 # A System is a collection of named Finitio types.
 #
 class System
+  ObjectType this, ['imports', 'uses', 'types']
 
   @REF_RGX = /^(?:([a-z][a-z0-9]*)\.)?(.*?)$/
 
