@@ -14,7 +14,7 @@ class BuiltinType extends Type
     if value == null || value == undefined
       helper.failed(this, value)
 
-    unless value.constructor == @jsType
+    unless @include(value)
       helper.failed(this, value)
 
     value
@@ -23,7 +23,7 @@ class BuiltinType extends Type
     @jsType.name
 
   include: (value) ->
-    value.constructor == @jsType
+    value instanceof @jsType || value.constructor == @jsType
 
   equals: (other) =>
     (this is other) or
