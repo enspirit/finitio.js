@@ -8,19 +8,19 @@ class AnyType extends Type
   constructor: (@name, @metadata) ->
     super(@name, @metadata)
 
-  dress: (value, helper) ->
-    value
-
   defaultName: ->
     "Any"
 
-  include: (value) ->
+  _dress: (value, helper) ->
+    value
+
+  _include: (value) ->
     true
 
-  isSuperTypeOf: (other)->
+  _isSuperTypeOf: (other)->
     true
 
-  equals: (other) ->
+  _equals: (other) ->
     (other instanceof AnyType) or super
 
 module.exports = AnyType

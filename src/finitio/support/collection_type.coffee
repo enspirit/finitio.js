@@ -10,19 +10,19 @@ class CollectionType extends Type
 
     super(@name, @metadata)
 
-  equals: (other) ->
+  _equals: (other) ->
     (this is other) or
     (other instanceof (this.constructor) and
       @elmType.equals(other.elmType)) or
     super
 
-  isSuperTypeOf: (other)->
+  _isSuperTypeOf: (other)->
     (this is other) or
     (other instanceof (this.constructor) and
       @elmType.isSuperTypeOf(other.elmType)) or
     super
 
-  undress: (value, as)->
+  _undress: (value, as)->
     from = @elmType
     to   = as.elmType
 

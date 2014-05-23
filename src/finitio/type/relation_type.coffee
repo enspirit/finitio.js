@@ -3,7 +3,6 @@ Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 TupleType       = require '../type/tuple_type'
 Heading         = require '../support/heading'
-DressHelper     = require '../support/dress_helper'
 $u              = require '../support/utils'
 
 class RelationType extends Type
@@ -15,22 +14,23 @@ class RelationType extends Type
     unless @heading instanceof Heading
       $u.argumentError("Heading expected, got:", @heading)
 
+  defaultName: ->
+    "{{#{@heading.toName()}}}"
+
   fetch: ()->
     @heading.fetch.apply(@heading, arguments)
 
-  include: (value) ->
+  tupleType: ()->
+    @tupleTypeCache ?= new TupleType(@heading)
+
+  _include: (value) ->
     value instanceof Array and
       $u.every value, (tuple)=> @tupleType().include(tuple)
-
-  tupleType: ->
-    new TupleType(@heading)
 
   # Apply the corresponding TupleType's `dress` to every element of `value`
   # (any enumerable). Return a Set of transformed tuples. Fail if anything
   # goes wrong transforming tuples or if duplicates are found.
-  dress: (value, helper) ->
-    helper ?= new DressHelper
-
+  _dress: (value, helper) ->
     unless typeof(value) == "object" || typeof(value) == "array"
       helper.failed(this, value)
 
@@ -47,7 +47,7 @@ class RelationType extends Type
     # Return built tuples
     $u.values(set)
 
-  undress: (value, as) ->
+  _undress: (value, as) ->
     unless as instanceof RelationType or as instanceof CollectionType
       $u.undressError("Unable to undress `#{value}` to `#{as}`")
 
@@ -56,14 +56,11 @@ class RelationType extends Type
     $u.map value, (val)->
       from.undress(val, to)
 
-  defaultName: ->
-    "{{#{@heading.toName()}}}"
-
-  isSuperTypeOf: (other)->
+  _isSuperTypeOf: (other)->
     (this is other) or
     (other instanceof RelationType and @heading.isSuperHeadingOf(other.heading))
 
-  equals: (other) ->
+  _equals: (other) ->
     (this is other) or
     (other instanceof RelationType and @heading.equals(other.heading)) or
     super

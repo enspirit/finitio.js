@@ -2,12 +2,14 @@
 $u              = require '../support/utils'
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
-DressHelper     = require '../support/dress_helper'
 
 class SetType extends CollectionType
   TypeType this, 'set', ['elmType', 'name', 'metadata']
 
-  include: (value) ->
+  defaultName: ->
+    "{#{@elmType.name}}"
+
+  _include: (value) ->
     return false unless value instanceof Array
     return false unless $u.every(value, (v) => @elmType.include(v))
     $u.uniq(value).length == value.length
@@ -15,9 +17,7 @@ class SetType extends CollectionType
   # Apply the element type's `dress` transformation to each element of
   # `value` (expected to respond to `each`). Return converted values in an
   # Array.
-  dress: (value, helper) ->
-    helper ?= new DressHelper
-
+  _dress: (value, helper) ->
     helper.failed(this, value) unless value instanceof Array
 
     array = []
@@ -29,13 +29,10 @@ class SetType extends CollectionType
         array.push dressed
     array
 
-  undress: (value, as)->
+  _undress: (value, as)->
     unless as instanceof CollectionType
       $u.undressError("Unable to undress `#{value}` to `#{as}`")
     super
-
-  defaultName: ->
-    "{#{@elmType.name}}"
 
 #
 module.exports = SetType

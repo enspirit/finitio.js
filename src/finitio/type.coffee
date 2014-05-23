@@ -1,4 +1,5 @@
 $u = require('./support/utils')
+DressHelper  = require './support/dress_helper'
 
 #
 # 'Abstract' class for Finitio types
@@ -33,6 +34,9 @@ class Type
   # Returns true if `value` is valid member of this type, false otherwise.
   #
   include: (value)->
+    this._include(value)
+
+  _include: (value)->
     $u.notImplemented(this, "include")
 
   #
@@ -43,7 +47,11 @@ class Type
   # @post   this.include(output)
   # @throws `TypeError` if the dressing fails
   #
-  dress: (value)->
+  dress: (value, helper)->
+    helper ?= new DressHelper
+    this._dress(value, helper)
+
+  _dress: (value, helper)->
     $u.notImplemented(this, "dress")
 
   #
@@ -56,6 +64,9 @@ class Type
   # @throw  `TypeError` if undressing fails
   #
   undress: (value, as)->
+    this._undress(value, as.trueOne())
+
+  _undress: (value, as)->
     # if `as` is a supertype of myself, then
     #   pre                 => post
     #   this.include(value) => as.include(value)
@@ -68,15 +79,12 @@ class Type
     $u.undressError("Unable to undress `#{value}` from #{this} to `#{as}`")
 
   #
-  # Returns a String representation of this Type.
-  #
-  toString: ->
-    @name.toString()
-
-  #
   # Returns true of `this` is a super type of `other`, false otherwise.
   #
   isSuperTypeOf: (other)->
+    this._isSuperTypeOf(other.trueOne())
+
+  _isSuperTypeOf: (other)->
     this.equals(other) or other._isSubTypeOf(this)
 
   #
@@ -118,9 +126,15 @@ class Type
   # otherwise.
   #
   equals: (other)->
-    (this is other) or
-    (@isFake() and @trueOne().equals(other)) or
-    (other.isFake and other.isFake() and @equals(other.trueOne())) or
-    false
+    (other instanceof Type) && this._equals(other.trueOne())
+
+  _equals: (other)->
+    this is other
+
+  #
+  # Returns a String representation of this Type.
+  #
+  toString: ->
+    @name.toString()
 
 module.exports = Type

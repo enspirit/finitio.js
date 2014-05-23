@@ -1,5 +1,4 @@
 {TypeType}  = require '../support/ic'
-DressHelper = require '../support/dress_helper'
 Type        = require '../type'
 
 #
@@ -9,9 +8,10 @@ class BuiltinType extends Type
   constructor: (@jsType, @name, @metadata) ->
     super(@name, @metadata)
 
-  dress: (value, helper) ->
-    helper ?= new DressHelper
+  defaultName: ->
+    @jsType.name
 
+  _dress: (value, helper) ->
     if value == null || value == undefined
       helper.failed(this, value)
 
@@ -20,13 +20,10 @@ class BuiltinType extends Type
 
     value
 
-  defaultName: ->
-    @jsType.name
-
-  include: (value) ->
+  _include: (value) ->
     value instanceof @jsType || value.constructor == @jsType
 
-  equals: (other) =>
+  _equals: (other) =>
     (this is other) or
     (other instanceof BuiltinType and other.jsType == @jsType) or
     super

@@ -2,7 +2,6 @@
 $u           = require '../support/utils'
 Fetchable    = require '../support/fetchable'
 Contract     = require '../support/contract'
-DressHelper  = require '../support/dress_helper'
 Type         = require '../type'
 
 class AdType extends Type
@@ -29,12 +28,10 @@ class AdType extends Type
   defaultName: ->
     (@jsType && @jsType.name) || "Anonymous"
 
-  include: (value) ->
+  _include: (value) ->
     value.constructor == @jsType
 
-  dress: (value, helper) ->
-    helper ?= new DressHelper
-
+  _dress: (value, helper) ->
     # Up should be idempotent with respect to the ADT
     return value if @jsType and value instanceof @jsType
 
@@ -55,7 +52,7 @@ class AdType extends Type
     # No one succeeded, just fail
     helper.failed(this, value)
 
-  undress: (value, as) ->
+  _undress: (value, as) ->
     return value unless @jsType
 
     candidate = null

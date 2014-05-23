@@ -1,5 +1,4 @@
 Type        = require '../type'
-DressHelper = require '../support/dress_helper'
 $u          = require '../support/utils'
 
 class AliasType extends Type
@@ -16,20 +15,23 @@ class AliasType extends Type
   defaultName: ->
     @name
 
-  include: (value)->
+  _include: (value)->
     @type.include(value)
 
-  dress: (value, helper)->
+  _dress: (value, helper)->
     @type.dress(value, helper)
 
-  undress: (value, as)->
+  _undress: (value, as)->
     @type.undress(value, as)
 
-  isSuperTypeOf: (child)->
+  _isSuperTypeOf: (child)->
     @type.isSuperTypeOf(child)
 
   _isSubTypeOf: (sup)->
     @type._isSubTypeOf(sup)
+
+  _equals: (other)->
+    @type.equals(other)
 
   isFake: ()->
     true

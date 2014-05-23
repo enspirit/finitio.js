@@ -1,7 +1,6 @@
 {TypeType}  = require '../support/ic'
 $u          = require '../support/utils'
 Type        = require '../type'
-DressHelper = require '../support/dress_helper'
 
 class UnionType extends Type
   TypeType this, 'union', ['candidates', 'name', 'metadata']
@@ -15,12 +14,13 @@ class UnionType extends Type
 
     super(@name, @metadata)
 
+  defaultName: ->
+    $u.map(@candidates, (c) -> c.name).join('|')
+
   # Invoke `dress` on each candidate type in turn. Return the value
   # returned by the first one that does not fail. Fail with an TypeError if no
   # candidate succeeds at tranforming `value`.
-  dress: (value, helper) ->
-    helper ?= new DressHelper
-
+  _dress: (value, helper) ->
     # Do nothing on TypeError as the next candidate could be the good one!
     match = $u.find @candidates, (c) ->
       [success, uped] = helper.justTry ->
@@ -33,7 +33,7 @@ class UnionType extends Type
     # No one succeed, just fail
     helper.failed(this, value)
 
-  undress: (value, as) ->
+  _undress: (value, as) ->
     return value if this is as
 
     # find a candidate which is a subtype of as
@@ -47,14 +47,11 @@ class UnionType extends Type
     else
       $u.undressError("Unable to undress `#{value}` to `#{as}`")
 
-  include: (value) ->
+  _include: (value) ->
     found = $u.find @candidates, (c) -> c.include(value)
     found?
 
-  defaultName: ->
-    $u.map(@candidates, (c) -> c.name).join('|')
-
-  isSuperTypeOf: (other)->
+  _isSuperTypeOf: (other)->
     (this is other) or
     ($u.any @candidates, (c) -> c.isSuperTypeOf(other)) or
     (other instanceof UnionType and
@@ -63,7 +60,7 @@ class UnionType extends Type
         c.isSuperTypeOf(d)) or
     super
 
-  equals: (other) ->
+  _equals: (other) ->
     (this is other) or
     (other instanceof UnionType and @candidatesEquals(other, true)) or
     super

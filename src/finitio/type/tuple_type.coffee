@@ -3,7 +3,6 @@ $u              = require '../support/utils'
 Type            = require '../type'
 Heading         = require '../support/heading'
 CollectionType  = require '../support/collection_type'
-DressHelper     = require '../support/dress_helper'
 
 class TupleType extends Type
   TypeType this, 'tuple', ['heading', 'name', 'metadata']
@@ -14,10 +13,13 @@ class TupleType extends Type
 
     super(@name, @metadata)
 
+  defaultName: ->
+    "{#{@heading.toName()}}"
+
   fetch: ()->
     @heading.fetch.apply(@heading, arguments)
 
-  include: (value) ->
+  _include: (value) ->
     return false unless typeof(value) == "object"
     return false unless @areAttributesValid(value)
     $u.every @heading.attributes, (attribute) ->
@@ -30,9 +32,7 @@ class TupleType extends Type
   # Convert `value` (supposed to be Hash) to a Tuple, by checking attributes
   # and applying `dress` on them in turn. Throw an error if any attribute
   # is missing or unrecognized, as well as if any sub transformation fails.
-  dress: (value, helper) ->
-    helper ?= new DressHelper
-
+  _dress: (value, helper) ->
     helper.failed(this, value) unless value instanceof Object
 
     # Check for extra attributes
@@ -61,7 +61,7 @@ class TupleType extends Type
 
     uped
 
-  undress: (value, as) ->
+  _undress: (value, as) ->
     unless as instanceof TupleType
       $u.undressError("Tuple cannot undress to `#{as}` (#{as.constructor}).")
 
@@ -92,14 +92,11 @@ class TupleType extends Type
 
     undressed
 
-  defaultName: ->
-    "{#{@heading.toName()}}"
-
-  isSuperTypeOf: (other)->
+  _isSuperTypeOf: (other)->
     (this is other) or
     (other instanceof TupleType and @heading.isSuperHeadingOf(other.heading))
 
-  equals: (other) ->
+  _equals: (other) ->
     (this is other) or
     (other instanceof TupleType and @heading.equals(other.heading)) or
     super

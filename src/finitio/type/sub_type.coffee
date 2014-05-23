@@ -3,7 +3,6 @@ $u          = require '../support/utils'
 Fetchable   = require '../support/fetchable'
 Type        = require '../type'
 Constraint  = require '../support/constraint'
-DressHelper = require '../support/dress_helper'
 
 class SubType extends Type
   TypeType this, 'sub', ['superType', 'constraints', 'name', 'metadata']
@@ -28,10 +27,12 @@ class SubType extends Type
   Fetchable this, "constraints", "constraint", (name)->
     $u.find @constraints, (c)-> c.name == name
 
+  defaultName: ->
+    $u.capitalize(@constraints[0].name)
+
   # Check that `value` can be uped through the supertype, then verify all
   # constraints. Raise an error if anything goes wrong.
-  dress: (value, helper) ->
-    helper ?= new DressHelper
+  _dress: (value, helper) ->
     # Check that the supertype is able to 'dress' the value.
     # Rewrite and set cause to any encountered TypeError.
     uped = helper.try this, value, =>
@@ -47,10 +48,7 @@ class SubType extends Type
     # seems good, return the uped value
     uped
 
-  defaultName: ->
-    $u.capitalize(@constraints[0].name)
-
-  include: (value) ->
+  _include: (value) ->
     @superType.include(value) && $u.every(@constraints, (c) -> c.accept(value))
 
   _isSubTypeOf: (other)->
@@ -58,11 +56,13 @@ class SubType extends Type
     # otherwise, we just know nothing unless the constraint can be analyzed.
     other.isSuperTypeOf(@superType)
 
-  equals: (other) ->
+  _equals: (other) ->
     (this is other) or
     (other instanceof SubType and
       @superTypeEquals(other) and @constraintsEquals(other)) or
     super
+
+  # private
 
   superTypeEquals: (other) ->
     @superType.equals(other.superType)

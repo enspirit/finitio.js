@@ -2,7 +2,6 @@
 $u              = require '../support/utils'
 Type            = require '../type'
 CollectionType  = require '../support/collection_type'
-DressHelper     = require '../support/dress_helper'
 
 class StructType extends Type
   TypeType this, 'struct', ['componentTypes', 'name', 'metadata']
@@ -24,16 +23,14 @@ class StructType extends Type
   size: ->
     $u.size(@componentTypes)
 
-  include: (value) ->
+  _include: (value) ->
     $u.isArray(value) and
     $u.size(value) == $u.size(@componentTypes) and
     $u.every $u.zip(value, @componentTypes), (valueAndKey)->
       [value, type] = valueAndKey
       type.include(value)
 
-  dress: (value, helper) ->
-    helper ?= new DressHelper
-
+  _dress: (value, helper) ->
     helper.failed(this, value) unless value instanceof Array
 
     # check the size
@@ -46,7 +43,7 @@ class StructType extends Type
       array.push(@componentTypes[index].dress(elm, helper))
     array
 
-  undress: (value, as) ->
+  _undress: (value, as) ->
     unless as instanceof StructType
       $u.undressError("Unable to undress `#{value}` to `#{as}`")
 
@@ -58,14 +55,14 @@ class StructType extends Type
     $u.map value, (v, i)->
       from[i].undress(v, to[i])
 
-  isSuperTypeOf: (other) ->
+  _isSuperTypeOf: (other) ->
     (this is other) or
     (other instanceof StructType and
     $u.size(@componentTypes) == $u.size(other.componentTypes) and
     $u.every $u.zip(@componentTypes, other.componentTypes), (cs)->
       cs[0].isSuperTypeOf(cs[1]))
 
-  equals: (other) ->
+  _equals: (other) ->
     (this is other) or
     (other instanceof StructType and @headingEquals(other)) or
     super
