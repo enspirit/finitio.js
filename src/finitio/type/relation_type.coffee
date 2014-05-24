@@ -27,25 +27,27 @@ class RelationType extends Type
     value instanceof Array and
       $u.every value, (tuple)=> @tupleType().include(tuple)
 
-  # Apply the corresponding TupleType's `dress` to every element of `value`
-  # (any enumerable). Return a Set of transformed tuples. Fail if anything
-  # goes wrong transforming tuples or if duplicates are found.
-  _dress: (value, helper) ->
-    unless typeof(value) == "object" || typeof(value) == "array"
-      helper.failed(this, value)
+  _mDress: (value, Monad)->
+    unless value instanceof Array
+      return Monad.failure this, ["Relation expected, got `$1`", [value]]
 
-    # Up every tuple and keep results in a "Set"
-    set = {}
-    helper.iterate value, (tuple, index) =>
-      tuple = @tupleType().dress(tuple, helper)
-      ## TODO: what a terrible way of 'hashing'
-      ## shall we invent a real 'Set' class and hash objects?
-      key = JSON.stringify(tuple)
-      helper.fail("Duplicate tuple") if set[key]?
-      set[key] = tuple
+    tupleType = @tupleType()
+    index = {}
 
-    # Return built tuples
-    $u.values(set)
+    mapper = (elm)->
+      m = tupleType.mDress(elm, Monad)
+      m.onSuccess (tuple)=>
+        h = JSON.stringify(tuple)
+        if index[h]
+          Monad.failure this, ["Duplicate Tuple `$1`", [tuple]]
+        else
+          index[h] = tuple
+          m
+
+    onFailure = (causes)=>
+      Monad.failure this, ["Invalid Relation `$1`", [value]], causes
+
+    Monad.map value, mapper, onFailure
 
   _undress: (value, as) ->
     unless as instanceof RelationType or as instanceof CollectionType

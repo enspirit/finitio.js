@@ -12,16 +12,14 @@ class SeqType extends CollectionType
   _include: (value) ->
     value instanceof Array and $u.every(value, (v) => @elmType.include(v))
 
-  # Apply the element type's `dress` transformation to each element of
-  # `value` (expected to respond to `each`). Return converted values in an
-  # Array.
-  _dress: (value, helper) ->
-    helper.failed(this, value) unless value instanceof Array
-
-    array = []
-    helper.iterate value, (elm, index) =>
-      array.push @elmType.dress(elm, helper)
-    array
+  _mDress: (value, Monad)->
+    unless value instanceof Array
+      return Monad.failure this, ["Sequence expected, got `$1`", [value]]
+    mapper = (elm)=>
+      @elmType.mDress(elm, Monad)
+    onFailure = (causes)=>
+      Monad.failure this, ["Invalid Sequence `$1`", [value]], causes
+    Monad.map value, mapper, onFailure
 
   _undress: (value, as)->
     unless as instanceof SeqType

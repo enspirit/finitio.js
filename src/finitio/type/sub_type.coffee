@@ -30,23 +30,16 @@ class SubType extends Type
   defaultName: ->
     $u.capitalize(@constraints[0].name)
 
-  # Check that `value` can be uped through the supertype, then verify all
-  # constraints. Raise an error if anything goes wrong.
-  _dress: (value, helper) ->
-    # Check that the supertype is able to 'dress' the value.
-    # Rewrite and set cause to any encountered TypeError.
-    uped = helper.try this, value, =>
-      @superType.dress(value, helper)
-
-    # Check each constraint in turn
-    $u.each @constraints, (constraint) =>
-      return if constraint.accept(uped)
-      msg = helper.defaultErrorMessage(this, value)
-      msg += " (not #{constraint.name})" unless @defaultConstraint(constraint)
-      helper.fail(msg)
-
-    # seems good, return the uped value
-    uped
+  _mDress: (value, Monad)->
+    success = @superType.mDress(value, Monad)
+    callback = (_, constraint)->
+      if constraint.accept(success.result)
+        success
+      else
+        Monad.failure constraint, "Constraint `#{constraint.name}` violated"
+    onFailure = (causes)=>
+      Monad.failure this, ["Invalid value `$1`", [value]], causes
+    Monad.refine success, @constraints, callback, onFailure
 
   _include: (value) ->
     @superType.include(value) && $u.every(@constraints, (c) -> c.accept(value))

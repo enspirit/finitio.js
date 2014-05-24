@@ -17,21 +17,12 @@ class UnionType extends Type
   defaultName: ->
     $u.map(@candidates, (c) -> c.name).join('|')
 
-  # Invoke `dress` on each candidate type in turn. Return the value
-  # returned by the first one that does not fail. Fail with an TypeError if no
-  # candidate succeeds at tranforming `value`.
-  _dress: (value, helper) ->
-    # Do nothing on TypeError as the next candidate could be the good one!
-    match = $u.find @candidates, (c) ->
-      [success, uped] = helper.justTry ->
-        c.dress(value, helper)
-
-      return success
-
-    return match.dress(value, helper) if match?
-
-    # No one succeed, just fail
-    helper.failed(this, value)
+  _mDress: (value, Monad)->
+    callback = (candidate)->
+      candidate.mDress(value, Monad)
+    onFailure = (causes)=>
+      Monad.failure this, ["Invalid value `$1`", [value]], causes
+    Monad.find @candidates, callback, onFailure
 
   _undress: (value, as) ->
     return value if this is as

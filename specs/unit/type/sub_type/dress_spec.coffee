@@ -15,7 +15,7 @@ describe "SubType#dress", ->
     type.dress(arg)
 
   it 'with a valid Number', ->
-    factor(12).should.equal(12)
+    should(factor(12)).equal(12)
 
   describe 'when raising an Error', ->
 
@@ -29,39 +29,29 @@ describe "SubType#dress", ->
       subject = factor(true)
 
       it 'should raise an Error', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `true` for byte")
+        should(subject).be.an.instanceof(TypeError)
+        should(subject.message).equal("Invalid value `true`")
 
-      it "should have the proper cause from super type's up", ->
-        subject.cause.should.be.an.instanceof(TypeError)
-        subject.cause.message.should.equal("Invalid value `true` for numType")
-
-      it "should have an empty location", ->
-        subject.location.should.equal('')
+      it "should have the proper root cause", ->
+        rc = subject.getRootCause()
+        should(rc).be.an.instanceof(TypeError)
+        should(rc.message).equal("Invalid Number `true`")
 
     describe 'with a negative Number', ->
       subject = factor(-12)
 
       it 'should raise an Error', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `-12` for byte")
+        should(subject).be.an.instanceof(TypeError)
+        should(subject.message).equal("Invalid value `-12`")
 
-      it "should have no cause", ->
-        should.equal(subject.cause, null)
-
-      it "should have an empty location", ->
-        subject.location.should.equal('')
+      it "should have the expected cause", ->
+        rc = subject.getRootCause()
+        should(rc).be.an.instanceof(TypeError)
+        should(rc.message).equal("Constraint `default` violated")
 
     describe 'with a non small Number', ->
       subject = factor(1000)
 
       it 'should raise an Error', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal \
-          "Invalid value `1000` for byte (not small)"
-
-      it "should have no cause", ->
-        should.equal(subject.cause, null)
-
-      it "should have an empty location", ->
-        subject.location.should.equal('')
+        should(subject).be.an.instanceof(TypeError)
+        should(subject.message).equal "Invalid value `1000`"

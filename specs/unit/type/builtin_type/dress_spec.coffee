@@ -10,12 +10,10 @@ describe "BuiltinType#dress", ->
     type.dress(arg)
 
   it 'is robust enough', ->
-    exp = new TypeError("Invalid value `null` for num")
-    should(-> type.dress(null)).throw(exp)
+    should(-> type.dress(null)).throw()
 
   it 'is robust enough II', ->
-    exp = new TypeError("Invalid value `undefined` for num")
-    should(-> type.dress()).throw(exp)
+    should(-> type.dress()).throw()
 
   it 'with an integer', ->
     subject(12).should.equal(12)
@@ -31,7 +29,7 @@ describe "BuiltinType#dress", ->
     it 'should throw an Error', ->
       should(lambda).throw()
 
-    it 'should throw a TypeError', ->
+    it 'should have correct information', ->
       error = null
       try
         lambda()
@@ -39,5 +37,4 @@ describe "BuiltinType#dress", ->
         error = e
 
       error.should.be.an.instanceof(TypeError)
-      error.message.should.equal("Invalid value `Hello World!` for num")
-      error.location.should.equal('')
+      error.message.should.equal("Invalid Number `Hello World!`")

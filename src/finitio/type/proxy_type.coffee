@@ -18,9 +18,9 @@ class ProxyType extends Type
   _include: (value)->
     @resolved().include(value)
 
-  _dress: (value, helper)->
-    @resolved().dress(value, helper)
-  
+  _mDress: (value, Monad)->
+    @resolved().mDress(value, Monad)
+
   _undress: (value, as)->
     @resolved().undress(value, as)
 

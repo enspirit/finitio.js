@@ -14,20 +14,23 @@ class SetType extends CollectionType
     return false unless $u.every(value, (v) => @elmType.include(v))
     $u.uniq(value).length == value.length
 
-  # Apply the element type's `dress` transformation to each element of
-  # `value` (expected to respond to `each`). Return converted values in an
-  # Array.
-  _dress: (value, helper) ->
-    helper.failed(this, value) unless value instanceof Array
+  _mDress: (value, Monad)->
+    unless value instanceof Array
+      return Monad.failure this, ["Set expected, got `$1`", [value]]
+    mapper = (elm)=>
+      @elmType.mDress(elm, Monad)
+    onFailure = (causes)=>
+      Monad.failure this, ["Invalid Set `$1`", [value]], causes
+    m = Monad.map value, mapper, onFailure
 
-    array = []
-    helper.iterate value, (elm, index) =>
-      dressed = @elmType.dress(elm, helper)
-      if $u.include(array, dressed)
-        helper.fail("Duplicate value `#{dressed}`")
-      else
-        array.push dressed
-    array
+    findDuplicate = (set)->
+      $u.find set, (elm, i)-> set.indexOf(elm) != i
+
+    m.onSuccess (set)=>
+      return m unless d = findDuplicate(set)
+      err = Monad.failure this, ["Duplicate value `$1`", [d]]
+      err.onFailure (causes)=>
+        Monad.failure this, ["Invalid Set `$1`", [value]], causes
 
   _undress: (value, as)->
     unless as instanceof CollectionType

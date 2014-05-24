@@ -24,13 +24,13 @@ describe "TupleType#dress", ->
       arg = { "r": 12, "g": 13, "b": 255 }
 
       it 'should coerce to a tuple', ->
-        dress(arg).should.eql(r: 12, g: 13, b: 255)
+        should(dress(arg)).eql(r: 12, g: 13, b: 255)
 
     context 'with a valid Hash and no optional', ->
       arg = { "r": 12, "g": 13 }
 
       it 'should coerce to a tuple', ->
-        dress(arg).should.eql(r: 12, g: 13)
+        should(dress(arg)).eql(r: 12, g: 13)
 
     context 'when raising an error', ->
 
@@ -44,57 +44,43 @@ describe "TupleType#dress", ->
         subject = lambda("foo")
 
         it 'should raise a TypeError', ->
-          subject.should.be.an.instanceof(TypeError)
-          subject.message.should.equal("Invalid value `foo` for color")
-
-        it 'should have no cause', ->
-          should(subject.cause).be.null
-
-        it 'should have an empty location', ->
-          subject.location.should.equal('')
+          should(subject).be.an.instanceof(TypeError)
+          should(subject.message).equal("Invalid Tuple `foo`")
 
       context 'with a missing attribute', ->
         arg = { "r": 12, "b": 13 }
         subject = lambda(arg)
 
         it 'should raise a TypeError', ->
-          subject.should.be.an.instanceof(TypeError)
-          subject.message.should.equal("Missing attribute `g`")
+          should(subject).be.an.instanceof(TypeError)
+          should(subject.message).equal('Invalid Tuple `{"r":12,"b":13}`')
 
-        it 'should have no cause', ->
-          should(subject.cause).be.null
-
-        it 'should have an empty location', ->
-          subject.location.should.equal('')
+        it 'should have expected root cause', ->
+          rc = subject.getRootCause()
+          should(rc).be.an.instanceof(TypeError)
+          should(rc.message).equal("Missing attribute `g`")
 
       context 'with an extra attribute', ->
         arg = { "r": 12, "g": 13, "extr": 165 }
         subject = lambda(arg)
 
         it 'should raise a TypeError', ->
-          subject.should.be.an.instanceof(TypeError)
-          subject.message.should.eql("Unrecognized attribute `extr`")
+          should(subject).be.an.instanceof(TypeError)
+          should(subject.message).eql('Invalid Tuple `{"r":12,"g":13,"extr":165}`')
 
-        it 'should have no cause', ->
-          should(subject.cause).be.null
-
-        it 'should have an empty location', ->
-          subject.location.should.equal('')
+        it 'should have expected root cause', ->
+          rc = subject.getRootCause()
+          should(rc).be.an.instanceof(TypeError)
+          should(rc.message).equal("Unrecognized attribute `extr`")
 
       context 'with an invalid attribute', ->
         arg = { "r": 12, "g": 13, "b": '255' }
         subject = lambda(arg)
 
         it 'should raise a TypeError', ->
-          subject.should.be.an.instanceof(TypeError)
-          subject.message.should.equal("Invalid value `255` for Byte")
-
-        it 'should have the correct cause', ->
-          subject.cause.should.be.an.instanceof(TypeError)
-          subject.cause.message.should.equal("Invalid value `255` for intType")
-
-        it 'should have the correct location', ->
-          subject.location.should.equal("b")
+          rc = subject.getRootCause()
+          should(rc).be.an.instanceof(TypeError)
+          should(rc.message).equal("Invalid Number `255`")
 
   context 'when not allowing extra', ->
     heading = new Heading([r, g, maybe_b], allowExtra: true)
@@ -106,7 +92,7 @@ describe "TupleType#dress", ->
       arg = { "r": 12, "g": 13, "extr": 165 }
 
       it 'should not raise a TypeError', ->
-        subject(arg).should.not.be.an.instanceof(TypeError)
+        should(subject(arg)).not.be.an.instanceof(TypeError)
 
-      it 'should return a coerced/projection', ->
-        subject(arg).should.eql({r: 12, g: 13})
+      it 'should keep the attribute unchanged', ->
+        subject(arg).should.eql({r: 12, g: 13, "extr": 165})

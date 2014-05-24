@@ -31,26 +31,19 @@ class AdType extends Type
   _include: (value) ->
     value.constructor == @jsType
 
-  _dress: (value, helper) ->
-    # Up should be idempotent with respect to the ADT
-    return value if @jsType and value instanceof @jsType
-
-    # Try each contract in turn. Do nothing on TypeError as
-    # the next candidate could be the good one! Return the
-    # first successfully uped.
-    uped = null
-    candidate = $u.find @contracts, (contract) ->
-      [success, uped] = helper.justTry ->
-        contract.infoType.dress(value, helper)
-      return success
-
-    if candidate?
-      [success, uped] = helper.justTry Error, ->
-        candidate.dress(uped)
-      return uped if success
-
-    # No one succeeded, just fail
-    helper.failed(this, value)
+  _mDress: (value, Monad) ->
+    if @jsType and value instanceof @jsType
+      return Monad.success value
+    callback = (contract)->
+      m = contract.infoType.mDress(value, Monad)
+      m.onSuccess (result)=>
+        try
+          Monad.success contract.dress(result)
+        catch e
+          Monad.failure this, e.message, e
+    onFailure = (causes)=>
+      Monad.failure this, ["Invalid $1 `$2`", [@jsType.name, value]], causes
+    Monad.find @contracts, callback, onFailure
 
   _undress: (value, as) ->
     return value unless @jsType

@@ -1,5 +1,5 @@
 $u = require('./support/utils')
-DressHelper  = require './support/dress_helper'
+DressMonad  = require './support/dress_monad'
 
 #
 # 'Abstract' class for Finitio types
@@ -47,12 +47,18 @@ class Type
   # @post   this.include(output)
   # @throws `TypeError` if the dressing fails
   #
-  dress: (value, helper)->
-    helper ?= new DressHelper
-    this._dress(value, helper)
+  dress: (value, options)->
+    monad = @mDress(value, DressMonad)
+    if monad.isSuccess()
+      monad.result
+    else
+      $u.dressError(monad.failure)
 
-  _dress: (value, helper)->
-    $u.notImplemented(this, "dress")
+  mDress: (value, Monad)->
+    @_mDress(value, Monad)
+
+  _mDress: (value, Monad)->
+    $u.notImplemented(this, "_mDress")
 
   #
   # Undress `value` as a member of `as` type.
@@ -135,6 +141,6 @@ class Type
   # Returns a String representation of this Type.
   #
   toString: ->
-    @name.toString()
+    @defaultName().toString()
 
 module.exports = Type

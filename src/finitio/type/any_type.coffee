@@ -11,8 +11,8 @@ class AnyType extends Type
   defaultName: ->
     "Any"
 
-  _dress: (value, helper) ->
-    value
+  _mDress: (value, Monad) ->
+    Monad.success value
 
   _include: (value) ->
     true

@@ -30,8 +30,8 @@ describe "RelationType#dress", ->
     ]
 
     it 'should coerce to an Array of tuples', ->
-      dress(arg).should.be.an.instanceof(Array)
-      dress(arg).should.eql(expected)
+      should(dress(arg)).be.an.instanceof(Array)
+      should(dress(arg)).eql(expected)
 
   context 'with a valid array of Hashes with some optional missing', ->
     arg = [
@@ -44,16 +44,16 @@ describe "RelationType#dress", ->
     ]
 
     it 'should coerce to an Array of tuples', ->
-      dress(arg).should.be.an.instanceof(Array)
-      dress(arg).should.eql(expected)
+      should(dress(arg)).be.an.instanceof(Array)
+      should(dress(arg)).eql(expected)
 
   context 'with an empty array', ->
     arg = []
     expected = []
 
     it 'should coerce to an Array of tuples', ->
-      dress(arg).should.be.an.instanceof(Array)
-      dress(arg).should.eql(expected)
+      should(dress(arg)).be.an.instanceof(Array)
+      should(dress(arg)).eql(expected)
 
   context 'when raising an error', ->
 
@@ -67,78 +67,20 @@ describe "RelationType#dress", ->
       subject = lambda("foo")
 
       it 'should raise a TypeError', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `foo` for colors")
-
-      it 'should have no cause', ->
-        should(subject.cause).be.null
-
-      it 'should have an empty location', ->
-        subject.location.should.equal('')
+        should(subject).be.an.instanceof(TypeError)
+        should(subject.message).eql("Relation expected, got `foo`")
 
     context 'with Array of non-tuples', ->
       subject = lambda(["foo"])
 
       it 'should raise a TypeError', ->
-        exp = "Invalid value `foo` for {r: Byte, g: Byte, b :? Byte}"
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal(exp)
+        exp = "Invalid Relation `[foo]`"
+        should(subject).be.an.instanceof(TypeError)
+        should(subject.message).equal(exp)
 
-      it 'should have no cause', ->
-        should(subject.cause).be.null
-
-      it 'should have the correct location', ->
-        subject.location.should.equal('0')
-
-    context 'with a wrong tuple', ->
-      arg = [
-        { "r": 12, "g": 13, "b": 255 },
-        { "r": 12, "b": 13 }
-      ]
-      subject = lambda(arg)
-
-      it 'should raise a TypeError', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Missing attribute `g`")
-
-      it 'should have no cause', ->
-        should(subject.cause).be.null
-
-      it 'should have the correct location', ->
-        subject.location.should.equal('1')
-
-    context 'with a tuple with extra attribute', ->
-      arg = [
-        { "r": 12, "g": 13, "b": 255 },
-        { "r": 12, "g": 13, "f": 13 }
-      ]
-
-      it 'should raise a TypeError', ->
-        lambda(arg).should.be.an.instanceof(TypeError)
-        lambda(arg).message.should.equal("Unrecognized attribute `f`")
-
-      it 'should have no cause', ->
-        should(lambda(arg).cause).be.null
-
-      it 'should have the correct location', ->
-        lambda(arg).location.should.equal('1')
-
-    context 'with a wrong tuple attribute', ->
-      arg = [
-        { "r": 12, "g": 13, "b": 255  },
-        { "r": 12, "g": 13, "b": '12' }
-      ]
-      subject = lambda(arg)
-
-      it 'should raise a TypeError', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Invalid value `12` for Byte")
-
-      it 'should have a cause', ->
-        should(subject.cause).not.be.null
-
-      it 'should have the correct location', ->
-        subject.location.should.equal('1/b')
+      it 'has expected root cause', ->
+        rc = subject.getRootCause()
+        should(rc.message).equal("Invalid Tuple `foo`")
 
     context 'with a duplicate tuple', ->
       arg = [
@@ -149,11 +91,8 @@ describe "RelationType#dress", ->
       subject = lambda(arg)
 
       it 'should raise a TypeError', ->
-        subject.should.be.an.instanceof(TypeError)
-        subject.message.should.equal("Duplicate tuple")
+        should(subject).be.an.instanceof(TypeError)
 
-      it 'should have no cause', ->
-        should(subject.cause).be.null
-
-      it 'should have the correct location', ->
-        subject.location.should.equal('2')
+      it 'should have the expected root cause', ->
+        rc = subject.getRootCause()
+        should(rc.message).eql('Duplicate Tuple `{"r":12,"g":13,"b":255}`')

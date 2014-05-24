@@ -556,6 +556,26 @@ module.exports = (function(){
     return string;
   };
 
+  $u.toString = function(value){
+    if (value === undefined){
+      return 'undefined';
+    } else if (value === null) {
+      return 'null';
+    } else {
+      var s = value.toString();
+      if (s == "[object Object]"){
+        s = JSON.stringify(value);
+      }
+      if (s.length>30){
+        s = s.substring(0, 30) + '...';
+      }
+      if (value instanceof Array){
+        s = "[" + s + "]";
+      }
+      return s;
+    }
+  };
+
   // ---------------------------------------------------------- Error Management
 
   $u.argumentError = function(){
@@ -582,9 +602,9 @@ module.exports = (function(){
     throw new Error(obj.constructor.name + "#" + meth);
   };
 
-  $u.dressError = function(msg, cause, location){
+  $u.dressError = function(failure){
     var E = require("../errors").TypeError;
-    throw new E(msg, cause, location);
+    throw new E(failure);
   };
 
   $u.undressError = function(msg, cause, location){

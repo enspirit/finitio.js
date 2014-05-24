@@ -24,8 +24,8 @@ describe "SetType#dress", ->
     try
       lambda()
     catch e
-      e.should.be.an.instanceof(TypeError)
-      e.message.should.equal("Invalid value `foo` for {Byte}")
+      should(e).be.an.instanceof(TypeError)
+      should(e.message).equal("Set expected, got `foo`")
 
   describe 'with an array with non bytes', ->
     subject =
@@ -35,22 +35,24 @@ describe "SetType#dress", ->
         e
 
     it 'should raise an error', ->
-      subject.should.be.an.instanceof(TypeError)
-      subject.message.should.equal("Invalid value `-12` for Byte")
+      should(subject).be.an.instanceof(TypeError)
 
-    it 'should have correct location', ->
-      subject.location.should.equal("2")
+    it 'has the expected root cause', ->
+      rc = subject.getRootCause()
+      should(rc.message).eql("Constraint `byte` violated")
 
   describe 'with an array with duplicates', ->
-    subject2 =
+    subject =
       try
         type.dress([2, 4, 2])
       catch e
         e
 
-    it 'should raise an error', ->
-      subject2.should.be.an.instanceof(TypeError)
-      subject2.message.should.equal("Duplicate value `2`")
+    it 'raises an error', ->
+      should(subject).be.an.instanceof(TypeError)
+      should(subject.message).equal("Invalid Set `[2,4,2]`")
 
-    it 'should have correct location', ->
-      subject2.location.should.equal("2")
+    it 'should raise an error', ->
+      rc = subject.getRootCause()
+      should(rc).be.an.instanceof(TypeError)
+      should(rc.message).equal("Duplicate value `2`")

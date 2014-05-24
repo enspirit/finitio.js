@@ -11,17 +11,14 @@ class BuiltinType extends Type
   defaultName: ->
     @jsType.name
 
-  _dress: (value, helper) ->
-    if value == null || value == undefined
-      helper.failed(this, value)
-
-    unless @include(value)
-      helper.failed(this, value)
-
-    value
+  _mDress: (value, Monad) ->
+    if @include(value)
+      Monad.success value
+    else
+      Monad.failure this, ["Invalid $2 `$1`", [value, this]]
 
   _include: (value) ->
-    value instanceof @jsType || value.constructor == @jsType
+    value instanceof @jsType || (value && value.constructor == @jsType)
 
   _equals: (other) =>
     (this is other) or

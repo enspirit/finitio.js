@@ -29,37 +29,41 @@ class TupleType extends Type
       else
         true
 
-  # Convert `value` (supposed to be Hash) to a Tuple, by checking attributes
-  # and applying `dress` on them in turn. Throw an error if any attribute
-  # is missing or unrecognized, as well as if any sub transformation fails.
-  _dress: (value, helper) ->
-    helper.failed(this, value) unless value instanceof Object
+  _mDress: (value, Monad)->
+    unless value instanceof Object
+      return Monad.failure this, ["Invalid Tuple `$1`", [value]]
 
-    # Check for extra attributes
-    extraAttrs = @extraAttributes(value)
-    unless @heading.allowExtra() or $u.isEmpty(extraAttrs)
-      helper.fail("Unrecognized attribute `#{extraAttrs[0]}`")
+    result  = {}
+    success = Monad.success result
 
-    # Check for missing attributes
-    missingAttrs = @missingAttributes(value)
-    unless $u.isEmpty(missingAttrs)
-      helper.fail("Missing attribute `#{missingAttrs[0]}`")
+    callback = (_, attrName)=>
+      attr      = @heading.getAttr(attrName) || null
+      attrValue = value[attrName] || null
 
-    # Uped values, i.e. tuple under construction
-    uped = {}
+      if !attrValue? and attr.required
+        Monad.failure attrName, ["Missing attribute `$1`", [attrName]]
+      else if !attr? and !@heading.allowExtra()
+        Monad.failure attrName, ["Unrecognized attribute `$1`", [attrName]]
+      else if attr? and attrValue?
+        subm = attr.type.mDress(attrValue, Monad)
+        subm.onSuccess (val)->
+          result[attrName] = val
+          success
+      else if attrValue?
+        result[attrName] = attrValue
+        success
+      else
+        success
 
-    # Up each attribute in turn now.
-    $u.each @heading.attributes, (attribute) ->
-      present = true
-      val = attribute.fetchOn value, ->
-        present = false
+    onFailure = (causes)->
+      Monad.failure this, ["Invalid Tuple `$1`", [value]], causes
 
-      return unless present
+    # build all attributes
+    attributes = _attributesHash(@heading)
+    $u.extend(attributes, value)
+    attributes = Object.keys(attributes)
 
-      helper.deeper attribute.name, ->
-        uped[attribute.name] = attribute.type.dress(val, helper)
-
-    uped
+    Monad.refine success, attributes, callback, onFailure
 
   _undress: (value, as) ->
     unless as instanceof TupleType

@@ -30,18 +30,18 @@ class StructType extends Type
       [value, type] = valueAndKey
       type.include(value)
 
-  _dress: (value, helper) ->
-    helper.failed(this, value) unless value instanceof Array
-
-    # check the size
-    [cs, vs] = [@size(), $u.size(value)]
-    helper.fail("Struct size mismatch (#{vs} for #{cs})") unless cs == vs
-
-    # dress components
-    array = []
-    helper.iterate value, (elm, index) =>
-      array.push(@componentTypes[index].dress(elm, helper))
-    array
+  _mDress: (value, Monad) ->
+    unless value instanceof Array
+      return Monad.failure this,
+        ["Struct expected, got `$1`", [value]]
+    unless value.length == @size()
+      return Monad.failure this,
+        ["Struct size mismatch ($1 for $2)", [value.length, @size()]]
+    mapper = (type, index)=>
+      type.mDress(value[index], Monad)
+    onFailure = (causes)=>
+      Monad.failure this, ["Invalid Struct `$1`", [value]], causes
+    Monad.map @componentTypes, mapper, onFailure
 
   _undress: (value, as) ->
     unless as instanceof StructType

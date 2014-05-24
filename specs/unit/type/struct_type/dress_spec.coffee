@@ -16,7 +16,7 @@ describe "StructType#dress", ->
 
     it 'should coerce to an array', ->
       arg = [ 12, 'foo' ]
-      subject(arg).should.eql(arg)
+      should(subject(arg)).eql(arg)
 
   context 'when raising an error', ->
 
@@ -30,14 +30,11 @@ describe "StructType#dress", ->
       arg = "foo"
 
       it 'should raise a TypeError', ->
-        subject(arg).should.be.an.instanceof(TypeError)
-        subject(arg).message.should.equal("Invalid value `foo` for point")
+        should(subject(arg)).be.an.instanceof(TypeError)
+        should(subject(arg).message).equal("Struct expected, got `foo`")
 
       it 'should have no cause', ->
-        should(subject(arg).cause).be.null
-
-      it 'should have an empty location', ->
-        subject(arg).location.should.equal('')
+        should(subject(arg).cause).eql(undefined)
 
     context 'with a missing component', ->
       arg = [ 12 ]
@@ -47,10 +44,7 @@ describe "StructType#dress", ->
         subject(arg).message.should.equal("Struct size mismatch (1 for 2)")
 
       it 'should have no cause', ->
-        should(subject(arg).cause).be.null
-
-      it 'should have an empty location', ->
-        subject(arg).location.should.equal('')
+        should(subject(arg).cause).eql(undefined)
 
     context 'with an extra attribute', ->
       arg = [ 12, 'foo', "bar" ]
@@ -60,20 +54,16 @@ describe "StructType#dress", ->
         subject(arg).message.should.equal("Struct size mismatch (3 for 2)")
 
       it 'should have no cause', ->
-        should(subject(arg).cause).be.null
-
-      it 'should have an empty location', ->
-        subject(arg).location.should.equal('')
+        should(subject(arg).cause).eql(undefined)
 
     context 'with an invalid attribute', ->
       arg = [ 12, 14.2 ]
 
       it 'should raise a TypeError', ->
-        subject(arg).should.be.an.instanceof(TypeError)
-        subject(arg).message.should.equal("Invalid value `14.2` for stringType")
+        should(subject(arg)).be.an.instanceof(TypeError)
+        should(subject(arg).message).equal("Invalid Struct `[12,14.2]`")
 
-      it 'should have no cause', ->
-        should(subject(arg).cause).be.null
-
-      it 'should have the correct location', ->
-        subject(arg).location.should.equal("1")
+      it 'should have the expected root cause', ->
+        rc = subject(arg).getRootCause()
+        should(rc).be.an.instanceof(TypeError)
+        should(rc.message).equal("Invalid String `14.2`")

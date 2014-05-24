@@ -12,11 +12,11 @@ describe "SeqType#dress", ->
 
   it 'with an empty array', ->
     res = subject([])
-    _.isEqual(res, []).should.be.true
+    should(res).eql([])
 
   it 'with a valid array', ->
     res = subject([12, 16])
-    _.isEqual(res, [12, 16]).should.be.true
+    should(res).eql([12, 16])
 
   it 'with something else than array', ->
     lambda = -> subject("foo")
@@ -26,21 +26,19 @@ describe "SeqType#dress", ->
     try
       lambda()
     catch e
-      e.should.be.an.instanceof(TypeError)
-      e.message.should.equal("Invalid value `foo` for [Byte]")
+      should(e).be.an.instanceof(TypeError)
+      should(e.message).equal("Sequence expected, got `foo`")
 
   it 'with an array with non bytes', ->
-    arg = [2, 4, -12]
+    lambda = -> subject([2, 4, -12])
 
-    subject =
-      try
-        type.dress(arg)
-      catch e
-        e
+    should(lambda).throw()
 
-    it 'should raise an error', ->
-      subject.should.be.an.instanceof(TypeError)
-      subject.message.should.equal("Invalid value `-12` for Byte")
+    try
+      lambda()
+    catch e
+      should(e).be.an.instanceof(TypeError)
+      should(e.message).equal("Invalid Sequence `[2,4,-12]`")
 
-    it 'should have correct location', ->
-      subject.location.should.equal("2")
+      rc = e.getRootCause()
+      should(rc.message).equal("Constraint `byte` violated")

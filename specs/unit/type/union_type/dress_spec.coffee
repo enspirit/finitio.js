@@ -11,11 +11,11 @@ describe "UnionType#dress", ->
 
   it 'with an Integer', ->
     subject = type.dress(12)
-    subject.should.equal(12)
+    should(subject).equal(12)
 
   it 'with a Float', ->
     subject = type.dress(3.14)
-    subject.should.equal(3.14)
+    should(subject).equal(3.14)
 
   describe 'with a String', ->
     subject = try
@@ -24,8 +24,10 @@ describe "UnionType#dress", ->
       e
 
     it 'should raise an Error', ->
-      subject.should.be.an.instanceof(TypeError)
-      subject.message.should.equal("Invalid value `foo` for union")
+      should(subject).be.an.instanceof(TypeError)
+      should(subject.message).equal("Invalid value `foo`")
 
-    it 'should have an empty location', ->
-      subject.location.should.equal('')
+    it 'has the expected root cause', ->
+      rc = subject.getRootCause()
+      should(rc).be.an.instanceof(TypeError)
+      should(rc.message).equal("Invalid Number `foo`")
