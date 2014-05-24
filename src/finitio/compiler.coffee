@@ -35,7 +35,7 @@ class Compiler
     @proxies[name]
 
   typeDef: (type, name, metadata)->
-    @setTypeMetadata(@setTypeName(type, name), metadata)
+    @alias(type, name, metadata)
 
   typeRef: (ref)->
     @proxy(ref)
