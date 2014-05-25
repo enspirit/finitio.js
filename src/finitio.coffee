@@ -23,14 +23,19 @@ Finitio.Utils = require './finitio/support/utils'
 Finitio.Utils.extend Finitio, require './finitio/errors'
 Finitio.Utils.extend Finitio, require './finitio/support/contracts'
 ##
+Finitio.Attribute    = require './finitio/support/attribute'
+Finitio.Contract     = require './finitio/support/contract'
+Finitio.Heading      = require './finitio/support/heading'
+Finitio.Constraint   = require './finitio/support/constraint'
+##
 Finitio.System       = require './finitio/system'
 Finitio.Parser       = require './finitio/parser'
 Finitio.Compiler     = require './finitio/compiler'
 Finitio.TypeFactory  = require './finitio/support/factory'
 ##
 Finitio.Type         = require './finitio/type'
-Finitio.TypeDef    = require './finitio/type/type_def'
-Finitio.TypeRef    = require './finitio/type/type_ref'
+Finitio.TypeDef      = require './finitio/type/type_def'
+Finitio.TypeRef      = require './finitio/type/type_ref'
 ##
 Finitio.AdType       = require './finitio/type/ad_type'
 Finitio.AnyType      = require './finitio/type/any_type'
