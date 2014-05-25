@@ -1,6 +1,6 @@
-{TypeType}  = require '../support/ic'
-Type        = require '../type'
-$u          = require '../support/utils'
+{TypeType}   = require '../support/ic'
+Type         = require '../type'
+$u           = require '../support/utils'
 
 class TypeDef extends Type
   TypeType this, 'ref', ['type', 'name', 'metadata']
