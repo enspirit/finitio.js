@@ -15,7 +15,7 @@ class Compiler
 
     # Install the factory methods
     for method in TypeFactory.PUBLIC_DSL_METHODS
-      this[method] = @factory[method].bind(@factory) unless method == 'proxy'
+      this[method] = @factory[method].bind(@factory) unless method == 'typeRef'
 
     # Install delegation to system
     @addType   = @system.addType.bind(@system)
@@ -30,12 +30,9 @@ class Compiler
   setMain: (main)->
     @system.addType(@typeDef(main, 'Main'));
 
-  proxy: (name)->
-    @proxies[name] ?= @factory.proxy(name)
+  typeRef: (name)->
+    @proxies[name] ?= @factory.typeRef(name)
     @proxies[name]
-
-  typeRef: (ref)->
-    @proxy(ref)
 
   resolveProxies: ()->
     $u.each @proxies, (proxy, name)=>

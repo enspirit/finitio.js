@@ -30,7 +30,7 @@ Finitio.TypeFactory  = require './finitio/support/factory'
 ##
 Finitio.Type         = require './finitio/type'
 Finitio.TypeDef    = require './finitio/type/type_def'
-Finitio.ProxyType    = require './finitio/type/proxy_type'
+Finitio.TypeRef    = require './finitio/type/type_ref'
 ##
 Finitio.AdType       = require './finitio/type/ad_type'
 Finitio.AnyType      = require './finitio/type/any_type'

@@ -1,18 +1,18 @@
-ProxyType       = require '../../../../src/finitio/type/proxy_type'
+TypeRef       = require '../../../../src/finitio/type/type_ref'
 should          = require 'should'
 {intType}       = require '../../../spec_helpers'
 
-describe "ProxyType#equals", ->
+describe "TypeRef#equals", ->
 
   it "works with the aliased type itself", ->
-    type = new ProxyType("int", intType)
+    type = new TypeRef("int", intType)
     should(type.equals(intType)).be.true
 
   it "works with another alias type", ->
-    t1 = new ProxyType("int", intType)
-    t2 = new ProxyType("int", intType)
+    t1 = new TypeRef("int", intType)
+    t2 = new TypeRef("int", intType)
     should(t1.equals(t2)).be.true
 
   it "works the other way round", ->
-    t = new ProxyType("int", intType)
+    t = new TypeRef("int", intType)
     should(intType.equals(t)).be.true

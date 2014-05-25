@@ -1,18 +1,18 @@
-ProxyType = require '../../../../src/finitio/type/proxy_type'
+TypeRef = require '../../../../src/finitio/type/type_ref'
 _         = require 'underscore'
 should    = require 'should'
 {intType} = require '../../../spec_helpers'
 
-describe "ProxyType#initialize", ->
+describe "TypeRef#initialize", ->
 
   it 'creates a valid type', ->
-    t = new ProxyType("int")
-    should(t).be.an.instanceOf(ProxyType)
+    t = new TypeRef("int")
+    should(t).be.an.instanceOf(TypeRef)
 
   it 'supports setting the target', ->
-    t = new ProxyType("int", intType)
+    t = new TypeRef("int", intType)
     should(t.target).equal(intType)
 
   it 'raises without the proxied name', ->
-    l = ()-> new ProxyType(null)
+    l = ()-> new TypeRef(null)
     should(l).throw()

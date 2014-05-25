@@ -1,11 +1,11 @@
 Type        = require '../type'
 $u          = require '../support/utils'
 
-class ProxyType extends Type
+class TypeRef extends Type
 
   constructor: (@targetRef, @target, @metadata) ->
     unless @targetRef
-      $u.argumentError("Proxied ref cannot be null on ProxyType")
+      $u.argumentError("Proxied ref cannot be null on TypeRef")
     super(@metadata)
 
   fetch: ()->
@@ -47,4 +47,4 @@ class ProxyType extends Type
     @target
 
 #
-module.exports = ProxyType
+module.exports = TypeRef

@@ -9,7 +9,7 @@ $u             = require './utils'
 
 ## Types
 TypeDef        = require '../type/type_def'
-ProxyType      = require '../type/proxy_type'
+TypeRef      = require '../type/type_ref'
 AnyType        = require '../type/any_type'
 AdType         = require '../type/ad_type'
 SeqType        = require '../type/seq_type'
@@ -35,7 +35,7 @@ class TypeFactory
     'heading',
     #
     'typeDef',
-    'proxy',
+    'typeRef',
     #
     'any',
     'builtin',
@@ -226,10 +226,10 @@ class TypeFactory
 
     new TypeDef(type, name, metadata)
 
-  proxy: (targetRef, metadata) ->
+  typeRef: (targetRef, metadata) ->
     metadata = @metadata(metadata)
 
-    new ProxyType(targetRef, null, metadata)
+    new TypeRef(targetRef, null, metadata)
 
   any: (metadata) ->
     metadata  = @metadata(metadata)

@@ -1,14 +1,14 @@
-ProxyType       = require '../../../../src/finitio/type/proxy_type'
+TypeRef       = require '../../../../src/finitio/type/type_ref'
 should          = require 'should'
 {intType}       = require '../../../spec_helpers'
 
-describe "ProxyType#include", ->
+describe "TypeRef#include", ->
 
   it "when resolved", ->
-    type = new ProxyType("Int", intType)
+    type = new TypeRef("Int", intType)
     should(type.include(12)).equal(true)
     should(type.include("foo")).equal(false)
 
   it "when not resolved", ->
-    type = new ProxyType("Int")
+    type = new TypeRef("Int")
     should(()-> type.include(12)).throw()

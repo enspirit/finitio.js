@@ -3,7 +3,7 @@ Parser      = require '../../../src/finitio/parser'
 System      = require '../../../src/finitio/system'
 BuiltinType = require '../../../src/finitio/type/builtin_type'
 TypeDef   = require '../../../src/finitio/type/type_def'
-ProxyType   = require '../../../src/finitio/type/proxy_type'
+TypeRef   = require '../../../src/finitio/type/type_ref'
 should      = require 'should'
 
 describe "Parser#system", ->
