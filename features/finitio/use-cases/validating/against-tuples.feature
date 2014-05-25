@@ -25,9 +25,10 @@ Feature: Validating against Finitio tuples
       { "r": 121, "g": 12 }
       """
 
-    Then it should be a TypeError as:
-      | message               | location |
-      | Missing attribute `b` |          |
+    Then it should be a TypeError
+    And its root cause should be:
+      | message               |
+      | Missing attribute `b` |
 
   Scenario: Validating a Color representation with extra attributes
 
@@ -36,9 +37,10 @@ Feature: Validating against Finitio tuples
       { "r": 121, "g": 12, "b": 255, "i": 143 }
       """
 
-    Then it should be a TypeError as:
-      | message                    | location |
-      | Unrecognized attribute `i` |          |
+    Then it should be a TypeError
+    And its root cause should be:
+      | message                    |
+      | Unrecognized attribute `i` |
 
   Scenario: Validating a Color representation with an invalid attribute type
 
@@ -47,9 +49,10 @@ Feature: Validating against Finitio tuples
       { "r": "foo", "g": 12, "b": 255 }
       """
 
-    Then it should be a TypeError as:
-      | message                      | location |
-      | Invalid value `foo` for Byte | r        |
+    Then it should be a TypeError
+    And its root cause should be:
+      | message            |
+      | Invalid Byte `foo` |
 
 
   Scenario: Validating a Color representation with an invalid value
@@ -60,6 +63,6 @@ Feature: Validating against Finitio tuples
       """
 
     Then it should be a TypeError as:
-      | message                      | location |
-      | Invalid value `-12` for Byte | r        |
+      | message            |
+      | Invalid Byte `-12` |
 

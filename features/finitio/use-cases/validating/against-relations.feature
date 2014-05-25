@@ -28,9 +28,10 @@ Background:
        { "r": 132, "g": -121,  "b": 12 }]
       """
 
-    Then it should be a TypeError as:
-      | message                       | location |
-      | Invalid value `-121` for Byte | 1/g      |
+    Then it should be a TypeError
+    And its root cause should be:
+      | message             |
+      | Invalid Byte `-121` |
 
   Scenario: Validating against an invalid Colors representation (II)
 
@@ -40,6 +41,7 @@ Background:
        { "r": 132, "g": 121 }]
       """
 
-    Then it should be a TypeError as:
-      | message               | location |
-      | Missing attribute `b` | 1        |
+    Then it should be a TypeError
+    And its root cause should be:
+      | message               |
+      | Missing attribute `b` |

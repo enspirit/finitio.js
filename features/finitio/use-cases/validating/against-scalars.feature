@@ -16,6 +16,7 @@ Feature: Validating against Finitio scalars
   Scenario: Against an invalid byte
 
     Given I dress JSON's '"foo"' with Byte
-    Then it should be a TypeError as:
-      | message                      |
-      | Invalid value `foo` for Byte |
+    Then it should be a TypeError
+    And its root cause should be:
+      | message            |
+      | Invalid Byte `foo` |

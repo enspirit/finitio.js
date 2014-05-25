@@ -45,9 +45,10 @@ Feature: Using Finitio to define a single-tuple document
       }
       """
 
-    Then it should be a TypeError as:
-      | message                       | location    |
-      | Invalid value `bar` for Byte  | color/green |
+    Then it should be a TypeError
+    And its root cause should be:
+      | message            |
+      | Invalid Byte `bar` |
 
   Scenario: Validating data against an invalid document (II)
 
@@ -65,5 +66,5 @@ Feature: Using Finitio to define a single-tuple document
       """
 
     Then it should be a TypeError as:
-      | message                        | location    |
-      | Invalid value `bar` for Gender | gender      |
+      | message              |
+      | Invalid Gender `bar` |

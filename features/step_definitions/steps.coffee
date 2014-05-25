@@ -129,7 +129,8 @@ module.exports = ->
     should(table.hashes().length).equal(1)
     expected = table.hashes()[0]
     victim  = system.fetchPath(path)
-    should(victim.metadata).eql(expected)
+    unless _.isEqual(victim.metadata, expected)
+      callback.fail("Expected #{expected}, got #{victim.metadata}")
     callback()
 
   # Hierarchy

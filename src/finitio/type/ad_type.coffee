@@ -39,7 +39,8 @@ class AdType extends Type
         catch e
           Monad.failure this, e.message, e
     onFailure = (causes)=>
-      Monad.failure this, ["Invalid $1 `$2`", [@jsType.name, value]], causes
+      Monad.failure this, ["Invalid $1 `$2`",
+        [@jsType && @jsType.name || 'value', value]], causes
     Monad.find @contracts, callback, onFailure
 
   _undress: (value, as) ->
