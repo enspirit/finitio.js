@@ -608,8 +608,7 @@ module.exports = (function(){
   };
 
   $u.undressError = function(msg, cause, location){
-    var E = require("../errors").TypeError;
-    throw new E(msg, cause, location);
+    throw new Error(msg, cause, location);
   };
 
   //
