@@ -13,26 +13,26 @@ Feature: TestSystem.Integer
 
     Given I dress JSON's '12.5'
     Then it should be a TypeError as:
-      | message                          |
-      | Invalid value `12.5` for Integer |
+      | message                |
+      | Invalid Integer `12.5` |
 
   Scenario: Against an integer literal
 
     Given I dress JSON's '"12"'
     Then it should be a TypeError as:
-      | message                        |
-      | Invalid value `12` for Integer |
+      | message              |
+      | Invalid Integer `12` |
 
   Scenario: Against null
 
     Given I dress JSON's 'null'
     Then it should be a TypeError as:
-      | message                          |
-      | Invalid value `null` for Integer |
+      | message                |
+      | Invalid Integer `null` |
 
   Scenario: Against an arbitrary value
 
     Given I dress JSON's '"foo"'
     Then it should be a TypeError as:
-      | message                          |
-      | Invalid value `foo` for Integer  |
+      | message                |
+      | Invalid Integer `foo`  |

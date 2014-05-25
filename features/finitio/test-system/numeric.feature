@@ -19,19 +19,19 @@ Feature: TestSystem.Numeric
 
     Given I dress JSON's '"12"'
     Then it should be a TypeError as:
-      | message                        |
-      | Invalid value `12` for Numeric |
+      | message              |
+      | Invalid Numeric `12` |
 
   Scenario: Against null
 
     Given I dress JSON's 'null'
     Then it should be a TypeError as:
-      | message                          |
-      | Invalid value `null` for Numeric |
+      | message                |
+      | Invalid Numeric `null` |
 
   Scenario: Against an arbitrary value
 
     Given I dress JSON's '"foo"'
     Then it should be a TypeError as:
-      | message                          |
-      | Invalid value `foo` for Numeric  |
+      | message                |
+      | Invalid Numeric `foo`  |

@@ -28,7 +28,7 @@ module.exports = ->
   @Given /^the System is$/, (source, callback) ->
     try
       system = TestSystem.parse(source, resolver: resolver)
-      type   = system.Main if system.Main
+      type   = system.Main.trueOne() if system.Main
     catch e
       error = e
       callback.fail(e)
@@ -295,6 +295,15 @@ module.exports = ->
       unless result[k] == v
         callback.fail "TypeError##{k}: `#{v}` expected, got `#{result[k]}`"
 
+    callback()
+
+  @Then /^its root cause should be:$/, (table, callback) ->
+    unless result instanceof Finitio.TypeError
+      callback.fail result
+    rc = result.getRootCause()
+    for k, v of table.hashes()[0]
+      unless rc[k] == v
+        callback.fail "TypeError##{k}: `#{v}` expected, got `#{rc[k]}`"
     callback()
 
   @Then /^the result should be the integer (\d+)$/, (expected, callback) ->

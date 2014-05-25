@@ -16,5 +16,5 @@ Feature: SubType
 
     Given I dress JSON's '-12' with Posint
     Then it should be a TypeError as:
-      | message                        |
-      | Invalid value `-12` for Posint |
+      | message              |
+      | Invalid Posint `-12` |

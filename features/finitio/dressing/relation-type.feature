@@ -16,9 +16,10 @@ Feature: RelationType
   Scenario: Dressing when an invalid tuple
 
     Given I dress JSON's '[{ "name": "Finitio" }]' with Info
-    Then it should be a TypeError as:
-      | message                 | location |
-      | Missing attribute `age` | 0        |
+    Then it should be a TypeError
+    And its root cause should be:
+      | message                 |
+      | Missing attribute `age` |
 
   Scenario: Dressing in presence of duplicates
 
@@ -27,7 +28,8 @@ Feature: RelationType
       [{ "name": "Finitio", "age": 1 },
        { "name": "Finitio", "age": 1 }]
       """
-    Then it should be a TypeError as:
-      | message         | location |
-      | Duplicate tuple | 1        |
+    Then it should be a TypeError
+    And its root cause should be:
+      | message                                      |
+      | Duplicate Tuple `{"name":"Finitio","age":1}` |
     
