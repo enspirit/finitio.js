@@ -56,9 +56,8 @@ class UnionType extends Type
     super
 
   candidatesEquals: (other, andback) ->
-    return false unless $u.every @candidates, (c)->
+    ok = $u.every @candidates, (c)->
       $u.any other.candidates, (c2)-> c.equals(c2)
-    true
-    !andback or other.candidatesEquals(this, false)
+    ok and (!andback or other.candidatesEquals(this, false))
 
 module.exports = UnionType
