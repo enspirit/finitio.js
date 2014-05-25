@@ -37,4 +37,4 @@ describe "BuiltinType#dress", ->
         error = e
 
       error.should.be.an.instanceof(TypeError)
-      error.message.should.equal("Invalid Number `Hello World!`")
+      error.message.should.equal("Invalid Number: `Hello World!`")

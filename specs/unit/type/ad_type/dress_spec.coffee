@@ -39,7 +39,7 @@ describe "AdType#dress", ->
           e
 
         should(err).be.an.instanceof TypeError
-        should(err.message).equal "Invalid Date `[]`"
+        should(err.message).equal "Invalid Date: `[]`"
 
     describe 'when the upper raises an error', ->
       type = new AdType(Date, [
@@ -53,4 +53,4 @@ describe "AdType#dress", ->
           e
 
         should(err).be.an.instanceof TypeError
-        should(err.message).equal "Invalid Date `12`"
+        should(err.message).equal "Invalid Date: `12`"

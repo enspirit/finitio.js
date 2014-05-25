@@ -30,19 +30,19 @@ describe "SubType#dress", ->
 
       it 'should raise an Error', ->
         should(subject).be.an.instanceof(TypeError)
-        should(subject.message).equal("Invalid value `true`")
+        should(subject.message).equal("Invalid value: `true`")
 
       it "should have the proper root cause", ->
         rc = subject.getRootCause()
         should(rc).be.an.instanceof(TypeError)
-        should(rc.message).equal("Invalid Number `true`")
+        should(rc.message).equal("Invalid Number: `true`")
 
     describe 'with a negative Number', ->
       subject = factor(-12)
 
       it 'should raise an Error', ->
         should(subject).be.an.instanceof(TypeError)
-        should(subject.message).equal("Invalid value `-12`")
+        should(subject.message).equal("Invalid value: `-12`")
 
       it "should have the expected cause", ->
         rc = subject.getRootCause()
@@ -54,4 +54,4 @@ describe "SubType#dress", ->
 
       it 'should raise an Error', ->
         should(subject).be.an.instanceof(TypeError)
-        should(subject.message).equal "Invalid value `1000`"
+        should(subject.message).equal "Invalid value: `1000`"

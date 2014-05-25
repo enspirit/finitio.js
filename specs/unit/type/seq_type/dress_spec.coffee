@@ -27,7 +27,7 @@ describe "SeqType#dress", ->
       lambda()
     catch e
       should(e).be.an.instanceof(TypeError)
-      should(e.message).equal("Sequence expected, got `foo`")
+      should(e.message).equal("Array expected, got: `foo`")
 
   it 'with an array with non bytes', ->
     lambda = -> subject([2, 4, -12])
@@ -38,7 +38,7 @@ describe "SeqType#dress", ->
       lambda()
     catch e
       should(e).be.an.instanceof(TypeError)
-      should(e.message).equal("Invalid Sequence `[2,4,-12]`")
+      should(e.message).equal("Invalid Sequence")
 
       rc = e.getRootCause()
       should(rc.message).equal("Constraint `byte` violated")

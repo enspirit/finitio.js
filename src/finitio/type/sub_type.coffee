@@ -27,13 +27,18 @@ class SubType extends Type
 
   _mDress: (value, Monad)->
     success = @superType.mDress(value, Monad)
+
     callback = (_, constraint)->
       if constraint.accept(success.result)
         success
       else
-        Monad.failure constraint, "Constraint `#{constraint.name}` violated"
+        params = [constraint.name]
+        Monad.failure constraint, ["Constraint `${cName}` violated", params]
+
     onFailure = (causes)=>
-      Monad.failure this, ["Invalid value `$1`", [value]], causes
+      params = ['value', value]
+      Monad.failure this, ["Invalid ${typeName}: `${value}`", params], causes
+
     Monad.refine success, @constraints, callback, onFailure
 
   _include: (value) ->

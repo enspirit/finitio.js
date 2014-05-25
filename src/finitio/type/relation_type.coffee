@@ -26,7 +26,7 @@ class RelationType extends Type
 
   _mDress: (value, Monad)->
     unless value instanceof Array
-      return Monad.failure this, ["Relation expected, got `$1`", [value]]
+      return Monad.failure this, ["Array expected, got: `${value}`", [value]]
 
     tupleType = @tupleType()
     index = {}
@@ -36,13 +36,13 @@ class RelationType extends Type
       m.onSuccess (tuple)=>
         h = JSON.stringify(tuple)
         if index[h]
-          Monad.failure this, ["Duplicate Tuple `$1`", [tuple]]
+          Monad.failure this, ["Duplicate Tuple: `${value}`", [tuple]]
         else
           index[h] = tuple
           m
 
     onFailure = (causes)=>
-      Monad.failure this, ["Invalid Relation `$1`", [value]], causes
+      Monad.failure this, ["Invalid ${typeName}", ["Relation"]], causes
 
     Monad.map value, mapper, onFailure
 

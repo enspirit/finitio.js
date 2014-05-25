@@ -28,7 +28,7 @@ class TupleType extends Type
 
   _mDress: (value, Monad)->
     unless value instanceof Object
-      return Monad.failure this, ["Invalid Tuple `$1`", [value]]
+      return Monad.failure this, ["Invalid Tuple: `${value}`", [value]]
 
     result  = {}
     success = Monad.success result
@@ -38,9 +38,9 @@ class TupleType extends Type
       attrValue = value[attrName] || null
 
       if !attrValue? and attr.required
-        Monad.failure attrName, ["Missing attribute `$1`", [attrName]]
+        Monad.failure attrName, ["Missing attribute `${attrName}`", [attrName]]
       else if !attr? and !@heading.allowExtra()
-        Monad.failure attrName, ["Unrecognized attribute `$1`", [attrName]]
+        Monad.failure attrName, ["Unrecognized attribute `${attrName}`", [attrName]]
       else if attr? and attrValue?
         subm = attr.type.mDress(attrValue, Monad)
         subm.onFailure (error)->
@@ -56,7 +56,8 @@ class TupleType extends Type
         success
 
     onFailure = (causes)=>
-      Monad.failure this, ["Invalid Tuple `$1`", [value]], causes
+      params = ['Tuple', value]
+      Monad.failure this, ["Invalid ${typeName}", params], causes
 
     # build all attributes
     attributes = _attributesHash(@heading)

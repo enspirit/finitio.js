@@ -25,9 +25,9 @@ describe "UnionType#dress", ->
 
     it 'should raise an Error', ->
       should(subject).be.an.instanceof(TypeError)
-      should(subject.message).equal("Invalid value `foo`")
+      should(subject.message).equal("Invalid value: `foo`")
 
     it 'has the expected root cause', ->
       rc = subject.getRootCause()
       should(rc).be.an.instanceof(TypeError)
-      should(rc.message).equal("Invalid Number `foo`")
+      should(rc.message).equal("Invalid Number: `foo`")

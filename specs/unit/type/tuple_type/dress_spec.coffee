@@ -45,7 +45,7 @@ describe "TupleType#dress", ->
 
         it 'should raise a TypeError', ->
           should(subject).be.an.instanceof(TypeError)
-          should(subject.message).equal("Invalid Tuple `foo`")
+          should(subject.message).equal("Invalid Tuple: `foo`")
 
       context 'with a missing attribute', ->
         arg = { "r": 12, "b": 13 }
@@ -53,7 +53,7 @@ describe "TupleType#dress", ->
 
         it 'should raise a TypeError', ->
           should(subject).be.an.instanceof(TypeError)
-          should(subject.message).equal('Invalid Tuple `{"r":12,"b":13}`')
+          should(subject.message).equal('Invalid Tuple')
 
         it 'should have expected root cause', ->
           rc = subject.getRootCause()
@@ -66,7 +66,7 @@ describe "TupleType#dress", ->
 
         it 'should raise a TypeError', ->
           should(subject).be.an.instanceof(TypeError)
-          should(subject.message).eql('Invalid Tuple `{"r":12,"g":13,"extr":165}`')
+          should(subject.message).eql('Invalid Tuple')
 
         it 'should have expected root cause', ->
           rc = subject.getRootCause()
@@ -80,7 +80,7 @@ describe "TupleType#dress", ->
         it 'should raise a TypeError', ->
           rc = subject.getRootCause()
           should(rc).be.an.instanceof(TypeError)
-          should(rc.message).equal("Invalid Number `255`")
+          should(rc.message).equal("Invalid Number: `255`")
 
   context 'when not allowing extra', ->
     heading = new Heading([r, g, maybe_b], allowExtra: true)

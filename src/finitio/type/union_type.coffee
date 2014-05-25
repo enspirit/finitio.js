@@ -13,10 +13,14 @@ class UnionType extends Type
     super(@metadata)
 
   _mDress: (value, Monad)->
+
     callback = (candidate)->
       candidate.mDress(value, Monad)
+
     onFailure = (causes)=>
-      Monad.failure this, ["Invalid value `$1`", [value]], causes
+      params = ['value', value]
+      Monad.failure this, ["Invalid ${typeName}: `${value}`", params], causes
+
     Monad.find @candidates, callback, onFailure
 
   _undress: (value, as) ->

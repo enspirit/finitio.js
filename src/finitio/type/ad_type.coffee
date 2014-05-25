@@ -31,16 +31,19 @@ class AdType extends Type
   _mDress: (value, Monad) ->
     if @jsType and value instanceof @jsType
       return Monad.success value
+
     callback = (contract)->
       m = contract.infoType.mDress(value, Monad)
       m.onSuccess (result)=>
         try
           Monad.success contract.dress(result)
         catch e
-          Monad.failure this, e.message, e
+          Monad.failure this, "Dresser failed", [e]
+
     onFailure = (causes)=>
-      Monad.failure this, ["Invalid $1 `$2`",
-        [@jsType && @jsType.name || 'value', value]], causes
+      params = [ @jsType && @jsType.name || 'value', value ]
+      Monad.failure this, ["Invalid ${typeName}: `${value}`", params], causes
+
     Monad.find @contracts, callback, onFailure
 
   _undress: (value, as) ->

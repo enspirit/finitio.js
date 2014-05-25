@@ -11,11 +11,14 @@ class SeqType extends CollectionType
 
   _mDress: (value, Monad)->
     unless value instanceof Array
-      return Monad.failure this, ["Sequence expected, got `$1`", [value]]
+      return Monad.failure this, ["Array expected, got: `${value}`", [value]]
+
     mapper = (elm)=>
       @elmType.mDress(elm, Monad)
+
     onFailure = (causes)=>
-      Monad.failure this, ["Invalid Sequence `$1`", [value]], causes
+      Monad.failure this, ["Invalid ${typeName}", ["Sequence"]], causes
+
     Monad.map value, mapper, onFailure
 
   _undress: (value, as)->

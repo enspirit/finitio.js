@@ -28,15 +28,19 @@ class StructType extends Type
 
   _mDress: (value, Monad) ->
     unless value instanceof Array
-      return Monad.failure this,
-        ["Struct expected, got `$1`", [value]]
+      return Monad.failure this, ["Array expected, got: `${value}`", [value]]
+
     unless value.length == @size()
       return Monad.failure this,
-        ["Struct size mismatch ($1 for $2)", [value.length, @size()]]
+        ["Struct size mismatch: ${a} for ${b}", [value.length, @size()]]
+
     mapper = (type, index)=>
       type.mDress(value[index], Monad)
+
     onFailure = (causes)=>
-      Monad.failure this, ["Invalid Struct `$1`", [value]], causes
+      params = ['Struct', value]
+      Monad.failure this, ["Invalid ${typeName}: `${value}`", params], causes
+
     Monad.map @componentTypes, mapper, onFailure
 
   _undress: (value, as) ->

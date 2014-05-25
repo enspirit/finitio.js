@@ -17,8 +17,11 @@ class TypeError extends FinitioError
     msg = @error
     if msg instanceof Array
       [msg, data] = msg
-      msg.replace /\$(\d+)/g, (match)->
-        $u.toString(data[parseInt(match[1])-1])
+      i = -1
+      msg.replace /\$\{([a-zA-Z]+)\}/g, (match)=>
+        i += 1
+        param = match.slice(2, match.length-1)
+        $u.toString(this[param] || data[i])
     else
       msg
 

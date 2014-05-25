@@ -31,7 +31,7 @@ describe "StructType#dress", ->
 
       it 'should raise a TypeError', ->
         should(subject(arg)).be.an.instanceof(TypeError)
-        should(subject(arg).message).equal("Struct expected, got `foo`")
+        should(subject(arg).message).equal("Array expected, got: `foo`")
 
       it 'should have no cause', ->
         should(subject(arg).cause).eql(undefined)
@@ -41,7 +41,7 @@ describe "StructType#dress", ->
 
       it 'should raise a TypeError', ->
         subject(arg).should.be.an.instanceof(TypeError)
-        subject(arg).message.should.equal("Struct size mismatch (1 for 2)")
+        subject(arg).message.should.equal("Struct size mismatch: 1 for 2")
 
       it 'should have no cause', ->
         should(subject(arg).cause).eql(undefined)
@@ -51,7 +51,7 @@ describe "StructType#dress", ->
 
       it 'should raise a TypeError', ->
         subject(arg).should.be.an.instanceof(TypeError)
-        subject(arg).message.should.equal("Struct size mismatch (3 for 2)")
+        subject(arg).message.should.equal("Struct size mismatch: 3 for 2")
 
       it 'should have no cause', ->
         should(subject(arg).cause).eql(undefined)
@@ -61,9 +61,9 @@ describe "StructType#dress", ->
 
       it 'should raise a TypeError', ->
         should(subject(arg)).be.an.instanceof(TypeError)
-        should(subject(arg).message).equal("Invalid Struct `[12,14.2]`")
+        should(subject(arg).message).equal("Invalid Struct: `[12,14.2]`")
 
       it 'should have the expected root cause', ->
         rc = subject(arg).getRootCause()
         should(rc).be.an.instanceof(TypeError)
-        should(rc.message).equal("Invalid String `14.2`")
+        should(rc.message).equal("Invalid String: `14.2`")

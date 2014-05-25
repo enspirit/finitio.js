@@ -25,7 +25,7 @@ describe "SetType#dress", ->
       lambda()
     catch e
       should(e).be.an.instanceof(TypeError)
-      should(e.message).equal("Set expected, got `foo`")
+      should(e.message).equal("Array expected, got: `foo`")
 
   describe 'with an array with non bytes', ->
     subject =
@@ -50,9 +50,9 @@ describe "SetType#dress", ->
 
     it 'raises an error', ->
       should(subject).be.an.instanceof(TypeError)
-      should(subject.message).equal("Invalid Set `[2,4,2]`")
+      should(subject.message).equal("Invalid Set")
 
     it 'should raise an error', ->
       rc = subject.getRootCause()
       should(rc).be.an.instanceof(TypeError)
-      should(rc.message).equal("Duplicate value `2`")
+      should(rc.message).equal("Duplicate value: `2`")
