@@ -1,0 +1,165 @@
+/- Recognizes JavaScript Strings -/
+Js:String   = .String
+
+/- Recognizes JavaScript Booleans -/
+Js:Boolean  = .Boolean
+
+/- Recognizes JavaScript 'Types' -/
+Js:Type     = .Function
+
+/- Recognizes JavaScript 'Object' -/
+Js:Object   = .( arg | toString.call(arg) == '[object Object]' )
+
+/- Recognizes and allows coercing JavaScript Functions -/
+Js:Function = .Function <defn> [Js:String] .Finitio.Contracts.Function.defn
+
+/- Recognizes and allows coercing JavaScript Functions -/
+Js:RegExp   = .RegExp
+  <src> Js:String \( src | new Regex(src) ) \( rx | rx.source )
+
+/- Recognizes Finitio's Metadata -/
+Metadata = Js:Object
+
+/- Recognizes Finitio's Contracts -/
+Contract = .Finitio.Contract <info> {
+  name      : Contract:Name
+  infoType  : Type
+  dresser   : Js:Function
+  undresser : Js:Function
+  metadata  :? Metadata
+}
+Contract:Name = Js:String( s | /[a-z][a-z0-9]*/.test(s) )
+
+/- Recognizes Finitio's Constraint -/
+Constraint = .Finitio.Constraint <info> Constraint:Native|Constraint:RegExp
+Constraint:Name = Js:String( s | /[a-z][a-zA-Z_]*/.test(s) )
+
+/- Recognizes RegExp's based Constraints -/
+Constraint:RegExp = {
+  name      : Constraint:Name
+  regexp    : Js:RegExp
+  metadata  :? Metadata
+}
+
+/- Recognizes Function's based Constraints -/
+Constraint:Native = {
+  name      : Constraint:Name
+  native    : Js:Function
+  metadata  :? Metadata
+}
+
+/- Recognizes Finitio's Attribute -/
+Attribute = .Finitio.Attribute <info> {
+  name     : Attribute:Name
+  type     : Type
+  required :? Js:Boolean
+}
+Attribute:Name = Js:String( s | /[a-z][a-zA-Z0-9_]*/.test(s) )
+
+/- Recognizes Finitio's Headings -/
+Heading = .Finitio.Heading <info> {
+  attributes : [Attribute]
+  options    : { allowExtra: Js:Boolean }
+}
+
+/- Recognizes and allows factoring Finitio Types -/
+Type         = .Finitio.Type <factor> Type:Factory
+Type:Name    = Js:String( s | /^[A-Z][a-zA-Z:]*$/.test(s) )
+Type:Factory = { any: AnyType }
+             | { adt: AdType  }
+             | { builtin: BuiltinType }
+             | { relation: RelationType }
+             | { seq: SeqType }
+             | { set: SetType }
+             | { struct: StructType }
+             | { sub: SubType }
+             | { tuple: TupleType }
+             | { union: UnionType }
+             | { ref: TypeRef }
+
+/- Factors Any Type -/
+AnyType = .Finitio.AnyType <info> {
+  metadata :? Metadata
+}
+
+/- Factors Abstract Data Types -/
+AdType = .Finitio.AdType <info> {
+  jsType    : Js:Type
+  contracts : [Contract]
+  metadata  :? Metadata
+}
+
+/- Factors Builtin Types -/
+BuiltinType = .Finitio.BuiltinType <info> {
+  jsType   : Js:Type
+  metadata :? Metadata
+}
+
+/- Factors Sub Types -/
+SubType = .Finitio.SubType <info> {
+  superType   : Type
+  constraints : [Constraint]
+  metadata    :? Metadata
+}
+
+/- Factors Relation Types -/
+RelationType = .Finitio.RelationType <info> {
+  heading  : Heading
+  metadata :? Metadata
+}
+
+/- Factors Tuple Types -/
+TupleType = .Finitio.TupleType <info> {
+  heading  : Heading
+  metadata :? Metadata
+}
+
+/- Factors Struct Types -/
+StructType = .Finitio.StructType <info> {
+  componentTypes : [Type]
+  metadata       :? Metadata
+}
+
+/- Factors Seq Types -/
+SeqType = .Finitio.SeqType <info> {
+  elmType  : Type
+  metadata :? Metadata
+}
+
+/- Factors Seq Types -/
+SetType = .Finitio.SetType <info> {
+  elmType  : Type
+  metadata :? Metadata
+}
+
+/- Factors Union Types -/
+UnionType = .Finitio.UnionType <info> {
+  candidates : [Type]
+  metadata   :? Metadata
+}
+
+/- Factors Type Definitions -/
+TypeDef = .Finitio.TypeDef <info> {
+  name     : Type:Name
+  type     : Type
+  metadata :? Metadata
+}
+
+/- Factors Type References -/
+TypeRef = .Finitio.TypeRef <info> {
+  typeName : Type:Name
+  metadata :? Metadata
+}
+
+/- Factors System Uses -/
+Use = {
+  qualifier: Js:String
+  system: System
+}
+
+/- Factors Finitio Systems -/
+System = .Finitio.System <info> {
+  types:   [TypeDef]
+  uses:    [Use]
+  imports: [System]
+}

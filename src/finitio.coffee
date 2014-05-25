@@ -48,4 +48,6 @@ Finitio.SubType      = require './finitio/type/sub_type'
 Finitio.TupleType    = require './finitio/type/tuple_type'
 Finitio.UnionType    = require './finitio/type/union_type'
 ##
+Finitio.Meta         = require './finitio/systems/meta'
+##
 module.exports = Finitio
