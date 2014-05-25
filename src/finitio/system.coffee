@@ -15,7 +15,7 @@ class System
 
   constructor: (@imports, @uses, @types) ->
     @imports ?= []
-    @uses    ?= {}
+    @uses    ?= []
     @types   ?= []
 
     # install all types directly
@@ -38,8 +38,8 @@ class System
   import: (other) ->
     @imports.push(other)
 
-  use: (other, as) ->
-    @uses[as] = other
+  use: (system, qualifier) ->
+    @uses.push({ qualifier: qualifier, system: system })
 
   resolve: (ref, callback) ->
     match = ref.match(System.REF_RGX)
@@ -65,7 +65,8 @@ class System
 
   _resolveQualified: (match, callback)->
     callback ?= @_onResolveFailure(match[0])
-    if sub = @uses[match[1]]
+    use = $u.find @uses, (u)-> u.qualifier is match[1]
+    if sub = use && use.system
       @_resolveSingle sub, match[2], callback
     else
       @_onResolveFailure(match[0])()

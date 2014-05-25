@@ -14,20 +14,21 @@ describe 'System#resolve', ->
 
   system = new System [ 
       new System([
-          new System([], {}, [e])
+          new System([], [], [e])
         ],
-        {},
+        [],
         [a]
       ),
-      new System([], {}, [b]),
+      new System([], [], [b]),
     ],
-    {
-      x: new System([
-          new System([], {}, [f])
-        ],
-        {},
-        [c])
-    },
+    [
+      {
+        qualifier: 'x'
+        system: new System([
+          new System([], [], [f])
+        ], [], [c])
+      }
+    ],
     [d]
 
   it 'resolves a direct unqualified name correctly', ->
