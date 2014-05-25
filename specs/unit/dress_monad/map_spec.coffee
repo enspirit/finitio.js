@@ -27,7 +27,7 @@ describe "DressMonad.map", ->
     expected = {
       context: 'foo',
       error: "Failed",
-      causes: [
+      children: [
         { context: 1, error: "Failed on 1 and 0", location: 0 },
         { context: 3, error: "Failed on 3 and 2", location: 2 }
       ]

@@ -56,9 +56,7 @@ describe "TupleType#dress", ->
           should(subject.message).equal('Invalid Tuple')
 
         it 'should have expected root cause', ->
-          rc = subject.getRootCause()
-          should(rc).be.an.instanceof(TypeError)
-          should(rc.message).equal("Missing attribute `g`")
+          should(subject.rootCause.message).equal("Missing attribute `g`")
 
       context 'with an extra attribute', ->
         arg = { "r": 12, "g": 13, "extr": 165 }
@@ -69,18 +67,14 @@ describe "TupleType#dress", ->
           should(subject.message).eql('Invalid Tuple')
 
         it 'should have expected root cause', ->
-          rc = subject.getRootCause()
-          should(rc).be.an.instanceof(TypeError)
-          should(rc.message).equal("Unrecognized attribute `extr`")
+          should(subject.rootCause.message).equal("Unrecognized attribute `extr`")
 
       context 'with an invalid attribute', ->
         arg = { "r": 12, "g": 13, "b": '255' }
         subject = lambda(arg)
 
         it 'should raise a TypeError', ->
-          rc = subject.getRootCause()
-          should(rc).be.an.instanceof(TypeError)
-          should(rc.message).equal("Invalid Number: `255`")
+          should(subject.rootCause.message).equal("Invalid Number: `255`")
 
   context 'when not allowing extra', ->
     heading = new Heading([r, g, maybe_b], allowExtra: true)

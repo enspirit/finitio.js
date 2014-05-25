@@ -78,8 +78,7 @@ describe "RelationType#dress", ->
         should(subject.message).equal("Invalid Relation")
 
       it 'has expected root cause', ->
-        rc = subject.getRootCause()
-        should(rc.message).equal("Invalid Tuple: `foo`")
+        should(subject.rootCause.message).equal("Invalid Tuple: `foo`")
 
     context 'with a duplicate tuple', ->
       arg = [
@@ -93,5 +92,4 @@ describe "RelationType#dress", ->
         should(subject).be.an.instanceof(TypeError)
 
       it 'should have the expected root cause', ->
-        rc = subject.getRootCause()
-        should(rc.message).eql('Duplicate Tuple: `{"r":12,"g":13,"b":255}`')
+        should(subject.rootCause.message).eql('Duplicate Tuple: `{"r":12,"g":13,"b":255}`')

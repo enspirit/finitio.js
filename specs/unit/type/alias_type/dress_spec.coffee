@@ -20,5 +20,4 @@ describe "AliasType#dress", ->
     should(err).be.an.instanceof(TypeError)
     should(err.message).eql("Invalid Foo: `bar`")
 
-    rc = err.getRootCause()
-    should(rc.message).eql("Invalid Number: `bar`")
+    should(err.rootCause.message).eql("Invalid Number: `bar`")

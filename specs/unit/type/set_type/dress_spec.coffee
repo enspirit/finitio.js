@@ -38,8 +38,7 @@ describe "SetType#dress", ->
       should(subject).be.an.instanceof(TypeError)
 
     it 'has the expected root cause', ->
-      rc = subject.getRootCause()
-      should(rc.message).eql("Constraint `byte` violated")
+      should(subject.rootCause.message).eql("Constraint `byte` violated")
 
   describe 'with an array with duplicates', ->
     subject =
@@ -53,6 +52,4 @@ describe "SetType#dress", ->
       should(subject.message).equal("Invalid Set")
 
     it 'should raise an error', ->
-      rc = subject.getRootCause()
-      should(rc).be.an.instanceof(TypeError)
-      should(rc.message).equal("Duplicate value: `2`")
+      should(subject.rootCause.message).equal("Duplicate value: `2`")

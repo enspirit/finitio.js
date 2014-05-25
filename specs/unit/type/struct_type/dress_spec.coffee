@@ -64,6 +64,4 @@ describe "StructType#dress", ->
         should(subject(arg).message).equal("Invalid Struct: `[12,14.2]`")
 
       it 'should have the expected root cause', ->
-        rc = subject(arg).getRootCause()
-        should(rc).be.an.instanceof(TypeError)
-        should(rc.message).equal("Invalid String: `14.2`")
+        should(subject(arg).rootCause.message).equal("Invalid String: `14.2`")

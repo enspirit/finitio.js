@@ -7,7 +7,7 @@ class DressMonad
 
   @failure: (context, error, causes)->
     failure = { context: context, error: error }
-    failure.causes = causes if causes?
+    failure.children = causes if causes?
     new DressMonad undefined, failure
 
   @find: (collection, callback, onFailure)->
