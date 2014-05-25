@@ -16,7 +16,9 @@ class DressMonad
       m = callback(collection[i], i)
       if m.isSuccess()
         return m
-      causes.push(m.failure)
+      else
+        m.failure.location = i
+        causes.push(m.failure)
     onFailure(causes)
 
   @refine: (base, collection, callback, onFailure)->
@@ -25,6 +27,7 @@ class DressMonad
       for i in [0...collection.length]
         m = callback(base, collection[i], i)
         if m.isFailure()
+          m.failure.location = i
           causes.push(m.failure)
       return base if causes.length == 0
       onFailure(causes)
@@ -49,10 +52,10 @@ class DressMonad
 
   onSuccess: (callback)->
     return this unless @isSuccess()
-    callback(this.result)
+    callback(@result)
 
   onFailure: (callback)->
     return this if @isSuccess()
-    callback([ @failure ])
+    callback(@failure)
 
 module.exports = DressMonad

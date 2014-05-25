@@ -14,10 +14,13 @@ class SetType extends CollectionType
   _mDress: (value, Monad)->
     unless value instanceof Array
       return Monad.failure this, ["Set expected, got `$1`", [value]]
+
     mapper = (elm)=>
       @elmType.mDress(elm, Monad)
+
     onFailure = (causes)=>
       Monad.failure this, ["Invalid Set `$1`", [value]], causes
+
     m = Monad.map value, mapper, onFailure
 
     findDuplicate = (set)->
@@ -26,8 +29,8 @@ class SetType extends CollectionType
     m.onSuccess (set)=>
       return m unless d = findDuplicate(set)
       err = Monad.failure this, ["Duplicate value `$1`", [d]]
-      err.onFailure (causes)=>
-        Monad.failure this, ["Invalid Set `$1`", [value]], causes
+      err.onFailure (cause)=>
+        Monad.failure this, ["Invalid Set `$1`", [value]], [cause]
 
   _undress: (value, as)->
     unless as instanceof CollectionType

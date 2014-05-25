@@ -43,6 +43,9 @@ class TupleType extends Type
         Monad.failure attrName, ["Unrecognized attribute `$1`", [attrName]]
       else if attr? and attrValue?
         subm = attr.type.mDress(attrValue, Monad)
+        subm.onFailure (error)->
+          error.location = attrName
+          subm
         subm.onSuccess (val)->
           result[attrName] = val
           success

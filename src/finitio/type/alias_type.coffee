@@ -19,8 +19,8 @@ class AliasType extends Type
 
   _mDress: (value, Monad)->
     m = @type.mDress(value, Monad)
-    m.onFailure (causes)=>
-      Monad.failure this, ["Invalid #{@name} `$1`", [value]], causes
+    m.onFailure (cause)=>
+      Monad.failure this, ["Invalid #{@name} `$1`", [value]], [cause]
 
   _undress: (value, as)->
     @type.undress(value, as)
