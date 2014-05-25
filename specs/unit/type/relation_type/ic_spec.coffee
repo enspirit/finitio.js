@@ -7,7 +7,6 @@ should    = require 'should'
 describe "RelationType's information contract", ->
 
   info = {
-    name: 'Foo',
     heading: Heading.info({
       attributes: [
         Attribute.info({

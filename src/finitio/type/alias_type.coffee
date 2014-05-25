@@ -1,19 +1,18 @@
+{TypeType}  = require '../support/ic'
 Type        = require '../type'
 $u          = require '../support/utils'
 
 class AliasType extends Type
+  TypeType this, 'ref', ['type', 'name', 'metadata']
 
   constructor: (@type, @name, @metadata) ->
     unless @name
       $u.argumentError("Name cannot be null on AliasType")
-    super(@name, @metadata)
+    super(@metadata)
     @generator = @type.generator
 
   fetch: ()->
     @type.fetch.apply(@type, arguments)
-
-  defaultName: ->
-    @name
 
   _include: (value)->
     @type.include(value)

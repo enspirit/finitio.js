@@ -4,10 +4,7 @@ Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 
 class SetType extends CollectionType
-  TypeType this, 'set', ['elmType', 'name', 'metadata']
-
-  defaultName: ->
-    "{#{@elmType.name}}"
+  TypeType this, 'set', ['elmType', 'metadata']
 
   _include: (value) ->
     return false unless value instanceof Array

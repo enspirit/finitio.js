@@ -7,7 +7,6 @@ should    = require 'should'
 describe "TupleType's information contract", ->
 
   info = {
-    name: 'Foo',
     heading: Heading.info({
       attributes: [
         Attribute.info({

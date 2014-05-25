@@ -15,7 +15,6 @@ describe "AdType's information contract", ->
     metadata: {foo: 'bar'}
   })
   info = {
-    name: 'Foo',
     contracts: [contract],
     metadata: {foo: 'bar'}
   }

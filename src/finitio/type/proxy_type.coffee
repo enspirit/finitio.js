@@ -3,18 +3,15 @@ $u          = require '../support/utils'
 
 class ProxyType extends Type
 
-  constructor: (@targetRef, @target, @name, @metadata) ->
+  constructor: (@targetRef, @target, @metadata) ->
     unless @targetRef
-      $u.argumentError("Proxied name cannot be null on ProxyType")
-    super(@name || @target && @target.name, @metadata)
+      $u.argumentError("Proxied ref cannot be null on ProxyType")
+    super(@metadata)
 
   fetch: ()->
     r = @resolved()
     r.fetch.apply(r, arguments)
 
-  defaultName: ->
-    (@target and @target.defaultName()) or @targetRef
-  
   _include: (value)->
     @resolved().include(value)
 

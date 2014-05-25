@@ -16,18 +16,3 @@ describe "AnyType's information contract", ->
 
     it 'undresses as expected', ->
       should(t.toInfo()).eql(info)
-
-  context 'named', ->
-    info = {
-      name: 'Foo',
-      metadata: {foo: 'bar'}
-    }
-    t = AnyType.info(info)
-
-    it 'dresses as expected', ->
-      should(t).be.an.instanceof(AnyType)
-      should(t.name).eql('Foo')
-      should(t.metadata).eql({ foo: "bar" })
-
-    it 'undresses as expected', ->
-      should(t.toInfo()).eql(info)

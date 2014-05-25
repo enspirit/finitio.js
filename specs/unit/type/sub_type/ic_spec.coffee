@@ -11,7 +11,6 @@ describe "SubType's information contract", ->
     native: big
   })
   info = {
-    name: 'Foo',
     superType: intType
     constraints: [ bigC ],
     metadata: { foo: 'bar' }
@@ -20,7 +19,6 @@ describe "SubType's information contract", ->
 
   it 'dresses as expected', ->
     should(t).be.an.instanceof(SubType)
-    should(t.name).eql('Foo')
     should(t.constraints).eql([bigC])
     should(t.metadata).eql({ foo: "bar" })
 

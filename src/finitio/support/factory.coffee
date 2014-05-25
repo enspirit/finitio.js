@@ -71,29 +71,25 @@ class TypeFactory
 
   ################################################################## Factory
 
-  type: (t, name, callback) ->
-    unless callback?
-      if typeof name == "function"
-        [callback, name] = [name, callback]
-
+  type: (t, callback) ->
     if callback?
-      return @sub_type(@type(t, name), callback)
+      return @sub_type(@type(t), callback)
 
     if t instanceof Type
       t
 
     else if isNativeType(t)
-      new BuiltinType(t, name || t.constructor.name)
+      new BuiltinType(t)
 
     else if isRegexp(t)
       @sub_type(String, t)
 
     else if t instanceof Array
       fail("Array of arity 1 expected, got", t) unless t.length == 1
-      @seq(t[0], name)
+      @seq(t[0])
 
     else if typeof(t) == "object"
-      @tuple(t, name)
+      @tuple(t)
 
     else
       fail("Unable to factor a Finitio.Type from `#{t}`")
@@ -111,16 +107,6 @@ class TypeFactory
 
     else
       fail("JS primitive expected, got `#{t}`")
-
-  name: (name) ->
-    unless not(name?) or \
-        ((name.constructor == String) and name.trim().length > 1)
-      fail("Wrong type name `#{name}`")
-
-    if name?
-      name.trim()
-    else
-      null
 
   metadata: (arg) ->
     unless arg == undefined || arg == null || $u.isObject(arg)
@@ -235,94 +221,81 @@ class TypeFactory
   ########################################################## Type generators
 
   alias: (type, name, metadata) ->
-    name     = @name(name)
     type     = @type(type)
     metadata = @metadata(metadata)
 
     new AliasType(type, name, metadata)
 
-  proxy: (targetName, name, metadata) ->
-    typeName = @name(name)
-    name     = @name(name)
+  proxy: (targetRef, metadata) ->
     metadata = @metadata(metadata)
 
-    new ProxyType(targetName, null, name, metadata)
+    new ProxyType(targetRef, null, metadata)
 
-  any: (name, metadata) ->
-    name      = @name(name)
+  any: (metadata) ->
     metadata  = @metadata(metadata)
 
-    new AnyType(name, metadata)
+    new AnyType(metadata)
 
-  builtin: (primitive, name, metadata) ->
+  builtin: (primitive, metadata) ->
     primitive = @jsType(primitive)
-    name      = @name(name)
     metadata  = @metadata(metadata)
 
-    new BuiltinType(primitive, name, metadata)
+    new BuiltinType(primitive, metadata)
 
-  adt: (primitive, contracts, name, metadata) ->
+  adt: (primitive, contracts, metadata) ->
     primitive = @jsType(primitive) if primitive?
     contracts = @contracts(contracts)
-    name      = @name(name)
     metadata  = @metadata(metadata)
 
-    new AdType(primitive, contracts, name, metadata)
+    new AdType(primitive, contracts, metadata)
 
   #### Sub and union
 
-  sub_type: (superType, constraints, name, metadata) ->
+  sub_type: (superType, constraints, metadata) ->
     superType   = @type(superType)
     constraints = @constraints(constraints)
-    name        = @name(name)
     metadata    = @metadata(metadata)
 
-    new SubType(superType, constraints, name, metadata)
+    new SubType(superType, constraints, metadata)
 
-  union: (candidates, name, metadata) ->
-    name       = @name(name)
+  union: (candidates, metadata) ->
     candidates = $u.map candidates, (t) => @type(t)
 
-    new UnionType(candidates, name, metadata)
+    new UnionType(candidates, metadata)
 
   #### Collections
 
-  seq: (elmType, name, metadata) ->
+  seq: (elmType, metadata) ->
     elmType  = @type(elmType)
-    name     = @name(name)
     metadata = @metadata(metadata)
 
-    new SeqType(elmType, name, metadata)
+    new SeqType(elmType, metadata)
 
-  set: (elmType, name, metadata) ->
+  set: (elmType, metadata) ->
     elmType  = @type(elmType)
-    name     = @name(name)
     metadata = @metadata(metadata)
 
-    new SetType(elmType, name, metadata)
+    new SetType(elmType, metadata)
 
-  struct: (componentTypes, name, metadata) ->
+  struct: (componentTypes, metadata) ->
     componentTypes = $u.map(componentTypes, (t) => @type(t))
-    name           = @name(name)
     metadata       = @metadata(metadata)
 
-    new StructType(componentTypes, name, metadata)
+    new StructType(componentTypes, metadata)
 
  #### Tuples and relations
 
-  tuple: (heading, name, metadata) ->
+  tuple: (heading, metadata) ->
     heading  = @heading(heading)
-    name     = @name(name)
     metadata = @metadata(metadata)
 
-    new TupleType(heading, name, metadata)
+    new TupleType(heading, metadata)
 
-  relation: (heading, name, metadata) ->
+  relation: (heading, metadata) ->
     heading  = @heading(heading)
-    name     = @name(name)
     metadata = @metadata(metadata)
 
-    new RelationType(heading, name, metadata)
+    new RelationType(heading, metadata)
 
 # 'private' Utility functions
 # (only in the scope of this module)

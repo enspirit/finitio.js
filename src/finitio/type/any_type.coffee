@@ -3,13 +3,10 @@ Type       = require '../type'
 
 #
 class AnyType extends Type
-  TypeType this, 'any', ['name', 'metadata']
+  TypeType this, 'any', ['metadata']
 
-  constructor: (@name, @metadata) ->
-    super(@name, @metadata)
-
-  defaultName: ->
-    "Any"
+  constructor: (@metadata) ->
+    super(@metadata)
 
   _mDress: (value, Monad) ->
     Monad.success value

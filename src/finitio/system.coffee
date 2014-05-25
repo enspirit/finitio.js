@@ -28,11 +28,12 @@ class System
     unless type instanceof Type
       $u.argumentError("Finitio.Type expected, got:", type)
 
-    if this[type.name]?
-      $u.argumentError("Duplicate type `#{type.name}`")
-
     @types.push(type)
-    this[type.name] = type
+    if type.name
+      if this[type.name]?
+        $u.argumentError("Duplicate type `#{type.name}`")
+      this[type.name] = type
+    type
 
   import: (other) ->
     @imports.push(other)

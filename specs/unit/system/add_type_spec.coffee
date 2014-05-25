@@ -1,5 +1,6 @@
 System    = require '../../../src/finitio/system'
 {numType} = require '../../spec_helpers'
+AliasType = require '../../../src/finitio/type/alias_type'
 should = require 'should'
 
 describe "System#addType", ->
@@ -10,10 +11,7 @@ describe "System#addType", ->
     res = system.addType(numType)
 
     it 'should return the created type', ->
-      res.should.equal(numType)
-
-    it 'should add the type', ->
-      should(system[numType.name]).equal(numType)
+      should(res).equal(numType)
 
   describe 'with an invalid type', ->
     system = new System
@@ -32,10 +30,10 @@ describe "System#addType", ->
 
   describe 'with a duplicate type name', ->
     system = new System
-    system.addType(numType)
+    system.addType(AliasType.info({ type: numType, name: 'Int' }))
 
     lambda = ->
-      system.addType(numType)
+      system.addType(AliasType.info({ type: numType, name: 'Int' }))
 
     it 'should raise an error', ->
       should(lambda).throw()
@@ -45,4 +43,4 @@ describe "System#addType", ->
       catch e
         e
 
-      err.message.should.equal "Duplicate type `numType`"
+      err.message.should.equal "Duplicate type `Int`"

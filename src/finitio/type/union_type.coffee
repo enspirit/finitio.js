@@ -3,19 +3,14 @@ $u          = require '../support/utils'
 Type        = require '../type'
 
 class UnionType extends Type
-  TypeType this, 'union', ['candidates', 'name', 'metadata']
+  TypeType this, 'union', ['candidates', 'metadata']
 
-  constructor: (@candidates, @name, @metadata) ->
-    @name ?= null
-
+  constructor: (@candidates, @metadata) ->
     $u.each @candidates, (c) ->
       unless c instanceof Type
         $u.argumentError("Finitio.Type expected, got:", c)
 
-    super(@name, @metadata)
-
-  defaultName: ->
-    $u.map(@candidates, (c) -> c.name).join('|')
+    super(@metadata)
 
   _mDress: (value, Monad)->
     callback = (candidate)->

@@ -13,7 +13,7 @@ describe "System's information contract", ->
 
   it 'dresses as expected', ->
     should(s).be.an.instanceof(System)
-    should(s.intType).equal(intType)
+    should(s.types.length).equal(1)
 
   it 'undresses as expected', ->
     should(s.toInfo()).eql(info)

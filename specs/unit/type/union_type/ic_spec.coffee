@@ -5,7 +5,6 @@ should    = require 'should'
 describe "UnionType's information contract", ->
 
   info = {
-    name: 'Foo',
     candidates: [intType]
     metadata: {foo: 'bar'}
   }
@@ -13,7 +12,6 @@ describe "UnionType's information contract", ->
 
   it 'dresses as expected', ->
     should(t).be.an.instanceof(UnionType)
-    should(t.name).eql('Foo')
     should(t.candidates).eql([intType])
     should(t.metadata).eql({ foo: "bar" })
 

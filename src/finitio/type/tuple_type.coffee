@@ -5,16 +5,13 @@ Heading         = require '../support/heading'
 CollectionType  = require '../support/collection_type'
 
 class TupleType extends Type
-  TypeType this, 'tuple', ['heading', 'name', 'metadata']
+  TypeType this, 'tuple', ['heading', 'metadata']
 
-  constructor: (@heading, @name, @metadata) ->
+  constructor: (@heading, @metadata) ->
     unless @heading instanceof Heading
       $u.argumentError("Heading expected, got:", @heading)
 
-    super(@name, @metadata)
-
-  defaultName: ->
-    "{#{@heading.toName()}}"
+    super(@metadata)
 
   fetch: ()->
     @heading.fetch.apply(@heading, arguments)
@@ -55,7 +52,7 @@ class TupleType extends Type
       else
         success
 
-    onFailure = (causes)->
+    onFailure = (causes)=>
       Monad.failure this, ["Invalid Tuple `$1`", [value]], causes
 
     # build all attributes

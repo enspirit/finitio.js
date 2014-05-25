@@ -6,12 +6,7 @@ DressMonad  = require './support/dress_monad'
 #
 class Type
 
-  constructor: (@name, @metadata)->
-    if @name? and typeof(@name) isnt "string"
-      $u.argumentError("String expected, got", @name)
-
-    @anonymous = not(@name?)
-    @name ?= @defaultName()
+  constructor: (@metadata)->
 
   @factor: (from)->
     from[Object.keys(from)[0]]
@@ -20,15 +15,6 @@ class Type
     to = { }
     to[@generator] = this
     to
-
-  setName: (name)->
-    throw new Error("Name already set") unless @anonymous
-    @name = name
-    @anonymous = false
-
-  setMetadata: (metadata)->
-    throw new Error("Metadata already set") if @metadata
-    @metadata = metadata
 
   #
   # Returns true if `value` is valid member of this type, false otherwise.
@@ -136,11 +122,5 @@ class Type
 
   _equals: (other)->
     this is other
-
-  #
-  # Returns a String representation of this Type.
-  #
-  toString: ->
-    @defaultName().toString()
 
 module.exports = Type

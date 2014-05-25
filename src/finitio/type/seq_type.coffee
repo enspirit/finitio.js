@@ -4,10 +4,7 @@ Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 
 class SeqType extends CollectionType
-  TypeType this, 'seq', ['elmType', 'name', 'metadata']
-
-  defaultName: ->
-    "[#{@elmType.name}]"
+  TypeType this, 'seq', ['elmType', 'metadata']
 
   _include: (value) ->
     value instanceof Array and $u.every(value, (v) => @elmType.include(v))

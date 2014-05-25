@@ -5,9 +5,9 @@ Contract     = require '../support/contract'
 Type         = require '../type'
 
 class AdType extends Type
-  TypeType this, 'adt', ['jsType', 'contracts', 'name', 'metadata']
+  TypeType this, 'adt', ['jsType', 'contracts', 'metadata']
 
-  constructor: (@jsType, @contracts, @name, @metadata) ->
+  constructor: (@jsType, @contracts, @metadata) ->
     if @jsType and not(@jsType instanceof Function)
       $u.argumentError("Constructor (function) expected, got:", @jsType)
 
@@ -17,16 +17,13 @@ class AdType extends Type
     unless $u.every(@contracts, (c)-> c instanceof Contract)
       $u.argumentError("[Contract] expected, got:", @contracts)
 
-    super(@name, @metadata)
+    super(@metadata)
 
   Fetchable this, "contracts", "contract", (name)->
     $u.find @contracts, (c)-> c.name == name
 
   contractNames: ->
     $u.map @contracts, (c)-> c.name
-
-  defaultName: ->
-    (@jsType && @jsType.name) || "Anonymous"
 
   _include: (value) ->
     value.constructor == @jsType

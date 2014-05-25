@@ -6,16 +6,13 @@ Heading         = require '../support/heading'
 $u              = require '../support/utils'
 
 class RelationType extends Type
-  TypeType this, 'relation', ['heading', 'name', 'metadata']
+  TypeType this, 'relation', ['heading', 'metadata']
 
-  constructor: (@heading, @name, @metadata) ->
-    super(@name, @metadata)
+  constructor: (@heading, @metadata) ->
+    super(@metadata)
 
     unless @heading instanceof Heading
       $u.argumentError("Heading expected, got:", @heading)
-
-  defaultName: ->
-    "{{#{@heading.toName()}}}"
 
   fetch: ()->
     @heading.fetch.apply(@heading, arguments)

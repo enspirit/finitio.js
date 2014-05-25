@@ -6,7 +6,6 @@ describe "Type's information contract", ->
 
   info = {
     builtin: BuiltinType.info({
-      name: 'Date',
       jsType: Date,
       metadata: { foo: 'bar' }
     })
@@ -15,7 +14,6 @@ describe "Type's information contract", ->
 
   it 'dresses as expected', ->
     should(type).be.an.instanceof(BuiltinType)
-    should(type.name).eql('Date')
     should(type.jsType).equal(Date)
     should(type.metadata).eql({foo: 'bar'})
 

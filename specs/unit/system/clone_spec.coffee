@@ -17,11 +17,10 @@ describe "System#clone", ->
     should(subject()).not.equal(system)
 
   it 'should have numType', ->
-    should(subject().numType).equal(numType)
+    should(subject().types[0]).equal(numType)
 
   it 'should not share internals with the original', ->
     clone = subject()
     clone.addType(stringType)
-    should(clone.stringType).not.equal(null)
-    should(clone.stringType).not.equal(undefined)
-    should(system.stringType).equal(undefined)
+    should(system.types.length).equal(1)
+    should(clone.types.length).equal(2)

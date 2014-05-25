@@ -16,22 +16,10 @@ describe "TypeFactory#seq", ->
       it 'should give expected result', ->
         subject.equals(expected).should.be.true
 
-    describe 'when used with [Class] and a name', ->
-      subject = factory.type([Number], "MySeq")
-
-      it 'should give expected result', ->
-        subject.equals(expected).should.be.true
-
-      it 'should have the correct name', ->
-        subject.name.should.equal("MySeq")
-
   describe 'for pseudo-relations', ->
-    subject = factory.type([{r: Number}], "MySeq")
+    subject = factory.type([{r: Number}])
 
     expected = factory.seq(factory.tuple(r: Number))
 
     it 'should give expected result', ->
       subject.equals(expected).should.be.true
-
-    it 'should have the correct name', ->
-      subject.name.should.equal("MySeq")

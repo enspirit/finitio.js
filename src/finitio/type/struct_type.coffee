@@ -4,10 +4,10 @@ Type            = require '../type'
 CollectionType  = require '../support/collection_type'
 
 class StructType extends Type
-  TypeType this, 'struct', ['componentTypes', 'name', 'metadata']
+  TypeType this, 'struct', ['componentTypes', 'metadata']
 
-  constructor: (@componentTypes, @name, @metadata) ->
-    super(@name, @metadata)
+  constructor: (@componentTypes, @metadata) ->
+    super(@metadata)
 
     unless $u.isArray(@componentTypes)
       $u.argumentError("[Finitio::Type] expected, got:", @componentTypes)
@@ -15,10 +15,6 @@ class StructType extends Type
     wrongType = $u.find(@componentTypes, (t) -> !(t instanceof Type))
     if wrongType?
       $u.argumentError("[Finitio::Type] expected, got:", wrongType)
-
-  defaultName: ->
-    componentNames = $u.map(@componentTypes, (t) -> t.name)
-    "<" + componentNames.join(', ') + ">"
 
   size: ->
     $u.size(@componentTypes)

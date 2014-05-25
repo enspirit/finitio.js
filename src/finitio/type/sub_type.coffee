@@ -5,11 +5,9 @@ Type        = require '../type'
 Constraint  = require '../support/constraint'
 
 class SubType extends Type
-  TypeType this, 'sub', ['superType', 'constraints', 'name', 'metadata']
+  TypeType this, 'sub', ['superType', 'constraints', 'metadata']
 
-  constructor: (@superType, @constraints, @name, @metadata) ->
-    @name ?= null
-
+  constructor: (@superType, @constraints, @metadata) ->
     unless @superType instanceof Type
       $u.argumentError("Finitio.Type expected, got", @superType)
 
@@ -22,13 +20,10 @@ class SubType extends Type
     unless $u.every(@constraints, (c)-> c instanceof Constraint)
       $u.argumentError("Array of constraints expected, got", @constraints)
 
-    super(@name, @metadata)
+    super(@metadata)
 
   Fetchable this, "constraints", "constraint", (name)->
     $u.find @constraints, (c)-> c.name == name
-
-  defaultName: ->
-    $u.capitalize(@constraints[0].name)
 
   _mDress: (value, Monad)->
     success = @superType.mDress(value, Monad)
@@ -64,8 +59,5 @@ class SubType extends Type
     @constraints.length == other.constraints.length and
     $u.every $u.zip(@constraints, other.constraints), (pair)->
       pair[0].equals(pair[1])
-
-  defaultConstraint: (constraint)->
-    constraint.isAnonymous() or $u.capitalize(constraint.name) == @name
 
 module.exports = SubType

@@ -88,7 +88,7 @@ union_type =
 
 sub_type =
     m:metadata? t:rel_type c:constraint {
-      return compiler.sub_type(t, c, null, m)
+      return compiler.sub_type(t, c, m)
     }
   / rel_type
 
@@ -124,12 +124,12 @@ rel_type =
 
 tuple_type =
   m:metadata? '{' spacing h:heading spacing '}' {
-    return compiler.tuple(h, null, m)
+    return compiler.tuple(h, m)
   }
 
 relation_type =
   m:metadata? '{{' spacing h:heading spacing '}}' {
-    return compiler.relation(h, null, m)
+    return compiler.relation(h, m)
   }
 
 heading =
@@ -155,7 +155,7 @@ collection_type =
 
 set_type =
   m:metadata? '{' spacing t:type spacing '}' {
-    return compiler.set(t, null, m);
+    return compiler.set(t, m);
   }
 
 struct_type =
@@ -165,7 +165,7 @@ struct_type =
 
 seq_type =
   m:metadata? '[' spacing t:type spacing ']' {
-    return compiler.seq(t, null, m);
+    return compiler.seq(t, m);
   }
 
 // TYPES (higher priority)
@@ -181,7 +181,7 @@ ad_type =
     var metadata = p && p.metadata;
     var jsType   = p && p.jsType;
     var contracts = compileContracts(cs, jsType);
-    return compiler.adt(jsType, contracts, null, metadata);
+    return compiler.adt(jsType, contracts, metadata);
   }
 
 ad_type_preamble =
@@ -220,12 +220,12 @@ lambda_expr =
 
 any_type =
   m:metadata? '.' {
-    return compiler.any(null, m);
+    return compiler.any(m);
   }
 
 builtin_type =
   m:metadata? '.' name:builtin_type_name {
-    return compiler.builtin(name, null, m);
+    return compiler.builtin(name, m);
   }
 
 type_ref =

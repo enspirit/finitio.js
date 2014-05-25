@@ -5,7 +5,6 @@ should    = require 'should'
 describe "SeqType's information contract", ->
 
   info = {
-    name: 'Foo',
     elmType: intType
     metadata: {foo: 'bar'}
   }
@@ -13,7 +12,6 @@ describe "SeqType's information contract", ->
 
   it 'dresses as expected', ->
     should(t).be.an.instanceof(SeqType)
-    should(t.name).eql('Foo')
     should(t.elmType).equal(intType)
     should(t.metadata).eql({ foo: "bar" })
 

@@ -5,7 +5,6 @@ should     = require 'should'
 describe "StructType's information contract", ->
 
   info = {
-    name: 'Foo',
     componentTypes: [intType]
     metadata: {foo: 'bar'}
   }
@@ -13,7 +12,6 @@ describe "StructType's information contract", ->
 
   it 'dresses as expected', ->
     should(t).be.an.instanceof(StructType)
-    should(t.name).eql('Foo')
     should(t.componentTypes).eql([intType])
     should(t.metadata).eql({ foo: "bar" })
 

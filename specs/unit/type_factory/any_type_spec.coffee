@@ -13,13 +13,3 @@ describe "TypeFactory#any", ->
 
     it 'should give expected result', ->
       subject.equals(expected).should.be.true
-
-  describe 'when called with a name', ->
-    subject = factory.any("MyAny")
-
-    it 'should give expected result', ->
-      subject.equals(expected).should.be.true
-
-    it 'should have the correct name', ->
-      subject.name.should.equal("MyAny")
-

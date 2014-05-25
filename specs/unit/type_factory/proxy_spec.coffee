@@ -16,13 +16,3 @@ describe 'TypeFactory#proxy', ->
       should(subject).be.an.instanceof(ProxyType)
       should(subject.targetRef).equal('base')
       should(subject.target).equal(null)
-      should(subject.name).equal('base')
-
-  describe 'when used with a target name and a name', ->
-    subject = factory.proxy("base", "foo")
-
-    it 'builds the type', ->
-      should(subject).be.an.instanceof(ProxyType)
-      should(subject.targetRef).equal('base')
-      should(subject.target).equal(null)
-      should(subject.name).equal("foo")

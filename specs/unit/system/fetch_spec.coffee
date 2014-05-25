@@ -14,10 +14,7 @@ describe 'System#fetch', ->
 
   subject = (name) -> system.fetch(name)
 
-  it 'returns a type by name', ->
-    should(subject("numType")).equal(numType)
-
-  it 'returns Main as well', ->
+  it 'returns Main', ->
     should(subject("Main")).be.an.instanceof(AliasType)
 
   it 'throws with a non existing type name and no callback', ->
