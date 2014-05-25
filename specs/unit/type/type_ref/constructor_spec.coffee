@@ -10,7 +10,7 @@ describe "TypeRef#initialize", ->
     should(t).be.an.instanceOf(TypeRef)
 
   it 'supports setting the target', ->
-    t = new TypeRef("int", intType)
+    t = new TypeRef("int", null, intType)
     should(t.target).equal(intType)
 
   it 'raises without the proxied name', ->

@@ -12,5 +12,5 @@ describe "TypeRef#fetch", ->
   tuplety = new TupleType(heading)
 
   it "delegates to the aliased type", ->
-    type = new TypeRef("tuple", tuplety)
+    type = new TypeRef("tuple", null, tuplety)
     should(type.fetch('a')).equal(a)

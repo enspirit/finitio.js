@@ -229,7 +229,7 @@ class TypeFactory
   typeRef: (targetRef, metadata) ->
     metadata = @metadata(metadata)
 
-    new TypeRef(targetRef, null, metadata)
+    new TypeRef(targetRef, metadata)
 
   any: (metadata) ->
     metadata  = @metadata(metadata)

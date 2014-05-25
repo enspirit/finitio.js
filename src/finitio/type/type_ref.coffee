@@ -1,10 +1,12 @@
-Type        = require '../type'
-$u          = require '../support/utils'
+{ObjectType} = require '../support/ic'
+$u           = require '../support/utils'
+Type         = require '../type'
 
 class TypeRef extends Type
+  ObjectType this, ['typeName', 'metadata']
 
-  constructor: (@targetRef, @target, @metadata) ->
-    unless @targetRef
+  constructor: (@typeName, @metadata, @target) ->
+    unless @typeName
       $u.argumentError("Proxied ref cannot be null on TypeRef")
     super(@metadata)
 
@@ -39,7 +41,7 @@ class TypeRef extends Type
     @resolved().trueOne()
 
   resolve: (system)->
-    @target ?= system.resolve(@targetRef).fetchType().trueOne()
+    @target ?= system.resolve(@typeName).fetchType().trueOne()
 
   resolved: ()->
     unless @target

@@ -5,7 +5,7 @@ should          = require 'should'
 describe "TypeRef#dress", ->
 
   it "when resolved", ->
-    type = new TypeRef("Int", intType)
+    type = new TypeRef("Int", null, intType)
     should(type.dress(12)).equal(12)
 
   it "when not resolved", ->

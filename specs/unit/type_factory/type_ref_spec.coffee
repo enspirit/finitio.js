@@ -14,5 +14,5 @@ describe 'TypeFactory#typeRef', ->
 
     it 'builds the type', ->
       should(subject).be.an.instanceof(TypeRef)
-      should(subject.targetRef).equal('base')
-      should(subject.target).equal(null)
+      should(subject.typeName).equal('base')
+      should(subject.target).equal(undefined)

@@ -5,14 +5,14 @@ should    = require 'should'
 describe "TypeRef#undress", ->
 
   it "delegates to the aliased type", ->
-    type = new TypeRef("int", intType)
+    type = new TypeRef("int", null, intType)
     should(type.undress(12, intType)).equal(12)
 
   it "works even with itself", ->
-    type = new TypeRef("int", intType)
+    type = new TypeRef("int", null, intType)
     should(type.undress(12, type)).equal(12)
 
   it "works even an equivalent proxy", ->
-    t1 = new TypeRef("int", intType)
-    t2 = new TypeRef("int", intType)
+    t1 = new TypeRef("int", null, intType)
+    t2 = new TypeRef("int", null, intType)
     should(t1.undress(12, t2)).equal(12)
