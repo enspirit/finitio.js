@@ -1,9 +1,9 @@
-{TypeType}   = require '../support/ic'
+{ObjectType} = require '../support/ic'
 Type         = require '../type'
 $u           = require '../support/utils'
 
 class TypeDef extends Type
-  TypeType this, 'ref', ['type', 'name', 'metadata']
+  ObjectType this, ['type', 'name', 'metadata']
 
   constructor: (@type, @name, @metadata) ->
     unless @name

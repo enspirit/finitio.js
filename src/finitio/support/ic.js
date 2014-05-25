@@ -77,31 +77,7 @@ module.exports = (function(){
 
   ic.TypeType = function(base, generator, properties){
     base.prototype.generator = generator;
-
-    base.info = function(from){
-      var args = [];
-      for (var i=0; i<properties.length; i++){
-        var propval = from[properties[i]];
-        if (propval != undefined){
-          args[i] = propval;
-        }
-      };
-      return invokeConstructor(base, args);
-    };
-
-    base.prototype.toInfo = function(){
-      var to = {};
-      for (var i=0; i<properties.length; i++){
-        var name  = properties[i];
-        if (name != 'name' || !this.anonymous){
-          var value = this[name];
-          if (value != undefined){
-            to[name] = value;
-          }
-        }
-      }
-      return to;
-    };
+    ic.ObjectType(base, properties);
   };
 
   return ic;
