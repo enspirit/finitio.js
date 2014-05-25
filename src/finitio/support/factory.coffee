@@ -62,10 +62,12 @@ class TypeFactory
 
   constructor: (world)->
     @world = {
-      'Number':  Number,
-      'String':  String,
-      'Boolean': Boolean,
-      'Date':    Date
+      'Number':   Number,
+      'String':   String,
+      'Boolean':  Boolean,
+      'Date':     Date,
+      'Function': Function,
+      'RegExp':   RegExp
     }
     $u.extend(@world, world)
 
