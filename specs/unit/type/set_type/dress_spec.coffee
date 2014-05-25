@@ -38,7 +38,7 @@ describe "SetType#dress", ->
       should(subject).be.an.instanceof(TypeError)
 
     it 'has the expected root cause', ->
-      should(subject.rootCause.message).eql("Constraint `byte` violated")
+      should(subject.rootCause.message).eql("Invalid value (not byte): `-12`")
 
   describe 'with an array with duplicates', ->
     subject =

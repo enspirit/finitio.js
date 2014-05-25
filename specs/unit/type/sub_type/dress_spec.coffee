@@ -30,10 +30,7 @@ describe "SubType#dress", ->
 
       it 'should raise an Error', ->
         should(subject).be.an.instanceof(TypeError)
-        should(subject.message).equal("Invalid value: `true`")
-
-      it "should have the proper root cause", ->
-        should(subject.rootCause.message).equal("Invalid Number: `true`")
+        should(subject.message).equal("Invalid Number: `true`")
 
     describe 'with a negative Number', ->
       subject = factor(-12)
@@ -42,12 +39,9 @@ describe "SubType#dress", ->
         should(subject).be.an.instanceof(TypeError)
         should(subject.message).equal("Invalid value: `-12`")
 
-      it "should have the expected cause", ->
-        should(subject.rootCause.message).equal("Constraint `default` violated")
-
     describe 'with a non small Number', ->
       subject = factor(1000)
 
       it 'should raise an Error', ->
         should(subject).be.an.instanceof(TypeError)
-        should(subject.message).equal "Invalid value: `1000`"
+        should(subject.message).equal "Invalid value (not small): `1000`"

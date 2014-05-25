@@ -39,5 +39,4 @@ describe "SeqType#dress", ->
     catch e
       should(e).be.an.instanceof(TypeError)
       should(e.message).equal("Invalid Sequence")
-
-      should(e.rootCause.message).equal("Constraint `byte` violated")
+      should(e.rootCause.message).eql("Invalid value (not byte): `-12`")

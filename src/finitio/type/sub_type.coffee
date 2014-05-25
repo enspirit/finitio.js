@@ -32,12 +32,16 @@ class SubType extends Type
       if constraint.accept(success.result)
         success
       else
-        params = [constraint.name]
-        Monad.failure constraint, ["Constraint `${cName}` violated", params]
+        if constraint.name isnt 'default'
+          msg = "Invalid ${typeName} (not ${cName}): `${value}`"
+          params = ['value', constraint.name, value]
+        else
+          msg = "Invalid ${typeName}: `${value}`"
+          params = ['value', value]
+        Monad.failure constraint, [msg, params]
 
     onFailure = (causes)=>
-      params = ['value', value]
-      Monad.failure this, ["Invalid ${typeName}: `${value}`", params], causes
+      Monad.failure this, causes[0].error
 
     Monad.refine success, @constraints, callback, onFailure
 
