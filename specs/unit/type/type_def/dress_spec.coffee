@@ -1,16 +1,16 @@
 {TypeError} = require '../../../../src/finitio/errors'
-AliasType   = require '../../../../src/finitio/type/alias_type'
+TypeDef   = require '../../../../src/finitio/type/type_def'
 should      = require 'should'
 {intType}   = require '../../../spec_helpers'
 
-describe "AliasType#dress", ->
+describe "TypeDef#dress", ->
 
   it "delegates to the aliased type", ->
-    type = new AliasType(intType, "Foo")
+    type = new TypeDef(intType, "Foo")
     should(type.dress(12)).equal(12)
 
   it 'rephrases the error', ->
-    type = new AliasType(intType, "Foo")
+    type = new TypeDef(intType, "Foo")
 
     err = try
       type.dress("bar")

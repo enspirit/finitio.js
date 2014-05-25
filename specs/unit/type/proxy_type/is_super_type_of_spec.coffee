@@ -1,5 +1,5 @@
 ProxyType  = require '../../../../src/finitio/type/proxy_type'
-AliasType  = require '../../../../src/finitio/type/alias_type'
+TypeDef  = require '../../../../src/finitio/type/type_def'
 should     = require 'should'
 {intType,
  byteType} = require '../../../spec_helpers'
@@ -25,10 +25,10 @@ describe "ProxyType#isSuperTypeOf", ->
 
   it "works with an alias type", ->
     t1 = new ProxyType('int',  intType)
-    t2 = new AliasType(byteType, 'byte')
+    t2 = new TypeDef(byteType, 'byte')
     should(t1.isSuperTypeOf(t2)).equal(true)
 
   it "works against an alias type", ->
-    t1 = new AliasType(intType, 'int')
+    t1 = new TypeDef(intType, 'int')
     t2 = new ProxyType('byte', byteType)
     should(t1.isSuperTypeOf(t2)).equal(true)

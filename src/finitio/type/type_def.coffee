@@ -2,12 +2,12 @@
 Type        = require '../type'
 $u          = require '../support/utils'
 
-class AliasType extends Type
+class TypeDef extends Type
   TypeType this, 'ref', ['type', 'name', 'metadata']
 
   constructor: (@type, @name, @metadata) ->
     unless @name
-      $u.argumentError("Name cannot be null on AliasType")
+      $u.argumentError("Name cannot be null on TypeDef")
     super(@metadata)
     @generator = @type.generator
 
@@ -42,4 +42,4 @@ class AliasType extends Type
     @type
 
 #
-module.exports = AliasType
+module.exports = TypeDef

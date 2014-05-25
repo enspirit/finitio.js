@@ -4,7 +4,7 @@ Compiler  = require '../../../src/finitio/compiler'
 AdType    = require '../../../src/finitio/type/ad_type'
 ProxyType = require '../../../src/finitio/type/proxy_type'
 AnyType   = require '../../../src/finitio/type/any_type'
-AliasType = require '../../../src/finitio/type/alias_type'
+TypeDef = require '../../../src/finitio/type/type_def'
 should    = require 'should'
 
 describe "Compiler#typeRef", ->
@@ -23,7 +23,7 @@ describe "Compiler#typeRef", ->
     ]
   })
 
-  alias = new AliasType(adtype, 'Date')
+  alias = new TypeDef(adtype, 'Date')
   
   system = new System
   system.addType(adtype)

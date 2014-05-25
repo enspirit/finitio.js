@@ -1,5 +1,5 @@
 System      = require '../../../src/finitio/system'
-AliasType   = require '../../../src/finitio/type/alias_type'
+TypeDef   = require '../../../src/finitio/type/type_def'
 {numType}   = require '../../spec_helpers'
 should      = require 'should'
 
@@ -10,12 +10,12 @@ describe 'System#fetch', ->
   beforeEach ->
     system = new System
     system.addType(numType)
-    system.addType(new AliasType(numType, 'Main'))
+    system.addType(new TypeDef(numType, 'Main'))
 
   subject = (name) -> system.fetch(name)
 
   it 'returns Main', ->
-    should(subject("Main")).be.an.instanceof(AliasType)
+    should(subject("Main")).be.an.instanceof(TypeDef)
 
   it 'throws with a non existing type name and no callback', ->
     lambda = -> subject("noSuchOne")

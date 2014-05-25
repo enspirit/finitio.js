@@ -8,7 +8,7 @@ Contract       = require './contract'
 $u             = require './utils'
 
 ## Types
-AliasType      = require '../type/alias_type'
+TypeDef        = require '../type/type_def'
 ProxyType      = require '../type/proxy_type'
 AnyType        = require '../type/any_type'
 AdType         = require '../type/ad_type'
@@ -34,7 +34,7 @@ class TypeFactory
     'attribute',
     'heading',
     #
-    'alias',
+    'typeDef',
     'proxy',
     #
     'any',
@@ -220,11 +220,11 @@ class TypeFactory
 
   ########################################################## Type generators
 
-  alias: (type, name, metadata) ->
+  typeDef: (type, name, metadata) ->
     type     = @type(type)
     metadata = @metadata(metadata)
 
-    new AliasType(type, name, metadata)
+    new TypeDef(type, name, metadata)
 
   proxy: (targetRef, metadata) ->
     metadata = @metadata(metadata)

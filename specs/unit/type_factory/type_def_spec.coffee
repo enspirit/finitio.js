@@ -1,16 +1,16 @@
 Attribute   = require '../../../src/finitio/support/attribute'
 TypeFactory = require '../../../src/finitio/support/factory'
-AliasType   = require '../../../src/finitio/type/alias_type'
+TypeDef   = require '../../../src/finitio/type/type_def'
 BuiltinType = require '../../../src/finitio/type/builtin_type'
 should      = require 'should'
 {intType}   = require '../../spec_helpers'
 
-describe 'TypeFactory#alias', ->
+describe 'TypeFactory#typeDef', ->
 
   factory = new TypeFactory
 
-  it 'creates an AliasType', ->
+  it 'creates an TypeDef', ->
     base    = factory.builtin(Number)
-    subject = factory.alias(base, "foo")
-    should(subject).be.an.instanceof(AliasType)
+    subject = factory.typeDef(base, "foo")
+    should(subject).be.an.instanceof(TypeDef)
     should(subject.name).equal('foo')

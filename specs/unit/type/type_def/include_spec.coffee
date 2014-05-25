@@ -1,10 +1,10 @@
-AliasType       = require '../../../../src/finitio/type/alias_type'
+TypeDef       = require '../../../../src/finitio/type/type_def'
 should          = require 'should'
 {intType}       = require '../../../spec_helpers'
 
-describe "AliasType#include", ->
+describe "TypeDef#include", ->
 
   it "delegates to the aliased type", ->
-    type = new AliasType(intType, "foo")
+    type = new TypeDef(intType, "foo")
     should(type.include(12)).be.true
     should(type.include("12")).be.false

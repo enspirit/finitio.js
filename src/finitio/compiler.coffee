@@ -34,9 +34,6 @@ class Compiler
     @proxies[name] ?= @factory.proxy(name)
     @proxies[name]
 
-  typeDef: (type, name, metadata)->
-    @alias(type, name, metadata)
-
   typeRef: (ref)->
     @proxy(ref)
 
@@ -54,19 +51,5 @@ class Compiler
       @system.use(sub, as)
     else
       @system.import(sub)
-
-  #
-
-  setTypeName: (type, name)->
-    return type unless name?
-    return @alias(type, name) unless type.anonymous
-    type.setName(name)
-    type
-
-  setTypeMetadata: (type, metadata)->
-    return type unless metadata?
-    return @alias(type, null, metadata) if type.metadata
-    type.setMetadata(metadata)
-    type
 
 module.exports = Compiler
