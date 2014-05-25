@@ -74,7 +74,7 @@ class TupleType extends Type
     [s, l, r] = $u.triSplit(_attributesHash(@heading), _attributesHash(as.heading))
 
     # left non empty? do we allow projection undressings?
-    unless $u.isEmpty(l)
+    if $u.find(l, (a)-> a.required)
       $u.undressError("Tuple undress does not allow projecting #{l}")
 
     # right non empty? do we allow missing attributes?
