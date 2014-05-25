@@ -13,19 +13,19 @@ Feature: TestSystem.String
 
     Given I dress JSON's 'null'
     Then it should be a TypeError as:
-      | message               |
-      | Invalid String `null` |
+      | message                |
+      | Invalid String: `null` |
 
   Scenario: Against true
 
     Given I dress JSON's 'true'
     Then it should be a TypeError as:
-      | message               |
-      | Invalid String `true` |
+      | message                |
+      | Invalid String: `true` |
 
   Scenario: Against an integer
 
     Given I dress JSON's '12'
     Then it should be a TypeError as:
-      | message             |
-      | Invalid String `12` |
+      | message              |
+      | Invalid String: `12` |

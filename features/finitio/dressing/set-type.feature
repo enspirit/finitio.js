@@ -22,13 +22,13 @@ Feature: SetType
     Given I dress JSON's '[12, 15, 12]' with IntSet
     Then it should be a TypeError
     And its root cause should be:
-      | message              |
-      | Duplicate value `12` |
+      | message               |
+      | Duplicate value: `12` |
 
   Scenario: Dressing a set containing reals
 
     Given I dress JSON's '[12, 2.5]' with IntSet
     Then it should be a TypeError
     And its root cause should be:
-      | message               |
-      | Invalid Integer `2.5` |
+      | message                |
+      | Invalid Integer: `2.5` |

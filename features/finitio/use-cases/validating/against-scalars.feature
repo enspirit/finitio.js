@@ -18,5 +18,5 @@ Feature: Validating against Finitio scalars
     Given I dress JSON's '"foo"' with Byte
     Then it should be a TypeError
     And its root cause should be:
-      | message            |
-      | Invalid Byte `foo` |
+      | message             |
+      | Invalid Byte: `foo` |

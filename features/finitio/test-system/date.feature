@@ -13,12 +13,12 @@ Feature: TestSystem.Date
 
     Given I dress JSON's '"2014-15-13"'
     Then it should be a TypeError as:
-      | message                   |
-      | Invalid Date `2014-15-13` |
+      | message                    |
+      | Invalid Date: `2014-15-13` |
 
   Scenario: Against null
 
     Given I dress JSON's 'null'
     Then it should be a TypeError as:
-      | message             |
-      | Invalid Date `null` |
+      | message              |
+      | Invalid Date: `null` |

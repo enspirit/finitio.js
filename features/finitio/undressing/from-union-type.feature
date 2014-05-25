@@ -39,4 +39,4 @@ Feature: Undressing from an union type
       Target = Integer( i | i < 0 )
       """
     Given I undress JSON's '12' from Source to Target
-    Then it should be a TypeError
+    Then it should be a UndressError

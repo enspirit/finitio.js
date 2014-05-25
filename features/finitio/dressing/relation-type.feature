@@ -30,6 +30,6 @@ Feature: RelationType
       """
     Then it should be a TypeError
     And its root cause should be:
-      | message                                      |
-      | Duplicate Tuple `{"name":"Finitio","age":1}` |
+      | message                                       |
+      | Duplicate Tuple: `{"name":"Finitio","age":1}` |
     

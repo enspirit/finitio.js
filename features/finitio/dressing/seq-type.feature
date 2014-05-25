@@ -26,8 +26,8 @@ Feature: SeqType
 
     Given I dress JSON's '[12, 2.5]' with IntSeq
     Then it should be a TypeError as:
-      | message                   |
-      | Invalid IntSeq `[12,2.5]` |
+      | message        |
+      | Invalid IntSeq |
     And its root cause should be:
-      | message             |
-      | Invalid Integer 2.5 |
+      | message                |
+      | Invalid Integer: `2.5` |

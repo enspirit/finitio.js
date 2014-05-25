@@ -29,7 +29,7 @@ Feature: Undressing from a tuple type
       Target = { since: String, foo: Integer }
       """
     And I undress JSON's '{ "since": "2014-03-13" }' from Source to Target
-    Then it should be a TypeError
+    Then it should be a UndressError
 
   Scenario: Undressing when target type has a missing attribute
 
@@ -39,7 +39,7 @@ Feature: Undressing from a tuple type
       Target = { }
       """
     And I undress JSON's '{ "since": "2014-03-13" }' from Source to Target
-    Then it should be a TypeError
+    Then it should be a UndressError
 
   Scenario: Undressing when target type disagrees on required attribute
 
@@ -49,4 +49,4 @@ Feature: Undressing from a tuple type
       Target = { since :? Date }
       """
     And I undress JSON's '{ "since": "2014-03-13" }' from Source to Target
-    Then it should be a TypeError
+    Then it should be a UndressError

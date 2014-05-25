@@ -285,7 +285,12 @@ module.exports = ->
 
   @Then /^it should be a TypeError$/, (callback) ->
     unless result instanceof TypeError
-      callback.fail "TypeError expected, got `#{result}` (#{result.constructor})"
+      callback.fail "TypeError expected, got `#{result}` (#{result.constructor.name})"
+    callback()
+
+  @Then /^it should be a UndressError$/, (callback) ->
+    unless result instanceof Error
+      callback.fail "UndressError expected, got `#{result}` (#{result.constructor.name})"
     callback()
 
   @Then /^it should be a TypeError as:$/, (table, callback) ->
@@ -301,7 +306,7 @@ module.exports = ->
   @Then /^its root cause should be:$/, (table, callback) ->
     unless result instanceof Finitio.TypeError
       callback.fail result
-    rc = result.getRootCause()
+    rc = result.rootCause
     for k, v of table.hashes()[0]
       unless rc[k] == v
         callback.fail "TypeError##{k}: `#{v}` expected, got `#{rc[k]}`"

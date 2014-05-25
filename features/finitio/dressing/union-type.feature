@@ -21,8 +21,8 @@ Feature: UnionType
 
     Given I dress JSON's '"foo"' with AnyNumber
     Then it should be a TypeError as:
-      | message                 |
-      | Invalid AnyNumber `foo` |
+      | message                  |
+      | Invalid AnyNumber: `foo` |
     And its root cause should be:
-      | message            |
-      | Invalid Real `foo` |
+      | message             |
+      | Invalid Real: `foo` |

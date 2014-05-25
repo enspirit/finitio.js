@@ -19,12 +19,12 @@ Feature: TestSystem.Boolean
 
     Given I dress JSON's 'null'
     Then it should be a TypeError as:
-      | message                |
-      | Invalid Boolean `null` |
+      | message                 |
+      | Invalid Boolean: `null` |
 
   Scenario: Against an arbitrary value
 
     Given I dress JSON's '12'
     Then it should be a TypeError as:
-      | message               |
-      | Invalid Boolean `12`  |
+      | message                |
+      | Invalid Boolean: `12`  |

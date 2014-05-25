@@ -18,7 +18,7 @@ Feature: Undressing from a seq type
       Target = Integer
       """
     And I undress JSON's '["2014-03-13"]' from Source to Target
-    Then it should be a TypeError
+    Then it should be a UndressError
 
   Scenario: Undressing to an set type
 
@@ -28,5 +28,5 @@ Feature: Undressing from a seq type
       Target = {Date}
       """
     And I undress JSON's '["2014-03-13"]' from Source to Target
-    Then it should be a TypeError
+    Then it should be a UndressError
 

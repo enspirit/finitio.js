@@ -28,4 +28,4 @@ Feature: Undressing from a relation type
       Target = {{since: String, foo: Integer}}
       """
     And I undress JSON's '[{"since": "2014-03-13"}]' from Source to Target
-    Then it should be a TypeError
+    Then it should be a UndressError

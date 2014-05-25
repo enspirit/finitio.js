@@ -19,26 +19,26 @@ Feature: TestSystem.Real
 
     Given I dress JSON's '12'
     Then it should be a TypeError as:
-      | message           |
-      | Invalid Real `12` |
+      | message            |
+      | Invalid Real: `12` |
 
   Scenario: Against a real literal
 
     Given I dress JSON's '"12.5"'
     Then it should be a TypeError as:
-      | message             |
-      | Invalid Real `12.5` |
+      | message              |
+      | Invalid Real: `12.5` |
 
   Scenario: Against null
 
     Given I dress JSON's 'null'
     Then it should be a TypeError as:
-      | message             |
-      | Invalid Real `null` |
+      | message              |
+      | Invalid Real: `null` |
 
   Scenario: Against an arbitrary value
 
     Given I dress JSON's '"foo"'
     Then it should be a TypeError as:
-      | message            |
-      | Invalid Real `foo` |
+      | message             |
+      | Invalid Real: `foo` |

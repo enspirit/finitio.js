@@ -14,19 +14,19 @@ Feature: TestSystem.False
 
     Given I dress JSON's 'true'
     Then it should be a TypeError as:
-      | message              |
-      | Invalid False `true` |
+      | message               |
+      | Invalid False: `true` |
 
   Scenario: Against null
 
     Given I dress JSON's 'null'
     Then it should be a TypeError as:
-      | message              |
-      | Invalid False `null` |
+      | message               |
+      | Invalid False: `null` |
 
   Scenario: Against an arbitrary value
 
     Given I dress JSON's '12'
     Then it should be a TypeError as:
-      | message            |
-      | Invalid False `12` |
+      | message             |
+      | Invalid False: `12` |
