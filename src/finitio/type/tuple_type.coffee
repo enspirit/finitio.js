@@ -38,9 +38,15 @@ class TupleType extends Type
       attrValue = value[attrName] || null
 
       if !attrValue? and attr.required
-        Monad.failure attrName, ["Missing attribute `${attrName}`", [attrName]]
+        m = Monad.failure attrName, ["Missing attribute `${attrName}`", [attrName]]
+        m.onFailure (f)->
+          f.location = attrName
+          m
       else if !attr? and !@heading.allowExtra()
-        Monad.failure attrName, ["Unrecognized attribute `${attrName}`", [attrName]]
+        m = Monad.failure attrName, ["Unrecognized attribute `${attrName}`", [attrName]]
+        m.onFailure (f)->
+          f.location = attrName
+          m
       else if attr? and attrValue?
         subm = attr.type.mDress(attrValue, Monad)
         subm.onFailure (error)->

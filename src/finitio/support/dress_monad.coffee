@@ -17,7 +17,7 @@ class DressMonad
       if m.isSuccess()
         return m
       else
-        m.failure.location = i
+        m.failure.location = i unless m.failure.location?
         causes.push(m.failure)
     onFailure(causes)
 
@@ -27,7 +27,7 @@ class DressMonad
       for i in [0...collection.length]
         m = callback(base, collection[i], i)
         if m.isFailure()
-          m.failure.location = i
+          m.failure.location = i unless m.failure.location?
           causes.push(m.failure)
       return base if causes.length == 0
       onFailure(causes)
