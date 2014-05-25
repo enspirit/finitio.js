@@ -306,7 +306,7 @@ attribute_name =
   $([a-z] [a-zA-Z0-9_]*)
 
 type_name =
-  $((type_qualifier '.')? [A-Z] [a-zA-Z]*)
+  $((type_qualifier '.')? [A-Z] [a-zA-Z:]*)
 
 type_qualifier =
   $([a-z][a-z0-9]*)
