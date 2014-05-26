@@ -5,6 +5,16 @@ class Finitio
 
   @VERSION: "0.0.1"
 
+  @World = {
+    'Finitio':  Finitio
+    'Number':   Number
+    'String':   String
+    'Boolean':  Boolean
+    'Date':     Date
+    'Function': Function
+    'RegExp':   RegExp
+  }
+
   @compiler = (options)->
     options         ?= { }
     options.world   ?= { Finitio: this }
@@ -17,6 +27,7 @@ class Finitio
 
   @parse = (source, options) ->
     @compiler(options).compile(source)
+
 
 ##
 Finitio.Utils        = require './finitio/support/utils'
