@@ -312,8 +312,16 @@ module.exports = (function(){
   });
   Meta.Uses = SeqType.info({ elmType: Meta.Use });
 
-  var imports = Attribute.info({ name: 'imports', type: Meta.Systems });
-  var uses = Attribute.info({ name: 'uses', type: Meta.Uses });
+  var imports = Attribute.info({
+    name: 'imports',
+    type: Meta.Systems,
+    required: false
+  });
+  var uses = Attribute.info({
+    name: 'uses',
+    type: Meta.Uses,
+    required: false
+  });
   systemAttrs.push(imports);
   systemAttrs.push(uses);
 
