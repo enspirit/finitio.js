@@ -278,7 +278,7 @@ module.exports = (function(){
     Attribute.info({ name: 'candidates', type: Meta.Types })
   ]);
 
-  Meta.TypeRef = type('TypeRef', TypeRef, [
+  Meta.TypeRef = type('Ref', TypeRef, [
     Attribute.info({ name: 'typeName', type: Js.String })
   ]);
 
