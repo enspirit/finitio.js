@@ -17,8 +17,10 @@ describe "Compiler#typeRef", ->
       Contract.info({
         name: 'timestamp',
         infoType: AnyType.info({}),
-        dresser: id,
-        undresser: id
+        explicit: {
+          dresser: id,
+          undresser: id
+        }
       })
     ]
   })

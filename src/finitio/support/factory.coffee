@@ -50,16 +50,6 @@ class TypeFactory
     'type'
   ]
 
-  @factory: (name, fn)->
-    fallback = this.prototype[name]
-    this.prototype[name] = ()->
-      if fn.length == arguments.length
-        fn.apply(this, arguments)
-      else if typeof(fallback) == 'function'
-        fallback.apply(this, arguments)
-      else
-        throw new Error("No such signature #{name}/#{arguments.length}")
-
   constructor: (world)->
     @world = {
       'Number':   Number,
@@ -169,49 +159,9 @@ class TypeFactory
     else
       fail("Heading expected, got", heading)
 
-  # Handles the full-featured Contract signature
-  @factory 'contract', (name, infoType, dresser, undresser, metadata)->
-    new Contract(name, infoType, dresser, undresser, metadata)
-
-  # Handles the no-metadata signature
-  @factory 'contract', (name, infoType, dresser, undresser)->
-    new Contract(name, infoType, dresser, undresser)
-
-  # Handles the following cases:
-  #
-  #   Contract(name:String, infoType:Finitio.Type, external:JsType)
-  #   Contract(name:String, infoType:Finitio.Type, internal:JsType)
-  #   Contract(name:String, infoType:Finitio.Type, metadata:Metadata)
-  #
-  @factory 'contract', (name, infoType, handler)->
-    if (handler.dress && handler.undress)
-      new Contract(name, infoType, handler.dress, handler.undress)
-    else if (typeof(handler) == 'function')
-      dresser   = handler[name]
-      undresser = (value)->
-        value['to' + $u.capitalize(name)]();
-      new Contract(name, infoType, dresser, undresser)
-    else
-      new Contract(name, infoType, TypeFactory.IDENTITY, TypeFactory.IDENTITY, handler)
-
-  # Handles only a name and an info type (no converters, no metadata)
-  @factory 'contract', (name, infoType)->
-    new Contract(name, infoType, TypeFactory.IDENTITY, TypeFactory.IDENTITY)
-
-  # Handles the following cases:
-  #
-  #    Contract(Contract)
-  #    Contract({ name: .., infoType: ..., ... })
-  #
-  @factory 'contract', (a)->
-    if a instanceof Contract
-      return a
-    else if (a.name && a.infoType)
-      a.dresser   ?= TypeFactory.IDENTITY
-      a.undresser ?= TypeFactory.IDENTITY
-      new Contract(a.name, a.infoType, a.dresser, a.undresser, a.metadata)
-    else
-      fail("Unrecognized contract: #{a}")
+  contract: (arg)->
+    return arg if arg instanceof Contract
+    Contract.info(arg)
 
   contracts: (cs)->
     if $u.isArray(cs)

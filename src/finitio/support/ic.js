@@ -32,7 +32,8 @@ module.exports = (function(){
         }
         return invokeConstructor(sub, args);
       } else {
-        $u.argumentError("Unrecognized " + base.name + " info: ", from);
+        dump = JSON.stringify(from)
+        $u.argumentError("Unrecognized " + base.name + " info: ", dump);
       }
     };
 

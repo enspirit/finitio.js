@@ -35,6 +35,16 @@ module.exports = (function(){
   Js.Boolean  = BuiltinType.info({ jsType: Boolean  });
   Js.Type     = BuiltinType.info({ jsType: Function });
 
+  Js.Empty    = SubType.info({
+    superType: AnyType.info({}),
+    constraints: [
+      Constraint.info({
+        name: "default",
+        native: function(v){ return $u.isEqual(v, {}); }
+      })
+    ]
+  });
+
   // --------------------------------------------------------------- Functions
 
   Js.FunctionDefn = SeqType.info({
@@ -47,8 +57,7 @@ module.exports = (function(){
       Contract.info({
         name:      'defn',
         infoType:  Js.FunctionDefn,
-        dresser:   Contracts.Function.defn.dress,
-        undresser: Contracts.Function.defn.undress
+        external:  Contracts.Function.defn
       })
     ]
   });
@@ -61,8 +70,10 @@ module.exports = (function(){
       Contract.info({
         name:      'src',
         infoType:  Js.String,
-        dresser:   function(src){ return new RegExp(src) },
-        undresser: function(rx) { return rx.source;  }
+        explicit: {
+          dress:   function(src){ return new RegExp(src) },
+          undress: function(rx) { return rx.source;  }
+        }
       })
     ]
   })
@@ -81,8 +92,7 @@ module.exports = (function(){
         Contract.info({
           name:      contractName,
           infoType:  infoType,
-          dresser:   jsType[contractName],
-          undresser: undresser(jsType.prototype['to' + $u.capitalize(contractName)])
+          internal:  jsType
         })
       ]
     });
@@ -160,13 +170,46 @@ module.exports = (function(){
 
   // ---------------------------------------------------------------- Contract
 
-  Meta.Contract = object('Contract', Contract, [
-    Attribute.info({ name: 'name',      type: Js.String   }),
-    Attribute.info({ name: 'infoType',  type: Meta.Type   }),
-    Attribute.info({ name: 'dresser',   type: Js.Function }),
-    Attribute.info({ name: 'undresser', type: Js.Function }),
-  ]);
+  Meta.Contract = UnionType.info({
+    candidates: [],
+    name: 'Contract'
+  });
   Meta.Contracts = SeqType.info({ elmType: Meta.Contract });
+
+  var contract = function(name, jsType, attributes){
+    var c = object(name, Contract, attributes.concat([
+      Attribute.info({ name: 'name',      type: Js.String   }),
+      Attribute.info({ name: 'infoType',  type: Meta.Type   }),
+    ]));
+    Meta.Contract.candidates.push(c);
+    return c;
+  };
+
+  Meta.Contract.Explicit = contract('Explicit', Contract.Explicit, [
+    Attribute.info({
+      name: 'explicit',
+      type: TupleType.info({
+        heading: Heading.info({
+          attributes: [
+            Attribute.info({ name: "dress",   type: Js.Function }),
+            Attribute.info({ name: "undress", type: Js.Function })
+          ]
+        })
+      })
+    })
+  ]);
+
+  Meta.Contract.Internal = contract('Internal', Contract.Internal, [
+    Attribute.info({ name: 'internal', type: Js.Type })
+  ]);
+
+  Meta.Contract.External = contract('External', Contract.External, [
+    Attribute.info({ name: 'external', type: Js.Type })
+  ]);
+
+  Meta.Contract.Identity = contract('Identity', Contract.Identity, [
+    Attribute.info({ name: 'identity', type: Js.Empty })
+  ]);
 
   // -------------------------------------------------------------- Constraint
 

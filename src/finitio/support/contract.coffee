@@ -1,32 +1,57 @@
-{ObjectType} = require './ic'
-$u           = require './utils'
-Type         = require '../type'
+{AbstractType} = require './ic'
+$u             = require './utils'
+Type           = require '../type'
 
 class Contract
-  ObjectType this, ['name', 'infoType', 'dresser', 'undresser', 'metadata']
 
-  constructor: (@name, @infoType, @dresser, @undresser, @metadata)->
+  constructor: (@name, @infoType, @native, @metadata)->
     unless $u.isString(@name)
       $u.argumentError("String expected, got:", @name)
 
     unless @infoType instanceof Type
       $u.argumentError("Finitio.Type expected, got:", @infoType)
 
-    unless $u.isFunction(@dresser)
-      console.log(@dresser)
-      $u.argumentError("Function expected, got:", @dresser)
-
-    unless $u.isFunction(@undresser)
-      console.log(@undresser)
-      $u.argumentError("Function expected, got:", @undresser)
-
   fetchType: ()->
     @infoType
 
+class Contract.Explicit extends Contract
+  kind: 'explicit'
+
   dress: (value, helper)->
-    @dresser(value)
+    @native.dress(value)
 
   undress: (value, to)->
-    @undresser(value)
+    @native.undress(value)
+
+class Contract.External extends Contract
+  kind: 'external'
+
+  dress: (value, helper)->
+    @native.dress(value)
+
+  undress: (value, to)->
+    @native.undress(value)
+
+class Contract.Internal extends Contract
+  kind: 'internal'
+
+  dress: (value, helper)->
+    @native[@name](value)
+
+  undress: (value, to)->
+    value['to' + $u.capitalize(@name)]()
+
+class Contract.Identity extends Contract
+  kind: 'identity'
+
+  dress: (value, helper)->
+    value
+
+  undress: (value, to)->
+    value
+
+AbstractType Contract,
+  [ Contract.Explicit, Contract.External, Contract.Internal, Contract.Identity ],
+  [ 'name', 'infoType', 'native', 'metadata' ], 2
 
 module.exports = Contract

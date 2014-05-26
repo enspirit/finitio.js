@@ -2,6 +2,13 @@
   $u = require('./support/utils');
   compiler = options.compiler;
 
+  function metadatize(arg, metadata) {
+    if (metadata){
+      arg.metadata = metadata;
+    }
+    return arg;
+  }
+
   // converts head:X tail(... X)* to an array of Xs
   function headTailToArray(head, tail) {
     var result = (head ? [ head ] : []);
@@ -30,22 +37,6 @@
       cs[i] = compiler.constraint(def.name, def.expression, def.metadata);
     }
     return cs;
-  }
-
-  // compile a [ [ ... ], ... ] to contracts
-  function compileContracts(cs, jsType) {
-    var contracts = [];
-    for (var i = 0; i<cs.length; i++) {
-      c = cs[i];
-      if (!c.dresser && jsType){
-        c.dresser   = jsType[c.name];
-        c.undresser = function(value){
-          return value['to' + $u.capitalize(c.name)]();
-        };
-      }
-      contracts.push(compiler.contract(c));
-    }
-    return contracts;
   }
 }
 
@@ -178,9 +169,17 @@ term_type =
 
 ad_type =
   p:ad_type_preamble? spacing cs:contracts {
-    var metadata = p && p.metadata;
-    var jsType   = p && p.jsType;
-    var contracts = compileContracts(cs, jsType);
+    var metadata  = p && p.metadata;
+    var jsType    = p && p.jsType;
+    var contracts = [], contract;
+    for (var i=0; i<cs.length; i++){
+      contract = cs[i];
+      if (contract.identity && jsType){
+        contract.identity = undefined;
+        contract.internal = jsType;
+      }
+      contracts[i] = compiler.contract(contract);
+    }
     return compiler.adt(jsType, contracts, metadata);
   }
 
@@ -196,21 +195,22 @@ contracts =
 
 contract =
   b:contract_base spacing '\\' up:lambda_expr spacing '\\' down:lambda_expr {
-    b.dresser = up;
-    b.undresser = down;
+    b.explicit = { dress: up, undress: down };
     return b;
   }
 / b:contract_base spacing '.' t:builtin_type_name {
     var jsType  = compiler.jsType(t);
-    b.dresser   = jsType.dress;
-    b.undresser = jsType.undress;
+    b.external = jsType;
     return b;
   }
-/ contract_base
+/ b:contract_base {
+    b.identity = {};
+    return b;
+  }
 
 contract_base =
   m:metadata? '<' n:contract_name '>' spacing t:type {
-    return { metadata: m, name: n, infoType: t };
+    return metadatize({name: n, infoType: t}, m);
   }
 
 lambda_expr =

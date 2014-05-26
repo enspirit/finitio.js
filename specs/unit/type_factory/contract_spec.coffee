@@ -12,7 +12,6 @@ describe 'TypeFactory#contract', ->
 
   class Internal
     @iso: (v)->
-    
     toIso: ()->
 
   class External
@@ -20,27 +19,15 @@ describe 'TypeFactory#contract', ->
     @undress: (v)->
 
   it 'with a Contract', ->
-    c = new Contract('iso', intType, dresser, undresser)
+    c = new Contract('iso', intType, {dress: dresser, undress: undresser})
     should(factory.contract(c)).equal(c)
 
-  it 'with five arguments', ->
-    c = factory.contract('iso', intType, dresser, undresser, {description: "Foo"})
+  it 'with one argument', ->
+    c = factory.contract({
+      name: 'iso',
+      infoType: intType,
+      external: { dress: dresser, undress: undresser },
+      metadata: { description: 'Foo' }
+    })
     should(c).be.an.instanceof(Contract)
     should(c.metadata).eql({ description: "Foo" })
-
-  it 'with four arguments', ->
-    c = factory.contract('iso', intType, dresser, undresser)
-    should(c).be.an.instanceof(Contract)
-
-  it 'with three arguments and an internal contract', ->
-    c = factory.contract('iso', intType, Internal)
-    should(c).be.an.instanceof(Contract)
-
-  it 'with three arguments and an external contract', ->
-    c = factory.contract('iso', intType, External)
-    should(c).be.an.instanceof(Contract)
-
-  it 'with two arguments', ->
-    c = factory.contract('iso', intType)
-    should(c).be.an.instanceof(Contract)
-

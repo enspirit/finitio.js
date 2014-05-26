@@ -8,10 +8,9 @@ describe "AdType's information contract", ->
   fromIso = ()->
   toIso = ()->
   contract = Contract.info({
-    name: 'iso',
-    infoType: intType,
-    dresser: fromIso,
-    undresser: toIso,
+    name: 'iso'
+    infoType: intType
+    explicit: { dress: fromIso, undress: toIso }
     metadata: {foo: 'bar'}
   })
   info = {

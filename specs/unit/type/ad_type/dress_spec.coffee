@@ -10,8 +10,8 @@ describe "AdType#dress", ->
   f = (arg)->
 
   contracts = [
-    new Contract('timestamp', intType,    ((i) -> i*2),   f)
-    new Contract('utc',       stringType, ((s) -> "foo"), f)
+    new Contract.Explicit('timestamp', intType,    {dress: ((i) -> i*2),   undress: f})
+    new Contract.Explicit('utc',       stringType, {dress: ((s) -> "foo"), undress: f})
   ]
 
   describe 'when not bound to a javascript type', ->
@@ -43,7 +43,7 @@ describe "AdType#dress", ->
 
     describe 'when the upper raises an error', ->
       type = new AdType(Date, [
-        new Contract('foo', intType, ((t) -> throw new Error), f)
+        new Contract.Explicit('foo', intType, {dress: ((t) -> throw new Error)})
       ])
 
       it 'should hide the error', ->
