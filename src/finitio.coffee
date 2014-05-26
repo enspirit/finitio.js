@@ -19,9 +19,8 @@ class Finitio
     @compiler(options).compile(source)
 
 ##
-Finitio.Utils = require './finitio/support/utils'
-Finitio.Utils.extend Finitio, require './finitio/errors'
-Finitio.Utils.extend Finitio, require './finitio/support/contracts'
+Finitio.Utils        = require './finitio/support/utils'
+Finitio.Contracts    = require './finitio/contracts'
 ##
 Finitio.Attribute    = require './finitio/support/attribute'
 Finitio.Contract     = require './finitio/support/contract'

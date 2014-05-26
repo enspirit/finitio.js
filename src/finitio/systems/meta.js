@@ -4,7 +4,7 @@ module.exports = (function(){
   var Heading      = require('../support/heading');
   var Contract     = require('../support/contract');
   var Constraint   = require('../support/constraint');
-  var Contracts    = require('../support/contracts').Contracts;
+  var Contracts    = require('../contracts');
   var Type         = require('../type');
   var AdType       = require('../type/ad_type');
   var BuiltinType  = require('../type/builtin_type');
@@ -32,10 +32,21 @@ module.exports = (function(){
   // -------------------------------------------------------------- Javascript
 
   Js.String   = BuiltinType.info({ jsType: String   });
-  Js.Boolean  = BuiltinType.info({ jsType: Boolean  });
-  Js.Type     = BuiltinType.info({ jsType: Function });
 
-  Js.Empty    = SubType.info({
+  Js.Boolean  = BuiltinType.info({ jsType: Boolean  });
+
+  Js.Type = AdType.info({
+    jsType: Function,
+    contracts: [
+      Contract.info({
+        name: 'name',
+        infoType: Js.String,
+        external: Contracts.JsType.name
+      })
+    ]
+  });
+
+  Js.Empty = SubType.info({
     superType: AnyType.info({}),
     constraints: [
       Constraint.info({
@@ -46,18 +57,14 @@ module.exports = (function(){
   });
 
   // --------------------------------------------------------------- Functions
-
-  Js.FunctionDefn = SeqType.info({
-    elmType: Js.String
-  });
-
+  Js.FunctionDefn = SeqType.info({elmType: Js.String});
   Js.Function = AdType.info({
     jsType: Function,
     contracts: [
       Contract.info({
         name:      'defn',
         infoType:  Js.FunctionDefn,
-        external:  Contracts.Function.defn
+        external:  Contracts.Expression.defn
       })
     ]
   });
@@ -290,7 +297,7 @@ module.exports = (function(){
   Meta.TypeDefs = SeqType.info({ elmType: Meta.TypeDef });
 
   var systemAttrs = [
-    Attribute.info({ name: 'types',   type: Meta.TypeDefs }),
+    Attribute.info({ name: 'types', type: Meta.TypeDefs }),
   ];
   Meta.System  = object('System', System, systemAttrs);
   Meta.Systems = SeqType.info({ elmType: Meta.System });
