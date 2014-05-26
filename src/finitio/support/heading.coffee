@@ -94,5 +94,8 @@ class Heading
       h[a.name] = a
     h
 
+  resolveProxies: (system)->
+    $u.each @attributes, (a)-> a.resolveProxies(system)
+
 #
 module.exports = Heading

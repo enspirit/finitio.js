@@ -64,5 +64,8 @@ class RelationType extends Type
     (other instanceof RelationType and @heading.equals(other.heading)) or
     super
 
+  resolveProxies: (system)->
+    @heading.resolveProxies(system)
+
 #
 module.exports = RelationType

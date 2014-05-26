@@ -26,4 +26,6 @@ class BuiltinType extends Type
   toString: ->
     @jsType.name.toString()
 
+  resolveProxies: (system)->
+
 module.exports = BuiltinType

@@ -14,6 +14,9 @@ class Contract
   fetchType: ()->
     @infoType
 
+  resolveProxies: (system)->
+    @infoType.resolveProxies(system)
+
 class Contract.Explicit extends Contract
   kind: 'explicit'
 

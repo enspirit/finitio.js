@@ -71,4 +71,7 @@ class StructType extends Type
     $u.size(@componentTypes) == $u.size(other.componentTypes) and
     $u.every(@componentTypes, (t, i) -> other.componentTypes[i].equals(t))
 
+  resolveProxies: (system)->
+    $u.each @componentTypes, (c)-> c.resolveProxies(system)
+
 module.exports = StructType

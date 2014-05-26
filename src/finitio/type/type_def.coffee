@@ -41,5 +41,8 @@ class TypeDef extends Type
   trueOne: ()->
     @type
 
+  resolveProxies: (system)->
+    @type.resolveProxies(system)
+
 #
 module.exports = TypeDef

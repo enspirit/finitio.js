@@ -60,4 +60,7 @@ class UnionType extends Type
       $u.any other.candidates, (c2)-> c.equals(c2)
     ok and (!andback or other.candidatesEquals(this, false))
 
+  resolveProxies: (system)->
+    $u.each @candidates, (c)-> c.resolveProxies(system)
+
 module.exports = UnionType

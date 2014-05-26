@@ -9,7 +9,8 @@ Compiler     = require './compiler'
 # A System is a collection of named Finitio types.
 #
 class System
-  ObjectType this, ['imports', 'uses', 'types']
+  ObjectType this, ['imports', 'uses', 'types'], (s)->
+    $u.each s.types, (t)-> t.resolveProxies(s)
 
   @REF_RGX = /^(?:([a-z][a-z0-9]*)\.)?(.*?)$/
 
@@ -17,8 +18,6 @@ class System
     @imports ?= []
     @uses    ?= []
     @types   ?= []
-
-    # install all types directly
     $u.each @types, (t)=> this[t.name] = t
 
   Fetchable this, "types", "type", (name)->
@@ -27,6 +26,8 @@ class System
   addType: (type) ->
     unless type instanceof Type
       $u.argumentError("Finitio.Type expected, got:", type)
+
+    type.resolveProxies(this)
 
     @types.push(type)
     if type.name

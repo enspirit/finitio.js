@@ -57,5 +57,8 @@ class Attribute
      (@required == other.required) and
      @type.equals(other.type))
 
+  resolveProxies: (system)->
+    @type.resolveProxies(system)
+
 #
 module.exports = Attribute

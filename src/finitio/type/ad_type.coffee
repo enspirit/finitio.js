@@ -63,5 +63,8 @@ class AdType extends Type
     else
       super
 
+  resolveProxies: (system)->
+    $u.each @contracts, (c)-> c.resolveProxies(system)
+
 #
 module.exports = AdType

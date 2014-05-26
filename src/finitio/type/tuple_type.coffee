@@ -139,5 +139,9 @@ class TupleType extends Type
   areAttributesValid: (value) ->
     (@heading.allowExtra() || $u.isEmpty(@extraAttributes(value))) &&
       $u.isEmpty(@missingAttributes(value))
+
+  resolveProxies: (system)->
+    @heading.resolveProxies(system)
+
 #
 module.exports = TupleType

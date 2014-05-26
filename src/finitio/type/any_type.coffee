@@ -20,4 +20,6 @@ class AnyType extends Type
   _equals: (other) ->
     (other instanceof AnyType) or super
 
+  resolveProxies: (system)->
+
 module.exports = AnyType

@@ -49,7 +49,7 @@ module.exports = (function(){
 
   };
 
-  ic.ObjectType = function(base, properties){
+  ic.ObjectType = function(base, properties, onDressed){
 
     base.info = function(from){
       var args = [];
@@ -59,7 +59,9 @@ module.exports = (function(){
           args[i] = propval;
         }
       };
-      return invokeConstructor(base, args);
+      var inst = invokeConstructor(base, args);
+      if (onDressed){ onDressed(inst); }
+      return inst;
     };
 
     base.prototype.toInfo = function(){

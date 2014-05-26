@@ -43,6 +43,9 @@ class TypeRef extends Type
   resolve: (system)->
     @target ?= system.resolve(@typeName).fetchType().trueOne()
 
+  resolveProxies: (system)->
+    @resolve(system)
+
   resolved: ()->
     unless @target
       throw new Error("Proxy is not resolved")

@@ -26,5 +26,8 @@ class SeqType extends CollectionType
       $u.undressError("Unable to undress `#{value}` to `#{as}`")
     super
 
+  resolveProxies: (system)->
+    @elmType.resolveProxies(system)
+
 #
 module.exports = SeqType

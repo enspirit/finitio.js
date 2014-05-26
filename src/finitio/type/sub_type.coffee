@@ -69,4 +69,7 @@ class SubType extends Type
     $u.every $u.zip(@constraints, other.constraints), (pair)->
       pair[0].equals(pair[1])
 
+  resolveProxies: (system)->
+    @superType.resolveProxies(system)
+
 module.exports = SubType
