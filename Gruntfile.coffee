@@ -41,6 +41,7 @@ module.exports = (grunt) ->
   grunt.registerTask 'test', [
     'peg:build',
     'test:unit',
+    'test:integration',
     'test:acceptance'
   ]
   grunt.registerTask 'test:unit', [
@@ -84,6 +85,9 @@ module.exports = (grunt) ->
         files: [ 'src/**/*.js',   'src/**/*.coffee',
                  'specs/integration/**/*', 'specs/integration/**/*' ]
         tasks: [ 'test:integration' ]
+      acceptance:
+        files: [ 'features/**/*']
+        tasks: [ 'test:acceptance' ]
 
     #################################################################### Build
 
