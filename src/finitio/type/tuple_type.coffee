@@ -35,7 +35,8 @@ class TupleType extends Type
 
     callback = (_, attrName)=>
       attr      = @heading.getAttr(attrName) || null
-      attrValue = value[attrName] || null
+      attrValue = value[attrName]
+      attrValue = null if attrValue is undefined
 
       if !attrValue? and attr.required
         m = Monad.failure attrName, ["Missing attribute `${attrName}`", [attrName]]

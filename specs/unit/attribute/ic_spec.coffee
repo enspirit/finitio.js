@@ -7,8 +7,8 @@ describe "Attribute's information contract", ->
   describe 'without metadata', ->
     info = {
       name: 'r',
-      type: intType,
-      required: false
+      type: intType
+      required: true
     }
     attr = Attribute.info(info)
 
@@ -16,7 +16,7 @@ describe "Attribute's information contract", ->
       should(attr).be.an.instanceof(Attribute)
       should(attr.name).equal('r')
       should(attr.type).equal(intType)
-      should(attr.required).equal(false)
+      should(attr.required).equal(true)
       should(attr.metadata).equal(undefined)
 
     it 'undresses as expected', ->
