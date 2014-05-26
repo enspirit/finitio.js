@@ -240,7 +240,7 @@ module.exports = (function(){
   ]);
 
   Meta.AdType = type('Adt', AdType, [
-    Attribute.info({ name: 'jsType',    type: Js.Type        }),
+    Attribute.info({ name: 'jsType',    type: Js.Type, required: false }),
     Attribute.info({ name: 'contracts', type: Meta.Contracts })
   ]);
 
