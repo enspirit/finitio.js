@@ -17,8 +17,8 @@ class Contract
 class Contract.Explicit extends Contract
   kind: 'explicit'
 
-  dress: (value, helper)->
-    @native.dress(value)
+  dress: (value, world)->
+    @native.dress(value, world)
 
   undress: (value, to)->
     @native.undress(value)
@@ -26,8 +26,8 @@ class Contract.Explicit extends Contract
 class Contract.External extends Contract
   kind: 'external'
 
-  dress: (value, helper)->
-    @native.dress(value)
+  dress: (value, world)->
+    @native.dress(value, world)
 
   undress: (value, to)->
     @native.undress(value)
@@ -35,8 +35,8 @@ class Contract.External extends Contract
 class Contract.Internal extends Contract
   kind: 'internal'
 
-  dress: (value, helper)->
-    @native[@name](value)
+  dress: (value, world)->
+    @native[@name](value, world)
 
   undress: (value, to)->
     value['to' + $u.capitalize(@name)]()
@@ -44,7 +44,7 @@ class Contract.Internal extends Contract
 class Contract.Identity extends Contract
   kind: 'identity'
 
-  dress: (value, helper)->
+  dress: (value, world)->
     value
 
   undress: (value, to)->
