@@ -34,3 +34,19 @@ describe "Constraint's information contract", ->
     it 'toInfo as expected', ->
       expected = { name: 'word', regexp: rx }
       should(constraint.toInfo()).eql(expected)
+
+  describe 'when not named', ->
+    fn = (i)-> i>0
+    constraint = Constraint.info(native: fn)
+
+    it 'builds a native constraint', ->
+      should(constraint).be.an.instanceof(Constraint.Native)
+      should(constraint.name).equal(undefined)
+
+    it 'works as expected', ->
+      should(constraint.accept(2)).equal(true)
+      should(constraint.accept(-2)).equal(false)
+
+    it 'toInfo as expected', ->
+      expected = { native: fn }
+      should(constraint.toInfo()).eql(expected)

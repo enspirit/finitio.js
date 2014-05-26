@@ -81,7 +81,6 @@ module.exports = (function(){
   // ------------------------------------------------------------------ Shared
 
   var metadataAttr = Attribute.info({ name: 'metadata', type: Js.Boolean, required: false });
-  var cstrNameAttr = Attribute.info({ name: 'name',     type: Js.String,  required: false });
 
   // ------------------------------------------------------------------- Tools
 
@@ -220,9 +219,11 @@ module.exports = (function(){
   Meta.Constraints = SeqType.info({ elmType: Meta.Constraint });
 
   var constraint = function(name, jsType, attributes){
-    var adType = object(name, Constraint, attributes.concat([cstrNameAttr]));
-    Meta.Constraint.candidates.push(adType);
-    return adType;
+    var c = object(name, Constraint, attributes.concat([
+      Attribute.info({ name: 'name', type: Js.String, required: false })
+    ]));
+    Meta.Constraint.candidates.push(c);
+    return c;
   };
 
   Meta.Constraint.Native = constraint('Native', Constraint.Native, [

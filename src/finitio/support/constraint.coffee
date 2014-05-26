@@ -7,12 +7,11 @@ $u             = require './utils'
 class Constraint
 
   constructor: (@name, @native, @metadata) ->
-    @name ?= 'default'
-    unless typeof @name == "string"
+    if @name? and typeof(@name) != "string"
       $u.argumentError("String expected for constraint name, got: ", @name)
 
   isAnonymous: ->
-    @name == 'default'
+    !@name?
 
   accept: (arg) ->
     throw new Error("Constraint is an abstract class")
