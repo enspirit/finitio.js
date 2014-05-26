@@ -23,12 +23,6 @@ module.exports = (function(){
   var Js   = {};
   var Meta = { Js: Js };
 
-  function undresser(prot){
-    return function(value){
-      return prot.apply(value, []);
-    };
-  }
-
   // -------------------------------------------------------------- Javascript
 
   Js.String   = BuiltinType.info({ jsType: String   });

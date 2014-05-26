@@ -10,10 +10,13 @@ module.exports = (function(){
         } else {
           resolved = (new Function("return " + name + ";"))();
         }
-        if (resolved instanceof Function){
+        if (resolved){
           return resolved;
         } else {
-          throw new Error("Unknown javascript type: `" + name + "`");
+          msg = "Unknown javascript type: `" + name + "` (";
+          msg += Object.keys(world).toString();
+          msg += ")";
+          throw new Error(msg);
         }
       },
 
