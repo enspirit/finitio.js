@@ -30,6 +30,7 @@ class Finitio
 
 
 ##
+Finitio.TypeError    = require('./finitio/errors').TypeError
 Finitio.Utils        = require './finitio/support/utils'
 Finitio.Contracts    = require './finitio/contracts'
 ##

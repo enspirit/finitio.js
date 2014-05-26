@@ -294,7 +294,7 @@ module.exports = ->
     callback()
 
   @Then /^it should be a TypeError as:$/, (table, callback) ->
-    unless result instanceof Finitio.TypeError
+    unless result instanceof TypeError
       callback.fail result
 
     for k, v of table.hashes()[0]
@@ -304,7 +304,7 @@ module.exports = ->
     callback()
 
   @Then /^its root cause should be:$/, (table, callback) ->
-    unless result instanceof Finitio.TypeError
+    unless result instanceof TypeError
       callback.fail result
     rc = result.rootCause
     for k, v of table.hashes()[0]
