@@ -1,3 +1,5 @@
+$u = require('./support/utils')
+
 class TypeError extends Error
 
   constructor: (info) ->
@@ -21,7 +23,23 @@ class TypeError extends Error
     get: ()->
       @rootCauses[@rootCauses.length - 1]
 
-$u = require('./support/utils')
+  debug: ()->
+    str = "[#{@location}] #{@message}\n"
+    if @rootCauses
+      for c in @rootCauses
+        str += "  [#{c.location}] #{c.message}\n"
+    str
+
+  debugTree: (depth)->
+    str = ''
+    depth ?= 0
+    for i in [0...depth]
+      str += "  "
+    str += " [#{@location}] #{@message}\n"
+    if @causes
+      for c in @causes
+        str += c.debugTree(depth+1)
+    str
 
 computeMessage = (info)->
   msg = info.error
