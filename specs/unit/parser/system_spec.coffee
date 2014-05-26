@@ -1,48 +1,37 @@
-Finitio     = require '../../../src/finitio'
-Parser      = require '../../../src/finitio/parser'
-System      = require '../../../src/finitio/system'
-BuiltinType = require '../../../src/finitio/type/builtin_type'
-TypeDef   = require '../../../src/finitio/type/type_def'
-TypeRef   = require '../../../src/finitio/type/type_ref'
-should      = require 'should'
+Parser = require '../../../src/finitio/parser'
+should = require 'should'
 
 describe "Parser#system", ->
 
-  compile = (source, options) ->
-    options.compiler = Finitio.compiler(options)
-    Parser.parse(source, options)
+  parse = (source) ->
+    Parser.parse(source, { startRule: "system" })
 
-  describe 'when a single type', ->
-    subject = compile(".String", startRule: "system")
+  it 'works with a single type', ()->
+    s = parse('.')
+    expected = {
+      types: [
+        { name: 'Main', type: { any: {} } }
+      ]
+    }
+    should(s).eql(expected)
 
-    it 'should return a System', ->
-      should(subject).be.an.instanceof(System)
+  it 'works with a type def', ()->
+    s = parse('Any = .')
+    expected = {
+      types: [
+        { name: 'Any', type: { any: {} } }
+      ]
+    }
+    should(s).eql(expected)
 
-    it 'should have a main type', ->
-      should(subject.Main).be.an.instanceof(TypeDef)
-
-  describe 'with some definitions and a main type', ->
-    subject = compile("Str = .String\nStr", startRule: "system")
-
-    it 'should return a System', ->
-      should(subject).be.an.instanceof(System)
-
-    it 'should have a type', ->
-      should(subject.fetch('Str')).be.an.instanceof(TypeDef)
-      should(subject.fetch('Str').name).equal('Str')
-
-    it 'should have a main type', ->
-      should(subject.Main).be.an.instanceof(TypeDef)
-
-  describe 'with some definitions but no main type', ->
-    subject = compile("Str = .String\nInt = .Number", startRule: "system")
-
-    it 'should return a System', ->
-      should(subject).be.an.instanceof(System)
-
-    it 'should have the types', ->
-      should(subject.fetch('Str')).be.an.instanceof(TypeDef)
-      should(subject.fetch('Int')).be.an.instanceof(TypeDef)
-
-    it 'should have no main type', ->
-      should(subject.Main).equal(undefined)
+  it 'works with an import and a ref', ()->
+    s = parse("@import finitio/data as f\nf.String")
+    expected = {
+      imports: [
+        { qualifier: 'f', from: 'finitio/data' }
+      ]
+      types: [
+        { name: 'Main', type: { ref: { typeName: 'f.String' } } }
+      ]
+    }
+    should(s).eql(expected)

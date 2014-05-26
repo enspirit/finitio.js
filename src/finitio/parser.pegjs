@@ -1,15 +1,5 @@
 {
-  $u = require('./support/utils');
-  compiler = options.compiler;
-
-  function metadatize(arg, metadata) {
-    if (metadata){
-      arg.metadata = metadata;
-    }
-    return arg;
-  }
-
-  // converts head:X tail(... X)* to an array of Xs
+  // Converts head:X tail(... X)* to an array of Xs
   function headTailToArray(head, tail) {
     var result = (head ? [ head ] : []);
     for (var i = 0; i < tail.length; i++) {
@@ -18,52 +8,52 @@
     return result;
   }
 
-  // compile an open expression given the varname for closing it
-  function compileLambda(varname, expr) {
-    var src = "x = function(" + varname + ")" + "{ return " + expr + "; }";
-    try {
-      return eval(src);
-    } catch(e) {
-      error("Syntax error in: `" + expr + "`");
+  // Sets metadata on arg if defined
+  function metadatize(arg, metadata) {
+    if (metadata){
+      arg.metadata = metadata;
     }
-  }
-
-  // compile a [ [n1, expr1], ... ] to an array of constraints
-  function compileConstraints(varname, defs) {
-    var cs = [], def;
-    for (var i = 0; i < defs.length; i++) {
-      def = defs[i];
-      def.expression = compileLambda(varname, def.expression);
-      cs[i] = compiler.constraint(def.name, def.expression, def.metadata);
-    }
-    return cs;
+    return arg;
   }
 }
 
 // SYSTEM
 
 system =
-  imports definitions spacing m:type? spacing eof {
-    if (m){
-      compiler.setMain(m);
+  spacing is:imports ds:definitions spacing m:type? spacing eof {
+    var system = {
+      types: ds
+    };
+    if (is && is.length>0) {
+      system.imports = is;
     }
-    return compiler.system;
+    if (m){
+      system.types.push({ name: 'Main', type: m });
+    }
+    return system;
   }
 
 imports =
-  (spacing import_def)*
+  head:import_def? tail:(spacing import_def)* {
+    return headTailToArray(head, tail);
+  }
 
 import_def =
-  '@import' spaces from:system_from as:(spaces 'as' spaces type_qualifier)? {
-    return compiler.import(from, as && as[3]);
+  '@import' spaces s:system_from spaces 'as' spaces q:type_qualifier {
+    return { qualifier: q, from: s }
+  }
+/ '@import' spaces s:system_from spacing {
+    return { from: s }
   }
 
 definitions =
-  (spacing type_def)*
+  head:type_def? tail:(spacing type_def)* {
+    return headTailToArray(head, tail);
+  }
 
 type_def =
   m:metadata? n:type_name spacing '=' spacing t:type {
-    return compiler.addType(compiler.typeDef(t, n, m));
+    return metadatize({ name: n, type: t }, m);
   }
 
 // TYPES (low priority)
@@ -72,120 +62,137 @@ type =
   union_type
 
 union_type =
-    m:metadata? head:sub_type tail:(pipe sub_type)+ {
-      return compiler.union(headTailToArray(head, tail), m);
-    }
-  / sub_type
+  m:metadata? head:sub_type tail:(pipe sub_type)+ {
+    var cs = headTailToArray(head, tail);
+    return { union: metadatize({ candidates: cs }) };
+  }
+/ sub_type
 
 sub_type =
-    m:metadata? t:rel_type c:constraint {
-      return compiler.sub_type(t, c, m)
-    }
-  / rel_type
+  m:metadata? t:rel_type cs:constraint {
+    return { sub: metadatize({ superType: t, constraints: cs }, m) };
+  }
+/ rel_type
 
 constraint =
-  '(' spacing n:var_name pipe c:constraints spacing ')' {
-    return compileConstraints(n, c)
+  '(' spacing n:var_name pipe cs:constraints spacing ')' {
+    for (var i=0; i<cs.length; i++){
+      cs[i].native = [n, cs[i].native];
+    }
+    return cs;
   }
 
 constraints =
-    head:named_constraint tail:(opt_comma named_constraint)* opt_comma {
-      return headTailToArray(head, tail);
-    }
-  / c:unnamed_constraint {
+  head:named_constraint tail:(opt_comma named_constraint)* opt_comma {
+    return headTailToArray(head, tail);
+  }
+/ c:unnamed_constraint {
     return [c];
   }
 
 named_constraint =
   m:metadata? n:constraint_name ':' spacing e:expression {
-    return { metadata: m, name: n, expression: e};
+    return metadatize({ name: n, native: e.trim() }, m);
   }
 
 unnamed_constraint =
   e:expression {
-    return { name: 'default', expression: e };
+    return { native: e.trim() };
   }
 
 // TYPES (relational)
 
 rel_type =
-    relation_type
-  / tuple_type
-  / collection_type
+  relation_type
+/ tuple_type
+/ collection_type
 
 tuple_type =
   m:metadata? '{' spacing h:heading spacing '}' {
-    return compiler.tuple(h, m)
+    return { tuple: metadatize({ heading: h }, m) };
   }
 
 relation_type =
   m:metadata? '{{' spacing h:heading spacing '}}' {
-    return compiler.relation(h, m)
+    return { relation: metadatize({ heading: h }, m) };
   }
 
 heading =
-    head:attribute? tail:(opt_comma attribute)* opt_comma d:dots? {
-      var opts  = { allowExtra: (d ? true : false) };
-      return compiler.heading(headTailToArray(head, tail), opts);
+  head:attribute? tail:(opt_comma attribute)* opt_comma d:dots? {
+    var attributes = headTailToArray(head, tail);
+    var info = { attributes: attributes };
+    if (d){
+      info.options = { allowExtra: true };
     }
-  / spacing
+    return info;
+  }
 
 attribute =
   m:metadata? n:attribute_name spacing ':' optional:'?'? spacing t:type {
-    var required = (optional !== '?');
-    return compiler.attribute(n, t, required, m);
+    var info = { name: n, type: t };
+    if (optional){
+      info.required = false;
+    }
+    return metadatize(info, m);
   }
 
 // TYPES (collections)
 
 collection_type =
-    set_type
-  / seq_type
-  / struct_type
-  / term_type
+  set_type
+/ seq_type
+/ struct_type
+/ term_type
 
 set_type =
   m:metadata? '{' spacing t:type spacing '}' {
-    return compiler.set(t, m);
-  }
-
-struct_type =
-  m:metadata? '<' head:type tail:(opt_comma type)* opt_comma '>' {
-    return compiler.struct(headTailToArray(head, tail), m);
+    return { set: metadatize({ elmType: t }, m) };
   }
 
 seq_type =
   m:metadata? '[' spacing t:type spacing ']' {
-    return compiler.seq(t, m);
+    return { seq: metadatize({ elmType: t }, m) };
+  }
+
+struct_type =
+  m:metadata? '<' head:type tail:(opt_comma type)* opt_comma '>' {
+    var ts = headTailToArray(head, tail);
+    return { struct: metadatize({ componentTypes: ts }, m) };
   }
 
 // TYPES (higher priority)
 
 term_type =
-    ad_type
-  / builtin_type
-  / any_type
-  / type_ref
+  ad_type
+/ builtin_type
+/ any_type
+/ type_ref
 
 ad_type =
-  p:ad_type_preamble? spacing cs:contracts {
-    var metadata  = p && p.metadata;
-    var jsType    = p && p.jsType;
+  p:ad_type_preamble spacing cs:contracts {
     var contracts = [], contract;
     for (var i=0; i<cs.length; i++){
       contract = cs[i];
-      if (contract.identity && jsType){
-        contract.identity = undefined;
-        contract.internal = jsType;
+      if (!contract.external && !contract.explicit){
+        if (p.jsType){
+          contract.internal = p.jsType;
+        } else {
+          contract.identity = {};
+        }
       }
-      contracts[i] = compiler.contract(contract);
+      contracts[i] = contract;
     }
-    return compiler.adt(jsType, contracts, metadata);
+    p.contracts = contracts;
+    return { adt: p };
   }
 
 ad_type_preamble =
-  m:metadata? t:('.' builtin_type_name) {
-    return { metadata: m, jsType: (t) ? compiler.jsType(t[1]) : null }
+  m:metadata? t:('.' builtin_type_name)? {
+    var r = {};
+    if (t){
+      r.jsType = t[1];
+    }
+    return metadatize(r, m);
   }
 
 contracts =
@@ -199,41 +206,37 @@ contract =
     return b;
   }
 / b:contract_base spacing '.' t:builtin_type_name {
-    var jsType  = compiler.jsType(t);
-    b.external = jsType;
+    b.external = t;
     return b;
   }
-/ b:contract_base {
-    b.identity = {};
-    return b;
-  }
+/ contract_base
 
 contract_base =
   m:metadata? '<' n:contract_name '>' spacing t:type {
-    return metadatize({name: n, infoType: t}, m);
-  }
-
-lambda_expr =
-  '(' spacing n:var_name spacing '|' spacing e:expression spacing ')' {
-    return compileLambda(n, e);
+    return metadatize({ name: n, infoType: t }, m);
   }
 
 any_type =
   m:metadata? '.' {
-    return compiler.any(m);
+    return { any: metadatize({}, m) };
   }
 
 builtin_type =
   m:metadata? '.' name:builtin_type_name {
-    return compiler.builtin(name, m);
+    return { builtin: metadatize({ jsType: name }, m) };
   }
 
 type_ref =
   p:type_path {
-    return compiler.typeRef(p);
+    return { ref: { typeName: p } };
   }
 
 // EXPRESSIONS
+
+lambda_expr =
+  '(' spacing n:var_name spacing '|' spacing e:expression spacing ')' {
+    return [ n.trim(), e.trim() ];
+  }
 
 expression =
   $((paren_expression / any_expression)+)
@@ -247,15 +250,15 @@ any_expression =
 // METADATA
 
 metadata =
-    '/-' spacing head:metaattr tail:(opt_comma metaattr)* spacing '-/' spacing {
-      var attrs = headTailToArray(head, tail);
-      var metadata = {};
-      for (var i=0; i<attrs.length; i++){
-        metadata[attrs[i][0]] = attrs[i][1];
-      }
-      return metadata;
+  '/-' spacing head:metaattr tail:(opt_comma metaattr)* spacing '-/' spacing {
+    var attrs = headTailToArray(head, tail);
+    var metadata = {};
+    for (var i=0; i<attrs.length; i++){
+      metadata[attrs[i][0]] = attrs[i][1];
     }
-  / '/-' t:$(!'-/' .)+ '-/' spacing {
+    return metadata;
+  }
+/ '/-' t:$(!'-/' .)+ '-/' spacing {
     return{ description: t.toString().trim() };
   }
 
@@ -267,10 +270,10 @@ metaattr =
 // LITERALS
 
 literal =
-    string_literal
-  / real_literal
-  / integer_literal
-  / boolean_literal
+  string_literal
+/ real_literal
+/ integer_literal
+/ boolean_literal
 
 string_literal =
   s:$(["] ([\\]["] / !["] .)* ["]) {
@@ -288,8 +291,8 @@ real_literal =
   }
 
 boolean_literal =
-    "true"  { return true;  }
-  / "false" { return false; }
+  "true"  { return true;  }
+/ "false" { return false; }
 
 // LEXER (names)
 

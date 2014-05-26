@@ -14,7 +14,7 @@ describe 'System#dress', ->
         system.dress("foo")
       catch e
         error = e
-      error.should.be.an.instanceof(TypeError)
+      should(error).be.an.instanceof(TypeError)
 
   describe "when no main", ->
     system = Finitio.parse("Num = .Number")
@@ -24,5 +24,5 @@ describe 'System#dress', ->
         system.dress("foo")
       catch e
         error = e
-      error.should.be.an.instanceof(Error)
-      error.message.should.equal("No main on System")
+      should(error).be.an.instanceof(Error)
+      should(error.message).equal("No main on System")

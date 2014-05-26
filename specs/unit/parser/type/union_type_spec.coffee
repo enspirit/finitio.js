@@ -1,16 +1,17 @@
-Finitio     = require '../../../../src/finitio'
-Parser      = require '../../../../src/finitio/parser'
-UnionType   = require '../../../../src/finitio/type/union_type'
-BuiltinType = require '../../../../src/finitio/type/builtin_type'
-should      = require 'should'
+Parser = require '../../../../src/finitio/parser'
+should = require 'should'
 
 describe "Parser#union_type", ->
 
-  compile = (source, options) ->
-    options.compiler = Finitio.compiler(options)
-    Parser.parse(source, options)
+  parse = (source) ->
+    Parser.parse(source, { startRule: "type" })
 
-  subject = compile(".String|.Number|.Boolean", startRule: "type")
-
-  it 'should return a SetType', ->
-    subject.should.be.an.instanceof(UnionType)
+  it 'works', ()->
+    s = parse('.String|.Integer')
+    expected = { union: {
+      candidates: [
+        { builtin: { jsType: 'String'  } }
+        { builtin: { jsType: 'Integer' } }
+      ]
+    } }
+    should(s).eql(expected)

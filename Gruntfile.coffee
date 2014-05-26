@@ -124,7 +124,10 @@ module.exports = (grunt) ->
             'contract',
             'constraint',
             'literal',
-            'metadata'
+            'metadata',
+            'lambda_expr',
+            'type_def',
+            'import_def'
           ]
 
     ############################################################## Compilation

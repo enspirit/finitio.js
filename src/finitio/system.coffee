@@ -3,7 +3,6 @@ $u           = require './support/utils'
 Fetchable    = require './support/fetchable'
 Type         = require './type'
 TypeFactory  = require './support/factory'
-Compiler     = require './compiler'
 
 #
 # A System is a collection of named Finitio types.
@@ -48,11 +47,6 @@ class System
       @_resolveQualified(match, callback)
     else
       @_resolveImported([this].concat(@imports), ref, callback)
-
-  parse: (source, options) ->
-    options ?= {}
-    options.system = @clone()
-    (new Compiler(options)).compile(source)
 
   dress: (value) ->
     unless this.Main

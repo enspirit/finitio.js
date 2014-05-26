@@ -1,15 +1,15 @@
 Parser = require '../../../../src/finitio/parser'
 should = require 'should'
 
-describe "Parser#relation_type", ->
+describe "Parser#tuple_type", ->
 
   parse = (source) ->
     Parser.parse(source, { startRule: "type" })
 
   it 'works', ()->
-    s = parse('{{ name: . }}')
+    s = parse('{ name: . }')
     expected = {
-      relation: {
+      tuple: {
         heading: {
           attributes: [
             {
@@ -23,9 +23,9 @@ describe "Parser#relation_type", ->
     should(s).eql(expected)
 
   it 'works with metadata', ()->
-    s = parse('/- Foo -/ {{ name: . }}')
+    s = parse('/- Foo -/ { name: . }')
     expected = {
-      relation: {
+      tuple: {
         heading: {
           attributes: [
             {

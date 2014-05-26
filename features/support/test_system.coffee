@@ -22,6 +22,10 @@ source = """
   Date = .Date <iso8601> .String .Finitio.Contracts.Date.iso8601
   Time = .Date <iso8601> .String .Finitio.Contracts.Time.iso8601
   """
-TestSystem = Finitio.parse(source, world: { Finitio: Finitio })
+try
+  TestSystem = Finitio.parse(source)
+catch e
+  console.log(e.debugTree())
+  throw e
 
 module.exports = TestSystem

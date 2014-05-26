@@ -1,18 +1,20 @@
-Finitio     = require '../../../../src/finitio'
-Parser      = require '../../../../src/finitio/parser'
-SetType     = require '../../../../src/finitio/type/set_type'
-BuiltinType = require '../../../../src/finitio/type/builtin_type'
-should      = require 'should'
+Parser = require '../../../../src/finitio/parser'
+should = require 'should'
 
 describe "Parser#set_type", ->
 
-  compile = (source, options) ->
-    options.compiler = Finitio.compiler(options)
-    Parser.parse(source, options)
+  parse = (source) ->
+    Parser.parse(source, { startRule: "type" })
 
-  subject = compile("{.String}", startRule: "type")
+  it 'works', ()->
+    s = parse('{.}')
+    expected = { set: { elmType: { any: {} } } }
+    should(s).eql(expected)
 
-  it 'should return a SetType', ->
-    subject.should.be.an.instanceof(SetType)
-    subject.elmType.should.be.an.instanceof(BuiltinType)
-    subject.elmType.jsType.should.equal(String)
+  it 'works with metadata', ()->
+    s = parse('/- Foo -/ {.}')
+    expected = { set: {
+      elmType: { any: {} },
+      metadata: { description: 'Foo'}
+    } }
+    should(s).eql(expected)

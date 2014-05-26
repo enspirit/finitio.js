@@ -17,9 +17,7 @@ class Finitio
 
   @compiler = (options)->
     options         ?= { }
-    options.world   ?= { Finitio: this }
-    options.factory ?= new this.TypeFactory(options.world)
-    options.system  ?= new this.System()
+    options.world   ?= Finitio.World
     new this.Compiler(options)
 
   @compile = (source, options) ->
@@ -27,7 +25,6 @@ class Finitio
 
   @parse = (source, options) ->
     @compiler(options).compile(source)
-
 
 ##
 Finitio.TypeError    = require('./finitio/errors').TypeError

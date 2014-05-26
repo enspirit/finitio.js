@@ -1,15 +1,17 @@
-Finitio = require '../../../../src/finitio'
-Parser  = require '../../../../src/finitio/parser'
-AnyType = require '../../../../src/finitio/type/any_type'
-should  = require 'should'
+Parser = require '../../../../src/finitio/parser'
+should = require 'should'
 
 describe "Parser#any_type", ->
 
-  compile = (source, options) ->
-    options.compiler = Finitio.compiler(options)
-    Parser.parse(source, options)
+  parse = (source) ->
+    Parser.parse(source, { startRule: "type" })
 
-  subject = compile(".", startRule: "type")
+  it 'works', ()->
+    s = parse('.')
+    should(s).eql({ any: {} })
 
-  it 'should return an AnyType', ->
-    subject.should.be.an.instanceof(AnyType)
+  it 'works with metadata', ()->
+    s = parse('/- Foo -/ .')
+    should(s).eql({ any: {
+      metadata: { description: 'Foo' }
+    }})

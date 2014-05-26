@@ -1,75 +1,57 @@
-Finitio     = require '../../../../src/finitio'
-Parser      = require '../../../../src/finitio/parser'
-Constraint  = require '../../../../src/finitio/support/constraint'
-BuiltinType = require '../../../../src/finitio/type/builtin_type'
-SubType     = require '../../../../src/finitio/type/sub_type'
-should      = require 'should'
+Parser = require '../../../../src/finitio/parser'
+should = require 'should'
 
 describe "Parser#sub_type", ->
 
-  compile = (source, options) ->
-    options.compiler = Finitio.compiler(options)
-    Parser.parse(source, options)
+  parse = (source) ->
+    Parser.parse(source, { startRule: "type" })
 
-  describe 'with a single constraint', ->
-    subject = compile(".Number( i | i >= 0 )", startRule: "type")
+  it 'works with a single unnamed constraint', ()->
+    s = parse('.( i | i>0 )')
+    expected = {
+      sub: {
+        superType: { any: {} }
+        constraints: [
+          { native: ['i', 'i>0'] }
+        ]
+      }
+    }
+    should(s).eql(expected)
 
-    it 'should return a SubType', ->
-      subject.should.be.an.instanceof(SubType)
+  it 'works with a single named constraint', ()->
+    s = parse('.( i | positive: i>0 )')
+    expected = {
+      sub: {
+        superType: { any: {} }
+        constraints: [
+          { name: 'positive', native: ['i', 'i>0'] }
+        ]
+      }
+    }
+    should(s).eql(expected)
 
-    it 'should have the correct constraint', ->
-      subject.constraints.length.should.equal(1)
-      subject.constraints[0].should.be.an.instanceof(Constraint)
-      subject.constraints[0].accept(12).should.be.true
-      subject.constraints[0].accept(-12).should.be.false
+  it 'works with multiple named constraints', ()->
+    s = parse('.( i | positive: i>0, negative: i<0 )')
+    expected = {
+      sub: {
+        superType: { any: {} }
+        constraints: [
+          { name: 'positive', native: ['i', 'i>0'] }
+          { name: 'negative', native: ['i', 'i<0'] }
+        ]
+      }
+    }
+    should(s).eql(expected)
 
-    it 'should dress properly', ->
-      subject.dress(12).should.equal(12)
-      try
-        subject.dress(-1)
-        false.should.be.true
-      catch e
-        e
-
-  describe 'with a constraint on an AnyType', ->
-    subject = compile(".( v | v === null )", startRule: "type")
-
-    it 'should return a SubType', ->
-      subject.should.be.an.instanceof(SubType)
-
-    it 'should dress properly', ->
-      should.equal(subject.dress(null), null)
-      try
-        subject.dress(-1)
-        false.should.be.true
-      catch e
-        e
-
-  describe 'with multiple, named constraints', ->
-    src     = ".Number( i | positive: i >= 0, small: i <= 255 )"
-    subject = compile(src, startRule: "type")
-
-    it 'should return a SubType', ->
-      subject.should.be.an.instanceof(SubType)
-
-    it 'should dress properly according to positive', ->
-      subject.dress(12).should.equal(12)
-      try
-        subject.dress(-1)
-        false.should.be.true
-      catch e
-        e
-
-    it 'should dress properly according to small', ->
-      try
-        subject.dress(256)
-        false.should.be.true
-      catch e
-        e
-
-  describe 'with a complex constraint expression', ->
-    src     = ".Number( i | noDot: i.toString().indexOf('.') == -1 )"
-    subject = compile(src, startRule: "type")
-
-    it 'should return a SubType', ->
-      subject.should.be.an.instanceof(SubType)
+  it 'works with metadata', ()->
+    s = parse('/- Foo -/ .( i | i>0 )')
+    expected = {
+      sub: {
+        superType: { any: {} }
+        constraints: [
+          { native: ['i', 'i>0'] }
+        ]
+        metadata: { description: 'Foo' }
+      }
+    }
+    should(s).eql(expected)
