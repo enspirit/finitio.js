@@ -6,7 +6,7 @@ class DressMonad
     new DressMonad result, undefined
 
   @failure: (context, error, causes)->
-    failure = { context: context, error: error }
+    failure = { error: error }
     failure.children = causes if causes?
     new DressMonad undefined, failure
 

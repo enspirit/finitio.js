@@ -25,11 +25,10 @@ describe "DressMonad.map", ->
     should(m.isSuccess()).eql(false)
 
     expected = {
-      context: 'foo',
       error: "Failed",
       children: [
-        { context: 1, error: "Failed on 1 and 0", location: 0 },
-        { context: 3, error: "Failed on 3 and 2", location: 2 }
+        { error: "Failed on 1 and 0", location: 0 },
+        { error: "Failed on 3 and 2", location: 2 }
       ]
     }
     should(m.failure).eql(expected)
