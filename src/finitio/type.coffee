@@ -33,12 +33,12 @@ class Type
   # @post   this.include(output)
   # @throws `TypeError` if the dressing fails
   #
-  dress: (value, options)->
-    monad = @mDress(value, DressMonad)
+  dress: (value, world)->
+    monad = @mDress(value, new DressMonad(world))
     if monad.isSuccess()
       monad.result
     else
-      $u.dressError(monad.failure)
+      $u.dressError(monad.error)
 
   mDress: (value, Monad)->
     @_mDress(value, Monad)

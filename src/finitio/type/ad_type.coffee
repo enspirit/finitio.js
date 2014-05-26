@@ -36,7 +36,7 @@ class AdType extends Type
       m = contract.infoType.mDress(value, Monad)
       m.onSuccess (result)=>
         try
-          Monad.success contract.dress(result)
+          Monad.success contract.dress(result, Monad.world)
         catch e
           Monad.failure this, "Dresser failed: #{e.message}", [e]
 

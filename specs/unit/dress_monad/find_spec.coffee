@@ -1,16 +1,18 @@
 Monad = require('../../../src/finitio/support/dress_monad')
 should = require('should')
 
-describe "DressMonad.find", ->
+describe "Dressmonad.find", ->
+
+  monad = new Monad()
 
   success = (result)->
-    Monad.success result
+    monad.success result
 
   failure = (error)->
-    Monad.failure this, error
+    monad.failure this, error
 
   it 'finds the first successful monad', ->
-    m = Monad.find [1, 2, 3], (x, i)->
+    m = monad.find [1, 2, 3], (x, i)->
       if x == 2 and i == 1
         success(12)
       else
@@ -20,10 +22,10 @@ describe "DressMonad.find", ->
 
   it 'yields the failure block with all causes if no success', ->
     callback = (x, i)->
-      Monad.failure x, "Failed on #{x} and #{i}"
+      monad.failure x, "Failed on #{x} and #{i}"
     onFailure = (causes)->
-      Monad.failure "foo", "Failed", causes
-    m = Monad.find [1, 2, 3], callback, onFailure
+      monad.failure "foo", "Failed", causes
+    m = monad.find [1, 2, 3], callback, onFailure
 
     should(m.isSuccess()).eql(false)
 
@@ -35,5 +37,5 @@ describe "DressMonad.find", ->
         { error: "Failed on 3 and 2", location: 2 }
       ]
     }
-    should(m.failure).eql(expected)
+    should(m.error).eql(expected)
 

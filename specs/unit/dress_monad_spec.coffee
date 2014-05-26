@@ -1,19 +1,30 @@
 Monad = require('../../src/finitio/support/dress_monad')
 should = require('should')
 
-describe "DressMonad", ->
+describe "Dressmonad", ->
+
+  world = { foo: 'bar' }
+  monad = new Monad(world)
 
   success = (result)->
-    Monad.success result
+    monad.success result
 
   failure = (error)->
-    Monad.failure {}, error
+    monad.failure {}, error
 
   it 'is initially successful on sucesss', ->
     should(success(12).isSuccess()).eql(true)
 
   it 'is not initially successful on failure', ->
     should(failure("error").isSuccess()).eql(false)
+
+  describe 'success', ->
+    it 'preserves the world', ->
+      should(success(12).world).equal(world)
+
+  describe 'failure', ->
+    it 'preserves the world', ->
+      should(failure("error").world).equal(world)
 
   describe 'onSuccess', ->
     it 'yields the block and returns its result on success', ->

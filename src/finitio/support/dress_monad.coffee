@@ -1,40 +1,40 @@
 class DressMonad
 
-  constructor: (@result, @failure)->
+  constructor: (@world, @result, @error)->
 
-  @success: (result)->
-    new DressMonad result, undefined
+  success: (result)->
+    new DressMonad @world, result, undefined
 
-  @failure: (context, error, causes)->
-    failure = { error: error }
-    failure.children = causes if causes?
-    new DressMonad undefined, failure
+  failure: (context, error, causes)->
+    error = { error: error }
+    error.children = causes if causes?
+    new DressMonad @world, undefined, error
 
-  @find: (collection, callback, onFailure)->
+  find: (collection, callback, onFailure)->
     causes = []
     for i in [0...collection.length]
       m = callback(collection[i], i)
       if m.isSuccess()
         return m
       else
-        m.failure.location = i unless m.failure.location?
-        causes.push(m.failure)
+        m.error.location = i unless m.error.location?
+        causes.push(m.error)
     onFailure(causes)
 
-  @refine: (base, collection, callback, onFailure)->
+  refine: (base, collection, callback, onFailure)->
     if base.isSuccess()
       causes = []
       for i in [0...collection.length]
         m = callback(base, collection[i], i)
         if m.isFailure()
-          m.failure.location = i unless m.failure.location?
-          causes.push(m.failure)
+          m.error.location = i unless m.error.location?
+          causes.push(m.error)
       return base if causes.length == 0
       onFailure(causes)
     else
-      onFailure([base.failure])
+      onFailure([base.error])
 
-  @map: (collection, mapper, onFailure)->
+  map: (collection, mapper, onFailure)->
     result  = []
     success = @success result
     callback = (_, elm, index)->
@@ -45,7 +45,7 @@ class DressMonad
     @refine success, collection, callback, onFailure
 
   isSuccess: ()->
-    @failure is undefined
+    @error is undefined
 
   isFailure: ()->
     not @isSuccess()
@@ -56,6 +56,6 @@ class DressMonad
 
   onFailure: (callback)->
     return this if @isSuccess()
-    callback(@failure)
+    callback(@error)
 
 module.exports = DressMonad

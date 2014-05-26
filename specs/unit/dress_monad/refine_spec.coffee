@@ -1,18 +1,20 @@
 Monad = require('../../../src/finitio/support/dress_monad')
 should = require('should')
 
-describe "DressMonad.refine", ->
+describe "Dressmonad.refine", ->
+
+  monad = new Monad()
 
   success = (result)->
-    Monad.success result
+    monad.success result
 
   failure = (error)->
-    Monad.failure this, error
+    monad.failure this, error
 
   it 'returns the refined result on success', ->
     result = []
     base   = success(result)
-    m = Monad.refine base, [1, 2, 3], (_, x, i)->
+    m = monad.refine base, [1, 2, 3], (_, x, i)->
       should(_).equal(base)
       result.push [ x, i ]
       _
@@ -26,18 +28,18 @@ describe "DressMonad.refine", ->
     onFailure = (causes)=>
       should(causes[0].error).eql("error")
       13
-    res = Monad.refine base, [1, 2, 3], callback, onFailure
+    res = monad.refine base, [1, 2, 3], callback, onFailure
     should(res).equal(13)
 
   it 'yields the failure block with causes on failure', ->
     callback = (_, x, i)->
       if x == 1 or x == 3
-        Monad.failure x, "Failed on #{x} and #{i}"
+        monad.failure x, "Failed on #{x} and #{i}"
       else
         _
     onFailure = (causes)->
-      Monad.failure 'foo', "Failed", causes
-    m = Monad.refine success([]), [1, 2, 3], callback, onFailure
+      monad.failure 'foo', "Failed", causes
+    m = monad.refine success([]), [1, 2, 3], callback, onFailure
 
     should(m.isSuccess()).eql(false)
 
@@ -48,5 +50,5 @@ describe "DressMonad.refine", ->
         { error: "Failed on 3 and 2", location: 2 }
       ]
     }
-    should(m.failure).eql(expected)
+    should(m.error).eql(expected)
 

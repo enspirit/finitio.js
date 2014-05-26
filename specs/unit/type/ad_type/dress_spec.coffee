@@ -54,3 +54,17 @@ describe "AdType#dress", ->
 
         should(err).be.an.instanceof TypeError
         should(err.message).equal "Invalid Date: `12`"
+
+  describe 'when contracts expect the world', ->
+    type = new AdType(null, [
+      Contract.info({
+        name: 'worlded'
+        infoType: intType
+        explicit:
+          dress: (value, world)->
+            world.double(value)
+      })
+    ])
+
+    it 'works', ->
+      should(type.dress(12, double: (x)-> x*2)).equal(24)
