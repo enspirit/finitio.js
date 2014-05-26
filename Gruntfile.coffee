@@ -44,7 +44,10 @@ module.exports = (grunt) ->
     'test:acceptance'
   ]
   grunt.registerTask 'test:unit', [
-    'mochaTest'
+    'mochaTest:unit'
+  ]
+  grunt.registerTask 'test:integration', [
+    'mochaTest:integration'
   ]
   grunt.registerTask 'test:acceptance', [
     'cucumberjs'
@@ -72,10 +75,15 @@ module.exports = (grunt) ->
         files: [ 'src/**/*.pegjs' ]
         tasks: [ 'peg:build' ]
       # Run the unit tests when .js sources change
-      testing:
+      unit:
         files: [ 'src/**/*.js',   'src/**/*.coffee',
-                 'specs/**/*.js', 'specs/**/*.coffee' ]
+                 'specs/unit/**/*', 'specs/unit/**/*' ]
         tasks: [ 'test:unit' ]
+      # Run the integration tests when .js sources change
+      integration:
+        files: [ 'src/**/*.js',   'src/**/*.coffee',
+                 'specs/integration/**/*', 'specs/integration/**/*' ]
+        tasks: [ 'test:integration' ]
 
     #################################################################### Build
 
@@ -170,10 +178,13 @@ module.exports = (grunt) ->
 
     # Unit testing using mocha
     mochaTest:
-      test:
-        src: ['specs/**/*.coffee']
+      unit:
+        src: ['specs/unit/**/*.coffee']
         options:
-          #reporter: 'progress'
+          require: 'coffee-script/register'
+      integration:
+        src: ['specs/integration/**/*.coffee']
+        options:
           require: 'coffee-script/register'
 
     # Acceptance testing with cucumber
