@@ -2,7 +2,6 @@
 $u           = require './support/utils'
 Fetchable    = require './support/fetchable'
 Type         = require './type'
-TypeFactory  = require './support/factory'
 
 #
 # A System is a collection of named Finitio types.

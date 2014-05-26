@@ -1,6 +1,3 @@
-TypeFactory = require './finitio/support/factory'
-
-## base module
 class Finitio
 
   @VERSION: "0.0.1"
@@ -44,7 +41,6 @@ Finitio.Constraint   = require './finitio/support/constraint'
 Finitio.System       = require './finitio/system'
 Finitio.Parser       = require './finitio/parser'
 Finitio.Compiler     = require './finitio/compiler'
-Finitio.TypeFactory  = require './finitio/support/factory'
 ##
 Finitio.Type         = require './finitio/type'
 Finitio.TypeDef      = require './finitio/type/type_def'

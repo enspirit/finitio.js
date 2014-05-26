@@ -1,4 +1,3 @@
-TypeFactory = require './support/factory'
 Parser      = require './parser'
 Meta        = require './systems/meta'
 $u          = require './support/utils'
