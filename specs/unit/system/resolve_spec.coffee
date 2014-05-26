@@ -13,21 +13,9 @@ describe 'System#resolve', ->
   f = { name: 'F' }
 
   system = new System [ 
-      new System([
-          new System([], [], [e])
-        ],
-        [],
-        [a]
-      ),
-      new System([], [], [b]),
-    ],
-    [
-      {
-        qualifier: 'x'
-        system: new System([
-          new System([], [], [f])
-        ], [], [c])
-      }
+      { system: new System( [ { system: new System([], [e]) } ], [a]) }
+      { system: new System([], [b]) }
+      { qualifier: 'x', system: new System([ new System([], [f]) ], [c]) }
     ],
     [d]
 
@@ -44,6 +32,10 @@ describe 'System#resolve', ->
   it 'throws immediately when a qualifier is unknown', ->
     l = ()-> system.resolve('y.C', ()-> 12)
     should(l).throw("No such type `y.C`")
+
+  it 'does not see qualified when unqualified', ->
+    l = ()-> system.resolve('C')
+    should(l).throw("No such type `C`")
 
   it 'does not see imports of imports', ->
     l = ()-> system.resolve('E')

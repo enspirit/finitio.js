@@ -35,3 +35,17 @@ describe "Parser#system", ->
       ]
     }
     should(s).eql(expected)
+
+  it 'works with an import and a main tuple type', ()->
+    s = parse("@import finitio/data\n\n{ name: . }")
+    expected = {
+      imports: [
+        { from: 'finitio/data' }
+      ]
+      types: [
+        { name: 'Main', type: { tuple: { heading: {
+          attributes: [ { name: 'name', type: { any: {} } } ]
+        } } } }
+      ]
+    }
+    should(s).eql(expected)

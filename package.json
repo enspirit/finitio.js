@@ -23,7 +23,9 @@
     "build": "grunt compile",
     "prepublish": "grunt compile"
   },
-  "dependencies": {},
+  "dependencies": {
+    "commander": "~2.2.0"
+  },
   "devDependencies": {
     "coffee-script": "~1.7.1",
     "cucumber": "~0.4.0",

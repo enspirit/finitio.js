@@ -20,15 +20,19 @@
 // SYSTEM
 
 system =
-  spacing is:imports ds:definitions spacing m:type? spacing eof {
+  spacing is:imports spacing ds:definitions spacing meta:metadata? spacing main:type? spacing eof {
     var system = {
       types: ds
     };
     if (is && is.length>0) {
       system.imports = is;
     }
-    if (m){
-      system.types.push({ name: 'Main', type: m });
+    if (main){
+      main = { name: 'Main', type: main };
+      if (meta){
+        main.metadata = meta;
+      }
+      system.types.push(main);
     }
     return system;
   }
@@ -42,7 +46,8 @@ import_def =
   '@import' spaces s:system_from spaces 'as' spaces q:type_qualifier {
     return { qualifier: q, from: s }
   }
-/ '@import' spaces s:system_from spacing {
+/ '@import' spaces s:system_from
+ {
     return { from: s }
   }
 
@@ -169,7 +174,8 @@ term_type =
 / type_ref
 
 ad_type =
-  p:ad_type_preamble spacing cs:contracts {
+  p:ad_type_preamble? spacing cs:contracts {
+    if (!p){ p = {}; }
     var contracts = [], contract;
     for (var i=0; i<cs.length; i++){
       contract = cs[i];
@@ -187,7 +193,7 @@ ad_type =
   }
 
 ad_type_preamble =
-  m:metadata? t:('.' builtin_type_name)? {
+  m:metadata? t:('.' builtin_type_name) {
     var r = {};
     if (t){
       r.jsType = t[1];
@@ -321,7 +327,7 @@ builtin_type_name =
   $([a-zA-Z0-9:.]+)
 
 system_from =
-  $((![ ] .)+)
+  $((![ \n\t] .)+)
 
 // LEXER (spacing, symbols and comments)
 

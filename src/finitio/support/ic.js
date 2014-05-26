@@ -42,7 +42,9 @@ module.exports = (function(){
       for (var i=0; i<properties.length; i++){
         var name  = (i == rawindex ? this.kind : properties[i]);
         var value = this[properties[i]];
-        if (value != undefined) { to[name] = value; }
+        if (value != undefined) {
+          to[name] = value;
+        }
       }
       return to;
     };
@@ -51,7 +53,7 @@ module.exports = (function(){
 
   ic.ObjectType = function(base, properties, onDressed){
 
-    base.info = function(from){
+    base.info = function(from, world){
       var args = [];
       for (var i=0; i<properties.length; i++){
         var propval = from[properties[i]];
@@ -60,7 +62,9 @@ module.exports = (function(){
         }
       };
       var inst = invokeConstructor(base, args);
-      if (onDressed){ onDressed(inst); }
+      if (onDressed){
+        onDressed(inst, world);
+      }
       return inst;
     };
 

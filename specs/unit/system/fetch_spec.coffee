@@ -5,12 +5,12 @@ should      = require 'should'
 
 describe 'System#fetch', ->
 
-  system = new System
-
-  beforeEach ->
-    system = new System
-    system.addType(numType)
-    system.addType(new TypeDef(numType, 'Main'))
+  system = System.info({
+    types: [
+      TypeDef.info({ name: "Int", type: numType })
+      TypeDef.info({ name: "Main", type: numType })
+    ]
+  })
 
   subject = (name) -> system.fetch(name)
 

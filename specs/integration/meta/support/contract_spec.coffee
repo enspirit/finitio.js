@@ -3,13 +3,18 @@
 describe 'Meta (Contract)', ->
 
   info = {
-    name: 'iso',
-    infoType: intType,
+    name: 'iso'
+    infoType: intType
     explicit: {
       dress: ()->
       undress: ()->
     }
+    metadata: { foo: 'bar' }
   }
 
   it 'dresses as expected', ->
-    should(()-> Meta.Contract.dress(info)).not.throw()
+    subject = ()->
+      Meta.Contract.dress(info)
+
+    should(subject).not.throw()
+    should(subject().metadata).eql({ foo: 'bar' })

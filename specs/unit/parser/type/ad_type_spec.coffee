@@ -72,9 +72,9 @@ describe "Parser#ad_type", ->
           name: 'iso'
           infoType: { builtin: { jsType: 'String' } }
           identity: {}
+          metadata: { description: 'Foo' }
         }
-      ],
-      metadata: { description: 'Foo' }
+      ]
     }}
     should(s).eql(expected)
 
@@ -90,6 +90,21 @@ describe "Parser#ad_type", ->
         }
       ],
       metadata: { description: 'Foo' }
+    }}
+    should(s).eql(expected)
+
+  it 'works with contract metadata', ()->
+    s = parse('.Bar /- Foo -/ <iso> .String')
+    expected = { adt: {
+      jsType: 'Bar'
+      contracts: [
+        {
+          name: 'iso'
+          infoType: { builtin: { jsType: 'String' } }
+          internal: 'Bar'
+          metadata: { description: 'Foo' }
+        }
+      ]
     }}
     should(s).eql(expected)
 

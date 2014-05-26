@@ -6,7 +6,7 @@ should      = require 'should'
 
 describe "SubType#dress", ->
 
-  _default = new Constraint.Native('default', (i) -> i > 0)
+  _default = new Constraint.Native(null, (i) -> i > 0)
   _small   = new Constraint.Native('small', (i) -> i < 255)
 
   type = new SubType(numType, [_default, _small], "byte")

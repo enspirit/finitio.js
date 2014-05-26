@@ -1,0 +1,32 @@
+/- Recognizes everything -/
+Any = .
+
+/- Recognizes JavaScript's null -/
+Nil = .( v | v === null )
+
+/- Recognizes true and false -/
+Boolean = .Boolean
+
+/- Only true -/
+True = .Boolean( b | b === true )
+
+/- Only false -/
+False = .Boolean( b | b === false )
+
+/- Recognizes any number -/
+Numeric = .Number
+
+/- Recognizes only real numbers -/
+Real    = .Number( n | (n===0.0) || !(n % 1 === 0) )
+
+/- Recognizes only integer numbers -/
+Integer = .Number( n | n % 1 === 0    )
+
+/- Recognizes every string -/
+String  = .String
+
+/- Recognizes valid dates -/
+Date = .Date <iso8601> .String .Finitio.Contracts.Date.iso8601
+
+/- Recognizes valid times -/
+Time = .Date <iso8601> .String .Finitio.Contracts.Time.iso8601

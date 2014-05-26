@@ -5,7 +5,7 @@ class TypeError extends Error
   constructor: (info) ->
     $u.extend(this, info)
     @message = computeMessage(this)
-    super(@message)
+    super(@message, @rootCause)
 
   Object.defineProperty @prototype, 'causes',
     get: ()->

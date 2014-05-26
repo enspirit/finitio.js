@@ -6,7 +6,6 @@ describe "System's information contract", ->
 
   info = {
     imports: {}
-    uses: []
     types: [ intType ]
   }
   s = System.info(info)

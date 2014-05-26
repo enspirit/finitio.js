@@ -2,11 +2,25 @@
 
 describe 'Meta (Attribute)', ->
 
-  info = {
-    name: 'r',
-    type: intType,
-    required: false
-  }
+  context 'when required is unspecified', ->
+    info = {
+      name: 'r',
+      type: intType
+    }
 
-  it 'dresses as expected', ->
-    should(()-> Meta.Attribute.dress(info)).not.throw()
+    it 'dresses as expected', ->
+      subject = ()-> Meta.Attribute.dress(info)
+      should(subject).not.throw()
+      should(subject().required).eql(true)
+
+  context 'when not required', ->
+    info = {
+      name: 'r',
+      type: intType,
+      required: false
+    }
+
+    it 'dresses as expected', ->
+      subject = ()-> Meta.Attribute.dress(info)
+      should(subject).not.throw()
+      should(subject().required).eql(false)

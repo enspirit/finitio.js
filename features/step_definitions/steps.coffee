@@ -6,37 +6,34 @@ should    = require 'should'
 _         = require 'underscore'
 
 # Global variables for steps below
-TestSystem     = null
-result         = null
-system         = null
-type           = null
-error          = null
-systems        = {}
-resolver       = (from)->
-  if src = systems[from]
-    TestSystem.parse(src, resolver: resolver)
-  else
-    throw new Error("Unknown system `#{from}`")
+TestSystem = null
+result     = null
+system     = null
+type       = null
+error      = null
+systems    = {}
+
+Finitio.World.importResolver.tests = (path)->
+  systems[path]
 
 module.exports = ->
 
   @Before (callback)->
-    TestSystem = require '../support/test_system'
-    system = TestSystem
+    system = TestSystem = Finitio.parse("@import finitio/data")
     callback()
 
   @Given /^the System is$/, (source, callback) ->
     try
-      system = TestSystem.parse(source, resolver: resolver)
+      system = Finitio.parse("@import finitio/data\n\n" + source)
       type   = system.Main.trueOne() if system.Main
+      callback()
     catch e
       error = e
+      console.log(e.debugTree())
       callback.fail(e)
 
-    callback()
-
   @Given /^the type under test is (.*?)$/, (typeName, callback) ->
-    type = system.fetch(typeName)
+    type = system.resolve(typeName)
     callback()
 
   # Language
@@ -130,15 +127,16 @@ module.exports = ->
     expected = table.hashes()[0]
     victim  = system.fetchPath(path)
     unless _.isEqual(victim.metadata, expected)
-      callback.fail("Expected #{expected}, got #{victim.metadata}")
-    callback()
+      callback.fail("Expected #{JSON.stringify expected}, got #{victim.metadata}")
+    else
+      callback()
 
   # Hierarchy
 
   @Then /^(.*?) is (not )?a super type of (.*?)$/, (source, neg, target, callback) ->
     try
-      s    = system.fetch(source)
-      t    = system.fetch(target)
+      s    = system.resolve(source)
+      t    = system.resolve(target)
       neg  = (neg? ? true : false)
       isIt = s.isSuperTypeOf(t)
       unless isIt != neg
@@ -165,7 +163,7 @@ module.exports = ->
     try
       error = null
       json = JSON.parse(jsonValue)
-      result = system.fetch(typename).dress(json)
+      result = system.resolve(typename).dress(json)
     catch e
       error = e
       result = e
@@ -187,7 +185,7 @@ module.exports = ->
     try
       error = null
       json = JSON.parse(doc)
-      result = system.fetch(type).dress(json)
+      result = system.resolve(type).dress(json)
     catch e
       error = e
       result = e
@@ -195,7 +193,7 @@ module.exports = ->
     callback()
 
   @Given /^I validate the following JSON data against (.*?)$/, (type, json, callback) ->
-    type = system.fetch(type)
+    type = system.resolve(type)
 
     try
       error = null
@@ -212,8 +210,8 @@ module.exports = ->
   @Given /^I undress JSON's '(.*?)' from (.*?) to (.*?)$/, (json, from, to, callback) ->
     try
       error = null
-      from  = system.fetch(from)
-      to    = system.fetch(to)
+      from  = system.resolve(from)
+      to    = system.resolve(to)
       json  = JSON.parse(json)
       value = from.dress(json)
       result = from.undress(value, to)
@@ -226,8 +224,8 @@ module.exports = ->
   @When /^I undress the result from (.*?) to (.*?)$/, (from, to, callback) ->
     try
       error = null
-      from  = system.fetch(from)
-      to    = system.fetch(to)
+      from  = system.resolve(from)
+      to    = system.resolve(to)
       result = from.undress(result, to)
     catch e
       error = e
@@ -270,18 +268,22 @@ module.exports = ->
     callback()
 
   @Then /^the result should be a representation for Nil$/, (callback) ->
-    callback.fail(error) if error?
-
-    unless result == null
-      callback.fail "#{result} is not a representation for Nil"
-    callback()
+    if error?
+      callback.fail(error)
+    else
+      unless result == null
+        callback.fail "#{result} is not a representation for Nil"
+      callback()
 
   @Then /^the result should be a representation for (.*?)$/, (type,callback) ->
-    callback.fail(error) if error?
-
-    unless system.fetch(type).include(result)
-      callback.fail "#{JSON.stringify(result)} is not a representation for #{type}"
-    callback()
+    if error?
+      console.log(system.resolve('Info').type.heading.attributes)
+      console.log(error)
+      callback.fail(error)
+    else
+      unless system.resolve(type).include(result)
+        callback.fail "#{result} is not a representation for #{type}"
+      callback()
 
   @Then /^it should be a TypeError$/, (callback) ->
     unless result instanceof TypeError
@@ -304,13 +306,15 @@ module.exports = ->
     callback()
 
   @Then /^its root cause should be:$/, (table, callback) ->
-    unless result instanceof TypeError
-      callback.fail result
-    rc = result.rootCause
-    for k, v of table.hashes()[0]
-      unless rc[k] == v
-        callback.fail "TypeError##{k}: `#{v}` expected, got `#{rc[k]}`"
-    callback()
+    if result instanceof TypeError
+      rc = result.rootCause
+      for k, v of table.hashes()[0]
+        unless rc[k] == v
+          callback.fail "TypeError##{k}: `#{v}` expected, got `#{rc[k]}`"
+          return
+      callback()
+    else
+      callback.fail new Error("Type error expected")
 
   @Then /^the result should be the integer (\d+)$/, (expected, callback) ->
     unless result == parseInt(expected)
@@ -367,7 +371,7 @@ module.exports = ->
     callback()
 
   @Then /^it evaluates to a (.*)$/, (type, callback)->
-    t = system.fetch(type)
+    t = system.resolve(type)
     r = Parser.parse(@parsing_source, { startRule: @grammarRule })
     unless t.include(r)
       callback.fail("Expected #{@parsing_source} to evaluate to #{type}")
@@ -377,9 +381,8 @@ module.exports = ->
 
   @Given /^the following system is known as '(.*)'$/, (name, src, callback) ->
     try
-      systems[name] = src
+      systems[name] = Finitio.parse(src)
+      callback()
     catch e
       error = e
       callback.fail(e)
-
-    callback()

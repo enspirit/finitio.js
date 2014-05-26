@@ -5,7 +5,7 @@ class Finitio
 
   @VERSION: "0.0.1"
 
-  @World = {
+  @Types = {
     'Finitio':  Finitio
     'Number':   Number
     'String':   String
@@ -15,16 +15,21 @@ class Finitio
     'RegExp':   RegExp
   }
 
-  @compiler = (options)->
-    options         ?= { }
-    options.world   ?= Finitio.World
-    new this.Compiler(options)
+  @World = {
+    'Finitio': this
+    'JsTypes': @Types
+    'importResolver': require('./finitio/resolver')
+  }
 
-  @compile = (source, options) ->
-    @compiler(options).compile(source)
+  @compiler = (world)->
+    world ?= Finitio.World
+    new this.Compiler(world)
 
-  @parse = (source, options) ->
-    @compiler(options).compile(source)
+  @compile = (source, world) ->
+    @compiler(world).compile(source)
+
+  @parse = (source, world) ->
+    @compiler(world).compile(source)
 
 ##
 Finitio.TypeError    = require('./finitio/errors').TypeError

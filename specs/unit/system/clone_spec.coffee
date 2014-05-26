@@ -1,12 +1,14 @@
 System      = require '../../../src/finitio/system'
+TypeDef     = require '../../../src/finitio/type/type_def'
 should      = require 'should'
 {numType,
 stringType} = require '../../spec_helpers'
 
 describe "System#clone", ->
 
-  system = new System
-  system.addType(numType)
+  system = System.info({
+    types: [ TypeDef.info({ name: "Int", type: numType }) ]
+  })
 
   subject = -> system.clone()
 
@@ -17,10 +19,5 @@ describe "System#clone", ->
     should(subject()).not.equal(system)
 
   it 'should have numType', ->
-    should(subject().types[0]).equal(numType)
+    should(subject().types[0].type).equal(numType)
 
-  it 'should not share internals with the original', ->
-    clone = subject()
-    clone.addType(stringType)
-    should(system.types.length).equal(1)
-    should(clone.types.length).equal(2)

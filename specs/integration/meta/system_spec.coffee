@@ -6,11 +6,15 @@ describe 'Meta (System)', ->
     types: [
       { name: 'Str', type: { builtin: { jsType: String } } }
     ]
-    uses: [
-      { qualifier: 'js', system: { types: [], uses: [], imports: [] } }
+    imports: [
+      { qualifier: 'js', from: 'finitio/js' }
     ]
-    imports: []
   }
 
   it 'dresses as expected', ->
-    should(()-> Meta.System.dress(info)).not.throw()
+    resolver = (x)->
+      should(x).eql('finitio/js')
+      Meta.System.dress({ types: [] })
+    subject = ->
+      Meta.System.dress(info, { importResolver: resolver })
+    should(subject).not.throw()

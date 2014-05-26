@@ -32,7 +32,7 @@ class SubType extends Type
       if constraint.accept(success.result)
         success
       else
-        if constraint.name isnt 'default'
+        if constraint.name?
           msg = "Invalid ${typeName} (not ${cName}): `${value}`"
           params = ['value', constraint.name, value]
         else

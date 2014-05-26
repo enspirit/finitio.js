@@ -4,6 +4,8 @@ Feature: The ability to import systems
 
     Given the following system is known as 'import/example'
       """
+      @import finitio/data
+
       Foo = Integer( i | i > 0 )
       Bar = Integer( i | i < 0 )
       """

@@ -5,8 +5,7 @@ $u          = require './support/utils'
 
 class Compiler
 
-  constructor: (options)->
-    $u.extend(this, options)
+  constructor: (@world)->
 
   compile: (source)->
     parsed = Parser.parse(source)

@@ -150,15 +150,14 @@ TypeRef = {
   metadata :? Metadata
 }
 
-/- Factors System Uses -/
-Use = {
-  qualifier: Js:String
-  system: System
+/- Factors System Imports -/
+Import = {
+  qualifier :? Js:String
+  system    : System
 }
 
 /- Factors Finitio Systems -/
-System = {
+System = .Finitio.System <info> {
   types:   [TypeDef]
-  uses:    [Use]
-  imports: [System]
+  imports: [Import]
 }

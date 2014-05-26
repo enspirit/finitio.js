@@ -4,6 +4,7 @@ module.exports = (function(){
   var Heading      = require('../support/heading');
   var Contract     = require('../support/contract');
   var Constraint   = require('../support/constraint');
+  var Import       = require('../support/import');
   var Contracts    = require('../contracts');
   var Type         = require('../type');
   var AdType       = require('../type/ad_type');
@@ -25,9 +26,11 @@ module.exports = (function(){
 
   // -------------------------------------------------------------- Javascript
 
-  Js.String   = BuiltinType.info({ jsType: String   });
+  Js.Object  = BuiltinType.info({ jsType: Object  });
 
-  Js.Boolean  = BuiltinType.info({ jsType: Boolean  });
+  Js.String  = BuiltinType.info({ jsType: String  });
+
+  Js.Boolean = BuiltinType.info({ jsType: Boolean });
 
   Js.Type = AdType.info({
     jsType: Function,
@@ -35,7 +38,12 @@ module.exports = (function(){
       Contract.info({
         name: 'name',
         infoType: Js.String,
-        external: Contracts.JsType.name
+        explicit: {
+          dress: function(name, world){
+            return Contracts.JsType.name.dress(name, world.JsTypes);
+          },
+          undress: Contracts.JsType.name.undress
+        }
       })
     ]
   });
@@ -45,7 +53,11 @@ module.exports = (function(){
     constraints: [
       Constraint.info({
         name: "default",
-        native: function(v){ return $u.isEqual(v, {}); }
+        native: function(v){
+          if (v===null || v===undefined){ return false; }
+          for (k in v){ return false; }
+          return true;
+        }
       })
     ]
   });
@@ -81,7 +93,11 @@ module.exports = (function(){
 
   // ------------------------------------------------------------------ Shared
 
-  var metadataAttr = Attribute.info({ name: 'metadata', type: Js.Boolean, required: false });
+  var metadataAttr = Attribute.info({
+    name: 'metadata',
+    type: Js.Object,
+    required: false
+  });
 
   // ------------------------------------------------------------------- Tools
 
@@ -296,28 +312,13 @@ module.exports = (function(){
   Meta.System  = object('System', System, systemAttrs);
   Meta.Systems = SeqType.info({ elmType: Meta.System });
 
-  Meta.Use = TupleType.info({
-    heading: Heading.info({
-      attributes: [
-        Attribute.info({ name: 'qualifier', type: Js.String   }),
-        Attribute.info({ name: 'system',    type: Meta.System })
-      ]
-    })
-  });
-  Meta.Uses = SeqType.info({ elmType: Meta.Use });
+  Meta.Import = object('Import', Import, [
+    Attribute.info({ name: 'qualifier', type: Js.String, required: false }),
+    Attribute.info({ name: 'from',      type: Js.String })
+  ]);
+  Meta.Imports = SeqType.info({ elmType: Meta.Import });
 
-  var imports = Attribute.info({
-    name: 'imports',
-    type: Meta.Systems,
-    required: false
-  });
-  var uses = Attribute.info({
-    name: 'uses',
-    type: Meta.Uses,
-    required: false
-  });
-  systemAttrs.push(imports);
-  systemAttrs.push(uses);
+  systemAttrs.push(Attribute.info({ name: 'imports', type: Meta.Imports, required: false }));
 
   return Meta;
 })();
