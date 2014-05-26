@@ -51,8 +51,8 @@ Feature: Validating against Finitio tuples
 
     Then it should be a TypeError
     And its root cause should be:
-      | message             |
-      | Invalid Byte: `foo` |
+      | message               |
+      | Invalid Number: `foo` |
 
   Scenario: Validating a Color representation with an invalid value
 
@@ -61,6 +61,7 @@ Feature: Validating against Finitio tuples
       { "r": -12, "g": 12, "b": 255 }
       """
 
-    Then it should be a TypeError as:
-      | message             |
-      | Invalid Byte: `-12` |
+    Then it should be a TypeError
+    And its root cause should be:
+      | message              |
+      | Invalid value: `-12` |

@@ -34,5 +34,5 @@ Feature: StructType
     Given I dress JSON's '["Finitio", -1]' with Info
     Then it should be a TypeError
     And its root cause should be:
-      | message           |
-      | Invalid Age: `-1` |
+      | message             |
+      | Invalid value: `-1` |

@@ -47,8 +47,8 @@ Feature: Using Finitio to define a single-tuple document
 
     Then it should be a TypeError
     And its root cause should be:
-      | message            |
-      | Invalid Byte `bar` |
+      | message               |
+      | Invalid Number: `bar` |
 
   Scenario: Validating data against an invalid document (II)
 
@@ -65,6 +65,7 @@ Feature: Using Finitio to define a single-tuple document
       }
       """
 
-    Then it should be a TypeError as:
+    Then it should be a TypeError
+    And its root cause should be:
       | message              |
-      | Invalid Gender `bar` |
+      | Invalid value: `bar` |
