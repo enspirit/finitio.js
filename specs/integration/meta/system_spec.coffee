@@ -15,6 +15,8 @@ describe 'Meta (System)', ->
     resolver = (x)->
       should(x).eql('finitio/js')
       Meta.System.dress({ types: [] })
+
     subject = ->
       Meta.System.dress(info, { importResolver: resolver })
+
     should(subject).not.throw()

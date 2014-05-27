@@ -6,7 +6,7 @@ should      = require 'should'
 describe 'System#dress', ->
 
   describe "when a main", ->
-    system = Finitio.parse(".Number")
+    system = Finitio.compile(".Number")
 
     it 'delegates to the main', ->
       system.dress(12).should.equal(12)
@@ -17,7 +17,7 @@ describe 'System#dress', ->
       should(error).be.an.instanceof(TypeError)
 
   describe "when no main", ->
-    system = Finitio.parse("Num = .Number")
+    system = Finitio.compile("Num = .Number")
 
     it 'throws an Error', ->
       try

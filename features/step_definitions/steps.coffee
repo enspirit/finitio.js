@@ -14,7 +14,7 @@ error      = null
 systems    = {}
 
 Finitio.World.importResolver.tests = (path)->
-  systems[path]
+  [path, systems[path]] if systems[path]
 
 module.exports = ->
 
@@ -381,7 +381,7 @@ module.exports = ->
 
   @Given /^the following system is known as '(.*)'$/, (name, src, callback) ->
     try
-      systems[name] = Finitio.parse(src)
+      systems[name] = Finitio.load(src)
       callback()
     catch e
       error = e

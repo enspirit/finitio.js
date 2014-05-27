@@ -2,7 +2,7 @@ class Finitio
 
   @VERSION: "0.0.1"
 
-  @Types = {
+  @JsTypes = {
     'Finitio':  Finitio
     'Number':   Number
     'String':   String
@@ -14,19 +14,19 @@ class Finitio
 
   @World = {
     'Finitio': this
-    'JsTypes': @Types
+    'JsTypes': @JsTypes
     'importResolver': require('./finitio/resolver')
   }
 
-  @compiler = (world)->
-    world ?= Finitio.World
-    new this.Compiler(world)
+  @load = (source, options) ->
+    @Parser.parse(source, options || {})
 
   @compile = (source, world) ->
-    @compiler(world).compile(source)
+    source = @load(source) if typeof(source)=='string'
+    @Meta.System.dress(source, world || @World)
 
   @parse = (source, world) ->
-    @compiler(world).compile(source)
+    @compile(source, world)
 
 ##
 Finitio.TypeError    = require('./finitio/errors').TypeError

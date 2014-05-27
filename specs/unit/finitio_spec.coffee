@@ -12,5 +12,5 @@ describe 'Finitio', ->
     (typeof Finitio.VERSION).should.not.equal('undefined')
     (Finitio.VERSION?).should.be.true
 
-  it 'should have a parse method', ->
-    Finitio.parse(".Number").should.be.an.instanceof System
+  it 'should have a compile method', ->
+    Finitio.compile(".Number").should.be.an.instanceof System

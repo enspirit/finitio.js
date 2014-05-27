@@ -6,11 +6,9 @@ should  = require('should')
 describe "Resolver.StdLib", ->
 
   it 'works with existing schemas', ->
-    try
-      s = StdLib('finitio/data', Finitio.World)
-      should(s).be.an.instanceof(System)
-    catch e
-      should(false).eql(true)
+    s = StdLib('finitio/data', Finitio.World)
+    should(s[0]).equal("http://finitio.io/stdlib/data")
+    should(s[1].types).not.equal(undefined)
 
   it 'ignores non stdlib', ->
     s = StdLib('hello/world', Finitio.World)
