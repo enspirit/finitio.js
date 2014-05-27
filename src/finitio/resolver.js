@@ -35,7 +35,7 @@ module.exports = (function(){
 
     // returns it
     var name = path.match(/^finitio\/([a-z]+)$/)[1];
-    return [ "http://finitio.io/stdlib/" + name, system ];
+    return [ world.shortUrls['finitio'] + name, system ];
   });
 
   // ------------------------------------------------- Chain of responsibility

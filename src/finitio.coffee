@@ -15,6 +15,9 @@ class Finitio
   @World = {
     'Finitio': this
     'JsTypes': @JsTypes
+    'shortUrls': {
+      'finitio': 'http://finitio.io/' + @VERSION + '/stdlib/'
+    }
     'importResolver': require('./finitio/resolver')
   }
 
