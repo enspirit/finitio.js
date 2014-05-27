@@ -1,5 +1,5 @@
-fs = require('fs')
+fs = require('./fixtures-jsed')
 Fixtures = module.exports = {}
 
 Fixtures.loadFile = (path)->
-  fs.readFileSync('specs/integration/fixtures/' + path).toString()
+  fs['specs/integration/fixtures/' + path]

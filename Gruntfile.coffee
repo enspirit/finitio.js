@@ -17,6 +17,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-connect'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-saucelabs'
+  grunt.loadNpmTasks 'grunt-fixtures2js'
 
   ###################################################################### Tasks
 
@@ -40,6 +41,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'test', [
     'peg:build',
+    'fixtures2js'
     'test:unit',
     'test:integration',
     'test:acceptance'
@@ -75,6 +77,10 @@ module.exports = (grunt) ->
       parser:
         files: [ 'src/**/*.pegjs' ]
         tasks: [ 'peg:build' ]
+      # Rebuild the fixtures ASAP
+      fixtures:
+        files: [ 'specs/integration/fixtures/**/*' ]
+        tasks: [ 'fixtures2js:integration' ]
       # Run the unit tests when .js sources change
       unit:
         files: [ 'src/**/*.js',   'src/**/*.coffee',
@@ -85,6 +91,7 @@ module.exports = (grunt) ->
         files: [ 'src/**/*.js',   'src/**/*.coffee',
                  'specs/integration/**/*', 'specs/integration/**/*' ]
         tasks: [ 'test:integration' ]
+      # Run the acceptance tests when features change
       acceptance:
         files: [ 'features/**/*']
         tasks: [ 'test:acceptance' ]
@@ -133,6 +140,14 @@ module.exports = (grunt) ->
             'type_def',
             'import_def'
           ]
+
+    # Transforms the test fixtures to js files
+    fixtures2js:
+      integration:
+        files:
+          "specs/integration/fixtures-jsed.js": "specs/integration/fixtures/**/*"
+        options:
+          head: "module.exports = "
 
     ############################################################## Compilation
 
