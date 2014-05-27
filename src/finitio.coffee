@@ -21,15 +21,22 @@ class Finitio
     'importResolver': require('./finitio/resolver')
   }
 
-  @load = (source, options) ->
+  @world = ()->
+    $u = require('./finitio/support/utils')
+    world = $u.clone(Finitio.World)
+    for arg in arguments
+      $u.extend(world, arg) if arg
+    world
+
+  @parse = (source, options) ->
     @Parser.parse(source, options || {})
 
-  @compile = (source, world) ->
-    source = @load(source) if typeof(source)=='string'
-    @Meta.System.dress(source, world || @World)
+  @dress = (source, world) ->
+    source = @parse(source) if typeof(source)=='string'
+    @Meta.System.dress(source, @world(world))
 
-  @parse = (source, world) ->
-    @compile(source, world)
+  @compile = (source, world) ->
+    (new @Compiler()).compile(source, @world(world), 'main')
 
 ##
 Finitio.TypeError    = require('./finitio/errors').TypeError

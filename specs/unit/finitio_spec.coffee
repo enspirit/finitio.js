@@ -8,9 +8,14 @@ should   = require 'should'
 
 describe 'Finitio', ->
 
-  it "should have a version number", ->
+  it "has a version number", ->
     (typeof Finitio.VERSION).should.not.equal('undefined')
     (Finitio.VERSION?).should.be.true
 
-  it 'should have a compile method', ->
-    Finitio.compile(".Number").should.be.an.instanceof System
+  it 'has a dress method', ->
+    Finitio.dress(".Number").should.be.an.instanceof System
+
+  it 'has a world utility', ->
+    w = Finitio.world(foo: 'bar')
+    should(w.foo).eql('bar')
+    should(w.Finitio).equal(Finitio)

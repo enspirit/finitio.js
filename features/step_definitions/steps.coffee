@@ -19,12 +19,12 @@ Finitio.World.importResolver.tests = (path)->
 module.exports = ->
 
   @Before (callback)->
-    system = TestSystem = Finitio.parse("@import finitio/data")
+    system = TestSystem = Finitio.dress("@import finitio/data")
     callback()
 
   @Given /^the System is$/, (source, callback) ->
     try
-      system = Finitio.parse("@import finitio/data\n\n" + source)
+      system = Finitio.dress("@import finitio/data\n\n" + source)
       type   = system.Main.trueOne() if system.Main
       callback()
     catch e
@@ -381,7 +381,7 @@ module.exports = ->
 
   @Given /^the following system is known as '(.*)'$/, (name, src, callback) ->
     try
-      systems[name] = Finitio.load(src)
+      systems[name] = Finitio.parse(src)
       callback()
     catch e
       error = e

@@ -15,7 +15,7 @@ module.exports = (function(){
   // --------------------------------------------------- Standard lib resolver
 
   var stdlib = resolver([
-    function(path){ return /^finitio\/[a-z]+$/.test(path); },
+    function(path){ return /^finitio\/(.*)$/.test(path); },
     function(path){ return !!__dirname; }
   ], function(path, world){
     // resolve the file first
@@ -31,7 +31,7 @@ module.exports = (function(){
     var src = fs.readFileSync(fullPath).toString();
 
     // compile it
-    var system = world.Finitio.load(src);
+    var system = world.Finitio.parse(src);
 
     // returns it
     var name = path.match(/^finitio\/([a-z]+)$/)[1];
@@ -40,14 +40,18 @@ module.exports = (function(){
 
   // ------------------------------------------------- Chain of responsibility
 
-  var main = function(path, world){
+  var main = function(path, world, options){
     var keys = Object.keys(main);
-    var k, strategy, result;
+    var k, strategy, pair;
     for (var i=0; i<keys.length; i++) {
       strategy = main[keys[i]];
       pair = strategy(path, world);
       if (pair){
-        return world.Finitio.compile(pair[1], world);
+        if (options && options.raw){
+          return pair;
+        } else {
+          return world.Finitio.dress(pair[1], world);
+        }
       }
     }
     throw new Error("Unable to resolve: `" + path + "`");

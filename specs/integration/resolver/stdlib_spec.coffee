@@ -13,3 +13,8 @@ describe "Resolver.StdLib", ->
   it 'ignores non stdlib', ->
     s = StdLib('hello/world', Finitio.World)
     should(s).eql(null)
+
+  it 'raises on unexisting stdlib', ->
+    lambda = ->
+      StdLib('finitio/no-such-one', Finitio.World)
+    should(lambda).throw("No such stdlib system: `finitio/no-such-one`")
