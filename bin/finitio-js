@@ -58,6 +58,10 @@ catch e
   if e instanceof Finitio.TypeError
     console.log(e.rootCause.message || e.message)
     console.log(e.debugTree()) if program.stack
+  else if e.name == 'SyntaxError'
+    console.log("[#{e.line}:#{e.column}] #{e.message}")
+    console.log(e.expected) if program.stack
   else
+    console.log(e)
     console.log(e.message)
     console.log(e.stack) if program.stack
