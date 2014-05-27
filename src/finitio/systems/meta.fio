@@ -10,8 +10,11 @@ Js:Type     = .Function
 /- Recognizes JavaScript 'Object' -/
 Js:Object   = .( arg | toString.call(arg) == '[object Object]' )
 
-/- Recognizes and allows coercing JavaScript Functions -/
-Js:Function = .Function <defn> [Js:String] .Finitio.Contracts.Function.defn
+/- Recognizes and allows coercing JavaScript Types -/
+Js:Type     = .Function <name> Js:String .Finitio.Contracts.JsType.name
+
+/- Recognizes and allows coercing JavaScript expressions -/
+Js:Expression = .Function <defn> [Js:String] .Finitio.Contracts.Expression.defn
 
 /- Recognizes and allows coercing JavaScript Functions -/
 Js:RegExp   = .RegExp
@@ -21,17 +24,47 @@ Js:RegExp   = .RegExp
 Metadata = Js:Object
 
 /- Recognizes Finitio's Contracts -/
-Contract = .Finitio.Contract <info> {
+Contract = .Finitio.Contract <info>
+  Contract:Explicit
+| Contract:Internal
+| Contract:External
+| Contract:Identity
+Contract:Name = Js:String( s | /[a-z][a-z0-9]*/.test(s) )
+Contract:Explicit = {
   name      : Contract:Name
   infoType  : Type
-  dresser   : Js:Function
-  undresser : Js:Function
+  explicit  : {
+    dress   : Js:Expression
+    undress : Js:Expression
+  }
   metadata  :? Metadata
 }
-Contract:Name = Js:String( s | /[a-z][a-z0-9]*/.test(s) )
+Contract:Internal = {
+  name      : Contract:Name
+  infoType  : Type
+  internal  : Js:Type
+  metadata  :? Metadata
+}
+Contract:External = {
+  name      : Contract:Name
+  infoType  : Type
+  external  : {
+    dress   : Js:Expression
+    undress : Js:Expression
+  }
+  metadata  :? Metadata
+}
+Contract:Identity = {
+  name      : Contract:Name
+  infoType  : Type
+  identity  : { }
+  metadata  :? Metadata
+}
 
 /- Recognizes Finitio's Constraint -/
-Constraint = .Finitio.Constraint <info> Constraint:Native|Constraint:RegExp
+Constraint = .Finitio.Constraint <info>
+  Constraint:Native
+| Constraint:RegExp
 Constraint:Name = Js:String( s | /[a-z][a-zA-Z_]*/.test(s) )
 
 /- Recognizes RegExp's based Constraints -/
@@ -44,7 +77,7 @@ Constraint:RegExp = {
 /- Recognizes Function's based Constraints -/
 Constraint:Native = {
   name      : Constraint:Name
-  native    : Js:Function
+  native    : Js:Expression
   metadata  :? Metadata
 }
 
