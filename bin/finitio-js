@@ -1,0 +1,63 @@
+#!/usr/bin/env coffee
+require('coffee-script')
+Finitio = require('../src/finitio')
+fs = require('fs')
+program = require('commander');
+
+program
+  .version('0.0.1')
+  .usage('[options] SCHEMA.fio [DATA.json]')
+  .option('-c, --compile', 'Compile the input schema')
+  .option('-v, --validate', 'Valid input data against the schema')
+  .option('--stack', 'Show stack trace on error')
+  .parse(process.argv)
+
+loaders = {}
+actions = {}
+
+# Loads the schema argument and returns its the source
+loaders.schemaSource = ()->
+  schemaFile = program.args[0]
+  schemaSource = fs.readFileSync(schemaFile).toString()
+
+# Loads the schema argument and returns the compiled system
+loaders.schema = ()->
+  Finitio.dress(loaders.schemaSource())
+
+# Loads the data arguments and returns it as a data object
+loaders.data = ()->
+  dataFile = program.args[1]
+  dataSource = fs.readFileSync(dataFile).toString()
+  JSON.parse(dataSource)
+
+# Compiles the schema and outputs it on standard output
+actions.compile = ()->
+  console.log Finitio.compile(loaders.schemaSource())
+
+# Validate input data using the schema
+actions.validate = ()->
+  try
+    schema = loaders.schema()
+    data = loaders.data()
+    d = schema.dress(data, Finitio.World)
+    console.log(d)
+  catch e
+    if e instanceof Finitio.TypeError
+      for c in e.rootCauses
+        console.log("[#{c.location}] #{c.message}")
+    else
+      throw e
+
+try
+  if program.compile
+    action = actions.compile
+  else if program.validate
+    action = actions.validate
+  action()
+catch e
+  if e instanceof Finitio.TypeError
+    console.log(e.rootCause.message || e.message)
+    console.log(e.debugTree()) if program.stack
+  else
+    console.log(e.message)
+    console.log(e.stack) if program.stack
