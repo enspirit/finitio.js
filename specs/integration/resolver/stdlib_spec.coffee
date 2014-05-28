@@ -1,7 +1,6 @@
-Finitio = require('../../../src/finitio')
-System  = require('../../../src/finitio/system')
+{Finitio, should, $u} = require('../helpers')
+System = Finitio.System
 StdLib  = require('../../../src/finitio/resolver').StdLib
-should  = require('should')
 
 describe "Resolver.StdLib", ->
 

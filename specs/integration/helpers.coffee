@@ -6,4 +6,5 @@ module.exports = {
   Parser: require('../../src/finitio/parser')
   Meta: require('../../src/finitio').Meta
   intType: require('../spec_helpers').intType
+  '$u': require('../../src/finitio/support/utils')
 }

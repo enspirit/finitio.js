@@ -1,6 +1,5 @@
-{Finitio, should}  = require('../helpers')
+{Finitio, should, $u} = require('../helpers')
 System = Finitio.System
-$u = require('../../../src/finitio/support/utils')
 File = require('../../../src/finitio/resolver').File
 
 describe "Resolver.File", ->
