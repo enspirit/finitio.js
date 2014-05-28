@@ -1,4 +1,4 @@
-{should, Finitio, Fixtures} = require('./helpers')
+{should, Finitio, Fixtures} = require('../helpers')
 
 describe 'Compiler', ->
 

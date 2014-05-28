@@ -1,4 +1,4 @@
-{should, Finitio, Fixtures, Meta, Parser} = require('./helpers')
+{should, Finitio, Fixtures, Meta, Parser} = require('../helpers')
 
 describe 'Meta', ->
 
@@ -8,6 +8,7 @@ describe 'Meta', ->
       parsed = Parser.parse(src)
     catch e
       console.log(e)
+      should(false).eql(true)
 
     try
       Meta.System.dress(parsed, Finitio.World)
