@@ -1,6 +1,6 @@
 {should, Finitio, Fixtures} = require('../helpers')
 
-describe 'Compiler', ->
+describe 'Bundler', ->
 
   subject = ->
     Finitio.bundle(Fixtures.loadFile('test.fio'))
