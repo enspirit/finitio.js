@@ -121,7 +121,7 @@ module.exports = (grunt) ->
       build:
         files: [
           expand: true
-          src: [ 'src/**/*.js', 'specs/**/*.js' ]
+          src: [ 'package.json', 'src/**/*.js', 'specs/**/*.js' ]
           dest: 'build/'
           filter: 'isFile'
         ]

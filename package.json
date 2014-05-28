@@ -19,7 +19,7 @@
   ],
   "analyze": true,
   "bin": {
-    "finitio-js":"./bin/finitio-js"
+    "finitio-js": "./bin/finitio-js"
   },
   "scripts": {
     "test": "grunt",
