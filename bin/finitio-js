@@ -8,6 +8,7 @@ program
   .version('finitio.js ' + Finitio.VERSION + ' (c) Bernard, Louis Lambeau & the University of Louvain')
   .usage('[options] SCHEMA.fio [DATA.json]')
   .option('-b, --bundle', 'Bundle the input schema as a javascript loader')
+  .option('--url [url]', 'Specify the bundle global url')
   .option('-v, --validate', 'Valid input data against the schema')
   .option('-f, --fast', 'Stop on first validation error')
   .option('--stack', 'Show stack trace on error')
@@ -15,7 +16,10 @@ program
 
 # Returns the sourceUrl
 sourceUrl = ()->
-  return "file://" + program.args[0];
+  if typeof(program.url) is 'string'
+    program.url
+  else
+    "file://" + program.args[0]
 
 # Loads the schema argument and returns its the source
 schemaSource = ()->
