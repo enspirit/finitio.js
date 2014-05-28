@@ -18,6 +18,9 @@
     "validation"
   ],
   "analyze": true,
+  "bin": {
+    "finitio-js":"./bin/finitio-js"
+  },
   "scripts": {
     "test": "grunt",
     "build": "grunt compile",

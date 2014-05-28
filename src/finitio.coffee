@@ -1,6 +1,6 @@
 class Finitio
 
-  @VERSION: "0.0.1"
+  @VERSION: require('../package.json').version
 
   @World = {
     'Finitio': this
