@@ -1,4 +1,5 @@
 module.exports = (function(){
+  var data = require('./stdlib/data');
 
   // Builds a resolver instance with preconditions and base function `r`
   var resolver = function(pres, r){
