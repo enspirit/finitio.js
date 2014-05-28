@@ -19,3 +19,8 @@ describe 'Finitio', ->
     w = Finitio.world(foo: 'bar')
     should(w.foo).eql('bar')
     should(w.Finitio).equal(Finitio)
+
+  it 'has a world utility that merges JsTypes', ->
+    w = Finitio.world(JsTypes: { foo: 'bar' })
+    should(w.JsTypes.foo).eql('bar')
+    should(w.JsTypes.String).equal(String)

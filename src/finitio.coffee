@@ -1,3 +1,5 @@
+$u = require('./finitio/support/utils')
+
 class Finitio
 
   @VERSION: require('../package.json').version
@@ -19,10 +21,9 @@ class Finitio
   }
 
   @world = ()->
-    $u = require('./finitio/support/utils')
-    world = $u.extend({}, Finitio.World, { sourceUrl: '/' })
+    world = $u.clone(Finitio.World)
     for arg in arguments
-      $u.extend(world, arg) if arg
+      extendWorld(world, arg) if arg
     world
 
   @parse = (source, options) ->
@@ -37,6 +38,13 @@ class Finitio
 
   @bundleSource = (source, world) ->
     (new @Bundler(@world(world))).addSource(source).flush()
+
+extendWorld = (world, ext)->
+  for k, v of ext
+    if k is 'JsTypes'
+      world[k] = $u.extend(world[k], v)
+    else
+      world[k] = v
 
 ##
 Finitio.TypeError    = require('./finitio/errors').TypeError
