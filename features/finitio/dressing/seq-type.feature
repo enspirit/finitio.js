@@ -29,5 +29,5 @@ Feature: SeqType
       | message        |
       | Invalid IntSeq |
     And its root cause should be:
-      | message              |
-      | Invalid value: `2.5` |
+      | message                |
+      | Invalid Integer: `2.5` |

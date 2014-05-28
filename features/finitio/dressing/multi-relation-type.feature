@@ -39,5 +39,5 @@ Feature: MultiRelationType
     Given I dress JSON's '[{ "name": "Finitio", "age": -1 }]' with Info
     Then it should be a TypeError
     And its root cause should be:
-      | message             |
-      | Invalid value: `-1` |
+      | message           |
+      | Invalid Age: `-1` |

@@ -30,8 +30,8 @@ Background:
 
     Then it should be a TypeError
     And its root cause should be:
-      | message               |
-      | Invalid value: `-121` |
+      | message              |
+      | Invalid Byte: `-121` |
 
   Scenario: Validating against an invalid Colors representation (II)
 

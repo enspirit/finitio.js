@@ -41,7 +41,7 @@ class TypeRef extends Type
     @resolved().trueOne()
 
   resolve: (system)->
-    @target ?= system.resolve(@typeName).fetchType().trueOne()
+    @target ?= system.resolve(@typeName).fetchType()
 
   resolveProxies: (system)->
     @resolve(system)

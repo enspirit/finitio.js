@@ -24,5 +24,5 @@ Feature: UnionType
       | message                  |
       | Invalid AnyNumber: `foo` |
     And its root cause should be:
-      | message               |
-      | Invalid Number: `foo` |
+      | message             |
+      | Invalid Real: `foo` |
