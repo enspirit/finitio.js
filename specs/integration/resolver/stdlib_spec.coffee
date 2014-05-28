@@ -7,7 +7,7 @@ describe "Resolver.StdLib", ->
 
   it 'works with existing schemas', ->
     s = StdLib('finitio/data', Finitio.World)
-    should(s[0]).equal("http://finitio.io/" + Finitio.VERSION + "/stdlib/data")
+    should(s[0]).equal("http://finitio.io/" + Finitio.CONFORMANCE + "/stdlib/data")
     should(s[1]).not.be.an.instanceof(System)
     should(s[1].types).not.equal(undefined)
 

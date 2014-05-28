@@ -2,6 +2,8 @@ class Finitio
 
   @VERSION: require('../package.json').version
 
+  @CONFORMANCE: "0.4"
+
   @World = {
     'Finitio': this
     'JsTypes': {
