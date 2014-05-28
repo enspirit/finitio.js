@@ -30,9 +30,9 @@ module.exports = (grunt) ->
   grunt.registerTask 'build', [
     'clean',
     'peg:build',
+    'stdlib:build',
     'copy:build',
-    'coffee:build',
-    'stdlib:build'
+    'coffee:build'
   ]
 
   grunt.registerTask 'stdlib:build', [
