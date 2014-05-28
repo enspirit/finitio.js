@@ -108,7 +108,8 @@ module.exports = (function(){
     // recurse to resolve it through the file
     try {
       var resolved = world.importResolver(fullPath, world, {raw: true});
-      return [ world.shortUrls['finitio'] + name, resolved[1] ];
+      var url = 'http://finitio.io/' + world.Finitio.VERSION + '/stdlib/' + name;
+      return [ url, resolved[1] ];
     } catch (e) {
       throw new Error("No such stdlib system: `" + path + "`", e);
     }
