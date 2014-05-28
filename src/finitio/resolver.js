@@ -12,30 +12,106 @@ module.exports = (function(){
     }
   };
 
-  // --------------------------------------------------- Standard lib resolver
+  // ----------------------------------------------------------- File resolver
 
-  var stdlib = resolver([
-    function(path){ return /^finitio\/(.*)$/.test(path); },
-    function(path){ return !!__dirname; }
-  ], function(path, world){
-    // resolve the file first
-    var fs = require('fs');
-    var fullPath = __dirname + '/systems/' + path + '.fio';
+  var findFile = function(origin, extension, candidates){
     try {
-      fs.statSync(fullPath);
+      var extended = origin + (extension || '');
+      fs.statSync(extended);
+      return [ extended, extension || extended.match(/(\.[a-z]{3,4})$/)[1] ];
     } catch (e) {
-      throw new Error("No such stdlib system: `" + path + "`");
+      if (candidates.length == 0){
+        throw new Error("No such file: `" + origin + "`");
+      } else {
+        return findFile(origin, candidates[0], candidates.slice(1));
+      }
+    }
+  };
+
+  // Matches file:// and resolve it through `fs`, therefore working under
+  // node.js environment only
+  var fs = require('fs');
+  var file = resolver([
+    function(path){ return !!fs; },
+  ], function(path, world){
+    var match = path.match(/^file:\/\/(.*?)$/);
+    if (!match) {
+      return null;
     }
 
-    // load the source
-    var src = fs.readFileSync(fullPath).toString();
+    // check that it's an existing file
+    var pair = findFile(match[1], null, ['.fio', '.json']);
+    var file = pair[0], extension = pair[1];
+    var src  = fs.readFileSync(file).toString();
+    var system = null;
 
-    // compile it
-    var system = world.Finitio.parse(src);
+    // load according to the extension
+    switch (extension) {
+      case '.fio':
+        system = world.Finitio.parse(src);
+        break;
+      case '.json':
+        system = JSON.parse(src);
+        break;
+      default:
+        throw new Error("Unrecognized extension: `" + extension + "`");
+    }
 
-    // returns it
-    var name = path.match(/^finitio\/([a-z]+)$/)[1];
-    return [ world.shortUrls['finitio'] + name, system ];
+    // return the pair now
+    return [ path, system ];
+  });
+
+  // ------------------------------------------------------- Relative resolver
+
+  // Matches ./ and ../ imports and resolve them recursively after making
+  // them absolute
+  var relative = resolver([
+  ], function(path, world){
+    var match = path.match(/^(\.\/)|^(\.\.\/)/);
+    if (!match){
+      return null;
+    }
+
+    var url = world.sourceUrl;
+    if (!url){
+      throw new Error("Unable to resolve relative path: `" + path + "`");
+    }
+
+    // relative -> absolute
+    url = url.replace(/\/[^\/]+$/, '');
+    if (match[2]) {
+      // ../ -> parent folder
+      url = url.replace(/\/[^\/]+$/, '');
+    }
+    url = url + '/' + path.slice(match[0].length);
+
+    // delegate the job
+    return world.importResolver(url, world, {raw: true});
+  });
+
+  // --------------------------------------------------- Standard lib resolver
+
+  // Matches finitio/... and resolve it through the standard library either
+  // on disk (if fs is available), or through the web
+  var stdlib = resolver([
+    function(path){ return !!__dirname; }
+  ], function(path, world){
+    var match = path.match(/^finitio\/(.*)$/);
+    if (!match){
+      return null;
+    }
+
+    // establish the paths
+    var name = match[1];
+    var fullPath = "file://" + __dirname + '/stdlib/' + name + '.fio';
+
+    // recurse to resolve it through the file
+    try {
+      var resolved = world.importResolver(fullPath, world, {raw: true});
+      return [ world.shortUrls['finitio'] + name, resolved[1] ];
+    } catch (e) {
+      throw new Error("No such stdlib system: `" + path + "`", e);
+    }
   });
 
   // ------------------------------------------------- Chain of responsibility
@@ -56,7 +132,9 @@ module.exports = (function(){
     }
     throw new Error("Unable to resolve: `" + path + "`");
   }
+  main.File = file;
   main.StdLib = stdlib;
+  main.Relative = relative;
 
   return main;
 })();

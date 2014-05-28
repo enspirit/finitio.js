@@ -1,5 +1,5 @@
 Parser      = require './parser'
-Meta        = require './systems/meta'
+Meta        = require './support/meta'
 $u          = require './support/utils'
 
 class Compiler
@@ -30,24 +30,24 @@ class Compiler
     })();
   """
 
-  compile: (source, world, url)->
+  compile: (source, world)->
     systems = {}
 
     # recursively resolve every import
     system = world.Finitio.parse(source)
-    @_compile(system, world, url, systems)
+    @_compile(system, world, systems)
 
     # returns the instantiated template
     TEMPLATE.replace(/^[ ]{4}/, '')
             .replace(/JSONDATA/, JSON.stringify(systems))
-            .replace(/URL/, url)
+            .replace(/URL/, world.sourceUrl)
 
-  _compile: (system, world, url, systems)->
+  _compile: (system, world, systems)->
     # dress the system to catch any error immediately
-    world.Finitio.dress(system)
+    world.Finitio.dress(system, world)
 
     # save it under url in systems
-    systems[url] = system
+    systems[world.sourceUrl] = system
     return unless system.imports
 
     # recursively resolve imports
@@ -57,6 +57,7 @@ class Compiler
       # set the resolved URL, dress the system for catching errors
       imp.from = pair[0]
       # recurse on sub-imports
-      @_compile(pair[1], world, pair[0], systems)
+      newWorld = world.Finitio.world(world, { sourceUrl: pair[0] })
+      @_compile(pair[1], newWorld, systems)
 
 module.exports = Compiler

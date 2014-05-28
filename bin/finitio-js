@@ -12,33 +12,41 @@ program
   .option('--stack', 'Show stack trace on error')
   .parse(process.argv)
 
-loaders = {}
-actions = {}
+# Returns the sourceUrl
+sourceUrl = ()->
+  return "file://" + program.args[0];
 
 # Loads the schema argument and returns its the source
-loaders.schemaSource = ()->
+schemaSource = ()->
   schemaFile = program.args[0]
   schemaSource = fs.readFileSync(schemaFile).toString()
 
+world = ()->
+  { sourceUrl: sourceUrl() }
+
 # Loads the schema argument and returns the compiled system
-loaders.schema = ()->
-  Finitio.dress(loaders.schemaSource())
+schema = ()->
+  Finitio.dress(schemaSource(), world())
 
 # Loads the data arguments and returns it as a data object
-loaders.data = ()->
+data = ()->
   dataFile = program.args[1]
   dataSource = fs.readFileSync(dataFile).toString()
   JSON.parse(dataSource)
 
+# Actions
+
+actions = {}
+
 # Compiles the schema and outputs it on standard output
 actions.compile = ()->
-  console.log Finitio.compile(loaders.schemaSource())
+  console.log Finitio.compile(schemaSource(), world())
 
 # Validate input data using the schema
 actions.validate = ()->
   try
-    schema = loaders.schema()
-    data = loaders.data()
+    schema = schema()
+    data = data()
     d = schema.dress(data, Finitio.World)
     console.log(d)
   catch e

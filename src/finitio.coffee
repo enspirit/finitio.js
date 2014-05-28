@@ -23,7 +23,7 @@ class Finitio
 
   @world = ()->
     $u = require('./finitio/support/utils')
-    world = $u.clone(Finitio.World)
+    world = $u.extend({}, Finitio.World, { sourceUrl: '/' })
     for arg in arguments
       $u.extend(world, arg) if arg
     world
@@ -36,7 +36,7 @@ class Finitio
     @Meta.System.dress(source, @world(world))
 
   @compile = (source, world) ->
-    (new @Compiler()).compile(source, @world(world), 'main')
+    (new @Compiler()).compile(source, @world(world))
 
 ##
 Finitio.TypeError    = require('./finitio/errors').TypeError
@@ -67,6 +67,6 @@ Finitio.SubType      = require './finitio/type/sub_type'
 Finitio.TupleType    = require './finitio/type/tuple_type'
 Finitio.UnionType    = require './finitio/type/union_type'
 ##
-Finitio.Meta         = require './finitio/systems/meta'
+Finitio.Meta         = require './finitio/support/meta'
 ##
 module.exports = Finitio
