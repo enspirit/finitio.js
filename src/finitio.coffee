@@ -30,8 +30,8 @@ class Finitio
     source = @parse(source) if typeof(source)=='string'
     @Meta.System.dress(source, @world(world))
 
-  @compile = (source, world) ->
-    (new @Compiler()).compile(source, @world(world))
+  @bundle = (source, world) ->
+    (new @Bundler()).bundle(source, @world(world))
 
 ##
 Finitio.TypeError    = require('./finitio/errors').TypeError
@@ -45,7 +45,7 @@ Finitio.Constraint   = require './finitio/support/constraint'
 ##
 Finitio.System       = require './finitio/system'
 Finitio.Parser       = require './finitio/parser'
-Finitio.Compiler     = require './finitio/compiler'
+Finitio.Bundler      = require './finitio/bundler'
 ##
 Finitio.Type         = require './finitio/type'
 Finitio.TypeDef      = require './finitio/type/type_def'

@@ -5,9 +5,9 @@ fs = require('fs')
 program = require('commander');
 
 program
-  .version('0.0.1')
+  .version('finitio.js ' + Finitio.VERSION + ' (c) Bernard, Louis Lambeau & the University of Louvain')
   .usage('[options] SCHEMA.fio [DATA.json]')
-  .option('-c, --compile', 'Compile the input schema')
+  .option('-b, --bundle', 'Bundle the input schema as a javascript loader')
   .option('-v, --validate', 'Valid input data against the schema')
   .option('-f, --fast', 'Stop on first validation error')
   .option('--stack', 'Show stack trace on error')
@@ -75,16 +75,16 @@ strategies.push([
 actions = {}
 
 # Compiles the schema and outputs it on standard output
-actions.compile = ()->
-  console.log Finitio.compile(schemaSource(), world())
+actions.bundle = ()->
+  console.log Finitio.bundle(schemaSource(), world())
 
 # Validate input data using the schema
 actions.validate = ()->
   console.log(schema().dress(data(), world()))
 
 try
-  if program.compile
-    action = actions.compile
+  if program.bundle
+    action = actions.bundle
   else if program.validate
     action = actions.validate
   action()

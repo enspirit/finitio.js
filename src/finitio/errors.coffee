@@ -58,7 +58,7 @@ computeMessage = (info)->
       param = match.slice(2, match.length-1)
       $u.toString(info[param] || data[i])
   else
-    msg
+    msg || info.toString()
 
 computeCauses = (error)->
   $u.map error.children, (c)->

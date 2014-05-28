@@ -23,7 +23,6 @@
     "build": "grunt compile",
     "prepublish": "grunt compile"
   },
-  "main": "bin/finitio-js",
   "dependencies": {
     "commander": "~2.2.0"
   },

@@ -4,11 +4,11 @@
 
 # Finitio.js
 
-_Finitio_ is a language for capturing information structure. A little bit like
-"JSON/XML schema" but on steroids. For more information about _Finitio_
+Finitio is a language for capturing information structure. A little bit like
+"JSON/XML schema" but on steroids. For more information about Finitio
 itself, see [www.finitio.io](http://www.finitio.io)
 
-_Finitio.js_ is the javascript binding of _Finitio_. It allows defining
+Finitio.js is the javascript binding of Finitio. It allows defining
 schemas and validating/coercing data against them in an idiomatic javascript
 way.
 
@@ -22,11 +22,13 @@ Finitio.js is a stable and mature implementation conforming to
 [Finitio 0.4](http://www.finitio.io/reference/0.4.x/). It also comes with the
 following tooling:
 
-* A `finitio-js` command line for validating data and compiling schemas for
-  the browser.
-* Nice error management strategy with understandable messages & stacks.
-* Experimental undressing strategy.
+* A `finitio-js` command line for validating data from a shell
+* A bundler for preparing schemas and systems for use in a browser
+* Nice error management strategy with understandable messages & stacks
 * Try it online, at [http://finitio.io/try](finitio.io/try)
+* A standard library, especially `finitio/data` for dressing numbers, dates
+  times without pain, despite JavaScript weaknesses in that regard
+* Experimental undressing strategy
 
 ## Getting started in Shell
 
@@ -50,13 +52,13 @@ following tooling:
 
 Roughly, getting started with finitio.js in JavaScript code works as follows:
 
-```
+```javascript
 var Finitio = require('../index.js');
 
-// Parses a schema and returns the system object
-var schema = "\n\
-Name = String( s | nonEmpty: s.length>0 )\n\
-[{ who: Name }]\n\
+// Parses a schema and compiles to a System object
+var schema = "                              \n\
+Name = String( s | nonEmpty: s.length>0 )   \n\
+[{ who: Name }]                             \n\
 "
 var system = Finitio.system(schema);
 
@@ -72,17 +74,77 @@ var data = [
 try {
   system.dress(data);
 } catch (ex) {
-  // explainTree() displays the full dressing tree for debugging
-  console.log(ex.explain())
+  // explain the validation errors
+  // `explainTree` can be used for better debugging
+  console.log(ex.explain());
 }
 ```
+
+## Imports and Standard Library
+
+Since Finitio 0.4, imports are supported to split complex schemas in multiple
+files. A standard library has also been started, from which you can import
+too.
+
+```finitio
+# import types from utils.fio and ../support/tools.fio into this schema
+@import ./utils
+@import ../support/tools
+
+# import from the standard library
+@import finitio/data
+
+# import from the web
+@import http://my-finitio-schemas.org/somewhere/somefile
+```
+
+Refer to Finitio's web site for more documentation about
+[imports](http://www.finitio.io/reference/0.4.x/imports) and the
+[standard library](http://www.finitio.io/reference/0.4.x/stdlib).
+
+## Bundling schemas (for the browser)
+
+Complex finitio schemas can also be bundled as one self-contained javascript
+file. The bundling process does not (yet) make schemas independent of
+finitio.js itself (i.e. finitio is still a runtime dependency). However,
+bundling can be used for:
+
+* Checking the validity of your schema ahead of test & runtime time
+* Avoiding costly parsing at runtime
+* Avoiding the import resolution mechanism to occur at runtime, by bundling
+  all dependencies in one file, including schemas from the standard library
+  and the web.
+* Making your schema ready in the browser, in particular not dependent of the
+  file system (for relative imports).
+
+Bundling can be done from a shell, as follows (the --fast option is just used
+to stop on the first schema error):
+
+```shell
+finitio-js --fast --bundle schema.fio
+```
+
+This will generate a javascript bunch of code. This code, when evaluated
+returns a function that can be injected with the world to obtain the
+compiled schema (see more about the world later). In practice:
+
+```javascript
+var schemaCompiler = require('generated-finitio-bundle.js');
+var system = schemaCompiler();
+system.dress({ some: 'data' });
+```
+
+In the scenario above, the schemaCompiler will require finitio by itself.
+In some situations, such as when you use external javascript references,
+however, you will need to pass a world instance for it to work properly.
+This is explained in the next section.
 
 ## Advanced scenarios and the World concept
 
 Finitio relies on a World concept for:
 
-* Resolving external external references at compile time, (e.g. JavaScript's
-  String, Number, Regexp or your own 'classes' when using ADTs), when you
+* Resolving external references at compile time, (e.g. JavaScript's
+  String, Number, Regexp or your own 'classes' when using ADTs), i.e. when you
   call `Finitio.system`.
 * Resolving `@import`s
 * Managing dressing options, e.g. `failfast`
@@ -168,7 +230,7 @@ var ComponentContract = {
 
 At compile time:
 
-```
+```javascript
 var world  = { JsTypes: { ComponentContract: ComponentContract }};
 var schema = 'Component = .Object <id> .Number .ComponentContract';
 var system = Finitio.system(schema, world);
@@ -190,7 +252,7 @@ probably use `Color` everywhere.)
 
 In Finitio,
 
-```
+```finitio
 Byte  = .Number // should be defined more accurately, of course
 Color = .JsColor <rgb> { r: Byte, g: Byte, b: Byte }
 ```
@@ -235,7 +297,7 @@ above is not possible or not wanted.
 
 In Finitio,
 
-```
+```finitio
 Byte  = .Number // should be defined more accurately, of course
 Color = .JsColor <rgb> { r: Byte, g: Byte, b: Byte } .ExternalContract
 ```
@@ -274,10 +336,10 @@ system = Finitio.system(schema, { JsTypes: { ExternalContract: ColorContract } }
 color = system.Color.dress({r: 12, g: 125, b: 98});
 ```
 
-## Rep: Finitio Type -> Javascript Type
+## Representation of Finitio Types as JavaScript types
 
-The `Rep` representation function mapping Finitio types to Javascript types is as
-follows:
+The `Rep` representation function mapping Finitio types to Javascript types is
+as follows:
 
 ```
 # Any is anything in javascript

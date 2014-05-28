@@ -2,7 +2,7 @@ Parser      = require './parser'
 Meta        = require './support/meta'
 $u          = require './support/utils'
 
-class Compiler
+class Bundler
 
   TEMPLATE = """
     (function(){
@@ -23,6 +23,7 @@ class Compiler
         };
       };
       return function(world){
+        if (!world){ world = require('finitio.js').World; }
         world = world.Finitio.world(world);
         world.importResolver = resolver(world.importResolver);
         return world.importResolver('URL', world);
@@ -30,19 +31,19 @@ class Compiler
     })();
   """
 
-  compile: (source, world)->
+  bundle: (source, world)->
     systems = {}
 
     # recursively resolve every import
     system = world.Finitio.parse(source)
-    @_compile(system, world, systems)
+    @_bundle(system, world, systems)
 
     # returns the instantiated template
     TEMPLATE.replace(/^[ ]{4}/, '')
             .replace(/JSONDATA/, JSON.stringify(systems))
             .replace(/URL/, world.sourceUrl)
 
-  _compile: (system, world, systems)->
+  _bundle: (system, world, systems)->
     # dress the system to catch any error immediately
     world.Finitio.system(system, world)
 
@@ -58,6 +59,6 @@ class Compiler
       imp.from = pair[0]
       # recurse on sub-imports
       newWorld = world.Finitio.world(world, { sourceUrl: pair[0] })
-      @_compile(pair[1], newWorld, systems)
+      @_bundle(pair[1], newWorld, systems)
 
-module.exports = Compiler
+module.exports = Bundler
