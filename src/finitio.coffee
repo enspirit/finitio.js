@@ -2,19 +2,17 @@ class Finitio
 
   @VERSION: "0.0.1"
 
-  @JsTypes = {
-    'Finitio':  Finitio
-    'Number':   Number
-    'String':   String
-    'Boolean':  Boolean
-    'Date':     Date
-    'Function': Function
-    'RegExp':   RegExp
-  }
-
   @World = {
     'Finitio': this
-    'JsTypes': @JsTypes
+    'JsTypes': {
+      'Finitio':  Finitio
+      'Number':   Number
+      'String':   String
+      'Boolean':  Boolean
+      'Date':     Date
+      'Function': Function
+      'RegExp':   RegExp
+    }
     'importResolver': require('./finitio/resolver')
   }
 
