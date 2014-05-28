@@ -13,7 +13,7 @@ describe 'Finitio', ->
     (Finitio.VERSION?).should.be.true
 
   it 'has a dress method', ->
-    Finitio.dress(".Number").should.be.an.instanceof System
+    Finitio.system(".Number").should.be.an.instanceof System
 
   it 'has a world utility', ->
     w = Finitio.world(foo: 'bar')

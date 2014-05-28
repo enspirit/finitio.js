@@ -127,7 +127,7 @@ module.exports = (function(){
         if (options && options.raw){
           return pair;
         } else {
-          return world.Finitio.dress(pair[1], world);
+          return world.Finitio.system(pair[1], world);
         }
       }
     }

@@ -19,17 +19,17 @@ Finitio.World.importResolver.tests = (path)->
 module.exports = ->
 
   @Before (callback)->
-    system = TestSystem = Finitio.dress("@import finitio/data")
+    system = TestSystem = Finitio.system("@import finitio/data")
     callback()
 
   @Given /^the System is$/, (source, callback) ->
     try
-      system = Finitio.dress("@import finitio/data\n\n" + source)
+      system = Finitio.system("@import finitio/data\n\n" + source)
       type   = system.Main.trueOne() if system.Main
       callback()
     catch e
       error = e
-      console.log(e.debugTree())
+      console.log(e.explainTree())
       callback.fail(e)
 
   @Given /^the type under test is (.*?)$/, (typeName, callback) ->

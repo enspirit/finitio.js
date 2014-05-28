@@ -14,7 +14,7 @@ class Compiler
           if (cache[path]){
             return cache[path];
           } else if (systems[path]){
-            return cache[path] = Finitio.dress(systems[path], world);
+            return cache[path] = Finitio.system(systems[path], world);
           } else if (fallback) {
             return fallback(path, world);
           } else {
@@ -44,7 +44,7 @@ class Compiler
 
   _compile: (system, world, systems)->
     # dress the system to catch any error immediately
-    world.Finitio.dress(system, world)
+    world.Finitio.system(system, world)
 
     # save it under url in systems
     systems[world.sourceUrl] = system

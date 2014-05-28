@@ -27,7 +27,7 @@ world = ()->
 
 # Loads the schema argument and returns the compiled system
 schema = ()->
-  Finitio.dress(schemaSource(), world())
+  Finitio.system(schemaSource(), world())
 
 # Loads the data arguments and returns it as a data object
 data = ()->
@@ -49,10 +49,9 @@ strategies.push([
     e instanceof Finitio.TypeError
   (e)->
     if program.stack
-      console.log(e.debugTree())
+      console.log(e.explainTree())
     else
-      for c in e.rootCauses
-        console.log("[#{c.location}] #{c.message}")
+      console.log(e.explain())
 ])
 
 strategies.push([

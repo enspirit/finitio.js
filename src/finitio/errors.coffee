@@ -7,6 +7,13 @@ class TypeError extends Error
     @message = computeMessage(this)
     super(@message, @rootCause)
 
+  Object.defineProperty @prototype, 'locatedMessage',
+    get: ()->
+      if @location?
+        "[#{@location}] #{@message}"
+      else
+        @message
+
   Object.defineProperty @prototype, 'causes',
     get: ()->
       @causesCache ?= @children && computeCauses(this)
@@ -23,25 +30,22 @@ class TypeError extends Error
     get: ()->
       @rootCauses[@rootCauses.length - 1]
 
-  debug: ()->
-    str = "[#{@location}] #{@message}\n"
+  explain: ()->
+    str = @locatedMessage + "\n"
     if @rootCauses
       for c in @rootCauses
-        str += "  [#{c.location}] #{c.message}\n"
+        str += "  #{c.locatedMessage}\n"
     str
 
-  debugTree: (depth)->
+  explainTree: (depth)->
     str = ''
     depth ?= 0
     for i in [0...depth]
       str += "  "
-    if @location?
-      str += "[#{@location}] #{@message}\n"
-    else
-      str += "#{@message}\n"
+    str += @locatedMessage + "\n"
     if @causes?
       for c in @causes
-        str += c.debugTree(depth+1)
+        str += c.explainTree(depth+1)
     str
 
 computeMessage = (info)->

@@ -2,7 +2,7 @@
 
 describe "Type#dress, fail fast option", ->
 
-  system = Finitio.dress("Posint = .Number(i | i>0)\n{{ age: Posint }}")
+  system = Finitio.system("Posint = .Number(i | i>0)\n{{ age: Posint }}")
 
   context 'when set', ->
     subject = ->

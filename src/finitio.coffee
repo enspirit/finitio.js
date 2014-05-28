@@ -26,7 +26,7 @@ class Finitio
   @parse = (source, options) ->
     @Parser.parse(source, options || {})
 
-  @dress = (source, world) ->
+  @system = (source, world)->
     source = @parse(source) if typeof(source)=='string'
     @Meta.System.dress(source, @world(world))
 

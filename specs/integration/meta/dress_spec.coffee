@@ -13,7 +13,7 @@ describe 'Meta', ->
     try
       Meta.System.dress(parsed, Finitio.World)
     catch e
-      console.log(e.debugTree())
+      console.log(e.explainTree())
       should(false).eql(true)
 
   it 'supports dressing from the result of the parser', ->
