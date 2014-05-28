@@ -36,9 +36,8 @@ class TupleType extends Type
     callback = (_, attrName)=>
       attr      = @heading.getAttr(attrName) || null
       attrValue = value[attrName]
-      attrValue = null if attrValue is undefined
 
-      if !attrValue? and attr.required
+      if (attrValue is undefined) and attr? and attr.required
         m = Monad.failure attrName, ["Missing attribute `${attrName}`", [attrName]]
         m.onFailure (f)->
           f.location = attrName
@@ -48,7 +47,7 @@ class TupleType extends Type
         m.onFailure (f)->
           f.location = attrName
           m
-      else if attr? and attrValue?
+      else if attr? and (attrValue isnt undefined)
         subm = attr.type.mDress(attrValue, Monad)
         subm.onFailure (error)->
           error.location = attrName
@@ -56,7 +55,7 @@ class TupleType extends Type
         subm.onSuccess (val)->
           result[attrName] = val
           success
-      else if attrValue?
+      else if (attrValue isnt undefined)
         result[attrName] = attrValue
         success
       else

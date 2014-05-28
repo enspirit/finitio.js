@@ -58,6 +58,17 @@ describe "TupleType#dress", ->
         it 'should have expected root cause', ->
           should(subject.rootCause.message).equal("Missing attribute `g`")
 
+      context 'with a missing attribute (undefined)', ->
+        arg = { "r": 12, "g": undefined, "b": 13 }
+        subject = lambda(arg)
+
+        it 'should raise a TypeError', ->
+          should(subject).be.an.instanceof(TypeError)
+          should(subject.message).equal('Invalid Tuple')
+
+        it 'should have expected root cause', ->
+          should(subject.rootCause.message).equal("Missing attribute `g`")
+
       context 'with an extra attribute', ->
         arg = { "r": 12, "g": 13, "extr": 165 }
         subject = lambda(arg)
@@ -75,6 +86,13 @@ describe "TupleType#dress", ->
 
         it 'should raise a TypeError', ->
           should(subject.rootCause.message).equal("Invalid Number: `255`")
+
+      context 'with a null attribute', ->
+        arg = { "r": 12, "g": 13, "b": null }
+        subject = lambda(arg)
+
+        it 'should raise a TypeError', ->
+          should(subject.rootCause.message).equal("Invalid Number: `null`")
 
   context 'when not allowing extra', ->
     heading = new Heading([r, g, maybe_b], allowExtra: true)
