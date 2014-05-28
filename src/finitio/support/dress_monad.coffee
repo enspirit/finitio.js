@@ -29,6 +29,7 @@ class DressMonad
         if m.isFailure()
           m.error.location = i unless m.error.location?
           causes.push(m.error)
+          break if @isFailfast()
       return base if causes.length == 0
       onFailure(causes)
     else
@@ -43,6 +44,9 @@ class DressMonad
         result.push(elmResult)
         m
     @refine success, collection, callback, onFailure
+
+  isFailfast: ()->
+    @world && @world.failfast
 
   isSuccess: ()->
     @error is undefined

@@ -52,3 +52,25 @@ describe "Dressmonad.refine", ->
     }
     should(m.error).eql(expected)
 
+  it 'stop on first failure when failfast is used', ->
+    monad = new Monad(failfast: true)
+
+    callback = (_, x, i)->
+      if x == 1 or x == 3
+        monad.failure x, "Failed on #{x} and #{i}"
+      else
+        _
+    onFailure = (causes)->
+      monad.failure 'foo', "Failed", causes
+    m = monad.refine success([]), [1, 2, 3], callback, onFailure
+
+    should(m.isSuccess()).eql(false)
+
+    expected = {
+      error: "Failed",
+      children: [
+        { error: "Failed on 1 and 0", location: 0 }
+      ]
+    }
+    should(m.error).eql(expected)
+

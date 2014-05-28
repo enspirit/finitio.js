@@ -28,10 +28,10 @@ class System
       relevant = $u.filter @imports, (i)-> !i.qualifier
       @_resolveImported([{system: this}].concat(relevant), ref, callback)
 
-  dress: (value) ->
+  dress: (value, world) ->
     unless this.Main
       throw new Error("No main on System")
-    this.Main.dress(value)
+    this.Main.dress(value, world)
 
   clone: ->
     new System($u.clone(@imports), $u.clone(@types))

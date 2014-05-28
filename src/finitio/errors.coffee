@@ -35,8 +35,11 @@ class TypeError extends Error
     depth ?= 0
     for i in [0...depth]
       str += "  "
-    str += " [#{@location}] #{@message}\n"
-    if @causes
+    if @location?
+      str += "[#{@location}] #{@message}\n"
+    else
+      str += "#{@message}\n"
+    if @causes?
       for c in @causes
         str += c.debugTree(depth+1)
     str

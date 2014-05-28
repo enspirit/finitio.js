@@ -20,7 +20,10 @@ class TypeDef extends Type
   _mDress: (value, Monad)->
     m = @type.mDress(value, Monad)
     m.onFailure (cause)=>
-      cause.typeName = @name
+      if @name is 'Main'
+        cause.typeName = 'Data'
+      else
+        cause.typeName = @name
       m
 
   _undress: (value, as)->
