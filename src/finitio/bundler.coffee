@@ -5,28 +5,30 @@ $u          = require './support/utils'
 class Bundler
 
   TEMPLATE = """
-    (function(){
-      var systems = JSONDATA;
-      var cache = {
-      };
-      var resolver = function(fallback){
-        return function(path, world){
-          if (cache[path]){
-            return cache[path];
-          } else if (systems[path]){
-            return cache[path] = Finitio.system(systems[path], world);
+    module.exports = (function(){
+      var ss = JSONDATA;
+      var r = function(fallback){
+        return function(path, w, options){
+          var s = ss[path];
+          if (s){
+            if (options.raw){
+              return [ path, s ];
+            } else {
+              return w.Finitio.system(s, w);
+            }
           } else if (fallback) {
-            return fallback(path, world);
+            return fallback(path, w, options);
           } else {
             throw new Error('Unable to resolve: `' + path + '`');
           }
         };
       };
-      return function(world){
-        if (!world){ world = require('finitio.js').World; }
-        world = world.Finitio.world(world);
-        world.importResolver = resolver(world.importResolver);
-        return world.importResolver('URL', world);
+      return function(w, options){
+        if (!w){ w = require('finitio.js').World; }
+        w = w.Finitio.world(w, {
+          importResolver: r(w.importResolver)
+        });
+        return w.importResolver('URL', w, options);
       };
     })();
   """
