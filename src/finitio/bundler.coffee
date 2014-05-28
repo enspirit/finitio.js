@@ -1,6 +1,7 @@
 Parser      = require './parser'
 Meta        = require './support/meta'
 $u          = require './support/utils'
+fs          = require 'fs'
 
 class Bundler
 
@@ -11,7 +12,7 @@ class Bundler
         return function(path, w, options){
           var s = ss[path];
           if (s){
-            if (options.raw){
+            if (options && options.raw){
               return [ path, s ];
             } else {
               return w.Finitio.system(s, w);
@@ -33,34 +34,46 @@ class Bundler
     })();
   """
 
-  bundle: (source, world)->
-    systems = {}
+  constructor: (@world)->
+    @systems = {}
 
-    # recursively resolve every import
-    system = world.Finitio.parse(source)
-    @_bundle(system, world, systems)
-
-    # returns the instantiated template
+  flush: ->
     TEMPLATE.replace(/^[ ]{4}/, '')
-            .replace(/JSONDATA/, JSON.stringify(systems))
-            .replace(/URL/, world.sourceUrl)
+            .replace(/JSONDATA/, JSON.stringify(@systems))
+            .replace(/URL/, @world.sourceUrl)
 
-  _bundle: (system, world, systems)->
+  addDirectory: (path) ->
+    throw new Error("Bundling directories is not supported")
+
+  addFile: (path) ->
+    if fs.lstatSync(path).isDirectory()
+      @addDirectory(path)
+    else
+      src = fs.readFileSync(path).toString()
+      @addSource(src)
+    this
+
+  addSource: (source) ->
+    # recursively resolve every import
+    @_bundle(@world.Finitio.parse(source))
+    this
+
+  _bundle: (system)->
     # dress the system to catch any error immediately
-    world.Finitio.system(system, world)
+    @world.Finitio.system(system, @world)
 
     # save it under url in systems
-    systems[world.sourceUrl] = system
+    @systems[@world.sourceUrl] = system
     return unless system.imports
 
     # recursively resolve imports
     for imp in system.imports
       # resolve in raw mode
-      pair = world.importResolver(imp.from, world, raw: true)
+      pair = @world.importResolver(imp.from, @world, raw: true)
       # set the resolved URL, dress the system for catching errors
       imp.from = pair[0]
       # recurse on sub-imports
-      newWorld = world.Finitio.world(world, { sourceUrl: pair[0] })
-      @_bundle(pair[1], newWorld, systems)
+      newWorld = @world.Finitio.world(@world, { sourceUrl: pair[0] })
+      @_bundle(pair[1], newWorld)
 
 module.exports = Bundler

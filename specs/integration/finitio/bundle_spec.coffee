@@ -3,7 +3,7 @@
 describe 'Bundler', ->
 
   subject = ->
-    Finitio.bundle(Fixtures.loadFile('test.fio'))
+    Finitio.bundleSource(Fixtures.loadFile('test.fio'))
 
   it 'returns a string', ->
     should(subject()).be.an.instanceof(String)

@@ -32,8 +32,11 @@ class Finitio
     source = @parse(source) if typeof(source)=='string'
     @Meta.System.dress(source, @world(world))
 
-  @bundle = (source, world) ->
-    (new @Bundler()).bundle(source, @world(world))
+  @bundleFile = (path, world) ->
+    (new @Bundler(@world(world))).addFile(path).flush()
+
+  @bundleSource = (source, world) ->
+    (new @Bundler(@world(world))).addSource(source).flush()
 
 ##
 Finitio.TypeError    = require('./finitio/errors').TypeError

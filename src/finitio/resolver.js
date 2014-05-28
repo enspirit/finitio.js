@@ -103,13 +103,8 @@ module.exports = (function(){
 
     // establish the paths
     var name = match[1];
-    var fullPath = "file://" + __dirname + '/stdlib/' + name + '.fio';
-
-    // recurse to resolve it through the file
     try {
-      var resolved = world.importResolver(fullPath, world, {raw: true});
-      var url = 'http://finitio.io/' + world.Finitio.VERSION + '/stdlib/' + name;
-      return [ url, resolved[1] ];
+      return require('./stdlib/' + name)(world, {raw: true});
     } catch (e) {
       throw new Error("No such stdlib system: `" + path + "`", e);
     }

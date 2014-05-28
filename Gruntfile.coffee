@@ -9,6 +9,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-jshint'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
+  grunt.loadNpmTasks 'grunt-shell'
   grunt.loadNpmTasks 'grunt-cucumber'
   grunt.loadNpmTasks 'grunt-peg'
   grunt.loadNpmTasks 'grunt-mocha-test'
@@ -30,7 +31,12 @@ module.exports = (grunt) ->
     'clean',
     'peg:build',
     'copy:build',
-    'coffee:build'
+    'coffee:build',
+    'stdlib:build'
+  ]
+
+  grunt.registerTask 'stdlib:build', [
+    'shell:stdlib'
   ]
 
   grunt.registerTask 'compile', [
@@ -40,7 +46,7 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'test', [
-    'peg:build',
+    'build',
     'fixtures2js'
     'test:unit',
     'test:integration',
@@ -140,6 +146,10 @@ module.exports = (grunt) ->
             'type_def',
             'import_def'
           ]
+
+    shell:
+      stdlib:
+        command: './bin/finitio-js --bundle --url http://finitio.io/0.4/stdlib/data src/finitio/stdlib/data.fio > src/finitio/stdlib/data.js'
 
     # Transforms the test fixtures to js files
     fixtures2js:
