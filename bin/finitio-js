@@ -87,6 +87,10 @@ try
     action = actions.bundle
   else if program.validate
     action = actions.validate
-  action()
+
+  if action?
+    action()
+  else
+    program.outputHelp()
 catch e
   errorManager(e)
