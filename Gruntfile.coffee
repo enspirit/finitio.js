@@ -67,8 +67,8 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'travis', [
-    'compile',
     'test',
+    'compile',
     'connect',
     'saucelabs-mocha'
   ]
