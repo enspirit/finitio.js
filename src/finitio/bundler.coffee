@@ -25,7 +25,6 @@ class Bundler
         };
       };
       return function(w, options){
-        if (!w){ w = require('finitio.js').World; }
         w = w.Finitio.world(w, {
           importResolver: r(w.importResolver)
         });
