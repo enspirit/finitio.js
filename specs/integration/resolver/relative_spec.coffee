@@ -18,7 +18,7 @@ describe "Resolver.Relative", ->
         Relative('./no-such-one', world)
       should(lambda).throw("No such file: `specs/integration/fixtures/no-such-one`")
 
-  if $u.isBrowser
+  if $u.isBrowser()
     it.skip 'works, but not in the browser', ->
   else
     it 'works provided the file system is available', tests

@@ -20,7 +20,7 @@ describe "Resolver.File", ->
       should(s[0]).equal("file://specs/integration/fixtures/test")
       should(s[1].types).not.equal(undefined)
 
-  if $u.isBrowser
+  if $u.isBrowser()
     it.skip 'works, but not in the browser', ->
   else
     it 'works provided the file system is available', tests
