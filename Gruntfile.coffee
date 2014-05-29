@@ -176,6 +176,7 @@ module.exports = (grunt) ->
           'dist/finitio.tests.js': ['build/specs/**/*.js']
         options:
           extensions: ['.js']
+          alias: ['node_modules/should/index.js:should']
 
     # Minify distributed library
     uglify:
