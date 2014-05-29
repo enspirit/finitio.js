@@ -14,3 +14,11 @@ install:
 - npm install
 script:
 - grunt --stack travis
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/a2ae5a1789805df4e72e
+    on_success: change
+    on_failure: always
+    on_start: false
