@@ -67,8 +67,13 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'travis', [
-    'test',
-    'compile',
+    'build',
+    'browserify',
+    'uglify'
+    'fixtures2js'
+    'test:unit',
+    'test:integration',
+    'test:acceptance',
     'connect',
     'saucelabs-mocha'
   ]
