@@ -13,11 +13,12 @@ class DressMonad
   find: (collection, callback, onFailure)->
     causes = []
     for i in [0...collection.length]
-      m = callback(collection[i], i)
+      element = collection[i]
+      m = callback(element, i)
       if m.isSuccess()
         return m
       else
-        m.error.location = i unless m.error.location?
+        setErrorLocation(m.error, element, i) unless m.error.location?
         causes.push(m.error)
     onFailure(causes)
 
@@ -25,9 +26,10 @@ class DressMonad
     if base.isSuccess()
       causes = []
       for i in [0...collection.length]
-        m = callback(base, collection[i], i)
+        element = collection[i]
+        m = callback(base, element, i)
         if m.isFailure()
-          m.error.location = i unless m.error.location?
+          setErrorLocation(m.error, element, i) unless m.error.location?
           causes.push(m.error)
           break if @isFailfast()
       return base if causes.length == 0
@@ -61,5 +63,10 @@ class DressMonad
   onFailure: (callback)->
     return this if @isSuccess()
     callback(@error)
+
+setErrorLocation = (error, element, index)->
+  loc  = element.name
+  loc ?= index
+  error.location = loc
 
 module.exports = DressMonad

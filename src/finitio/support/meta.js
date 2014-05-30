@@ -36,7 +36,7 @@ module.exports = (function(){
     jsType: Function,
     contracts: [
       Contract.info({
-        name: 'name',
+        name: 'jsTypeName',
         infoType: Js.String,
         explicit: {
           dress: function(name, world){

@@ -57,13 +57,20 @@ computeMessage = (info)->
       i += 1
       param = match.slice(2, match.length-1)
       $u.toString(info[param] || data[i])
+  else if typeof(msg) == 'string'
+    msg
   else
-    msg || info.toString()
+    info.toString()
 
 computeCauses = (error)->
   $u.map error.children, (c)->
     c.location = appendPath(error.location, c.location)
-    new TypeError(c)
+    if c instanceof TypeError
+      c
+    else if c instanceof Error
+      new TypeError({ error: c.message, location: c.location })
+    else
+      new TypeError(c)
 
 computeRootCauses = (error, cache)->
   if error.causes
