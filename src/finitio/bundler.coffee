@@ -55,25 +55,25 @@ class Bundler
 
   addSource: (source) ->
     # recursively resolve every import
-    @_bundle(@world.Finitio.parse(source))
+    @_bundle(@world.Finitio.parse(source), @world)
     this
 
-  _bundle: (system)->
+  _bundle: (system, world)->
     # dress the system to catch any error immediately
-    @world.Finitio.system(system, @world)
+    world.Finitio.system(system, world)
 
     # save it under url in systems
-    @systems[@world.sourceUrl] = system
+    @systems[world.sourceUrl] = system
     return unless system.imports
 
     # recursively resolve imports
     for imp in system.imports
       # resolve in raw mode
-      pair = @world.importResolver(imp.from, @world, raw: true)
+      pair = world.importResolver(imp.from, world, raw: true)
       # set the resolved URL, dress the system for catching errors
       imp.from = pair[0]
       # recurse on sub-imports
-      newWorld = @world.Finitio.world(@world, { sourceUrl: pair[0] })
+      newWorld = world.Finitio.world(world, { sourceUrl: pair[0] })
       @_bundle(pair[1], newWorld)
 
 module.exports = Bundler

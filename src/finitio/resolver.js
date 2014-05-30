@@ -123,7 +123,8 @@ module.exports = (function(){
         if (options && options.raw){
           return pair;
         } else {
-          return world.Finitio.system(pair[1], world);
+          var newWorld = world.Finitio.world(world, { sourceUrl: pair[0] });
+          return world.Finitio.system(pair[1], newWorld);
         }
       }
     }
