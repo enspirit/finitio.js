@@ -60,7 +60,7 @@ class Bundler
 
   _bundle: (system, world)->
     # dress the system to catch any error immediately
-    world.Finitio.system(system, world)
+    world.Finitio.system(system, world) if world.check
 
     # save it under url in systems
     @systems[world.sourceUrl] = system

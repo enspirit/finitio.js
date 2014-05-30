@@ -11,6 +11,7 @@ program
   .option('--url [url]', 'Specify the bundle global url')
   .option('-v, --validate', 'Valid input data against the schema')
   .option('-f, --fast', 'Stop on first validation error')
+  .option('--no-check', 'Do not try to check the system before bundling')
   .option('--stack', 'Show stack trace on error')
   .parse(process.argv)
 
@@ -31,7 +32,10 @@ schemaSource = ()->
   schemaSource = fs.readFileSync(schemaFile).toString()
 
 world = ()->
-  { sourceUrl: sourceUrl(), failfast: program.fast }
+  w = { sourceUrl: sourceUrl(), failfast: program.fast }
+  if program.check
+    w.check = true
+  w
 
 # Loads the schema argument and returns the compiled system
 schema = ()->
