@@ -5,12 +5,16 @@ should      = require 'should'
 
 describe 'System#resolve', ->
 
-  a = { name: 'A' }
-  b = { name: 'B' }
-  c = { name: 'C' }
-  d = { name: 'D' }
-  e = { name: 'E' }
-  f = { name: 'F' }
+  typedef = (t)->
+    t.trueOne = ()-> t
+    t
+
+  a = typedef({ name: 'A' })
+  b = typedef({ name: 'B' })
+  c = typedef({ name: 'C' })
+  d = typedef({ name: 'D' })
+  e = typedef({ name: 'E' })
+  f = typedef({ name: 'F' })
 
   system = new System [ 
       { system: new System( [ { system: new System([], [e]) } ], [a]) }

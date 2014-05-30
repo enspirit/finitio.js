@@ -15,7 +15,7 @@ class System
   constructor: (@imports, @types) ->
     @imports ?= []
     @types   ?= []
-    $u.each @types, (t)=> this[t.name] = t
+    $u.each @types, (t)=> this[t.name] = t.trueOne()
 
   Fetchable this, "types", "type", (name)->
     $u.find @types, (t)-> t.name == name
