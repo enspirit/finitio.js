@@ -18,9 +18,10 @@ module.exports = (function(){
 
   /**
     * Detects whether the javascript environment is a browser or not (node)
+    * (naive approach)
     */
   $u.isBrowser = function(){
-    return !(typeof exports !== 'undefined' && this.exports !== exports);
+    return typeof(window) === 'object';
   };
 
   /**
