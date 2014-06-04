@@ -1,5 +1,5 @@
 {
-  "name": "finitio.js",
+  "name": "finitio",
   "version": "0.1.0",
   "description": "Finitio is a language for capturing information structure.",
   "main": "index.js",
