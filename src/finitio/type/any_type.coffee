@@ -22,4 +22,7 @@ class AnyType extends Type
 
   resolveProxies: (system)->
 
+  toString: ()->
+    return '.'
+
 module.exports = AnyType

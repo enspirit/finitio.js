@@ -63,4 +63,7 @@ class UnionType extends Type
   resolveProxies: (system)->
     $u.each @candidates, (c)-> c.resolveProxies(system)
 
+  toString: ()->
+    $u.map(@candidates, (c)-> c.toString()).join('|')
+
 module.exports = UnionType

@@ -47,5 +47,8 @@ class TypeDef extends Type
   resolveProxies: (system)->
     @type.resolveProxies(system)
 
+  toString: ()->
+    @name
+
 #
 module.exports = TypeDef

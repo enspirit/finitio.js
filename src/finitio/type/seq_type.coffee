@@ -29,5 +29,8 @@ class SeqType extends CollectionType
   resolveProxies: (system)->
     @elmType.resolveProxies(system)
 
+  toString: ()->
+    "[" + @elmType.toString() + "]"
+
 #
 module.exports = SeqType

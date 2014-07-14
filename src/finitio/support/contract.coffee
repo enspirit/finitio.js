@@ -17,6 +17,9 @@ class Contract
   resolveProxies: (system)->
     @infoType.resolveProxies(system)
 
+  toString: ()->
+    "<" + @name + "> " + @infoType.toString()
+
 class Contract.Explicit extends Contract
   kind: 'explicit'
 

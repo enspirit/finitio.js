@@ -59,6 +59,9 @@ class SubType extends Type
       @superTypeEquals(other) and @constraintsEquals(other)) or
     super
 
+  toString: ()->
+    @superType.toString() + "( x | ... )"
+
   # private
 
   superTypeEquals: (other) ->

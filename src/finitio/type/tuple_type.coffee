@@ -112,6 +112,9 @@ class TupleType extends Type
     (other instanceof TupleType and @heading.equals(other.heading)) or
     super
 
+  toString: ()->
+    "{ " + @heading.toString() + " }"
+
   ## 'Private' methods
 
   _attributesHash = (heading)->

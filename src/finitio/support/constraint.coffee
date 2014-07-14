@@ -20,11 +20,22 @@ class Constraint
     (this is other) or
     (other instanceof Constraint and @native==other.native)
 
+  toString: () ->
+    str = @nativeToString()
+    str = @name + ": " + str unless @isAnonymous()
+    str
+
+  nativeToString: () ->
+    @native.toString()
+
 class Constraint.Native extends Constraint
   kind: 'native'
 
   accept: (arg) ->
     @native(arg)
+
+  nativeToString: () ->
+    @native.finitioSourceCode || "..."
 
 class Constraint.Regexp extends Constraint
   kind: 'regexp'

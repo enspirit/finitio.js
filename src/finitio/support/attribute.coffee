@@ -38,12 +38,6 @@ class Attribute
 
     return arg[@name]
 
-  toName: ->
-    if @required
-      "#{@name}: #{@type}"
-    else
-      "#{@name} :? #{@type}"
-
   isSuperAttributeOf: (other) ->
     (this is other) or
     (@name == other.name and
@@ -59,6 +53,12 @@ class Attribute
 
   resolveProxies: (system)->
     @type.resolveProxies(system)
+
+  toString: ->
+    if @required
+      "#{@name} : #{@type}"
+    else
+      "#{@name} :? #{@type}"
 
 #
 module.exports = Attribute

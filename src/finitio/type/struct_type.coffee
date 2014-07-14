@@ -74,4 +74,7 @@ class StructType extends Type
   resolveProxies: (system)->
     $u.each @componentTypes, (c)-> c.resolveProxies(system)
 
+  toString: ()->
+    "<" + $u.map(@componentTypes, (t)-> t.toString()).join(',') + ">"
+
 module.exports = StructType

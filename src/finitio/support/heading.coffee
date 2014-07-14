@@ -54,8 +54,12 @@ class Heading
   each: (callback) ->
     $u.each(@attributes, callback)
 
-  toName: ->
-    $u.map(@attributes, (a) -> a.toName()).join(', ')
+  toString: ->
+    str = $u.map(@attributes, (a) -> a.toString()).join(', ')
+    if @allowExtra()
+      str += ", " unless @isEmpty()
+      str += "..."
+    str
 
   names: ->
     $u.map(@attributes, (a) -> a.name)

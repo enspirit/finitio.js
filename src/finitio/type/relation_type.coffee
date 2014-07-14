@@ -67,5 +67,8 @@ class RelationType extends Type
   resolveProxies: (system)->
     @heading.resolveProxies(system)
 
+  toString: ()->
+    "{{ " + @heading.toString() + " }}"
+
 #
 module.exports = RelationType

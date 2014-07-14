@@ -66,5 +66,8 @@ class AdType extends Type
   resolveProxies: (system)->
     $u.each @contracts, (c)-> c.resolveProxies(system)
 
+  toString: ()->
+    $u.map(@contracts, (c)-> c.toString()).join(', ')
+
 #
 module.exports = AdType

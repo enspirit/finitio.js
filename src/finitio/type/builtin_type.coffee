@@ -24,7 +24,7 @@ class BuiltinType extends Type
     super
 
   toString: ->
-    @jsType.name.toString()
+    '.' + @jsType.name.toString()
 
   resolveProxies: (system)->
 

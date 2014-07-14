@@ -51,5 +51,8 @@ class TypeRef extends Type
       throw new Error("Proxy is not resolved")
     @target
 
+  toString: ()->
+    @typeName
+
 #
 module.exports = TypeRef
