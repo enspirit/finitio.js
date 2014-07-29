@@ -30,6 +30,13 @@ Feature: TestSystem.Integer
       | message                 |
       | Invalid Integer: `null` |
 
+  Scenario: Against true
+
+    Given I dress JSON's 'true'
+    Then it should be a TypeError as:
+      | message                 |
+      | Invalid Integer: `true` |
+
   Scenario: Against an arbitrary value
 
     Given I dress JSON's '"foo"'
