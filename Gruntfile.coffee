@@ -41,7 +41,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'compile', [
     'build',
-    'browserify',
+    'browserify:main',
     'uglify'
   ]
 
