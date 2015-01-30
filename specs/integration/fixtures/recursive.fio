@@ -1,0 +1,8 @@
+Logical = .Field <raw> {
+    id       :  .String
+    children :? [Logical]
+}
+Physical = {
+    id        :  .String
+    children  :? [Physical]
+}
