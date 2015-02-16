@@ -5330,6 +5330,10 @@ module.exports = (function(){
       return (this === other) || (other instanceof Attribute && (this.name === other.name) && (this.required === other.required) && this.type.equals(other.type));
     };
 
+    Attribute.prototype.low = function() {
+      return new Attribute(this.name, this.type.low(), this.required);
+    };
+
     Attribute.prototype.resolveProxies = function(system) {
       return this.type.resolveProxies(system);
     };
@@ -5928,6 +5932,15 @@ module.exports = (function(){
       return $u.size(this.options) === $u.size(other.options) && $u.every(this.options, function(opt, name) {
         return opt === other.options[name];
       });
+    };
+
+    Heading.prototype.low = function() {
+      var reattrs, reopts;
+      reattrs = $u.map(this.attributes, function(a) {
+        return a.low();
+      });
+      reopts = this.options;
+      return new Heading(reattrs, reopts);
     };
 
     _attributesByName = function(self) {
@@ -7082,6 +7095,13 @@ module.exports = (function(){
       return this.Main.dress(value, world);
     };
 
+    System.prototype.undress = function(value, world) {
+      if (!this.Main) {
+        throw new Error("No main on System");
+      }
+      return this.Main.undress(value, this.Main.low());
+    };
+
     System.prototype.clone = function() {
       return new System($u.clone(this.imports), $u.clone(this.types));
     };
@@ -7343,6 +7363,10 @@ module.exports = (function(){
       }
     };
 
+    AdType.prototype.low = function() {
+      return this.contracts[0].infoType.low();
+    };
+
     AdType.prototype.resolveProxies = function(system) {
       return $u.each(this.contracts, function(c) {
         return c.resolveProxies(system);
@@ -7399,6 +7423,10 @@ module.exports = (function(){
       return (other instanceof AnyType) || AnyType.__super__._equals.apply(this, arguments);
     };
 
+    AnyType.prototype.low = function() {
+      return this;
+    };
+
     AnyType.prototype.resolveProxies = function(system) {};
 
     AnyType.prototype.toString = function() {
@@ -7452,6 +7480,10 @@ module.exports = (function(){
 
     BuiltinType.prototype._equals = function(other) {
       return (this === other) || (other instanceof BuiltinType && other.jsType === this.jsType) || BuiltinType.__super__._equals.apply(this, arguments);
+    };
+
+    BuiltinType.prototype.low = function() {
+      return this;
     };
 
     BuiltinType.prototype.toString = function() {
@@ -7567,6 +7599,10 @@ module.exports = (function(){
       return (this === other) || (other instanceof RelationType && this.heading.equals(other.heading)) || RelationType.__super__._equals.apply(this, arguments);
     };
 
+    RelationType.prototype.low = function() {
+      return new RelationType(this.heading.low());
+    };
+
     RelationType.prototype.resolveProxies = function(system) {
       return this.heading.resolveProxies(system);
     };
@@ -7637,6 +7673,10 @@ module.exports = (function(){
         $u.undressError("Unable to undress `" + value + "` to `" + as + "`");
       }
       return SeqType.__super__._undress.apply(this, arguments);
+    };
+
+    SeqType.prototype.low = function() {
+      return new SeqType(this.elmType.low());
     };
 
     SeqType.prototype.resolveProxies = function(system) {
@@ -7732,6 +7772,10 @@ module.exports = (function(){
         $u.undressError("Unable to undress `" + value + "` to `" + as + "`");
       }
       return SetType.__super__._undress.apply(this, arguments);
+    };
+
+    SetType.prototype.low = function() {
+      return new SetType(this.elmType.low());
     };
 
     SetType.prototype.resolveProxies = function(system) {
@@ -7851,6 +7895,14 @@ module.exports = (function(){
       });
     };
 
+    StructType.prototype.low = function() {
+      var remapped;
+      remapped = $u.map(this.componentTypes, function(t) {
+        return t.low();
+      });
+      return new StructType(remapped);
+    };
+
     StructType.prototype.resolveProxies = function(system) {
       return $u.each(this.componentTypes, function(c) {
         return c.resolveProxies(system);
@@ -7957,6 +8009,10 @@ module.exports = (function(){
 
     SubType.prototype._equals = function(other) {
       return (this === other) || (other instanceof SubType && this.superTypeEquals(other) && this.constraintsEquals(other)) || SubType.__super__._equals.apply(this, arguments);
+    };
+
+    SubType.prototype.low = function() {
+      return this.superType.low();
     };
 
     SubType.prototype.toString = function() {
@@ -8135,6 +8191,10 @@ module.exports = (function(){
       return (this === other) || (other instanceof TupleType && this.heading.equals(other.heading)) || TupleType.__super__._equals.apply(this, arguments);
     };
 
+    TupleType.prototype.low = function() {
+      return new TupleType(this.heading.low());
+    };
+
     TupleType.prototype.toString = function() {
       return "{ " + this.heading.toString() + " }";
     };
@@ -8261,6 +8321,10 @@ module.exports = (function(){
       return this.type;
     };
 
+    TypeDef.prototype.low = function() {
+      return this.type.low();
+    };
+
     TypeDef.prototype.resolveProxies = function(system) {
       return this.type.resolveProxies(system);
     };
@@ -8340,6 +8404,10 @@ module.exports = (function(){
 
     TypeRef.prototype.trueOne = function() {
       return this.resolved().trueOne();
+    };
+
+    TypeRef.prototype.low = function() {
+      return this.resolved().low();
     };
 
     TypeRef.prototype.resolve = function(system) {
@@ -8462,6 +8530,10 @@ module.exports = (function(){
         });
       });
       return ok && (!andback || other.candidatesEquals(this, false));
+    };
+
+    UnionType.prototype.low = function() {
+      throw "UnionType#low is not defined yet, sorry!";
     };
 
     UnionType.prototype.resolveProxies = function(system) {
