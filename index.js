@@ -1,1 +1,1 @@
-module.exports = Finitio = require("./build/src/finitio");
+module.exports = Finitio = require("./dist/finitio");

@@ -110,7 +110,7 @@ module.exports = (grunt) ->
     #################################################################### Build
 
     # Cleans compilation results
-    clean: [ 'build', 'dist' ]
+    clean: [ 'build' ]
 
     # Build .coffee sources to .js, from src/ to build/
     coffee:
@@ -170,7 +170,7 @@ module.exports = (grunt) ->
     browserify:
       main:
         files:
-          'dist/finitio.js': ['index.js']
+          'dist/finitio.js': ['build/src/finitio.js']
         options:
           standalone: 'Finitio'
           extensions: ['.js']

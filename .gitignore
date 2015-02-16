@@ -21,4 +21,3 @@ src/finitio/parser.js
 src/finitio/stdlib/*.js
 
 build/*
-dist/*
