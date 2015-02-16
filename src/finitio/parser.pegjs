@@ -280,6 +280,7 @@ literal =
 / real_literal
 / integer_literal
 / boolean_literal
+/ array_literal
 
 string_literal =
   s:$(["] ([\\]["] / !["] .)* ["]) {
@@ -299,6 +300,14 @@ real_literal =
 boolean_literal =
   "true"  { return true;  }
 / "false" { return false; }
+
+array_literal =
+  '[' spacing head:literal tail:(opt_comma literal)* spacing ']' {
+    return headTailToArray(head, tail);
+  }
+/ '[' spacing ']' {
+    return [];
+  }
 
 // LEXER (names)
 
