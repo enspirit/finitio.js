@@ -71,6 +71,10 @@ class StructType extends Type
     $u.size(@componentTypes) == $u.size(other.componentTypes) and
     $u.every(@componentTypes, (t, i) -> other.componentTypes[i].equals(t))
 
+  low: ()->
+    remapped = $u.map(@componentTypes, (t)-> t.low())
+    new StructType(remapped)
+
   resolveProxies: (system)->
     $u.each @componentTypes, (c)-> c.resolveProxies(system)
 

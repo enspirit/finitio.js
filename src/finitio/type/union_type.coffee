@@ -60,6 +60,9 @@ class UnionType extends Type
       $u.any other.candidates, (c2)-> c.equals(c2)
     ok and (!andback or other.candidatesEquals(this, false))
 
+  low: ()->
+    throw "UnionType#low is not defined yet, sorry!"
+
   resolveProxies: (system)->
     $u.each @candidates, (c)-> c.resolveProxies(system)
 

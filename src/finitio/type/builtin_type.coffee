@@ -23,6 +23,9 @@ class BuiltinType extends Type
     (other instanceof BuiltinType and other.jsType == @jsType) or
     super
 
+  low: () ->
+    this
+
   toString: ->
     '.' + @jsType.name.toString()
 

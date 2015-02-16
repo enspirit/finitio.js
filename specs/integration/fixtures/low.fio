@@ -1,0 +1,6 @@
+@import finitio/data
+
+{
+  name       : String
+  releasedAt : Date
+}

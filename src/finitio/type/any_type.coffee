@@ -20,6 +20,9 @@ class AnyType extends Type
   _equals: (other) ->
     (other instanceof AnyType) or super
 
+  low: () ->
+    this
+
   resolveProxies: (system)->
 
   toString: ()->

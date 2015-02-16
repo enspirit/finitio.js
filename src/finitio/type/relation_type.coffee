@@ -64,6 +64,9 @@ class RelationType extends Type
     (other instanceof RelationType and @heading.equals(other.heading)) or
     super
 
+  low: ()->
+    new RelationType(@heading.low())
+
   resolveProxies: (system)->
     @heading.resolveProxies(system)
 

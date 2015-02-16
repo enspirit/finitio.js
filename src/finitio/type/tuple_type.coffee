@@ -112,6 +112,9 @@ class TupleType extends Type
     (other instanceof TupleType and @heading.equals(other.heading)) or
     super
 
+  low: ()->
+    new TupleType(@heading.low())
+
   toString: ()->
     "{ " + @heading.toString() + " }"
 

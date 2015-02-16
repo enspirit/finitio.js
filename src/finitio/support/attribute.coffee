@@ -51,6 +51,9 @@ class Attribute
      (@required == other.required) and
      @type.equals(other.type))
 
+  low: ()->
+    new Attribute(@name, @type.low(), @required)
+
   resolveProxies: (system)->
     @type.resolveProxies(system)
 

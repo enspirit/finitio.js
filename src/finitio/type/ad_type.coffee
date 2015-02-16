@@ -63,6 +63,9 @@ class AdType extends Type
     else
       super
 
+  low: ()->
+    @contracts[0].infoType.low()
+
   resolveProxies: (system)->
     $u.each @contracts, (c)-> c.resolveProxies(system)
 

@@ -33,6 +33,11 @@ class System
       throw new Error("No main on System")
     this.Main.dress(value, world)
 
+  undress: (value, world) ->
+    unless this.Main
+      throw new Error("No main on System")
+    this.Main.undress(value, this.Main.low())
+
   clone: ->
     new System($u.clone(@imports), $u.clone(@types))
 

@@ -44,6 +44,9 @@ class TypeDef extends Type
   trueOne: ()->
     @type
 
+  low: ()->
+    @type.low()
+
   resolveProxies: (system)->
     @type.resolveProxies(system)
 

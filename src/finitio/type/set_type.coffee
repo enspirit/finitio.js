@@ -37,6 +37,9 @@ class SetType extends CollectionType
       $u.undressError("Unable to undress `#{value}` to `#{as}`")
     super
 
+  low: ()->
+    new SetType(@elmType.low())
+
   resolveProxies: (system)->
     @elmType.resolveProxies(system)
 

@@ -40,6 +40,9 @@ class TypeRef extends Type
   trueOne: ()->
     @resolved().trueOne()
 
+  low: ()->
+    @resolved().low()
+
   resolve: (system)->
     @target ?= system.resolve(@typeName).fetchType()
 

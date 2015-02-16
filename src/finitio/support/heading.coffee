@@ -90,6 +90,11 @@ class Heading
     $u.every @options, (opt, name) ->
       opt == other.options[name]
 
+  low: ()->
+    reattrs = $u.map(@attributes, (a)-> a.low())
+    reopts = @options
+    new Heading(reattrs, reopts)
+
   # private
 
   _attributesByName = (self)->
