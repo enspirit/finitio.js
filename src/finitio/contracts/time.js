@@ -37,6 +37,27 @@ module.exports = (function(){
         }
       }
 
+    },
+
+    milliseconds: {
+
+      dress: function(ms) {
+        var d = new Date(ms);
+        if (isValidDate(d)) {
+          return d;
+        } else {
+          throw new Error("Invalid Date milliseconds `" + ms + "`");
+        }
+      },
+
+      undress: function(d) {
+        if (isValidDate(d)) {
+          return d.getTime();
+        } else {
+          throw new Error("Invalid Date `" + d + "`");
+        }
+      }
+
     }
 
   };

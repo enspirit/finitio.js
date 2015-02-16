@@ -26,7 +26,11 @@ Integer = .Number( n | n % 1 === 0    )
 String  = .String
 
 /- Recognizes valid dates -/
-Date = .Date <iso8601> .String .Finitio.Contracts.Date.iso8601
+Date = .Date
+  <iso8601>      .String .Finitio.Contracts.Date.iso8601
+  <milliseconds> .Number .Finitio.Contracts.Date.milliseconds
 
 /- Recognizes valid times -/
-Time = .Date <iso8601> .String .Finitio.Contracts.Time.iso8601
+Time = .Date
+  <iso8601>      .String .Finitio.Contracts.Time.iso8601
+  <milliseconds> .Number .Finitio.Contracts.Time.milliseconds

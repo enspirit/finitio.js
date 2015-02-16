@@ -9,6 +9,12 @@ Feature: TestSystem.Date
     Then the result should be a representation for Date
     And the result should be the 13st of March 2014
 
+  Scenario: Against a valid date string as milliseconds
+
+    Given I dress JSON's '1394668800000'
+    Then the result should be a representation for Date
+    And the result should be the 13st of March 2014
+
   Scenario: Against an invalid date string
 
     Given I dress JSON's '"2014-15-13"'
