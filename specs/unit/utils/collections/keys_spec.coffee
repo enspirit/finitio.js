@@ -35,7 +35,7 @@ describe "Utils.collection#keys", ->
 
     it 'returns all the indices of the array', ->
       obj      = ['a', 'b', null]
-      expected = ['0', '1', '2']
+      expected = [0, 1, 2]
 
       res = subject obj
       should(res).eql(expected)
@@ -48,7 +48,7 @@ describe "Utils.collection#keys", ->
 
     it 'returns all the characters positions of the string', ->
       str      = "foo"
-      expected = ['0', '1', '2']
+      expected = [0, 1, 2]
 
       res = subject str
       should(res).eql(expected)
