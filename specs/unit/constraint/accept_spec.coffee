@@ -7,17 +7,17 @@ describe "Constraint#accept", ->
     constraint = new Constraint.Native 'positive', (i)-> i>0
 
     it 'accepts positive numbers', ->
-      constraint.accept(12).should.be.true
+      constraint.accept(12).should.equal(true)
 
     it 'rejects negative numbers', ->
-      constraint.accept(-12).should.be.false
+      constraint.accept(-12).should.equal(false)
 
   describe 'with a regexp', ->
     constraint = new Constraint.Regexp 'word', /[a-z]+/
 
     it 'accepts words', ->
-      constraint.accept("abgd").should.be.true
+      constraint.accept("abgd").should.equal(true)
 
     it 'rejects numbers', ->
-      constraint.accept("12").should.be.false
+      constraint.accept("12").should.equal(false)
 

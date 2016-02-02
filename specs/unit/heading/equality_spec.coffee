@@ -17,18 +17,18 @@ describe "Heading#equality", ->
   h4 = new Heading([r, b, a])
 
   it 'should apply structural equality', ->
-    h1.equals(h2).should.be.true
-    h2.equals(h1).should.be.true
+    h1.equals(h2).should.equal(true)
+    h2.equals(h1).should.equal(true)
 
   it 'should distinguish different types', ->
-    h1.equals(h3).should.be.false
-    h1.equals(h4).should.be.false
+    h1.equals(h3).should.equal(false)
+    h1.equals(h4).should.equal(false)
 
   it 'should be a total function, with null for non types', ->
-    h1.equals(12).should.be.false
+    h1.equals(12).should.equal(false)
 
   it 'should distinguish between extra allowance', ->
     no_extra = new Heading([r], allowExtra: false)
     extra    = new Heading([r], allowExtra: true)
-    extra.equals(no_extra).should.be.false
+    extra.equals(no_extra).should.equal(false)
 

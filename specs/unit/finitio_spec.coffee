@@ -10,7 +10,7 @@ describe 'Finitio', ->
 
   it "has a version number", ->
     (typeof Finitio.VERSION).should.not.equal('undefined')
-    (Finitio.VERSION?).should.be.true
+    (Finitio.VERSION?).should.equal(true)
 
   it 'has a dress method', ->
     Finitio.system(".Number").should.be.an.instanceof System

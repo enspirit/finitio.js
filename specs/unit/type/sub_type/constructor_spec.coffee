@@ -13,4 +13,4 @@ describe "SubType#constructor", ->
 
   it 'sets the variable instances', ->
     sub.superType.should.equal(numType)
-    _.isEqual(sub.constraints, [c1, c2]).should.be.true
+    _.isEqual(sub.constraints, [c1, c2]).should.equal(true)

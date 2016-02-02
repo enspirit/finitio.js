@@ -19,7 +19,7 @@ describe "RelationType#include", ->
     arg = []
 
     it 'should be true', ->
-      subject(arg).should.be.true
+      subject(arg).should.equal(true)
 
   context 'when a valid, non empty set', ->
     arg = []
@@ -27,7 +27,7 @@ describe "RelationType#include", ->
     arg.push {a: 15, b: 16}
 
     it 'should be true', ->
-      subject(arg).should.be.true
+      subject(arg).should.equal(true)
 
   context 'when a valid, non empty set but missing optionals', ->
 
@@ -36,13 +36,13 @@ describe "RelationType#include", ->
     arg.push {a: 15, b: 16}
 
     it 'should be true', ->
-      subject(arg).should.be.true
+      subject(arg).should.equal(true)
 
   context 'when not a set', ->
     arg = "foo"
 
     it 'should be false', ->
-      subject(arg).should.be.false
+      subject(arg).should.equal(false)
 
   context 'when a set containing invalid tuples', ->
     arg = []
@@ -50,7 +50,7 @@ describe "RelationType#include", ->
     arg.push {a: 12.2}
 
     it 'should be false', ->
-      subject(arg).should.be.false
+      subject(arg).should.equal(false)
 
   context 'when a set containing tuples with missing required', ->
     arg = []
@@ -58,7 +58,7 @@ describe "RelationType#include", ->
     arg.push {b: 12}
 
     it 'should be false', ->
-      subject(arg).should.be.false
+      subject(arg).should.equal(false)
 
   context 'when a set containing tuples with extra', ->
     arg = []
@@ -66,7 +66,7 @@ describe "RelationType#include", ->
     arg.push {a: 12, b: 12, c: 15}
 
     it 'should be false', ->
-      subject(arg).should.be.false
+      subject(arg).should.equal(false)
 
   context 'when a set containing tuples with invalid optional', ->
     arg = []
@@ -74,6 +74,6 @@ describe "RelationType#include", ->
     arg.push {a: 12, b: 12.5}
 
     it 'should be false', ->
-      subject(arg).should.be.false
+      subject(arg).should.equal(false)
 
 

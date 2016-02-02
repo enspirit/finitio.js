@@ -13,12 +13,12 @@ describe 'Heading#allowExtra', ->
 
   it 'is false by default', ->
     h = heading([r])
-    h.allowExtra().should.be.false
+    h.allowExtra().should.equal(false)
 
   it 'can be set to true', ->
     h = heading([r], allowExtra: true)
-    h.allowExtra().should.be.true
+    h.allowExtra().should.equal(true)
 
   it 'can be set to false explicitely', ->
     h = heading([r], allowExtra: false)
-    h.allowExtra().should.be.false
+    h.allowExtra().should.equal(false)

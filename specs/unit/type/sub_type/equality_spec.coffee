@@ -19,12 +19,12 @@ describe 'SubType#equals', ->
   type5 = new SubType(stringType, [c1])
 
   it 'should apply structural equivalence', ->
-    type.equals(type2).should.be.true
-    type.equals(type3).should.be.true
+    type.equals(type2).should.equal(true)
+    type.equals(type3).should.equal(true)
 
   it 'should apply distinguish different types', ->
-    type.equals(type4).should.be.false
-    type.equals(type5).should.be.false
+    type.equals(type4).should.equal(false)
+    type.equals(type5).should.equal(false)
 
   it 'should be a total function, with null for non types', ->
-    type.equals(12).should.be.false
+    type.equals(12).should.equal(false)

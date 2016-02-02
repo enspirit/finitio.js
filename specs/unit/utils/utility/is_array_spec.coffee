@@ -8,12 +8,12 @@ describe "Utils.utility#isArray", ->
   describe 'for null or undefined', ->
     it 'returns false', ->
       for i, obj of [null, undefined]
-        subject(obj).should.be.false
+        subject(obj).should.equal(false)
 
   describe 'for array', ->
     it 'should return true', ->
-      subject([]).should.be.true
+      subject([]).should.equal(true)
 
   describe 'for object', ->
     it 'should return false', ->
-      subject({}).should.be.false
+      subject({}).should.equal(false)

@@ -14,6 +14,6 @@ describe "AnyType#include", ->
 
     it 'should return true', ->
       allpass = _.every cases, (val) ->
-        subject(val).should.be.true
+        subject(val).should.equal(true)
 
-      allpass.should.be.true
+      allpass.should.equal(true)

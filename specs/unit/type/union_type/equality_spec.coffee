@@ -14,15 +14,15 @@ describe "UnionType#equality", ->
   uType6 = new UnionType([intType])
 
   it 'should apply structural equality', ->
-    uType.equals(uType2).should.be.true
-    uType.equals(uType3).should.be.true
-    uType2.equals(uType3).should.be.true
+    uType.equals(uType2).should.equal(true)
+    uType.equals(uType3).should.equal(true)
+    uType2.equals(uType3).should.equal(true)
 
   it 'should apply distinguish different types', ->
-    uType.equals(uType4).should.be.false
-    uType.equals(uType5).should.be.false
-    uType.equals(uType6).should.be.false
-    uType.equals(intType).should.be.false
+    uType.equals(uType4).should.equal(false)
+    uType.equals(uType5).should.equal(false)
+    uType.equals(uType6).should.equal(false)
+    uType.equals(intType).should.equal(false)
 
   it 'should be a total function, with null for non types', ->
-    uType.equals(12).should.be.false
+    uType.equals(12).should.equal(false)

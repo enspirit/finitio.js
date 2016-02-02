@@ -11,7 +11,7 @@ describe "UnionType#constructor", ->
     union = new UnionType([intType, floatType])
 
     it 'sets the variable instances', ->
-      _.isEqual(union.candidates, [intType, floatType]).should.be.true
+      _.isEqual(union.candidates, [intType, floatType]).should.equal(true)
 
   describe 'with invalid candidates', ->
     lambda = ->

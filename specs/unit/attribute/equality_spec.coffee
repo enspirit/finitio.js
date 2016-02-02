@@ -9,10 +9,10 @@ describe "Attribute#equality", ->
   attr3 = new Attribute('blue', new BuiltinType(Number))
 
   it 'should apply structural equality', ->
-    attr1.equals(attr2).should.be.true
+    attr1.equals(attr2).should.equal(true)
 
   it 'should distinguish different attributes', ->
-    attr1.equals(attr3).should.be.false
+    attr1.equals(attr3).should.equal(false)
 
   it 'should false against non Attribute', ->
-    attr1.equals(12).should.be.false
+    attr1.equals(12).should.equal(false)

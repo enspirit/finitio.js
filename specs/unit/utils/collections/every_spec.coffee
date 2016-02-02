@@ -28,7 +28,7 @@ describe "Utils.collection#every", ->
     it 'returns a boolean', ->
       res = $u.every [1, 2, 3], (i) -> true
       res.should.be.an.instanceof(Boolean)
-      res.should.be.true
+      res.should.equal(true)
 
     it 'stops iterating as soon as the predicate returns false', ->
       obj      = [1, 2, 3]

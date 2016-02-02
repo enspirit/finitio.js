@@ -10,16 +10,16 @@ describe "SetType#include", ->
   subject = (arg) -> type.include(arg)
 
   it 'when included on empty array', ->
-    subject([]).should.be.true
+    subject([]).should.equal(true)
 
   it 'when included on non empty array', ->
-    subject([12]).should.be.true
+    subject([12]).should.equal(true)
 
   it 'when not an array', ->
-    subject({}).should.be.false
+    subject({}).should.equal(false)
 
   it 'when an array with non ints', ->
-    subject([12, "foo"]).should.be.false
+    subject([12, "foo"]).should.equal(false)
 
   it 'when an array with duplicates', ->
-    subject([12, 12]).should.be.false
+    subject([12, 12]).should.equal(false)

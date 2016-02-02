@@ -8,10 +8,10 @@ describe 'BuiltinType#equals', ->
   strType  = new BuiltinType(String)
 
   it 'should apply structural equality', ->
-    numType.equals(numType2).should.be.true
+    numType.equals(numType2).should.equal(true)
 
   it 'should apply distinguish different types', ->
-    numType.equals(strType).should.be.false
+    numType.equals(strType).should.equal(false)
 
   it 'should be a total function, with null for non types', ->
-    numType.equals(12).should.be.false
+    numType.equals(12).should.equal(false)

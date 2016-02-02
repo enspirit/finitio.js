@@ -21,4 +21,4 @@ describe "Heading#each", ->
       seen = []
       h.each (attr) ->
         seen.push(attr)
-      _.isEqual(seen, [a, b]).should.be.true
+      _.isEqual(seen, [a, b]).should.equal(true)

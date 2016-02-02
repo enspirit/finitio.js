@@ -9,7 +9,7 @@ describe "BuiltinType#include", ->
   subject = (arg) -> type.include(arg)
 
   it 'when not included', ->
-    subject("12").should.be.false
+    subject("12").should.equal(false)
 
   it 'when included', ->
-    subject(12).should.be.true
+    subject(12).should.equal(true)

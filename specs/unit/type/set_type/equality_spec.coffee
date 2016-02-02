@@ -11,10 +11,10 @@ describe "SetType#equality", ->
   type3 = new SetType(floatType)
 
   it 'should apply structural equality', ->
-    type.equals(type2).should.be.true
+    type.equals(type2).should.equal(true)
 
   it 'should apply distinguish different types', ->
-    type.equals(type3).should.be.false
+    type.equals(type3).should.equal(false)
 
   it 'should be a total function, with false for non types', ->
-    type.equals(12).should.be.false
+    type.equals(12).should.equal(false)

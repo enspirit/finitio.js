@@ -7,7 +7,7 @@ describe 'AnyType#equals', ->
   anyType2  = new AnyType()
 
   it 'should apply structural equality', ->
-    anyType1.equals(anyType2).should.be.true
+    anyType1.equals(anyType2).should.equal(true)
 
   it 'should be a total function, with null for non types', ->
-    anyType1.equals(12).should.be.false
+    anyType1.equals(12).should.equal(false)

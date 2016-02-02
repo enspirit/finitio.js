@@ -10,7 +10,7 @@ describe "Attribute#constructor", ->
     it 'should correctly set the instance variables', ->
       subject.name.should.equal('red')
       subject.type.should.equal(intType)
-      subject.required.should.be.true
+      subject.required.should.equal(true)
 
   describe 'when not required', ->
     subject = new Attribute('red', intType, false)
@@ -18,4 +18,4 @@ describe "Attribute#constructor", ->
     it 'should correctly set the instance variables', ->
       subject.name.should.equal('red')
       subject.type.should.equal(intType)
-      subject.required.should.be.false
+      subject.required.should.equal(false)

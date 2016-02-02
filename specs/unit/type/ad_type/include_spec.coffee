@@ -6,7 +6,7 @@ describe "AdType#include", ->
   type = new AdType(Date, [])
 
   it 'when not included', ->
-    type.include("12").should.be.false
+    type.include("12").should.equal(false)
 
   it 'when included', ->
-    type.include(new Date()).should.be.true
+    type.include(new Date()).should.equal(true)

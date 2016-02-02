@@ -16,19 +16,19 @@ describe "Heading#multi", ->
   describe 'with no attribute', ->
 
     it 'should be false', ->
-      subject([]).should.be.false
+      subject([]).should.equal(false)
 
   describe 'with required attributes only', ->
 
     it 'should be false', ->
-      subject([red, blue]).should.be.false
+      subject([red, blue]).should.equal(false)
 
   describe 'with some optional attributes', ->
 
     it 'should be true', ->
-      subject([red, maybe_blue]).should.be.true
+      subject([red, maybe_blue]).should.equal(true)
 
   describe 'with allowExtra set to true', ->
 
     it 'should be false', ->
-      subject([red, blue], {allowExtra: true}).should.be.true
+      subject([red, blue], {allowExtra: true}).should.equal(true)

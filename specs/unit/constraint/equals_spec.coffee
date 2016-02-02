@@ -10,7 +10,7 @@ describe "Constraint#equals", ->
   c3 = new Constraint.Native 'positive', fn2
 
   it 'applies structural equivalence', ->
-    c1.equals(c2).should.be.true
+    c1.equals(c2).should.equal(true)
 
   it 'distinguishes different functions', ->
-    c1.equals(c3).should.be.false
+    c1.equals(c3).should.equal(false)
