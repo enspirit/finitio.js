@@ -86,6 +86,9 @@ constraint =
     }
     return cs;
   }
+/ spacing '::' spacing rx:regexp_literal {
+    return [{ regexp: rx }];
+  }
 
 constraints =
   head:named_constraint tail:(opt_comma named_constraint)* opt_comma {
@@ -287,6 +290,7 @@ literal =
 / integer_literal
 / boolean_literal
 / array_literal
+/ regexp_literal
 
 string_literal =
   s:$(["] ([\\]["] / !["] .)* ["]) {
@@ -313,6 +317,11 @@ array_literal =
   }
 / '[' spacing ']' {
     return [];
+  }
+
+regexp_literal  =
+  '/' s:$([^/]+) '/' {
+    return s;
   }
 
 // LEXER (names)
