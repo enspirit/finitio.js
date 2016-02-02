@@ -1,131 +1,129 @@
-(function() {
-  var Finitio, action, actions, data, e, errorManager, fs, program, schema, schemaFile, schemaSource, sourceUrl, strategies, world;
+#!/usr/bin/env node
 
-  require('coffee-script');
+var Finitio, action, actions, data, e, error, errorManager, fs, program, schema, schemaFile, schemaSource, sourceUrl, strategies, world;
 
-  Finitio = require('../src/finitio');
+Finitio = require('../build/src/finitio');
 
-  fs = require('fs');
+fs = require('fs');
 
-  program = require('commander');
+program = require('commander');
 
-  program.version('finitio.js ' + Finitio.VERSION + ' (c) Bernard, Louis Lambeau & the University of Louvain').usage('[options] SCHEMA.fio [DATA.json]').option('-b, --bundle', 'Bundle the input schema as a javascript loader').option('--url [url]', 'Specify the bundle global url').option('-v, --validate', 'Valid input data against the schema').option('-f, --fast', 'Stop on first validation error').option('--no-check', 'Do not try to check the system before bundling').option('--stack', 'Show stack trace on error').parse(process.argv);
+program.version('finitio.js ' + Finitio.VERSION + ' (c) Bernard, Louis Lambeau & the University of Louvain').usage('[options] SCHEMA.fio [DATA.json]').option('-b, --bundle', 'Bundle the input schema as a javascript loader').option('--url [url]', 'Specify the bundle global url').option('-v, --validate', 'Valid input data against the schema').option('-f, --fast', 'Stop on first validation error').option('--no-check', 'Do not try to check the system before bundling').option('--stack', 'Show stack trace on error').parse(process.argv);
 
-  sourceUrl = function() {
-    if (typeof program.url === 'string') {
-      return program.url;
-    } else {
-      return "file://" + program.args[0];
-    }
-  };
-
-  schemaFile = function() {
-    return program.args[0];
-  };
-
-  schemaSource = function() {
-    schemaFile = program.args[0];
-    return schemaSource = fs.readFileSync(schemaFile).toString();
-  };
-
-  world = function() {
-    var w;
-    w = {
-      sourceUrl: sourceUrl(),
-      failfast: program.fast
-    };
-    if (program.check) {
-      w.check = true;
-    }
-    return w;
-  };
-
-  schema = function() {
-    return Finitio.system(schemaSource(), world());
-  };
-
-  data = function() {
-    var dataFile, dataSource;
-    dataFile = program.args[1];
-    dataSource = fs.readFileSync(dataFile).toString();
-    return JSON.parse(dataSource);
-  };
-
-  strategies = [];
-
-  errorManager = function(e) {
-    var i, len, results, s;
-    results = [];
-    for (i = 0, len = strategies.length; i < len; i++) {
-      s = strategies[i];
-      if (s[0](e)) {
-        s[1](e);
-        break;
-      } else {
-        results.push(void 0);
-      }
-    }
-    return results;
-  };
-
-  strategies.push([
-    function(e) {
-      return e instanceof Finitio.TypeError;
-    }, function(e) {
-      if (program.stack) {
-        return console.log(e.explainTree());
-      } else {
-        return console.log(e.explain());
-      }
-    }
-  ]);
-
-  strategies.push([
-    function(e) {
-      return e.name === 'SyntaxError';
-    }, function(e) {
-      console.log("[" + e.line + ":" + e.column + "] " + e.message);
-      if (program.stack) {
-        return console.log(e.expected);
-      }
-    }
-  ]);
-
-  strategies.push([
-    function(e) {
-      return true;
-    }, function(e) {
-      console.log(e.message);
-      if (program.stack) {
-        return console.log(e.stack);
-      }
-    }
-  ]);
-
-  actions = {};
-
-  actions.bundle = function() {
-    return console.log(Finitio.bundleFile(schemaFile(), world()));
-  };
-
-  actions.validate = function() {
-    return console.log(schema().dress(data(), world()));
-  };
-
-  try {
-    if (program.bundle) {
-      action = actions.bundle;
-    } else if (program.validate) {
-      action = actions.validate;
-    }
-    if (action != null) {
-      action();
-    } else {
-      program.outputHelp();
-    }
-  } catch (_error) {
-    e = _error;
-    errorManager(e);
+sourceUrl = function() {
+  if (typeof program.url === 'string') {
+    return program.url;
+  } else {
+    return "file://" + program.args[0];
   }
+};
 
-}).call(this);
+schemaFile = function() {
+  return program.args[0];
+};
+
+schemaSource = function() {
+  schemaFile = program.args[0];
+  return schemaSource = fs.readFileSync(schemaFile).toString();
+};
+
+world = function() {
+  var w;
+  w = {
+    sourceUrl: sourceUrl(),
+    failfast: program.fast
+  };
+  if (program.check) {
+    w.check = true;
+  }
+  return w;
+};
+
+schema = function() {
+  return Finitio.system(schemaSource(), world());
+};
+
+data = function() {
+  var dataFile, dataSource;
+  dataFile = program.args[1];
+  dataSource = fs.readFileSync(dataFile).toString();
+  return JSON.parse(dataSource);
+};
+
+strategies = [];
+
+errorManager = function(e) {
+  var i, len, results, s;
+  results = [];
+  for (i = 0, len = strategies.length; i < len; i++) {
+    s = strategies[i];
+    if (s[0](e)) {
+      s[1](e);
+      break;
+    } else {
+      results.push(void 0);
+    }
+  }
+  return results;
+};
+
+strategies.push([
+  function(e) {
+    return e instanceof Finitio.TypeError;
+  }, function(e) {
+    if (program.stack) {
+      return console.log(e.explainTree());
+    } else {
+      return console.log(e.explain());
+    }
+  }
+]);
+
+strategies.push([
+  function(e) {
+    return e.name === 'SyntaxError';
+  }, function(e) {
+    console.log("[" + e.line + ":" + e.column + "] " + e.message);
+    if (program.stack) {
+      return console.log(e.expected);
+    }
+  }
+]);
+
+strategies.push([
+  function(e) {
+    return true;
+  }, function(e) {
+    console.log(e.message);
+    if (program.stack) {
+      return console.log(e.stack);
+    }
+  }
+]);
+
+actions = {};
+
+actions.bundle = function() {
+  return console.log(Finitio.bundleFile(schemaFile(), world()));
+};
+
+actions.validate = function() {
+  return console.log(schema().dress(data(), world()));
+};
+
+try {
+  if (program.bundle) {
+    action = actions.bundle;
+  } else if (program.validate) {
+    action = actions.validate;
+  }
+  if (action != null) {
+    action();
+  } else {
+    program.outputHelp();
+  }
+} catch (error) {
+  e = error;
+  errorManager(e);
+}
+
