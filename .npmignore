@@ -16,6 +16,4 @@ results
 npm-debug.log
 node_modules
 
-src/syntax/parser.js
-
-dist/*
+src/

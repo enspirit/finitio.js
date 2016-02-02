@@ -15,9 +15,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-mocha-test'
   grunt.loadNpmTasks 'grunt-browserify'
   grunt.loadNpmTasks 'grunt-coffeelint'
-  grunt.loadNpmTasks 'grunt-contrib-connect'
   grunt.loadNpmTasks 'grunt-contrib-watch'
-  grunt.loadNpmTasks 'grunt-saucelabs'
   grunt.loadNpmTasks 'grunt-fixtures2js'
 
   ###################################################################### Tasks
@@ -73,9 +71,7 @@ module.exports = (grunt) ->
     'fixtures2js'
     'test:unit',
     'test:integration',
-    'test:acceptance',
-    'connect',
-    'saucelabs-mocha'
+    'test:acceptance'
   ]
 
   ## Grunt's main config
@@ -181,7 +177,6 @@ module.exports = (grunt) ->
           'dist/finitio.tests.js': ['build/specs/**/*.js']
         options:
           extensions: ['.js']
-          alias: ['node_modules/should/index.js:should']
 
     # Minify distributed library
     uglify:
@@ -231,48 +226,3 @@ module.exports = (grunt) ->
 
       options:
         steps: 'features/step_definitions'
-
-    # Serve test files for CI testing with travis/soucelabs
-    connect:
-      server:
-        options:
-          base: "."
-          port: 9999
-
-    # Continuous-integration testing through soucelabs
-    "saucelabs-mocha":
-      all:
-        options:
-          urls: ["http://localhost:9999/specs/SpecRunner.html"]
-          build: process.env.TRAVIS_JOB_ID
-          concurrency: 3
-          browsers: [
-            {browserName: 'chrome'},
-            {browserName: 'chrome', version: '32', platform: "Windows 8"},
-            {browserName: 'chrome', version: '31', platform: "Windows 8"},
-            {browserName: 'chrome', version: '30', platform: "Windows 8"},
-            {browserName: 'chrome', version: '26', platform: "Windows 8"},
-
-            {browserName: 'firefox'},
-            {browserName: 'firefox', version: '26', platform: "Windows 8"},
-            {browserName: 'firefox', version: '25', platform: "Windows 8"},
-            {browserName: 'firefox', version: '24', platform: "Windows 8"},
-            {browserName: 'firefox', version: '20', platform: "Windows 8"},
-            {browserName: 'firefox', version: '10', platform: "Windows 8"},
-
-            {browserName: 'safari', version: "7", platform: 'OS X 10.9'},
-            {browserName: 'safari', version: "6", platform: 'OS X 10.8'},
-
-            {browserName: 'iphone', version: '7',   platform: 'OS X 10.9'},
-            {browserName: 'iphone', version: '6.0', platform: 'OS X 10.8'},
-
-            {browserName: 'ipad', version: '7',   platform: 'OS X 10.9'},
-            {browserName: 'ipad', version: '6.0', platform: 'OS X 10.8'},
-
-            {browserName: 'android', version: '4.3', platform: 'Linux'},
-
-            {browserName: 'internet explorer', version: 11, platform: 'Windows 8.1'},
-            {browserName: 'internet explorer', version: 10, platform: 'Windows 8'}
-          ]
-          testname: "Finitio.js tests"
-          tags: ["master"]

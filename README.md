@@ -28,9 +28,7 @@ way.
 ## Status
 
 [![Build Status](https://travis-ci.org/llambeau/finitio.js.png?branch=master)](https://travis-ci.org/llambeau/finitio.js)
-[![Jasmine Test Status](https://saucelabs.com/buildstatus/finitiojs)](https://saucelabs.com/u/finitiojs)
 [![Dependency Status](https://david-dm.org/llambeau/finitio.js.png)](https://david-dm.org/llambeau/finitio.js)
-[![Compatibility Status](https://saucelabs.com/browser-matrix/finitiojs.svg)](https://saucelabs.com/u/finitiojs)
 
 ## Features
 
