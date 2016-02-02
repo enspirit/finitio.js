@@ -1,108 +1,131 @@
-#!/usr/bin/env coffee
-require('coffee-script')
-Finitio = require('../src/finitio')
-fs = require('fs')
-program = require('commander');
+(function() {
+  var Finitio, action, actions, data, e, errorManager, fs, program, schema, schemaFile, schemaSource, sourceUrl, strategies, world;
 
-program
-  .version('finitio.js ' + Finitio.VERSION + ' (c) Bernard, Louis Lambeau & the University of Louvain')
-  .usage('[options] SCHEMA.fio [DATA.json]')
-  .option('-b, --bundle', 'Bundle the input schema as a javascript loader')
-  .option('--url [url]', 'Specify the bundle global url')
-  .option('-v, --validate', 'Valid input data against the schema')
-  .option('-f, --fast', 'Stop on first validation error')
-  .option('--no-check', 'Do not try to check the system before bundling')
-  .option('--stack', 'Show stack trace on error')
-  .parse(process.argv)
+  require('coffee-script');
 
-# Returns the sourceUrl
-sourceUrl = ()->
-  if typeof(program.url) is 'string'
-    program.url
-  else
-    "file://" + program.args[0]
+  Finitio = require('../src/finitio');
 
-# Returns the schema file
-schemaFile = ()->
-  program.args[0]
+  fs = require('fs');
 
-# Loads the schema argument and returns its the source
-schemaSource = ()->
-  schemaFile = program.args[0]
-  schemaSource = fs.readFileSync(schemaFile).toString()
+  program = require('commander');
 
-world = ()->
-  w = { sourceUrl: sourceUrl(), failfast: program.fast }
-  if program.check
-    w.check = true
-  w
+  program.version('finitio.js ' + Finitio.VERSION + ' (c) Bernard, Louis Lambeau & the University of Louvain').usage('[options] SCHEMA.fio [DATA.json]').option('-b, --bundle', 'Bundle the input schema as a javascript loader').option('--url [url]', 'Specify the bundle global url').option('-v, --validate', 'Valid input data against the schema').option('-f, --fast', 'Stop on first validation error').option('--no-check', 'Do not try to check the system before bundling').option('--stack', 'Show stack trace on error').parse(process.argv);
 
-# Loads the schema argument and returns the compiled system
-schema = ()->
-  Finitio.system(schemaSource(), world())
+  sourceUrl = function() {
+    if (typeof program.url === 'string') {
+      return program.url;
+    } else {
+      return "file://" + program.args[0];
+    }
+  };
 
-# Loads the data arguments and returns it as a data object
-data = ()->
-  dataFile = program.args[1]
-  dataSource = fs.readFileSync(dataFile).toString()
-  JSON.parse(dataSource)
+  schemaFile = function() {
+    return program.args[0];
+  };
 
-# Error management
+  schemaSource = function() {
+    schemaFile = program.args[0];
+    return schemaSource = fs.readFileSync(schemaFile).toString();
+  };
 
-strategies = []
-errorManager = (e)->
-  for s in strategies
-    if s[0](e)
-      s[1](e)
-      break
+  world = function() {
+    var w;
+    w = {
+      sourceUrl: sourceUrl(),
+      failfast: program.fast
+    };
+    if (program.check) {
+      w.check = true;
+    }
+    return w;
+  };
 
-strategies.push([
-  (e)->
-    e instanceof Finitio.TypeError
-  (e)->
-    if program.stack
-      console.log(e.explainTree())
-    else
-      console.log(e.explain())
-])
+  schema = function() {
+    return Finitio.system(schemaSource(), world());
+  };
 
-strategies.push([
-  (e)->
-    e.name == 'SyntaxError'
-  (e)->
-    console.log("[#{e.line}:#{e.column}] #{e.message}")
-    console.log(e.expected) if program.stack
-])
+  data = function() {
+    var dataFile, dataSource;
+    dataFile = program.args[1];
+    dataSource = fs.readFileSync(dataFile).toString();
+    return JSON.parse(dataSource);
+  };
 
-strategies.push([
-  (e)->
-    true
-  (e)->
-    console.log(e.message)
-    console.log(e.stack) if program.stack
-])
+  strategies = [];
 
-# Actions
+  errorManager = function(e) {
+    var i, len, results, s;
+    results = [];
+    for (i = 0, len = strategies.length; i < len; i++) {
+      s = strategies[i];
+      if (s[0](e)) {
+        s[1](e);
+        break;
+      } else {
+        results.push(void 0);
+      }
+    }
+    return results;
+  };
 
-actions = {}
+  strategies.push([
+    function(e) {
+      return e instanceof Finitio.TypeError;
+    }, function(e) {
+      if (program.stack) {
+        return console.log(e.explainTree());
+      } else {
+        return console.log(e.explain());
+      }
+    }
+  ]);
 
-# Compiles the schema and outputs it on standard output
-actions.bundle = ()->
-  console.log Finitio.bundleFile(schemaFile(), world())
+  strategies.push([
+    function(e) {
+      return e.name === 'SyntaxError';
+    }, function(e) {
+      console.log("[" + e.line + ":" + e.column + "] " + e.message);
+      if (program.stack) {
+        return console.log(e.expected);
+      }
+    }
+  ]);
 
-# Validate input data using the schema
-actions.validate = ()->
-  console.log(schema().dress(data(), world()))
+  strategies.push([
+    function(e) {
+      return true;
+    }, function(e) {
+      console.log(e.message);
+      if (program.stack) {
+        return console.log(e.stack);
+      }
+    }
+  ]);
 
-try
-  if program.bundle
-    action = actions.bundle
-  else if program.validate
-    action = actions.validate
+  actions = {};
 
-  if action?
-    action()
-  else
-    program.outputHelp()
-catch e
-  errorManager(e)
+  actions.bundle = function() {
+    return console.log(Finitio.bundleFile(schemaFile(), world()));
+  };
+
+  actions.validate = function() {
+    return console.log(schema().dress(data(), world()));
+  };
+
+  try {
+    if (program.bundle) {
+      action = actions.bundle;
+    } else if (program.validate) {
+      action = actions.validate;
+    }
+    if (action != null) {
+      action();
+    } else {
+      program.outputHelp();
+    }
+  } catch (_error) {
+    e = _error;
+    errorManager(e);
+  }
+
+}).call(this);

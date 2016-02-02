@@ -150,7 +150,7 @@ module.exports = (grunt) ->
 
     shell:
       stdlib:
-        command: './bin/finitio-js --bundle --url http://finitio.io/0.4/stdlib/data src/finitio/stdlib/data.fio > src/finitio/stdlib/data.js'
+        command: './bin/finitio-js.coffee --bundle --url http://finitio.io/0.4/stdlib/data src/finitio/stdlib/data.fio > src/finitio/stdlib/data.js'
 
     # Transforms the test fixtures to js files
     fixtures2js:
