@@ -55,3 +55,15 @@ describe "Parser#sub_type", ->
       }
     }
     should(s).eql(expected)
+
+  it 'works with regexp constraint shortcut', ()->
+    s = parse('. :: /[a-z]+/')
+    expected = {
+      sub: {
+        superType: { any: {} }
+        constraints: [
+          { regexp: "[a-z]+" }
+        ]
+      }
+    }
+    should(s).eql(expected)
