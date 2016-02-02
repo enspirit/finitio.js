@@ -29,3 +29,10 @@ describe "Heading#constructor", ->
         true.should.equal(false)
       catch e
         e.message.should.equal("Attribute names must be unique")
+
+  describe 'with options at construction time', ->
+
+    it 'supports them', ->
+      attrs = [ new Attribute('red', intType) ]
+      heading = new Heading(attrs, allowExtra: true)
+      heading.allowExtra().should.equal(true)

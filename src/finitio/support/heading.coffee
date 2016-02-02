@@ -34,7 +34,7 @@ class Heading
     @options ?= {}
     unless $u.isObject(@options)
       $u.argumentError("Hash of options expected")
-    @options = $u.extend({}, DEFAULT_OPTIONS, options)
+    @options = $u.extend({}, DEFAULT_OPTIONS, @options)
 
   getAttr: (name)->
     $u.find @attributes, (a)-> a.name == name
