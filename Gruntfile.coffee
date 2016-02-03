@@ -88,15 +88,17 @@ module.exports = (grunt) ->
       fixtures:
         files: [ 'specs/integration/fixtures/**/*' ]
         tasks: [ 'fixtures2js:integration' ]
-      # Run the unit tests when .js sources change
+      # Run all tests when source files change
+      test:
+        files: [ 'src/**/*.js',   'src/**/*.coffee' ]
+        tasks: [ 'test:unit', 'test:integration' ]
+      # Run the unit tests when they change
       unit:
-        files: [ 'src/**/*.js',   'src/**/*.coffee',
-                 'specs/unit/**/*', 'specs/unit/**/*' ]
+        files: [ 'specs/unit/**/*', 'specs/unit/**/*' ]
         tasks: [ 'test:unit' ]
-      # Run the integration tests when .js sources change
+      # Run the integration tests when they sources change
       integration:
-        files: [ 'src/**/*.js',   'src/**/*.coffee',
-                 'specs/integration/**/*', 'specs/integration/**/*' ]
+        files: [ 'specs/integration/**/*', 'specs/integration/**/*' ]
         tasks: [ 'test:integration' ]
       # Run the acceptance tests when features change
       acceptance:
@@ -215,10 +217,12 @@ module.exports = (grunt) ->
         src: ['specs/unit/**/*.coffee']
         options:
           require: 'coffee-script/register'
+          reporter: 'dot'
       integration:
         src: ['specs/integration/**/*.coffee']
         options:
           require: 'coffee-script/register'
+          reporter: 'dot'
 
     # Acceptance testing with cucumber
     cucumberjs:
@@ -226,3 +230,4 @@ module.exports = (grunt) ->
 
       options:
         steps: 'features/step_definitions'
+        format: 'progress'
