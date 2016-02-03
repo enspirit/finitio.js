@@ -56,13 +56,25 @@ describe "Parser#sub_type", ->
     }
     should(s).eql(expected)
 
-  it 'works with regexp constraint shortcut', ()->
+  it 'works with a regexp constraint shortcut', ()->
     s = parse('. :: /[a-z]+/')
     expected = {
       sub: {
         superType: { any: {} }
         constraints: [
           { regexp: "[a-z]+" }
+        ]
+      }
+    }
+    should(s).eql(expected)
+
+  it 'works with a range constraint shortcut', ()->
+    s = parse('. :: 1..10')
+    expected = {
+      sub: {
+        superType: { any: {} }
+        constraints: [
+          { range: { min: 1, max: 10, min_inclusive: true, max_inclusive: true } }
         ]
       }
     }

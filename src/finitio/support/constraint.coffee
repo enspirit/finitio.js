@@ -43,8 +43,23 @@ class Constraint.Regexp extends Constraint
   accept: (arg) ->
     @native.test(arg)
 
+class Constraint.Range extends Constraint
+  kind: 'range'
+
+  accept: (arg) ->
+    (if @native.min_inclusive then arg >= @native.min else arg > @native.min) &&
+    ((@native.max is undefined) ||
+    (if @native.max_inclusive then (arg <= @native.max) else (arg < @native.max)))
+
+  equals: (other)->
+    return true if (this is other)
+    return false unless (other instanceof Constraint.Range)
+    (@native.min == other.native.min and @native.min_inclusive == other.native.min_inclusive) and
+    ((@native.max is undefined and other.native.max is undefined) or
+     (@native.max == other.native.max and @native.max_inclusive == other.native.max_inclusive))
+
 AbstractType Constraint,
-  [ Constraint.Native, Constraint.Regexp ],
+  [ Constraint.Native, Constraint.Regexp, Constraint.Range ],
   [ 'name', 'native', 'metadata' ], 1
 
 #
