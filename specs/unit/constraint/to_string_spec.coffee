@@ -14,3 +14,17 @@ describe "Constraint#toString", ->
 
     it 'works', ->
       should(constraint.toString()).equal('word: /[a-z]+/')
+
+  describe 'with a range', ->
+
+    it 'works with a closed range', ->
+      constraint = new Constraint.Range 'closed', { min: 1, max: 10, min_inclusive: true, max_inclusive: true }
+      should(constraint.toString()).equal('closed: 1..10')
+
+    it 'works with a open range', ->
+      constraint = new Constraint.Range 'open', { min: 1, max: 10, min_inclusive: true, max_inclusive: false }
+      should(constraint.toString()).equal('open: 1...10')
+
+    it 'works with an infinite range', ->
+      constraint = new Constraint.Range 'open', { min: 1, min_inclusive: true }
+      should(constraint.toString()).equal('open: 1..')

@@ -89,6 +89,9 @@ constraint =
 / spacing '::' spacing rx:regexp_literal {
     return [{ regexp: rx }];
   }
+/ spacing '::' spacing rx:range_literal {
+    return [{ range: rx }];
+  }
 
 constraints =
   head:named_constraint tail:(opt_comma named_constraint)* opt_comma {
@@ -286,6 +289,7 @@ metaattr =
 
 literal =
   string_literal
+/ range_literal
 / real_literal
 / integer_literal
 / boolean_literal
@@ -295,6 +299,17 @@ literal =
 string_literal =
   s:$(["] ([\\]["] / !["] .)* ["]) {
     return s.substring(1, s.length-1).replace(/\\"/, '"');
+  }
+
+range_literal =
+  min:integer_literal '..' max:integer_literal {
+    return { min: min, min_inclusive: true, max: max, max_inclusive: true };
+  }
+/ min:integer_literal '...' max:integer_literal {
+    return { min: min, min_inclusive: true, max: max, max_inclusive: false };
+  }
+/ min:integer_literal '..' spacing {
+    return { min: min, min_inclusive: true };
   }
 
 integer_literal =

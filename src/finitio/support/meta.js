@@ -32,6 +32,8 @@ module.exports = (function(){
 
   Js.Boolean = BuiltinType.info({ jsType: Boolean });
 
+  Js.Number = BuiltinType.info({ jsType: Number });
+
   Js.Type = AdType.info({
     jsType: Function,
     contracts: [
@@ -293,6 +295,34 @@ module.exports = (function(){
 
   Meta.Constraint.Regexp = constraint('RegExp', Constraint.Regexp, [
     Attribute.info({ name: 'regexp', type: Js.RegExp })
+  ]);
+
+  Meta.Range = UnionType.info({
+    candidates: [
+      TupleType.info({
+        heading: Heading.info({
+          attributes: [
+            Attribute.info({ name: 'min', type: Js.Number }),
+            Attribute.info({ name: 'min_inclusive', type: Js.Boolean }),
+            Attribute.info({ name: 'max', type: Js.Number }),
+            Attribute.info({ name: 'max_inclusive', type: Js.Boolean })
+          ]
+        })
+      }),
+      TupleType.info({
+        heading: Heading.info({
+          attributes: [
+            Attribute.info({ name: 'min', type: Js.Number }),
+            Attribute.info({ name: 'min_inclusive', type: Js.Boolean }),
+          ]
+        })
+      })
+    ],
+    name: 'Range'
+  });
+
+  Meta.Constraint.Range = constraint('Range', Constraint.Range, [
+    Attribute.info({ name: 'range', type: Meta.Range })
   ]);
 
   // ------------------------------------------------------------------- Types

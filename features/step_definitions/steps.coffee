@@ -59,6 +59,15 @@ module.exports = ->
 
     callback()
 
+  @Then /^it compiles to a sub type of (.*?)$/, (parent, callback) ->
+    unless system instanceof System
+      callback.fail "#{system} is not an finitio system"
+
+    should(type).be.an.instanceOf(Finitio.SubType)
+    should(system.resolve(parent).isSuperTypeOf(type)).equal(true)
+
+    callback()
+
   @Then /^it includes a type named (.*?)$/, (name, callback) ->
     try
       should(system.resolve(name)).be.an.instanceof(Finitio.Type)
