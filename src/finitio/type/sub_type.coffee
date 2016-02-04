@@ -29,7 +29,7 @@ class SubType extends Type
     success = @superType.mDress(value, Monad)
 
     callback = (_, constraint)->
-      if constraint.accept(success.result)
+      if constraint.accept(success.result, Monad)
         success
       else
         if constraint.name?

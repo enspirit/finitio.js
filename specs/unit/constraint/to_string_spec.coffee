@@ -20,3 +20,9 @@ describe "Constraint#toString", ->
 
     it 'works', ->
       should(constraint.toString()).equal('closed: 1..10')
+
+  describe 'with a custom function', ->
+    constraint = new Constraint.Function 'finite', '_.isFinite'
+
+    it 'works', ->
+      should(constraint.toString()).equal('finite: &_.isFinite')

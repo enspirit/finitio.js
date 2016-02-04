@@ -92,6 +92,9 @@ constraint =
 / spacing '::' spacing rx:range_literal {
     return [{ range: rx }];
   }
+/ spacing '::' spacing rx:function_literal {
+    return [{ function: rx }];
+  }
 
 constraints =
   head:named_constraint tail:(opt_comma named_constraint)* opt_comma {
@@ -289,6 +292,7 @@ literal =
 / boolean_literal
 / array_literal
 / regexp_literal
+/ function_literal
 
 string_literal =
   s:$(["] ([\\]["] / !["] .)* ["]) {
@@ -304,6 +308,16 @@ range_literal =
   }
 / min:integer_literal '..' spacing {
     return { min: min, min_inclusive: true };
+  }
+
+function_literal =
+  '&' fct:$(js_identifier) {
+    return fct;
+  }
+
+js_identifier =
+  id:$([a-zA-Z_$][a-zA-Z0-9_$]* ('.' js_identifier)*) {
+    return id;
   }
 
 integer_literal =

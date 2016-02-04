@@ -1,3 +1,4 @@
+Monad      = require('../../../src/finitio/support/dress_monad')
 Constraint = require '../../../src/finitio/support/constraint'
 should     = require 'should'
 
@@ -60,4 +61,32 @@ describe "Constraint#accept", ->
     it 'rejects invalid integers', ->
       should(constraint.accept(-10)).equal(false)
       should(constraint.accept(0)).equal(false)
+
+  describe 'with a function', ->
+    constraint = new Constraint.Function 'isEven', "isEven"
+    world = { isEven: (s) -> s % 2 == 0 }
+    monad = new Monad(world)
+
+    it 'accepts even numbers', ->
+      should(constraint.accept(2, monad)).equal(true)
+      should(constraint.accept(4, monad)).equal(true)
+      should(constraint.accept(10, monad)).equal(true)
+
+    it 'rejects odd numbers', ->
+      should(constraint.accept(9, monad)).equal(false)
+      should(constraint.accept(1, monad)).equal(false)
+
+  describe 'with a dotted function', ->
+    constraint = new Constraint.Function 'isEven', "_.isEven"
+    world = { _: { isEven: (s) -> s % 2 == 0 } }
+    monad = new Monad(world)
+
+    it 'accepts even numbers', ->
+      should(constraint.accept(2, monad)).equal(true)
+      should(constraint.accept(4, monad)).equal(true)
+      should(constraint.accept(10, monad)).equal(true)
+
+    it 'rejects odd numbers', ->
+      should(constraint.accept(9, monad)).equal(false)
+      should(constraint.accept(1, monad)).equal(false)
 

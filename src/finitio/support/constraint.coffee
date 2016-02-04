@@ -43,6 +43,26 @@ class Constraint.Regexp extends Constraint
   accept: (arg) ->
     @native.test(arg)
 
+class Constraint.Function extends Constraint
+  kind: 'function'
+
+  accept: (arg, monad) ->
+    identifiers = @native.split('.')
+    path = ""
+    func = monad.world
+
+    $u.each identifiers, (id, idx) ->
+      path += '.' if idx > 0
+      path += id
+      func = func[id]
+      unless func
+        throw new Error("#{path} is undefined");
+
+    func(arg)
+
+  nativeToString: () ->
+    '&' + @native
+
 class Constraint.Range extends Constraint
   kind: 'range'
 
