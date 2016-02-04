@@ -48,15 +48,11 @@ class Constraint.Function extends Constraint
 
   accept: (arg, world) ->
     identifiers = @native.split('.')
-    path = ""
-    func = world
 
-    $u.each identifiers, (id, idx) ->
-      path += '.' if idx > 0
-      path += id
-      func = func[id]
-      unless func
+    func = $u.reduce identifiers, world, (acc, id, idx) ->
+      unless acc[id]
         throw new Error("#{path} is undefined");
+      return acc[id]
 
     func(arg)
 
