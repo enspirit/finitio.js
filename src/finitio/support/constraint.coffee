@@ -63,6 +63,10 @@ class Constraint.Function extends Constraint
   nativeToString: () ->
     '&' + @native
 
+  equals: (other)->
+    (this is other) or
+    (other instanceof Constraint.Function and @native==other.native)
+
 class Constraint.Range extends Constraint
   kind: 'range'
 
