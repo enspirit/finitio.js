@@ -8,6 +8,7 @@ _         = require 'underscore'
 # Global variables for steps below
 TestSystem = null
 result     = null
+world      = null
 system     = null
 type       = null
 error      = null
@@ -22,9 +23,17 @@ module.exports = ->
     system = TestSystem = Finitio.system("@import finitio/data")
     callback()
 
+  @Given /^the World is$/, (source, callback) ->
+    try
+      world = new Function("return " + source + ";")
+      world = world()
+      callback()
+    catch e
+      callback.fail(e)
+
   @Given /^the System is$/, (source, callback) ->
     try
-      system = Finitio.system("@import finitio/data\n\n" + source)
+      system = Finitio.system("@import finitio/data\n\n" + source, world)
       type   = system.Main.trueOne() if system.Main
       callback()
     catch e

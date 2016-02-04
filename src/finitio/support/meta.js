@@ -75,6 +75,11 @@ module.exports = (function(){
         name:      'defn',
         infoType:  Js.FunctionDefn,
         external:  Contracts.Expression.defn
+      }),
+      Contract.info({
+        name:      'reference',
+        infoType:  Js.String,
+        external:  Contracts.Function.reference
       })
     ]
   });

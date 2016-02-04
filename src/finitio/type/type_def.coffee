@@ -14,7 +14,7 @@ class TypeDef extends Type
   fetch: ()->
     @type.fetch.apply(@type, arguments)
 
-  _include: (value)->
+  _include: (value) ->
     @type.include(value)
 
   _mDress: (value, Monad)->

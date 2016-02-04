@@ -86,6 +86,9 @@ constraint =
     }
     return cs;
   }
+/ spacing '::' spacing fn:funcref_literal {
+    return [{ native: fn }];
+  }
 / spacing '::' spacing rx:regexp_literal {
     return [{ regexp: rx }];
   }
@@ -299,6 +302,7 @@ literal =
 / array_literal
 / set_literal
 / regexp_literal
+/ funcref_literal
 
 string_literal =
   s:$(["] ([\\]["] / !["] .)* ["]) {
@@ -314,6 +318,16 @@ range_literal =
   }
 / min:integer_literal '..' spacing {
     return { min: min, min_inclusive: true };
+  }
+
+funcref_literal =
+  '&' fct:$(js_identifier) {
+    return fct;
+  }
+
+js_identifier =
+  id:$([a-zA-Z_$][a-zA-Z0-9_$]* ('.' js_identifier)*) {
+    return id;
   }
 
 integer_literal =

@@ -2,12 +2,20 @@ Feature: SubType
 
   Background:
 
+    Given the World is
+      """
+      {
+        _: { isEven: function(i){ return i%2 == 0; } }
+      }
+      """
+
     Given the System is
       """
       Posint = Integer( i | i>= 0 )
       Name   = String :: /^[a-z]+$/
       Age    = Integer :: 1..99
       Score  = Integer :: { 1, 5, 10, 20 }
+      Even   = Integer :: &_.isEven
       """
 
   Scenario: Dressing a valid integer
@@ -57,3 +65,15 @@ Feature: SubType
     Then it should be a TypeError as:
       | message              |
       | Invalid Score: `265` |
+
+  Scenario: Dressing a valid Even
+
+    Given I dress JSON's '10' with Even
+    Then the result should be a representation for Even
+
+  Scenario: Dressing an invalid Even
+
+    Given I dress JSON's '265' with Even
+    Then it should be a TypeError as:
+      | message              |
+      | Invalid Even: `265`  |

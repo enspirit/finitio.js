@@ -12,6 +12,11 @@ describe 'Meta (Sub)', ->
     info = typedef({ name: 'min', native: ()-> })
     should(()-> Meta.SubType.dress(info)).not.throw()
 
+  it 'dresses as expected on a function reference native constraint', ->
+    info = typedef({ name: 'even', native: "_.isEven" })
+    world = { _: { isEven: (s) -> s%2 == 0 } }
+    should(()-> Meta.SubType.dress(info, world)).not.throw()
+
   it 'dresses as expected on a regexp constraint', ->
     info = typedef({ name: 'matches', regexp: '[a-z]+' })
     should(()-> Meta.SubType.dress(info)).not.throw()
