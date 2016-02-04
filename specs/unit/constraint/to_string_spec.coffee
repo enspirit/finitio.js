@@ -28,3 +28,9 @@ describe "Constraint#toString", ->
     it 'works with an infinite range', ->
       constraint = new Constraint.Range 'open', { min: 1, min_inclusive: true }
       should(constraint.toString()).equal('open: 1..')
+
+  describe 'with a set function', ->
+    constraint = new Constraint.Set 'among', [1, 2, 3]
+
+    it 'works', ->
+      should(constraint.toString()).equal('among: { 1 2 3 }')

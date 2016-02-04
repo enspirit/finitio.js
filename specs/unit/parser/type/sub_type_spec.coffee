@@ -79,3 +79,15 @@ describe "Parser#sub_type", ->
       }
     }
     should(s).eql(expected)
+
+  it 'works with a set constraint shortcut', ()->
+    s = parse('. :: { 1 2 3 }')
+    expected = {
+      sub: {
+        superType: { any: {} }
+        constraints: [
+          { set: [1, 2, 3] }
+        ]
+      }
+    }
+    should(s).eql(expected)

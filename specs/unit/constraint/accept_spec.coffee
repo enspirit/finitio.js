@@ -61,3 +61,15 @@ describe "Constraint#accept", ->
       should(constraint.accept(-10)).equal(false)
       should(constraint.accept(0)).equal(false)
 
+  describe 'with a set constraint', ->
+    constraint = new Constraint.Set 'within', [1, 5, 10]
+
+    it 'accepts valid integers', ->
+      should(constraint.accept(1)).equal(true)
+      should(constraint.accept(5)).equal(true)
+      should(constraint.accept(10)).equal(true)
+
+    it 'rejects invalid integers', ->
+      should(constraint.accept(-10)).equal(false)
+      should(constraint.accept(0)).equal(false)
+      should(constraint.accept(100)).equal(false)

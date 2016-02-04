@@ -32,7 +32,9 @@ module.exports = (function(){
 
   Js.Boolean = BuiltinType.info({ jsType: Boolean });
 
-  Js.Number = BuiltinType.info({ jsType: Number });
+  Js.Number  = BuiltinType.info({ jsType: Number });
+
+  Js.Array   = BuiltinType.info({ jsType: Array });
 
   Js.Type = AdType.info({
     jsType: Function,
@@ -323,6 +325,10 @@ module.exports = (function(){
 
   Meta.Constraint.Range = constraint('Range', Constraint.Range, [
     Attribute.info({ name: 'range', type: Meta.Range })
+  ]);
+
+  Meta.Constraint.Set = constraint('Set', Constraint.Set, [
+    Attribute.info({ name: 'set', type: Js.Array })
   ]);
 
   // ------------------------------------------------------------------- Types

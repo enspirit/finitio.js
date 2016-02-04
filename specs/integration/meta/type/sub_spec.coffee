@@ -23,3 +23,7 @@ describe 'Meta (Sub)', ->
   it 'dresses as expected on a open range constraint', ->
     info = typedef({ name: 'within', range: { min: 1, min_inclusive: true } })
     should(()-> Meta.SubType.dress(info)).not.throw()
+
+  it 'dresses as expected on a set constraint', ->
+    info = typedef({ name: 'set', set: [1, 2, 3] })
+    should(()-> Meta.SubType.dress(info)).not.throw()

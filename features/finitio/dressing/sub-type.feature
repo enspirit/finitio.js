@@ -7,6 +7,7 @@ Feature: SubType
       Posint = Integer( i | i>= 0 )
       Name   = String :: /^[a-z]+$/
       Age    = Integer :: 1..99
+      Score  = Integer :: { 1, 5, 10, 20 }
       """
 
   Scenario: Dressing a valid integer
@@ -44,3 +45,15 @@ Feature: SubType
     Then it should be a TypeError as:
       | message            |
       | Invalid Age: `265` |
+
+  Scenario: Dressing a valid Score
+
+    Given I dress JSON's '10' with Score
+    Then the result should be a representation for Score
+
+  Scenario: Dressing an invalid Score
+
+    Given I dress JSON's '265' with Score
+    Then it should be a TypeError as:
+      | message              |
+      | Invalid Score: `265` |

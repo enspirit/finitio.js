@@ -51,3 +51,22 @@ describe "Constraint#equals", ->
       should(c1.equals(c3)).equal(false)
       should(c1.equals(c4)).equal(false)
       should(c4.equals(c6)).equal(false)
+
+  describe "On a set constraint", ->
+    r1 = [1, 2, 4]
+    r2 = [1, 4, 2]
+    r3 = [1, 2]
+    r4 = [1, 2, 4, 5]
+    c1 = new Constraint.Set 'r1', r1
+    c2 = new Constraint.Set 'r2', r2
+    c3 = new Constraint.Set 'r3', r3
+    c4 = new Constraint.Set 'r4', r4
+
+    it 'recognizes same sets', ->
+      should(c1.equals(c2)).equal(true)
+
+    it 'distinguishes different ones', ->
+      should(c1.equals(c3)).equal(false)
+      should(c1.equals(c4)).equal(false)
+      should(c3.equals(c1)).equal(false)
+      should(c4.equals(c1)).equal(false)
