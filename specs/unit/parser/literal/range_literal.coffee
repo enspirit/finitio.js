@@ -17,3 +17,4 @@ describe "Parser#range_literal", ->
   it 'works with a min only', ()->
     s = parse('1..')
     should(s).eql({ min: 1, min_inclusive: true })
+

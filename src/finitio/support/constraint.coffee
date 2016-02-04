@@ -58,6 +58,11 @@ class Constraint.Range extends Constraint
     ((@native.max is undefined and other.native.max is undefined) or
      (@native.max == other.native.max and @native.max_inclusive == other.native.max_inclusive))
 
+  nativeToString: () ->
+    return "#{@native.min}.." unless @native.max
+    return "#{@native.min}...#{@native.max}" unless @native.max_inclusive
+    return "#{@native.min}..#{@native.max}"
+
 AbstractType Constraint,
   [ Constraint.Native, Constraint.Regexp, Constraint.Range ],
   [ 'name', 'native', 'metadata' ], 1

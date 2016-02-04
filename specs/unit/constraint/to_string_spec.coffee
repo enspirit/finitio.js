@@ -19,4 +19,4 @@ describe "Constraint#toString", ->
     constraint = new Constraint.Range 'closed', { min: 1, max: 10, min_inclusive: true, max_inclusive: true }
 
     it 'works', ->
-      should(constraint.toString()).equal('word: /[a-z]+/')
+      should(constraint.toString()).equal('closed: 1..10')
