@@ -92,8 +92,8 @@ constraint =
 / spacing '::' spacing rx:range_literal {
     return [{ range: rx }];
   }
-/ spacing '::' spacing rx:function_literal {
-    return [{ function: rx }];
+/ spacing '::' spacing fn:function_literal {
+    return [{ function: fn }];
   }
 
 constraints =

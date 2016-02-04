@@ -74,7 +74,7 @@ describe "Constraint#accept", ->
       should(constraint.accept(9, world)).equal(false)
       should(constraint.accept(1, world)).equal(false)
 
-  describe 'with a dotted function', ->
+  describe 'with a qualified function name', ->
     constraint = new Constraint.Function 'isEven', "_.isEven"
     world = { _: { isEven: (s) -> s % 2 == 0 } }
 
