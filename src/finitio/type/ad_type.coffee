@@ -25,7 +25,7 @@ class AdType extends Type
   contractNames: ->
     $u.map @contracts, (c)-> c.name
 
-  _include: (value) ->
+  _include: (value, world) ->
     value.constructor == @jsType
 
   _mDress: (value, Monad) ->

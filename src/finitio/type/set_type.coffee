@@ -6,9 +6,9 @@ CollectionType  = require '../support/collection_type'
 class SetType extends CollectionType
   TypeType this, 'set', ['elmType', 'metadata']
 
-  _include: (value) ->
+  _include: (value, world) ->
     return false unless value instanceof Array
-    return false unless $u.every(value, (v) => @elmType.include(v))
+    return false unless $u.every(value, (v) => @elmType.include(v, world))
     $u.uniq(value).length == value.length
 
   _mDress: (value, Monad)->

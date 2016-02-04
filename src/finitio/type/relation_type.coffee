@@ -20,9 +20,9 @@ class RelationType extends Type
   tupleType: ()->
     @tupleTypeCache ?= new TupleType(@heading)
 
-  _include: (value) ->
+  _include: (value, world) ->
     value instanceof Array and
-      $u.every value, (tuple)=> @tupleType().include(tuple)
+      $u.every value, (tuple)=> @tupleType().include(tuple, world)
 
   _mDress: (value, Monad)->
     unless value instanceof Array

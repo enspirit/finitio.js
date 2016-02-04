@@ -16,13 +16,13 @@ class TupleType extends Type
   fetch: ()->
     @heading.fetch.apply(@heading, arguments)
 
-  _include: (value) ->
+  _include: (value, world) ->
     return false unless typeof(value) == "object"
     return false unless @areAttributesValid(value)
     $u.every @heading.attributes, (attribute) ->
       if value[attribute.name]?
         attr_val = value[attribute.name]
-        attribute.type.include(attr_val)
+        attribute.type.include(attr_val, world)
       else
         true
 

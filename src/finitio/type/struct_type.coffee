@@ -19,12 +19,12 @@ class StructType extends Type
   size: ->
     $u.size(@componentTypes)
 
-  _include: (value) ->
+  _include: (value, world) ->
     $u.isArray(value) and
     $u.size(value) == $u.size(@componentTypes) and
     $u.every $u.zip(value, @componentTypes), (valueAndKey)->
       [value, type] = valueAndKey
-      type.include(value)
+      type.include(value, world)
 
   _mDress: (value, Monad) ->
     unless value instanceof Array

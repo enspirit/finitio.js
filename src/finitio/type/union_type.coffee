@@ -37,8 +37,8 @@ class UnionType extends Type
     else
       $u.undressError("Unable to undress `#{value}` to `#{as}`")
 
-  _include: (value) ->
-    found = $u.find @candidates, (c) -> c.include(value)
+  _include: (value, world) ->
+    found = $u.find @candidates, (c) -> c.include(value, world)
     found?
 
   _isSuperTypeOf: (other)->

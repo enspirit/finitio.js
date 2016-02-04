@@ -13,7 +13,7 @@ class Constraint
   isAnonymous: ->
     !@name?
 
-  accept: (arg, monad) ->
+  accept: (arg, world) ->
     throw new Error("Constraint is an abstract class")
 
   equals: (other)->
@@ -31,7 +31,7 @@ class Constraint
 class Constraint.Native extends Constraint
   kind: 'native'
 
-  accept: (arg, monad) ->
+  accept: (arg, world) ->
     @native(arg)
 
   nativeToString: () ->
@@ -40,16 +40,16 @@ class Constraint.Native extends Constraint
 class Constraint.Regexp extends Constraint
   kind: 'regexp'
 
-  accept: (arg, monad) ->
+  accept: (arg, world) ->
     @native.test(arg)
 
 class Constraint.Function extends Constraint
   kind: 'function'
 
-  accept: (arg, monad) ->
+  accept: (arg, world) ->
     identifiers = @native.split('.')
     path = ""
-    func = monad.world
+    func = world
 
     $u.each identifiers, (id, idx) ->
       path += '.' if idx > 0
@@ -66,7 +66,7 @@ class Constraint.Function extends Constraint
 class Constraint.Range extends Constraint
   kind: 'range'
 
-  accept: (arg, monad) ->
+  accept: (arg, world) ->
     (if @native.min_inclusive then arg >= @native.min else arg > @native.min) &&
     ((@native.max is undefined) ||
     (if @native.max_inclusive then (arg <= @native.max) else (arg < @native.max)))

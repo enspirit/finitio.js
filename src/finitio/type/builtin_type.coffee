@@ -15,7 +15,7 @@ class BuiltinType extends Type
       params = [@jsType.name, value]
       Monad.failure this, ["Invalid ${typeName}: `${value}`", params]
 
-  _include: (value) ->
+  _include: (value, world) ->
     value instanceof @jsType || (value? && value.constructor == @jsType)
 
   _equals: (other) =>
