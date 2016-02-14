@@ -22,7 +22,7 @@ describe "Parser#type_def", ->
     })
 
   it 'works with type parameters', ()->
-    s = parse('Qux(a b) = { foo: a, bar: b }')
+    s = parse('Qux(a, b) = { foo: a, bar: b }')
     should(s).eql({
       name: 'Qux'
       parameters: ['a','b']
