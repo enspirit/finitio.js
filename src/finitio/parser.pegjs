@@ -57,8 +57,10 @@ definitions =
   }
 
 type_def =
-  m:metadata? n:type_name spacing p:type_parameters? spacing '=' spacing t:type {
-    return metadatize({ name: n, type: t, parameters: p }, m);
+  m:metadata? n:type_name p:type_parameters? spacing '=' spacing t:type {
+    var data = { name: n, type: t };
+    if (p && p.length) data.parameters = p;
+    return metadatize(data, m);
   }
 
 // TYPES (low priority)
@@ -106,7 +108,7 @@ unnamed_constraint =
   }
 
 type_parameters =
-  "(" spacing head:var_name tail:(spacing opt_comma var_name)* ")" {
+  "(" head:var_name tail:(opt_comma spacing var_name)* ")" {
     return headTailToArray(head, tail);
   }
 
@@ -144,12 +146,25 @@ heading =
   }
 
 attribute =
-  m:metadata? n:attribute_name spacing ':' optional:'?'? spacing t:type {
+  m:metadata? n:attribute_name spacing ':' optional:'?'? spacing t:attribute_type {
     var info = { name: n, type: t };
     if (optional){
       info.required = false;
     }
     return metadatize(info, m);
+  }
+
+attribute_type =
+  type
+/ type_parameter
+
+type_parameter =
+  n:var_name {
+    return {
+      parameter: {
+        paramName: n
+      }
+    };
   }
 
 // TYPES (collections)
