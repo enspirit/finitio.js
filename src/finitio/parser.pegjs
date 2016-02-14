@@ -57,8 +57,8 @@ definitions =
   }
 
 type_def =
-  m:metadata? n:type_name spacing '=' spacing t:type {
-    return metadatize({ name: n, type: t }, m);
+  m:metadata? n:type_name spacing p:type_parameters? spacing '=' spacing t:type {
+    return metadatize({ name: n, type: t, parameters: p }, m);
   }
 
 // TYPES (low priority)
@@ -103,6 +103,11 @@ named_constraint =
 unnamed_constraint =
   e:expression {
     return { native: e.trim() };
+  }
+
+type_parameters =
+  "(" spacing head:var_name tail:(spacing opt_comma var_name)* ")" {
+    return headTailToArray(head, tail);
   }
 
 // TYPES (relational)
