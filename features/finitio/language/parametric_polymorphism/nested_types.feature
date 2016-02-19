@@ -64,7 +64,7 @@ Feature: Support for multiple levels of parameters in a tuple
     Then it should be a TypeError
     And its root cause should be:
       | message                |
-      | Invalid String: `8` |
+      | Invalid String: `8`    |
 
   Scenario: Validating data against an invalid document (III)
 

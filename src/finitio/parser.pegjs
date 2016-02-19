@@ -108,7 +108,7 @@ unnamed_constraint =
   }
 
 type_parameters =
-  "(" head:var_name tail:(opt_comma spacing var_name)* ")" {
+  "(" head:parameter_name tail:(opt_comma spacing parameter_name)* ")" {
     return headTailToArray(head, tail);
   }
 
@@ -159,10 +159,10 @@ attribute_type =
 / type_parameter
 
 type_parameter =
-  n:var_name {
+  n:parameter_name {
     return {
       parameter: {
-        paramName: n
+        name: n
       }
     };
   }
@@ -348,6 +348,9 @@ constraint_name =
 
 attribute_name =
   $([a-z$_] [a-zA-Z0-9_]*)
+
+parameter_name =
+  $([a-zA-Z][a-zA-Z0-9]*)
 
 type_name =
   $((type_qualifier '.')? [A-Z] [a-zA-Z:]*)

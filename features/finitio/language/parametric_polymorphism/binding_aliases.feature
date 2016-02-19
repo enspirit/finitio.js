@@ -34,9 +34,3 @@ Feature: Support for subtyping a parametric type by binding its parameters with 
       }
       """
 
-  Scenario: Figure out how to assert that BindsTwo is a subtype of TakesTwo
-
-    Then it should be a TypeError
-    And its root cause should be:
-      | message                |
-      | Invalid Boolean: `foo` |

@@ -6,7 +6,7 @@ Feature: Support for recursive types with parameters
       """
       LinkedList(x) = {
         current : x,
-        next    : Foo(x) | Nil
+        next    : LinkedList(x) | Nil
       }
       LinkedList(String)
       """
