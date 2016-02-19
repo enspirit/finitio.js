@@ -23,7 +23,7 @@ describe "Utils.collection#values", ->
 
       res = subject array
       should(res).eql(array)
-      should(res == array).be.true
+      should(res == array).equal(true)
 
   describe "When used on an object", ->
 

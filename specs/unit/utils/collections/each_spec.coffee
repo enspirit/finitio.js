@@ -19,7 +19,7 @@ describe "Utils.collection#each", ->
       it "it shouldn't call the callback", ->
         called = false
         $u.each [], (e) -> called = true
-        called.should.not.be.true
+        called.should.not.equal(true)
 
     describe 'on an array', ->
       it 'should call the callback for all the elements', ->
@@ -40,7 +40,7 @@ describe "Utils.collection#each", ->
       it "it shouldn't call the callback", ->
         called = false
         $u.each {}, (e) -> called = true
-        called.should.not.be.true
+        called.should.not.equal(true)
 
     describe 'on an object', ->
       it 'should call the callback for all the elements', ->
@@ -62,7 +62,7 @@ describe "Utils.collection#each", ->
       it "it shouldn't call the callback", ->
         called = false
         $u.each "", (e) -> called = true
-        called.should.not.be.true
+        called.should.not.equal(true)
 
     describe 'on an string', ->
       it 'should call the callback for all the letters', ->

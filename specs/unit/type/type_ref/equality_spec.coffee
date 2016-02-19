@@ -6,13 +6,13 @@ describe "TypeRef#equals", ->
 
   it "works with the aliased type itself", ->
     type = new TypeRef("int", null, intType)
-    should(type.equals(intType)).be.true
+    should(type.equals(intType)).equal(true)
 
   it "works with another alias type", ->
     t1 = new TypeRef("int", null, intType)
     t2 = new TypeRef("int", null, intType)
-    should(t1.equals(t2)).be.true
+    should(t1.equals(t2)).equal(true)
 
   it "works the other way round", ->
     t = new TypeRef("int", null, intType)
-    should(intType.equals(t)).be.true
+    should(intType.equals(t)).equal(true)

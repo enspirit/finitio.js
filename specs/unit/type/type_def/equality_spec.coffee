@@ -6,13 +6,13 @@ describe "TypeDef#equals", ->
 
   it "works with the aliased type itself", ->
     type = new TypeDef(intType, "foo")
-    should(type.equals(intType)).be.true
+    should(type.equals(intType)).equal(true)
 
   it "works with another alias type", ->
     t1 = new TypeDef(intType, "foo")
     t2 = new TypeDef(intType, "bar")
-    should(t1.equals(t2)).be.true
+    should(t1.equals(t2)).equal(true)
 
   it "works the other way round", ->
     t = new TypeDef(intType, "foo")
-    should(intType.equals(t)).be.true
+    should(intType.equals(t)).equal(true)

@@ -6,5 +6,5 @@ describe "TypeDef#include", ->
 
   it "delegates to the aliased type", ->
     type = new TypeDef(intType, "foo")
-    should(type.include(12)).be.true
-    should(type.include("12")).be.false
+    should(type.include(12)).equal(true)
+    should(type.include("12")).equal(false)
