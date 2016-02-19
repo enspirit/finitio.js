@@ -84,18 +84,27 @@ describe "Heading#isSuperHeadingOf", ->
 
   # extra
 
-  it 'recognizes with right-extra if allow extra', ->
-    h1 = heading([a], allowExtra: true)
+  it 'recognizes with right-extra if allow extra (anyType)', ->
+    h1 = heading([a], allowExtra: anyType)
     h2 = heading([a, b])
     should(h1.isSuperHeadingOf(h2)).equal(true)
 
+  it 'recognizes when sub allows more specific extra than parent', ->
+    h1 = heading([a], allowExtra: anyType)
+    h2 = heading([a], allowExtra: intType)
+    should(h1.isSuperHeadingOf(h2)).equal(true)
+
   it 'distinguishes with right-extra if not allow extra', ->
-    h1 = heading([a], allowExtra: false)
+    h1 = heading([a], allowExtra: null)
     h2 = heading([a, b])
     should(h1.isSuperHeadingOf(h2)).equal(false)
 
   it 'distinguishes when sub allows extra while parent does not', ->
     h1 = heading([a])
-    h2 = heading([a], allowExtra: true)
+    h2 = heading([a], allowExtra: anyType)
     should(h1.isSuperHeadingOf(h2)).equal(false)
 
+  it 'distinguishes when sub allows extra that is not subtype of parent\'s extra', ->
+    h1 = heading([a], allowExtra: intType)
+    h2 = heading([a], allowExtra: anyType)
+    should(h1.isSuperHeadingOf(h2)).equal(false)

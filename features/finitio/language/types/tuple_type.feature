@@ -38,3 +38,22 @@ Feature: Support for rich tuple types
       """
     Then it compiles to a tuple type
     And it allows extra attributes
+
+  Scenario: Support for typed extra attributes
+
+    Given the System is
+      """
+      { length: Integer, ...: String }
+      """
+    Then it compiles to a tuple type
+    And `length` is mandatory
+    And it allows extra attributes of type String
+
+  Scenario: Support for catch all (typed) tuple type
+
+    Given the System is
+      """
+      { ...: String }
+      """
+    Then it compiles to a tuple type
+    And it allows extra attributes of type String

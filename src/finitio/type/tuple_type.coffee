@@ -37,16 +37,40 @@ class TupleType extends Type
       attr      = @heading.getAttr(attrName) || null
       attrValue = value[attrName]
 
+      # Missing required attribute, for instance
+      # { name: String, age: Integer }
+      # { "name": "Finitio" }
       if (attrValue is undefined) and attr? and attr.required
         m = Monad.failure attrName, ["Missing attribute `${attrName}`", [attrName]]
         m.onFailure (f)->
           f.location = attrName
           m
+
+      # Extra attribute on a heading that doesn't allow extra, for instance
+      # { name: String }
+      # { "name": "Finitio", "age": 42 }
       else if !attr? and !@heading.allowExtra()
         m = Monad.failure attrName, ["Unrecognized attribute `${attrName}`", [attrName]]
         m.onFailure (f)->
           f.location = attrName
           m
+
+      # Extra attribute on a heading that allows extra, for instance
+      # { name: String, ...: Integer }
+      # { "name": "Finitio", "age": 42 }
+      else if !attr? and @heading.allowExtra()
+        extraType = @heading.getExtraType()
+        subm = extraType.mDress(attrValue, Monad)
+        subm.onFailure (error)->
+          error.location = attrName
+          subm
+        subm.onSuccess (val)->
+          result[attrName] = val
+          success
+
+      # Required attributes, for instance
+      # { name: String }
+      # { "name": "Finitio" }
       else if attr? and (attrValue isnt undefined)
         subm = attr.type.mDress(attrValue, Monad)
         subm.onFailure (error)->
@@ -55,9 +79,8 @@ class TupleType extends Type
         subm.onSuccess (val)->
           result[attrName] = val
           success
-      else if (attrValue isnt undefined)
-        result[attrName] = attrValue
-        success
+
+      #
       else
         success
 

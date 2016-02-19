@@ -4,7 +4,7 @@ should              = require 'should'
 _                   = require 'underscore'
 {anyType, intType}  = require '../../spec_helpers'
 
-describe 'Heading#allowExtra', ->
+describe 'Heading#allowExtraValue', ->
 
   r = new Attribute('r', intType)
 
@@ -13,32 +13,26 @@ describe 'Heading#allowExtra', ->
 
   it 'is false by default', ->
     h = heading([r])
-    h.allowExtra().should.equal(false)
+    h.allowExtraValue().should.equal(false)
 
-  it 'is false by default, given Any', ->
+  it 'is false by default, given any value', ->
     h = heading([r])
-    h.allowExtra(anyType).should.equal(false)
+    h.allowExtraValue(12).should.equal(false)
+    h.allowExtraValue(12.2).should.equal(false)
+    h.allowExtraValue("12").should.equal(false)
 
-  it 'can be set to a type', ->
-    h = heading([r], allowExtra: anyType)
-    h.allowExtra().should.equal(true)
-
-  it 'can be set to false explicitely', ->
-    h = heading([r], allowExtra: false)
-    h.allowExtra().should.equal(false)
-
-  it 'is true if type is set and no type given', ->
+  it 'is true if type is set and no value given', ->
     h = heading([r], allowExtra: intType)
-    h.allowExtra().should.equal(true)
+    h.allowExtraValue().should.equal(true)
 
-  it 'is false if type is set and wrong type given', ->
+  it 'is false if type is set and wrong value given', ->
     h = heading([r], allowExtra: intType)
-    h.allowExtra(anyType).should.equal(false)
+    h.allowExtraValue("foo").should.equal(false)
 
   it 'is true if type is set and correct type given', ->
     h = heading([r], allowExtra: intType)
-    h.allowExtra(intType).should.equal(true)
+    h.allowExtraValue(12).should.equal(true)
 
   it 'is true if type is set and subtype given', ->
     h = heading([r], allowExtra: anyType)
-    h.allowExtra(intType).should.equal(true)
+    h.allowExtraValue(12).should.equal(true)

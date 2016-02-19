@@ -89,10 +89,15 @@ Attribute = .Finitio.Attribute <info> {
 }
 Attribute:Name = Js:String( s | /[a-z][a-zA-Z0-9_]*/.test(s) )
 
+/- Recognizes the Finitio's Headings Options -/
+HeadingOptions = .Finitio.Heading <info> {
+  allowExtra: Type
+}
+
 /- Recognizes Finitio's Headings -/
 Heading = .Finitio.Heading <info> {
   attributes : [Attribute]
-  options    : { allowExtra: Js:Boolean }
+  options    : HeadingOptions
 }
 
 /- Recognizes and allows factoring Finitio Types -/

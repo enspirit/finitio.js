@@ -13,14 +13,14 @@ describe "Heading's information contract", ->
         required: false
       })
     ],
-    options: { allowExtra: false }
+    options: { allowExtra: { type: { any: { } } } }
   }
   h = Heading.info(info)
 
   it 'dresses as expected', ->
     should(h).be.an.instanceof(Heading)
     should(h.attributes.length).equal(1)
-    should(h.options).eql({ allowExtra: false })
+    should(h.options).eql({ allowExtra: { type: { any: { } } } })
 
   it 'undresses as expected', ->
     should(h.toInfo()).eql(info)

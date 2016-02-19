@@ -1,7 +1,8 @@
 Attribute        = require '../../../../src/finitio/support/attribute'
 Heading          = require '../../../../src/finitio/support/heading'
 TupleType        = require '../../../../src/finitio/type/tuple_type'
-{intType}        = require '../../../spec_helpers'
+{anyType,
+intType}         = require '../../../spec_helpers'
 should           = require 'should'
 
 describe "TupleType#include", ->
@@ -54,7 +55,7 @@ describe "TupleType#include", ->
 
   context 'with extra allowed', ->
 
-    heading = new Heading([a, maybe_b], allowExtra: true)
+    heading = new Heading([a, maybe_b], allowExtra: anyType)
     type    = new TupleType(heading)
 
     subject = (arg) -> type.include(arg)

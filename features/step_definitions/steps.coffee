@@ -115,6 +115,14 @@ module.exports = ->
       should(type.heading.allowExtra()).be.true
     callback()
 
+  @Then /^it allows extra attributes of type (.*)$/, (name, callback) ->
+    if type.heading == undefined
+      callback.fail("Heading based type expected, got `#{type}`")
+    else
+      extraType = system.resolve(name)
+      should(type.heading.allowExtra(extraType)).be.true
+    callback()
+
   @Then /^it does not allow extra attributes$/, (callback) ->
     if type.heading == undefined
       callback.fail("Heading based type expected, got `#{type}`")

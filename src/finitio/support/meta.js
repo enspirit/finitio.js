@@ -171,10 +171,54 @@ module.exports = (function(){
 
   // ----------------------------------------------------------------- Heading
 
+  Meta.AllowExtraOption = AdType.info({
+    jsType: Type,
+    contracts: [
+      Contract.info({
+        name: 'any',
+        infoType: Js.Boolean,
+        explicit: {
+          dress: function(bool, world){
+            if (bool === true) {
+              return new AnyType();
+            } else {
+              return false;
+            }
+          },
+          undress: function(allowExtra, world){
+            // TODO
+            throw new Error("`undress` not implemented");
+          }
+        }
+      }),
+      Contract.info({
+        name: 'static',
+        infoType: UnionType.info({
+          candidates: typeCandidates
+        }),
+        explicit: {
+          dress: function(value, world){
+            return Meta.Type.dress(value, world);
+          },
+          undress: function(allowExtra, world){
+            // TODO
+            throw new Error("`undress` not implemented");
+          }
+        }
+      })
+    ]
+  });
+
+
+  Meta.BackwardCompatibleAllowExtraOption = UnionType.info({
+    candidates: [Meta.Type, Js.Boolean],
+    name: 'BackwardCompatibleAllowExtraOption'
+  });
+
   Meta.HeadingOptions = TupleType.info({
     heading: Heading.info({
       attributes: [
-        Attribute.info({ name: 'allowExtra', type: Js.Boolean })
+        Attribute.info({ name: 'allowExtra', type: Meta.AllowExtraOption })
       ]
     })
   });
