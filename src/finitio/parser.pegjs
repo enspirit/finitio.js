@@ -123,11 +123,17 @@ relation_type =
   }
 
 heading =
-  head:attribute? tail:(opt_comma attribute)* opt_comma d:dots? {
+  head:attribute? tail:(opt_comma attribute)* opt_comma d:dots ':' spacing t:type {
+    var attributes = headTailToArray(head, tail);
+    var info = { attributes: attributes };
+    info.options = { allowExtra: t };
+    return info;
+  }
+/  head:attribute? tail:(opt_comma attribute)* opt_comma d:dots? {
     var attributes = headTailToArray(head, tail);
     var info = { attributes: attributes };
     if (d){
-      info.options = { allowExtra: true };
+      info.options = { allowExtra: { any: {} } };
     }
     return info;
   }

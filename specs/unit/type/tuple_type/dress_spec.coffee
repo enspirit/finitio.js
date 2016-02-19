@@ -4,7 +4,8 @@ TupleType        = require '../../../../src/finitio/type/tuple_type'
 {TypeError}      = require '../../../../src/finitio/errors'
 should           = require 'should'
 _                = require 'underscore'
-{byteType}       = require '../../../spec_helpers'
+{stringType,
+byteType}        = require '../../../spec_helpers'
 
 describe "TupleType#dress", ->
 
@@ -94,17 +95,32 @@ describe "TupleType#dress", ->
         it 'should raise a TypeError', ->
           should(subject.rootCause.message).equal("Invalid Number: `null`")
 
-  context 'when not allowing extra', ->
-    heading = new Heading([r, g, maybe_b], allowExtra: true)
+  context 'when allowing extra strings', ->
+    heading = new Heading([r, g, maybe_b], allowExtra: stringType)
     type    = new TupleType(heading, "color")
 
     subject = (arg) -> type.dress(arg)
 
-    context 'with an extra attribute', ->
-      arg = { "r": 12, "g": 13, "extr": 165 }
+    context 'with an extra string attribute', ->
+      arg = { "r": 12, "g": 13, "extr": "foo" }
 
       it 'should not raise a TypeError', ->
         should(subject(arg)).not.be.an.instanceof(TypeError)
 
       it 'should keep the attribute unchanged', ->
-        subject(arg).should.eql({r: 12, g: 13, "extr": 165})
+        subject(arg).should.eql({r: 12, g: 13, "extr": "foo"})
+
+    context 'when raising an error', ->
+
+      lambda = (arg) ->
+        try
+          type.dress(arg)
+        catch e
+          e
+
+      context 'with an extra non-string attribute', ->
+        arg = { "r": 12, "g": 13, "extr": 12 }
+
+        it 'should raise a TypeError', ->
+          subject = lambda(arg)
+          should(subject.rootCause.message).equal("Invalid String: `12`")

@@ -29,7 +29,7 @@ describe "Parser#heading", ->
     should(s).eql({
       attributes: [
       ]
-      options: { allowExtra: true }
+      options: { allowExtra: { any: {} } }
     })
 
   it 'works with both', ()->
@@ -41,5 +41,25 @@ describe "Parser#heading", ->
           type: { any: {} }
         }
       ]
-      options: { allowExtra: true }
+      options: { allowExtra: { any: {} } }
+    })
+
+  it 'works with dots and type only', ()->
+    s = parse('...: .String')
+    should(s).eql({
+      attributes: [
+      ]
+      options: { allowExtra: { builtin: { jsType: 'String' } } }
+    })
+
+  it 'works with both', ()->
+    s = parse('name: ., ...: .String')
+    should(s).eql({
+      attributes: [
+        {
+          name: 'name',
+          type: { any: {} }
+        }
+      ]
+      options: { allowExtra: { builtin: { jsType: 'String' } } }
     })

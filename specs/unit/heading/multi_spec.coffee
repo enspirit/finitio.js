@@ -1,8 +1,8 @@
-Attribute = require '../../../src/finitio/support/attribute'
-Heading   = require '../../../src/finitio/support/heading'
-BuiltinType = require '../../../src/finitio/type/builtin_type'
-should      = require 'should'
-{intType}   = require '../../spec_helpers'
+Attribute           = require '../../../src/finitio/support/attribute'
+Heading             = require '../../../src/finitio/support/heading'
+BuiltinType         = require '../../../src/finitio/type/builtin_type'
+should              = require 'should'
+{anyType, intType}  = require '../../spec_helpers'
 
 describe "Heading#multi", ->
 
@@ -28,7 +28,12 @@ describe "Heading#multi", ->
     it 'should be true', ->
       subject([red, maybe_blue]).should.equal(true)
 
-  describe 'with allowExtra set to true', ->
+  describe 'with allowExtra set to AnyType', ->
 
-    it 'should be false', ->
-      subject([red, blue], {allowExtra: true}).should.equal(true)
+    it 'should be true', ->
+      subject([red, blue], {allowExtra: anyType}).should.equal(true)
+
+  describe 'with allowExtra set a specific Type', ->
+
+    it 'should be true', ->
+      subject([red, blue], {allowExtra: intType}).should.equal(true)

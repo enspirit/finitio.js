@@ -20,7 +20,7 @@ describe "TupleType#toString", ->
 
   context 'with extra allowed', ->
 
-    heading = new Heading([a, maybe_b], allowExtra: true)
+    heading = new Heading([a, maybe_b], allowExtra: anyType)
     type    = new TupleType(heading)
 
     it 'works', ->

@@ -34,5 +34,5 @@ describe "Heading#constructor", ->
 
     it 'supports them', ->
       attrs = [ new Attribute('red', intType) ]
-      heading = new Heading(attrs, allowExtra: true)
+      heading = new Heading(attrs, allowExtra: intType)
       heading.allowExtra().should.equal(true)

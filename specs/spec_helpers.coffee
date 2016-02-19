@@ -1,7 +1,10 @@
 Constraint   = require '../src/finitio/support/constraint'
+AnyType      = require '../src/finitio/type/any_type'
 BuiltinType  = require '../src/finitio/type/builtin_type'
 SubType      = require '../src/finitio/type/sub_type'
 _            = require 'underscore'
+
+anyType = new AnyType()
 
 # Builtins
 numType    = new BuiltinType(Number)
@@ -24,6 +27,7 @@ byteType = new SubType intType, [
   ]
 
 module.exports =
+  anyType: anyType
   numType: numType
   boolType: boolType
   stringType: stringType

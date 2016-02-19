@@ -2,6 +2,7 @@
 $u           = require './utils'
 Fetchable    = require './fetchable'
 Attribute    = require './attribute'
+AnyType      = require '../type/any_type'
 
 #
 # Helper class for tuple and relation types.
@@ -45,11 +46,29 @@ class Heading
   isEmpty: ->
     @size() == 0
 
-  allowExtra: ->
-    @options['allowExtra']
+  allowExtra: (type) ->
+    unless @options.allowExtra
+      return false
+
+    unless type?
+      return true
+
+    @getExtraType()._isSuperTypeOf(type)
+
+  allowExtraValue: (value) ->
+    unless @allowExtra()
+      return false
+
+    unless value?
+      return true
+
+    @getExtraType().include(value)
+
+  getExtraType: ->
+    return @options.allowExtra
 
   multi: ->
-    @options['allowExtra'] || $u.any(@attributes, (a) -> !a.required)
+    @allowExtra() || $u.any(@attributes, (a) -> !a.required)
 
   each: (callback) ->
     $u.each(@attributes, callback)
@@ -57,22 +76,31 @@ class Heading
   toString: ->
     str = $u.map(@attributes, (a) -> a.toString()).join(', ')
     if @allowExtra()
+      extraType = @options.allowExtra
       str += ", " unless @isEmpty()
       str += "..."
+      str += ": " + extraType.toString() unless extraType instanceof AnyType
     str
 
   names: ->
     $u.map(@attributes, (a) -> a.name)
 
   isSuperHeadingOf: (other) ->
+    # Recognises with itself
     return true if (this is other)
     return false unless other instanceof Heading
-    [s, l, r] = $u.triSplit(_attributesByName(this), _attributesByName(other))
     #
-    $u.every(s, (pair)-> pair[0].isSuperAttributeOf(pair[1])) and
-    $u.every(l, (a)-> not(a.required)) and
-    (@allowExtra() or not(other.allowExtra())) and
-    (@allowExtra() or $u.isEmpty(r))
+    [s, l, r] = $u.triSplit(_attributesByName(this), _attributesByName(other))
+    # Each field must be of same type or be parent
+    return false unless $u.every(s, (pair)-> pair[0].isSuperAttributeOf(pair[1]))
+    # Each missing field must be optional
+    return false unless $u.every(l, (a)-> not(a.required))
+    # If the other type allows extra attribute
+    # this type must too and must allow the other's extra type
+    if other.allowExtra()
+      return false unless @allowExtra() and @allowExtra(other.options.allowExtra)
+    # We allow extra, or there are no extra fields
+    return @allowExtra() or $u.isEmpty(r)
 
   equals: (other) ->
     (this is other) or
@@ -105,6 +133,7 @@ class Heading
 
   resolveProxies: (system)->
     $u.each @attributes, (a)-> a.resolveProxies(system)
+    @options.allowExtra.resolveProxies(system) if @options.allowExtra
 
 #
 module.exports = Heading
