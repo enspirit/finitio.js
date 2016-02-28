@@ -57,9 +57,18 @@ definitions =
   }
 
 type_def =
-  m:metadata? n:type_name p:type_parameters? spacing '=' spacing t:type {
+  parametric_type_def
+/ non_parametric_type_def
+
+parametric_type_def =
+  m:metadata? n:type_name p:type_parameters+ spacing '=' spacing t:type {
+    var data = { name: n, type: { parameterized: { parameters: p, type: t } } };
+    return metadatize(data, m);
+  }
+
+non_parametric_type_def =
+  m:metadata? n:type_name spacing '=' spacing t:type {
     var data = { name: n, type: t };
-    if (p && p.length) data.parameters = p;
     return metadatize(data, m);
   }
 
