@@ -117,7 +117,11 @@ unnamed_constraint =
   }
 
 type_parameters =
+<<<<<<< HEAD
   "(" head:parameter_name tail:(opt_comma spacing parameter_name)* ")" {
+=======
+  "(" head:var_name tail:(opt_comma spacing var_name)* ")" {
+>>>>>>> a4b0f4ea90d65ea3e36685cac701efaa7f7906b1
     return headTailToArray(head, tail);
   }
 
@@ -168,10 +172,17 @@ attribute_type =
 / type_parameter
 
 type_parameter =
+<<<<<<< HEAD
   n:parameter_name {
     return {
       parameter: {
         name: n
+=======
+  n:var_name {
+    return {
+      parameter: {
+        paramName: n
+>>>>>>> a4b0f4ea90d65ea3e36685cac701efaa7f7906b1
       }
     };
   }
