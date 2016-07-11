@@ -14,7 +14,7 @@ class TypeRef extends Type
     r = @resolved()
     r.fetch.apply(r, arguments)
 
-  _include: (value)->
+  _include: (value) ->
     @resolved().include(value)
 
   _mDress: (value, Monad)->

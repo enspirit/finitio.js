@@ -21,3 +21,10 @@ describe 'Meta (Js.Function)', ->
     fn = Meta.Js.Function.dress(["i", "i>0"])
     should(fn(0)).equal(false)
     should(fn(1)).equal(true)
+
+  it "is able to resolve a function reference on the world", ->
+    fn = new Function("i", "return i>0")
+    world = { _: { fn: fn } }
+    dressed = Meta.Js.Function.dress("_.fn", world)
+    should(fn(0)).equal(false)
+    should(fn(1)).equal(true)

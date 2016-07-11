@@ -86,6 +86,18 @@ constraint =
     }
     return cs;
   }
+/ spacing '::' spacing fn:funcref_literal {
+    return [{ native: fn }];
+  }
+/ spacing '::' spacing rx:regexp_literal {
+    return [{ regexp: rx }];
+  }
+/ spacing '::' spacing rx:range_literal {
+    return [{ range: rx }];
+  }
+/ spacing '::' spacing set:set_literal {
+    return [{ set: set }];
+  }
 
 constraints =
   head:named_constraint tail:(opt_comma named_constraint)* opt_comma {
@@ -283,14 +295,39 @@ metaattr =
 
 literal =
   string_literal
+/ range_literal
 / real_literal
 / integer_literal
 / boolean_literal
 / array_literal
+/ set_literal
+/ regexp_literal
+/ funcref_literal
 
 string_literal =
   s:$(["] ([\\]["] / !["] .)* ["]) {
     return s.substring(1, s.length-1).replace(/\\"/, '"');
+  }
+
+range_literal =
+  min:integer_literal '..' max:integer_literal {
+    return { min: min, min_inclusive: true, max: max, max_inclusive: true };
+  }
+/ min:integer_literal '...' max:integer_literal {
+    return { min: min, min_inclusive: true, max: max, max_inclusive: false };
+  }
+/ min:integer_literal '..' spacing {
+    return { min: min, min_inclusive: true };
+  }
+
+funcref_literal =
+  '&' fct:$(js_identifier) {
+    return fct;
+  }
+
+js_identifier =
+  id:$([a-zA-Z_$][a-zA-Z0-9_$]* ('.' js_identifier)*) {
+    return id;
   }
 
 integer_literal =
@@ -313,6 +350,19 @@ array_literal =
   }
 / '[' spacing ']' {
     return [];
+  }
+
+set_literal =
+  '{' spacing head:literal tail:(opt_comma literal)* spacing '}' {
+    return headTailToArray(head, tail);
+  }
+/ '{' spacing '}' {
+    return [];
+  }
+
+regexp_literal  =
+  '/' s:$([^/]+) '/' {
+    return s;
   }
 
 // LEXER (names)

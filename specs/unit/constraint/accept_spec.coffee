@@ -21,3 +21,55 @@ describe "Constraint#accept", ->
     it 'rejects numbers', ->
       constraint.accept("12").should.equal(false)
 
+  describe 'with a closed range', ->
+    constraint = new Constraint.Range 'within', { min: 1, max: 10, min_inclusive: true, max_inclusive: true }
+
+    it 'accepts valid integers', ->
+      should(constraint.accept(1)).equal(true)
+      should(constraint.accept(5)).equal(true)
+      should(constraint.accept(10)).equal(true)
+
+    it 'rejects invalid integers', ->
+      should(constraint.accept(-10)).equal(false)
+      should(constraint.accept(0)).equal(false)
+      should(constraint.accept(11)).equal(false)
+
+  describe 'with an open range', ->
+    constraint = new Constraint.Range 'within', { min: 1, max: 10, min_inclusive: false, max_inclusive: false }
+
+    it 'accepts valid integers', ->
+      should(constraint.accept(2)).equal(true)
+      should(constraint.accept(5)).equal(true)
+      should(constraint.accept(9)).equal(true)
+
+    it 'rejects invalid integers', ->
+      should(constraint.accept(-10)).equal(false)
+      should(constraint.accept(1)).equal(false)
+      should(constraint.accept(10)).equal(false)
+
+  describe 'with an right-infinite range', ->
+    constraint = new Constraint.Range 'within', { min: 1, min_inclusive: false }
+
+    it 'accepts valid integers', ->
+      should(constraint.accept(2)).equal(true)
+      should(constraint.accept(5)).equal(true)
+      should(constraint.accept(9)).equal(true)
+      should(constraint.accept(100)).equal(true)
+      should(constraint.accept(100000)).equal(true)
+
+    it 'rejects invalid integers', ->
+      should(constraint.accept(-10)).equal(false)
+      should(constraint.accept(0)).equal(false)
+
+  describe 'with a set constraint', ->
+    constraint = new Constraint.Set 'within', [1, 5, 10]
+
+    it 'accepts valid integers', ->
+      should(constraint.accept(1)).equal(true)
+      should(constraint.accept(5)).equal(true)
+      should(constraint.accept(10)).equal(true)
+
+    it 'rejects invalid integers', ->
+      should(constraint.accept(-10)).equal(false)
+      should(constraint.accept(0)).equal(false)
+      should(constraint.accept(100)).equal(false)

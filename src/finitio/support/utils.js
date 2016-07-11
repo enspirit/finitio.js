@@ -151,7 +151,7 @@ module.exports = (function(){
       if (!($u.isArray(source))) {
         $u.argumentError("Array expected, got", source);
       }
-      if ($u.size(source) != $u.size(dest)) {
+      if ($u.size(source) !== $u.size(dest)) {
         $u.argumentError("Source(s) and destination Arrays must have same size");
       }
     });
@@ -299,7 +299,7 @@ module.exports = (function(){
       });
     } catch (e) {
       // If a real exception was raised, forward it
-      if (e != "fail"){
+      if (e !== "fail"){
         throw e;
       }
       return false;
@@ -362,7 +362,7 @@ module.exports = (function(){
       });
     } catch (e) {
       // If a real exception was raised, forward it
-      if (e != "gotcha"){
+      if (e !== "gotcha"){
         throw e;
       }
       return true;
@@ -433,6 +433,24 @@ module.exports = (function(){
     return values;
   };
 
+
+  /**
+    * Reduces collection to a value which is the accumulated result of running each element in collection through callback
+    * where each successive invocation is supplied the return value of the previous
+    * The iteratee is invoked with four arguments: (accumulator, value, index|key, collection).
+    */
+  $u.reduce = function(collection, accumulator, callback){
+    if (callback === null || callback === undefined){
+      $u.argumentError("Function expected, got", callback);
+    }
+    $u.each(collection, function(v, k){
+      accumulator = callback(accumulator, v, k, collection);
+    });
+    return accumulator;
+  };
+
+
+
   /**
     * Returns the values of an Enumerable (Enumerable (String, Array, Object)
     *
@@ -498,12 +516,12 @@ module.exports = (function(){
     }
     var nativeIndexOf = Array.prototype.indexOf;
     if (nativeIndexOf && obj.indexOf === nativeIndexOf) {
-      return obj.indexOf(target) != -1;
+      return obj.indexOf(target) !== -1;
     }
     var found = $u.find(obj, function(v){
       return v === target;
     });
-    return found != null;
+    return found !== null;
   };
 
   //******* STRINGS
@@ -517,7 +535,7 @@ module.exports = (function(){
     * foo_bar => FooBar
     **/
   $u.capitalize = function(obj){
-    if (typeof(obj) != "string"){
+    if (typeof(obj) !== "string"){
       $u.argumentError("String expected, got", obj);
     }
     if (obj.trim() === ""){
@@ -529,7 +547,7 @@ module.exports = (function(){
         i = null;
 
     // Remove underscores
-    if (string.indexOf("_") != -1){
+    if (string.indexOf("_") !== -1){
 
       tokens = string.split("_");
 
@@ -541,7 +559,7 @@ module.exports = (function(){
     }
 
     // Remove spaces
-    if (string.indexOf(" ") != -1){
+    if (string.indexOf(" ") !== -1){
 
       tokens = string.split(" ");
 
