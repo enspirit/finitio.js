@@ -11,7 +11,7 @@ AnyType      = require '../type/any_type'
 # attributes have the same name.
 #
 class Heading
-  ObjectType this, ['attributes', 'options']
+  ObjectType this, ['attributes', 'options', 'parameters']
   Fetchable  this, 'attributes', 'attribute', (name)-> this.getAttr(name)
 
   DEFAULT_OPTIONS = {

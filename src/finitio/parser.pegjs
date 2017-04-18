@@ -57,8 +57,19 @@ definitions =
   }
 
 type_def =
+  parametric_type_def
+/ non_parametric_type_def
+
+parametric_type_def =
+  m:metadata? n:type_name p:type_parameters+ spacing '=' spacing t:type {
+    var data = { name: n, type: { parameterized: { parameters: p, type: t } } };
+    return metadatize(data, m);
+  }
+
+non_parametric_type_def =
   m:metadata? n:type_name spacing '=' spacing t:type {
-    return metadatize({ name: n, type: t }, m);
+    var data = { name: n, type: t };
+    return metadatize(data, m);
   }
 
 // TYPES (low priority)
@@ -117,6 +128,15 @@ unnamed_constraint =
     return { native: e.trim() };
   }
 
+type_parameters =
+<<<<<<< HEAD
+  "(" head:parameter_name tail:(opt_comma spacing parameter_name)* ")" {
+=======
+  "(" head:var_name tail:(opt_comma spacing var_name)* ")" {
+>>>>>>> a4b0f4ea90d65ea3e36685cac701efaa7f7906b1
+    return headTailToArray(head, tail);
+  }
+
 // TYPES (relational)
 
 rel_type =
@@ -151,12 +171,32 @@ heading =
   }
 
 attribute =
-  m:metadata? n:attribute_name spacing ':' optional:'?'? spacing t:type {
+  m:metadata? n:attribute_name spacing ':' optional:'?'? spacing t:attribute_type {
     var info = { name: n, type: t };
     if (optional){
       info.required = false;
     }
     return metadatize(info, m);
+  }
+
+attribute_type =
+  type
+/ type_parameter
+
+type_parameter =
+<<<<<<< HEAD
+  n:parameter_name {
+    return {
+      parameter: {
+        name: n
+=======
+  n:var_name {
+    return {
+      parameter: {
+        paramName: n
+>>>>>>> a4b0f4ea90d65ea3e36685cac701efaa7f7906b1
+      }
+    };
   }
 
 // TYPES (collections)
@@ -378,6 +418,9 @@ constraint_name =
 
 attribute_name =
   $([a-z$_] [a-zA-Z0-9_]*)
+
+parameter_name =
+  $([a-zA-Z][a-zA-Z0-9]*)
 
 type_name =
   $((type_qualifier '.')? [A-Z] [a-zA-Z:]*)

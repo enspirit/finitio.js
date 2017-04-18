@@ -20,3 +20,30 @@ describe "Parser#type_def", ->
       type: { builtin: { jsType: 'String' } }
       metadata: { description: 'Foo' }
     })
+
+  it 'works with type parameters', ()->
+    s = parse('Qux(a, b) = { foo: a, bar: b }')
+    should(s).eql({
+      name: 'Qux'
+      parameters: ['a','b']
+      type: {
+        tuple: {
+          heading: {
+            attributes: [
+              {
+                name: 'foo'
+                type: {
+                  parameter: { paramName: 'a' }
+                }
+              }
+              {
+                name: 'bar'
+                type: {
+                  parameter: { paramName: 'b' }
+                }
+              }
+            ]
+          }
+        }
+      }
+    })
