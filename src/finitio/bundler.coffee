@@ -25,7 +25,7 @@ class Bundler
         };
       };
       return function(w, options){
-        if (!w) { w = require('finit' + 'io.js').World; }
+        if (!w) { w = require('finit' + 'io').World; }
         w = w.Finitio.world(w, {
           importResolver: r(w.importResolver)
         });
