@@ -217,12 +217,10 @@ module.exports = (grunt) ->
         src: ['specs/unit/**/*.coffee']
         options:
           require: 'coffee-script/register'
-          reporter: 'dot'
       integration:
         src: ['specs/integration/**/*.coffee']
         options:
           require: 'coffee-script/register'
-          reporter: 'dot'
 
     # Acceptance testing with cucumber
     cucumberjs:
