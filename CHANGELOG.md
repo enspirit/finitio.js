@@ -1,3 +1,10 @@
+# 1.3.0 -- February 2021
+
+Major improvements:
+
+* Add support for subsystem (`System#subsystem`)
+* Add support for type "namespacing" (ex: `Person.ID = String`)
+
 # 0.1.0 -- June 2014
 
 Major improvements:
