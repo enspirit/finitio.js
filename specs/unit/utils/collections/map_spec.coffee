@@ -44,7 +44,7 @@ describe "Utils.collection#map", ->
   describe "When used with an iterator on an Object", ->
 
     it 'returns an array', ->
-      res = subject {1: 1: 2, 2, 3: 3}, (v, k) -> v * k
+      res = subject {1: 1: 2: 2, 3: 3}, (v, k) -> v * k
       res.should.be.an.instanceof(Array)
 
     it 'collects the values returned by the iterator', ->
