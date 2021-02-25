@@ -41,6 +41,15 @@ class System
   clone: ->
     new System($u.clone(@imports), $u.clone(@types))
 
+  subsystem: (source, world) ->
+    Finitio = require '../finitio'
+    source = Finitio.parse(source) if typeof(source)=='string'
+    newsource = {
+      types: [].concat(@types, source.types).filter(Boolean),
+      imports: [].concat(@imports, source.imports).filter(Boolean)
+    }
+    Finitio.Meta.System.dress(newsource, Finitio.world(world))
+
   # Private
 
   _resolveQualified: (match, callback)->
