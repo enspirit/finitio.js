@@ -32,7 +32,7 @@
   "devDependencies": {
     "coffee-script": "~1.10.0",
     "cucumber": "~0.9.4",
-    "underscore": "~1.8.3",
+    "underscore": "~1.12.1",
     "shelljs": "~0.5.3",
     "should": "~8.2.1",
     "browserify": "~13.0.0",
