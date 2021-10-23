@@ -1,31 +1,28 @@
-module.exports = (function(){
-  return {
+export default {
 
-    name: {
+  name: {
 
-      dress: function(name, world){
-        var resolved = null;
-        if (world){
-          resolved = (new Function("world", "return world." + name + ";"))(world);
-        } else {
-          resolved = (new Function("return " + name + ";"))();
-        }
-        if (resolved){
-          return resolved;
-        } else {
-          msg = "Unknown javascript type: `" + name + "` (";
-          msg += Object.keys(world).toString();
-          msg += ")";
-          throw new Error(msg);
-        }
-      },
-
-      undress: function(fn){
-        throw new Error("Unimplemented");
+    dress: function(name, world) {
+      let resolved = null;
+      if (world) {
+        resolved = (new Function('world', `return world.${name};`))(world);
+      } else {
+        resolved = (new Function(`return ${name};`))();
       }
+      if (resolved) {
+        return resolved;
+      } else {
+        let msg = `Unknown javascript type: \`${name}\` (`;
+        msg += Object.keys(world).toString();
+        msg += ')';
+        throw new Error(msg);
+      }
+    },
 
-    }
+    undress: function(fn) {
+      throw new Error('Unimplemented');
+    },
 
-  };
-})();
+  },
 
+};
