@@ -8,7 +8,7 @@ describe('Utils.utility#triSplit', () => {
   it('recognizes same hashes', () => {
     const x = { name: 'foo', bar: 'baz' };
     const y = { name: 'foo', bar: 'baz' };
-    const [shared, left, right] = Array.from($u.triSplit(x, y));
+    const [shared, left, right] = $u.triSplit(x, y);
     should(shared).eql(expShared);
     should(left).eql({});
     return should(right).eql({});
@@ -17,7 +17,7 @@ describe('Utils.utility#triSplit', () => {
   it('recognizes extra at left', () => {
     const x = { name: 'foo', bar: 'baz', extra: 'blah' };
     const y = { name: 'foo', bar: 'baz' };
-    const [shared, left, right] = Array.from($u.triSplit(x, y));
+    const [shared, left, right] = $u.triSplit(x, y);
     should(shared).eql(expShared);
     should(left).eql({ extra: 'blah' });
     return should(right).eql({});
@@ -26,7 +26,7 @@ describe('Utils.utility#triSplit', () => {
   it('recognizes extra at right', () => {
     const x = { name: 'foo', bar: 'baz' };
     const y = { name: 'foo', bar: 'baz', extra: 'blah' };
-    const [shared, left, right] = Array.from($u.triSplit(x, y));
+    const [shared, left, right] = $u.triSplit(x, y);
     should(shared).eql(expShared);
     should(left).eql({});
     return should(right).eql({ extra: 'blah' });

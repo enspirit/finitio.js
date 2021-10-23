@@ -28,7 +28,7 @@ class StructType extends Type {
     ($u.size(value) === $u.size(this.componentTypes)) &&
     $u.every($u.zip(value, this.componentTypes), (valueAndKey) => {
       let type;
-      [value, type] = Array.from(valueAndKey);
+      [value, type] = valueAndKey;
       return type.include(value);
     });
   }
