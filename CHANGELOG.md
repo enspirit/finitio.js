@@ -1,3 +1,8 @@
+# 1.3.1  -- October 2021
+
+Minor change:
+
+* Upgrade grunt-mocha-test
 # 1.3.0 -- February 2021
 
 Major improvements:
