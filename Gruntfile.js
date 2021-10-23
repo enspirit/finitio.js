@@ -171,7 +171,7 @@ module.exports = function(grunt) {
           'dist/finitio.js': ['lib/finitio.js'],
         },
         options: {
-          ignore:     ['./node_modules/**/*.*', './package.json'],
+          ignore:     ['./node_modules/**/*.*'],
           browserifyOptions: {
             standalone: 'Finitio',
             extensions: ['.js'],
