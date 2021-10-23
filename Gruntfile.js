@@ -168,12 +168,14 @@ module.exports = function(grunt) {
     browserify: {
       main: {
         files: {
-          'dist/finitio.js': ['build/src/finitio.js'],
+          'dist/finitio.js': ['lib/finitio.js'],
         },
         options: {
-          standalone: 'Finitio',
-          extensions: ['.js'],
           ignore:     ['./node_modules/**/*.*', './package.json'],
+          browserifyOptions: {
+            standalone: 'Finitio',
+            extensions: ['.js'],
+          },
         },
       },
 
