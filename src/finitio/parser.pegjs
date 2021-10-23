@@ -1,3 +1,4 @@
+/* eslint-disable */
 {
   // Converts head:X tail(... X)* to an array of Xs
   function headTailToArray(head, tail) {

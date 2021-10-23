@@ -17,8 +17,8 @@ To achieve this, the test suite supposes a test system in Finitio that has the
 semantics below. The actual Finitio definition of such a test system is host
 dependent, of course. See
 [Finitio-rb](https://github.com/blambeau/finitio-rb/blob/master/features/support/test-system.fio)
-and 
-[Finitio-js](https://github.com/llambeau/finitio.js/blob/master/features/support/test_system.coffee)
+and
+[Finitio-js](https://github.com/llambeau/finitio.js/blob/master/features/support/test_system.js)
 for definition examples. The 'test-system' folder of this test
 suite contains features that test the accuracy of the test system definition
 itself.
@@ -35,7 +35,7 @@ Boolean = The set containing true and false
 
 # Numerics
 Numeric = All mathematical numbers
-Real    = Mathematical reals 
+Real    = Mathematical reals
 Integer = Mathematical integers
 
 # String
