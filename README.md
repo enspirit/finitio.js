@@ -27,7 +27,7 @@ way.
 
 ## Status
 
-[![Build Status](https://travis-ci.org/llambeau/finitio.js.png?branch=master)](https://travis-ci.org/llambeau/finitio.js)
+[![Node.js CI](https://github.com/enspirit/finitio.js/actions/workflows/tests.yml/badge.svg)](https://github.com/enspirit/finitio.js/actions/workflows/tests.yml)
 [![Dependency Status](https://david-dm.org/llambeau/finitio.js.png)](https://david-dm.org/llambeau/finitio.js)
 
 ## Features
