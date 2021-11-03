@@ -25,6 +25,7 @@ module.exports = function(grunt) {
     'peg:build',
     'babel',
     'stdlib:build',
+    'browserify',
   ]);
 
   grunt.registerTask('stdlib:build', [

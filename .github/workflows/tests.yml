@@ -5,37 +5,66 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_call:
+
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
+      fail-fast: false
       matrix:
         node-version: [10.x, 12.x, 14.x, 15.x]
-
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: starting
+          channel: '#opensource-cicd'
+
       - uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+
       - name: Install dependencies
         run: npm install
+
       - name: Lint
         run: npm run lint
       # (TODO: find ways to remove that)
+
       - run: touch src/finitio/stdlib/data.js
       # (TODO: find ways to remove that need for double builds)
+
       - run: npm run build
+
       - name: Build finitio
         run: npm run build
+        id: build
+
       - name: Run unit tests
         run: npm run test:unit
+        id: unit-tests
+
       - name: Run integration tests
         run: npm run test:integration
+        id: integration-tests
+
       - name: Run acceptance tests
         run: npm run test:acceptance
+        id: acceptance-tests
+
       - name: Browserify
         run: npm run browserify
+        id: browserify
+
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#opensource-cicd'
+        if: always()
