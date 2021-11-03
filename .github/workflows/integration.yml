@@ -1,0 +1,17 @@
+name: Running linter and tests
+
+on: push
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - run: npm run lint
+      - run: npm run test
