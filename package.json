@@ -33,7 +33,7 @@
     "postpack": "pkg . --targets linux,macos,win,alpine --out-path pkg/"
   },
   "dependencies": {
-    "commander": "~2.9.0",
+    "commander": "~2.20.3",
     "pkg": "^5.4.1"
   },
   "devDependencies": {
