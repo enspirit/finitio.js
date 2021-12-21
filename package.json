@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "commander": "~2.9.0",
-    "pkg": "^5.4.1"
+    "pkg": "^5.5.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.15.7",
