@@ -25,6 +25,9 @@ import SubType from './finitio/type/sub_type';
 import TupleType from './finitio/type/tuple_type';
 import UnionType from './finitio/type/union_type';
 import Meta from './finitio/support/meta';
+
+export * from './finitio/generators';
+
 class Finitio {
 
   static VERSION = version;
