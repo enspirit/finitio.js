@@ -620,7 +620,6 @@ $u.notImplemented = function(obj, meth) {
 $u.dressError = function(failure) {
   const E = require('../errors').default;
   const e = new E(failure);
-  console.log(JSON.stringify(e.children, null, 2));
   throw e;
 };
 
