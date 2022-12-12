@@ -29,12 +29,10 @@
     "test:acceptance": "grunt test:acceptance",
     "browserify": "grunt browserify",
     "lint": "eslint src specs *.js .eslintrc.js",
-    "lint:fix": "eslint --fix src specs *.js .eslintrc.js",
-    "postpack": "pkg . --targets linux,macos,win,alpine --out-path pkg/"
+    "lint:fix": "eslint --fix src specs *.js .eslintrc.js"
   },
   "dependencies": {
-    "commander": "~2.9.0",
-    "pkg": "^5.4.1"
+    "commander": "~2.9.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.15.7",
