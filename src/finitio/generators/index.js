@@ -1,1 +1,1 @@
-export * from './typescript';
+export { default as TypescriptGenerator } from './typescript';

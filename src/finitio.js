@@ -25,8 +25,7 @@ import SubType from './finitio/type/sub_type';
 import TupleType from './finitio/type/tuple_type';
 import UnionType from './finitio/type/union_type';
 import Meta from './finitio/support/meta';
-
-export * from './finitio/generators';
+import { TypescriptGenerator } from './finitio/generators';
 
 class Finitio {
 
@@ -112,6 +111,7 @@ export {
   TupleType,
   UnionType,
   Meta,
+  TypescriptGenerator,
 };
 
 Finitio.TypeError = TypeError;
@@ -138,6 +138,7 @@ Finitio.SubType = SubType;
 Finitio.TupleType = TupleType;
 Finitio.UnionType = UnionType;
 Finitio.Meta = Meta;
+Finitio.TypescriptGenerator = TypescriptGenerator;
 
 //#
 export default Finitio;
