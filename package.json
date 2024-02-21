@@ -57,11 +57,10 @@
     "grunt-cucumber": "^0.3.0",
     "grunt-fixtures2js": "~0.1.3",
     "grunt-mocha-test": "~0.13.3",
-    "grunt-peg": "~2.0.1",
     "grunt-shell": "~3.0.1",
     "mocha": "^9.1.3",
     "mocha-junit-reporter": "^2.0.2",
-    "pegjs": "~0.10.0",
+    "peggy": "^4.0.0",
     "shelljs": "~0.8.4",
     "should": "~13.2.3",
     "underscore": "~1.13.1"

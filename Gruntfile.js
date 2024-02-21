@@ -5,7 +5,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-cucumber');
-  grunt.loadNpmTasks('grunt-peg');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -30,6 +29,10 @@ module.exports = function(grunt) {
 
   grunt.registerTask('stdlib:build', [
     'shell:stdlib',
+  ]);
+
+  grunt.registerTask('peg:build', [
+    'shell:peg',
   ]);
 
   grunt.registerTask('compile', [
@@ -121,14 +124,13 @@ module.exports = function(grunt) {
     // Cleans compilation results
     clean: ['build'],
 
-    // Build the parser from .pegjs in src/ to .js in build/src
-    peg: {
-      build: {
-        src:  'src/finitio/parser.pegjs',
-        dest: 'src/finitio/parser.js',
-        options: {
-          cache: true,
-          allowedStartRules: [
+    shell: {
+      // Build the parser from .pegjs in src/ to .js in build/src
+      peg: {
+        command: [
+          'peggy src/finitio/parser.pegjs',
+          '--allowed-start-rules',
+          [
             'system',
             'type',
             'heading',
@@ -140,12 +142,12 @@ module.exports = function(grunt) {
             'lambda_expr',
             'type_def',
             'import_def',
-          ],
-        },
+          ].join(','),
+          '--cache',
+          '-o', 'src/finitio/parser.js',
+        ].join(' '),
       },
-    },
 
-    shell: {
       stdlib: {
         command: './bin/finitio-js --bundle --url http://finitio.io/0.4/stdlib/data src/finitio/stdlib/data.fio > src/finitio/stdlib/data.js',
       },
