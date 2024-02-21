@@ -1,10 +1,15 @@
-import Constraint from '../../../src/finitio/support/constraint';
+import {
+  NativeConstraint,
+  RegexpConstraint,
+  RangeConstraint,
+  SetConstraint,
+} from '../../../src/finitio/support/constraint';
 import should from 'should';
 
 describe('Constraint#accept', () => {
 
   describe('with a function', () => {
-    const constraint = new Constraint.Native('positive', i => i > 0);
+    const constraint = new NativeConstraint('positive', i => i > 0);
 
     it('accepts positive numbers', () => constraint.accept(12).should.equal(true));
 
@@ -12,7 +17,7 @@ describe('Constraint#accept', () => {
   });
 
   describe('with a regexp', () => {
-    const constraint = new Constraint.Regexp('word', /[a-z]+/);
+    const constraint = new RegexpConstraint('word', /[a-z]+/);
 
     it('accepts words', () => constraint.accept('abgd').should.equal(true));
 
@@ -20,7 +25,7 @@ describe('Constraint#accept', () => {
   });
 
   describe('with a closed range', () => {
-    const constraint = new Constraint.Range('within', { min: 1, max: 10, min_inclusive: true, max_inclusive: true });
+    const constraint = new RangeConstraint('within', { min: 1, max: 10, min_inclusive: true, max_inclusive: true });
 
     it('accepts valid integers', () => {
       should(constraint.accept(1)).equal(true);
@@ -36,7 +41,7 @@ describe('Constraint#accept', () => {
   });
 
   describe('with an open range', () => {
-    const constraint = new Constraint.Range('within', { min: 1, max: 10, min_inclusive: false, max_inclusive: false });
+    const constraint = new RangeConstraint('within', { min: 1, max: 10, min_inclusive: false, max_inclusive: false });
 
     it('accepts valid integers', () => {
       should(constraint.accept(2)).equal(true);
@@ -52,7 +57,7 @@ describe('Constraint#accept', () => {
   });
 
   describe('with an right-infinite range', () => {
-    const constraint = new Constraint.Range('within', { min: 1, min_inclusive: false });
+    const constraint = new RangeConstraint('within', { min: 1, min_inclusive: false });
 
     it('accepts valid integers', () => {
       should(constraint.accept(2)).equal(true);
@@ -69,7 +74,7 @@ describe('Constraint#accept', () => {
   });
 
   return describe('with a set constraint', () => {
-    const constraint = new Constraint.Set('within', [1, 5, 10]);
+    const constraint = new SetConstraint('within', [1, 5, 10]);
 
     it('accepts valid integers', () => {
       should(constraint.accept(1)).equal(true);

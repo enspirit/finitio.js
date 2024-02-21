@@ -1,4 +1,4 @@
-import Constraint from '../../../../src/finitio/support/constraint';
+import {NativeConstraint} from '../../../../src/finitio/support/constraint';
 import SubType from '../../../../src/finitio/type/sub_type';
 import should from 'should';
 import { intType } from '../../../spec_helpers';
@@ -6,8 +6,8 @@ import { intType } from '../../../spec_helpers';
 describe('SubType#include', () => {
 
   const type = new SubType(intType, [
-    new Constraint.Native('default', i => i > 0),
-    new Constraint.Native('small', i => i < 255),
+    new NativeConstraint('default', i => i > 0),
+    new NativeConstraint('small', i => i < 255),
   ], 'byte');
 
   const subject = arg => type.include(arg);

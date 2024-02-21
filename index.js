@@ -1,1 +1,1 @@
-module.exports = require('./lib/finitio').default;
+module.exports = require('./lib/src/finitio').default;

@@ -12,7 +12,7 @@ Feature: Support for integer literals
     Then it evaluates to a <type>
 
     Examples:
-      | source |    type | 
+      | source |    type |
       |      0 | Integer |
       |     10 | Integer |
       |   1024 | Integer |

@@ -8,6 +8,7 @@ describe('SeqType\'s information contract', () => {
     elmType: intType,
     metadata: { foo: 'bar' },
   };
+
   const t = SeqType.info(info);
 
   it('dresses as expected', () => {

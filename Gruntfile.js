@@ -14,29 +14,15 @@ module.exports = function(grunt) {
   //##################################################################### Tasks
 
   grunt.registerTask('default', [
-    'peg:build',
-    'babel',
     'test:unit',
   ]);
 
   grunt.registerTask('build', [
-    'clean',
-    'peg:build',
-    'babel',
-    'stdlib:build',
     'browserify',
-  ]);
-
-  grunt.registerTask('stdlib:build', [
-    'shell:stdlib',
-  ]);
-
-  grunt.registerTask('peg:build', [
-    'shell:peg',
+    'uglify',
   ]);
 
   grunt.registerTask('compile', [
-    'build',
     'browserify:main',
     'uglify',
   ]);
@@ -125,31 +111,8 @@ module.exports = function(grunt) {
     clean: ['build'],
 
     shell: {
-      // Build the parser from .pegjs in src/ to .js in build/src
-      peg: {
-        command: [
-          'peggy src/finitio/parser.pegjs',
-          '--allowed-start-rules',
-          [
-            'system',
-            'type',
-            'heading',
-            'attribute',
-            'contract',
-            'constraint',
-            'literal',
-            'metadata',
-            'lambda_expr',
-            'type_def',
-            'import_def',
-          ].join(','),
-          '--cache',
-          '-o', 'src/finitio/parser.js',
-        ].join(' '),
-      },
-
       stdlib: {
-        command: './bin/finitio-js --bundle --url http://finitio.io/0.4/stdlib/data src/finitio/stdlib/data.fio > src/finitio/stdlib/data.js',
+        command: '',
       },
     },
 
@@ -184,7 +147,7 @@ module.exports = function(grunt) {
 
       tests: {
         files: {
-          'dist/finitio.tests.js': ['build/specs/**/*.js'],
+          'dist/finitio.tests.js': ['lib/specs/**/*.js'],
         },
         options: {
           extensions: ['.js'],

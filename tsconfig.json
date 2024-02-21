@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib",
+    "rootDir": "./",
+    "allowJs": true,
+    "declaration": true,
+    "target": "ES2015",
+    "strict": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "module": "commonjs"
+  },
+  "include": [
+    "./src/*",
+    "./src/**/*",
+    "./specs/*",
+    "./specs/**/*"
+  ],
+  "exclude": [
+  ]
+}

@@ -1,4 +1,4 @@
-import Parser from '../../../../src/finitio/parser';
+import Parser from '../../../../src/finitio/parser/parser';
 import should from 'should';
 
 describe('Parser#builtin_type', () => {

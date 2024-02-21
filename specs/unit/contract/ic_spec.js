@@ -1,4 +1,8 @@
-import Contract from '../../../src/finitio/support/contract';
+import Contract, {
+  ExplicitContract,
+  InternalContract,
+  ExternalContract,
+} from '../../../src/finitio/support/contract';
 import should from 'should';
 import { intType } from '../../spec_helpers';
 
@@ -21,7 +25,7 @@ describe('Contract\'s information contract', () => {
     const contract = Contract.info(info);
 
     it('dresses as expected', () => {
-      should(contract).be.an.instanceof(Contract.Explicit);
+      should(contract).be.an.instanceof(ExplicitContract);
       should(contract.name).equal('iso');
       should(contract.infoType).equal(intType);
       should(contract.native).equal(Explicit);
@@ -41,7 +45,7 @@ describe('Contract\'s information contract', () => {
     const contract = Contract.info(info);
 
     it('dresses as expected', () => {
-      should(contract).be.an.instanceof(Contract.External);
+      should(contract).be.an.instanceof(ExternalContract);
       should(contract.name).equal('iso');
       should(contract.infoType).equal(intType);
       should(contract.native).equal(External);
@@ -61,7 +65,7 @@ describe('Contract\'s information contract', () => {
     const contract = Contract.info(info);
 
     it('dresses as expected', () => {
-      should(contract).be.an.instanceof(Contract.Internal);
+      should(contract).be.an.instanceof(InternalContract);
       should(contract.name).equal('iso');
       should(contract.infoType).equal(intType);
       should(contract.native).equal(Internal);

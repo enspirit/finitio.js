@@ -1,4 +1,8 @@
-import Constraint from '../../../src/finitio/support/constraint';
+import Constraint, {
+  NativeConstraint,
+  RegexpConstraint,
+  RangeConstraint,
+} from '../../../src/finitio/support/constraint';
 import should from 'should';
 
 describe('Constraint\'s information contract', () => {
@@ -8,7 +12,7 @@ describe('Constraint\'s information contract', () => {
     const constraint = Constraint.info({ name: 'positive', native: fn });
 
     it('builds a native constraint', () => {
-      should(constraint).be.an.instanceof(Constraint.Native);
+      should(constraint).be.an.instanceof(NativeConstraint);
       return should(constraint.name).equal('positive');
     });
 
@@ -28,7 +32,7 @@ describe('Constraint\'s information contract', () => {
     const constraint = Constraint.info({ name: 'word', regexp: rx });
 
     it('builds a regexp constraint', () => {
-      should(constraint).be.an.instanceof(Constraint.Regexp);
+      should(constraint).be.an.instanceof(RegexpConstraint);
       return should(constraint.name).equal('word');
     });
 
@@ -48,7 +52,7 @@ describe('Constraint\'s information contract', () => {
     const constraint = Constraint.info({ name: 'within', range });
 
     it('builds a range constraint', () => {
-      should(constraint).be.an.instanceof(Constraint.Range);
+      should(constraint).be.an.instanceof(RangeConstraint);
       return should(constraint.name).equal('within');
     });
 
@@ -68,7 +72,7 @@ describe('Constraint\'s information contract', () => {
     const constraint = Constraint.info({ native: fn });
 
     it('builds a native constraint', () => {
-      should(constraint).be.an.instanceof(Constraint.Native);
+      should(constraint).be.an.instanceof(NativeConstraint);
       return should(constraint.name).equal(undefined);
     });
 

@@ -2,13 +2,14 @@
   "name": "finitio",
   "version": "1.3.7",
   "description": "Finitio is a language for capturing information structure.",
-  "main": "index.js",
   "author": "Louis Lambeau <louislambeau@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/llambeau/finitio.js"
   },
+  "main": "index.js",
+  "types": "./lib/src/finitio.d.ts",
   "keywords": [
     "finitio",
     "typing",
@@ -17,22 +18,37 @@
     "serialization",
     "validation"
   ],
+  "files": [
+    "src/**/*",
+    "lib/**/*",
+    "dist/**/*",
+    "bin/**/*"
+  ],
   "analyze": true,
   "bin": {
+    "finitio": "./bin/finitio-js",
     "finitio-js": "./bin/finitio-js"
   },
   "scripts": {
-    "build": "grunt build",
-    "test": "grunt test",
-    "test:unit": "grunt test:unit",
-    "test:integration": "grunt test:integration",
+    "prepack": "npm run build",
+    "prepare": "npm run build",
+    "build": "npm run build:parser && npm run build:ts && npm run build:stdlib && npm run build:old",
+    "build:ts": "tsc",
+    "build:parser": "peggy src/finitio/parser/parser.pegjs --allowed-start-rules system,type,heading,attribute,contract,constraint,literal,metadata,lambda_expr,type_def,import_def --cache -o src/finitio/parser/parser.js",
+    "build:stdlib": "./bin/finitio-js --bundle --url http://finitio.io/0.4/stdlib/data src/finitio/stdlib/data.fio > src/finitio/stdlib/data.js",
+    "build:watch": "tsc --watch",
+    "build:old": "grunt build",
+    "test": "npm run test:unit && npm run test:integration && npm run test:acceptance",
+    "test:unit": "ts-mocha specs/unit --extension ts --extension js --recursive",
+    "test:integration": "ts-mocha specs/integration --extension ts --extension js --recursive",
     "test:acceptance": "grunt test:acceptance",
     "browserify": "grunt browserify",
-    "lint": "eslint src specs *.js .eslintrc.js",
-    "lint:fix": "eslint --fix src specs *.js .eslintrc.js"
+    "lint": "eslint --ext .js,.jsx,.ts src",
+    "lint:fix": "eslint --ext .js,.jsx,.ts --fix src"
   },
   "dependencies": {
-    "commander": "~2.9.0"
+    "@enspirit/ts-gen-dsl": "^0.0.2",
+    "commander": "^12.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.15.7",
@@ -41,11 +57,16 @@
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/preset-env": "^7.15.8",
     "@babel/register": "^7.15.3",
-    "@enspirit/eslint-config-node": "0.1.2",
+    "@enspirit/eslint-config-node": "^0.1.5",
+    "@types/mocha": "^10.0.6",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
     "babel-loader": "^8.2.3",
     "browserify": "~17.0.0",
     "cucumber": "~0.9.4",
-    "eslint": "^7.21.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-no-autofix": "1.2.3",
+    "eslint-plugin-prefer-arrow": "1.2.3",
     "grunt": "~1.4.1",
     "grunt-babel": "^8.0.0",
     "grunt-browserify": "~6.0.0",
@@ -63,6 +84,8 @@
     "peggy": "^4.0.0",
     "shelljs": "~0.8.4",
     "should": "~13.2.3",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^5.3.3",
     "underscore": "~1.13.1"
   }
 }

@@ -45,11 +45,15 @@ describe('TypeError', () => {
     ],
   });
 
-  it('has the expected message', () => should(error.message).eql('Invalid Hobbies'));
+  it('has the expected message', () => {
+    should(error.message).eql('Invalid Hobbies')
+  });
 
   it('has the expected children', () => should(error.children.length).eql(2));
 
-  it('has the expected root cause message', () => should(error.rootCause.message).eql('Invalid Posint (not positive): `-12`'));
+  it('has the expected root cause message', () => {
+    should(error.rootCause.message).eql('Invalid Posint (not positive): `-12`')
+  });
 
   it('provides the expected errors', () => {
     const expected = [

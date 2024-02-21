@@ -1,4 +1,4 @@
-import Contract from '../../../../src/finitio/support/contract';
+import Contract, { ExplicitContract } from '../../../../src/finitio/support/contract';
 import AdType from '../../../../src/finitio/type/ad_type';
 import TypeError from '../../../../src/finitio/errors';
 import should from 'should';
@@ -9,8 +9,8 @@ describe('AdType#dress', () => {
   const f = function(arg) {};
 
   const contracts = [
-    new Contract.Explicit('timestamp', intType, { dress(i) { return i * 2; }, undress: f }),
-    new Contract.Explicit('utc', stringType, { dress(s) { return 'foo'; }, undress: f }),
+    new ExplicitContract('timestamp', intType, { dress(i) { return i * 2; }, undress: f }),
+    new ExplicitContract('utc', stringType, { dress(s) { return 'foo'; }, undress: f }),
   ];
 
   describe('when not bound to a javascript type', () => {
@@ -46,7 +46,7 @@ describe('AdType#dress', () => {
 
     return describe('when the upper raises an error', () => {
       type = new AdType(Date, [
-        new Contract.Explicit('foo', intType, { dress(t) { throw new Error; } }),
+        new ExplicitContract('foo', intType, { dress(t) { throw new Error; } }),
       ]);
 
       it('should hide the error', () => {
