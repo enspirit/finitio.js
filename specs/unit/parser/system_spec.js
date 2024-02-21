@@ -1,4 +1,4 @@
-import Parser from '../../../src/finitio/parser';
+import Parser from '../../../src/finitio/parser/parser';
 import should from 'should';
 
 describe('Parser#system', () => {
@@ -52,4 +52,5 @@ describe('Parser#system', () => {
     };
     return should(s).eql(expected);
   });
+
 });

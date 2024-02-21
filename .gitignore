@@ -20,7 +20,7 @@ tmp
 npm-debug.log
 node_modules
 
-src/finitio/parser.js
+src/finitio/parser/parser.js
 src/finitio/stdlib/*.js
 
 build/*

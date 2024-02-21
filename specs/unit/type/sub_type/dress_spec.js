@@ -1,4 +1,4 @@
-import Constraint from '../../../../src/finitio/support/constraint';
+import {NativeConstraint} from '../../../../src/finitio/support/constraint';
 import SubType from '../../../../src/finitio/type/sub_type';
 import TypeError from '../../../../src/finitio/errors';
 import should from 'should';
@@ -6,8 +6,8 @@ import { numType } from '../../../spec_helpers';
 
 describe('SubType#dress', () => {
 
-  const _default = new Constraint.Native(null, i => i > 0);
-  const _small = new Constraint.Native('small', i => i < 255);
+  const _default = new NativeConstraint(null, i => i > 0);
+  const _small = new NativeConstraint('small', i => i < 255);
 
   const type = new SubType(numType, [_default, _small], 'byte');
 

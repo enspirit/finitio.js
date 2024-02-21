@@ -1,17 +1,28 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
-const program = require('commander');
+const { program } = require('commander');
+const TypeError = require('../lib/src/finitio').TypeError;
 
-const Finitio = require('../lib/finitio').default;
+const Finitio = require('../lib/src/finitio').default;
 
-program.version('finitio.js ' + Finitio.VERSION + ' (c) Bernard, Louis Lambeau & the University of Louvain').usage('[options] SCHEMA.fio [DATA.json]').option('-b, --bundle', 'Bundle the input schema as a javascript loader').option('--url [url]', 'Specify the bundle global url').option('-v, --validate', 'Valid input data against the schema').option('-f, --fast', 'Stop on first validation error').option('--no-check', 'Do not try to check the system before bundling').option('--stack', 'Show stack trace on error').parse(process.argv);
+const options = program.version(`finitio.js ${Finitio.VERSION} (c) Bernard, Louis Lambeau & the University of Louvain`)
+  .usage('[options] SCHEMA.fio [DATA.json]')
+  .option('-b, --bundle', 'Bundle the input schema as a javascript loader')
+  .option('-l, --lang [lang]', 'The target language for the bundle [typescript, javascript] (defaults to javascript)')
+  .option('--url [url]', 'Specify the bundle global url')
+  .option('-v, --validate', 'Valid input data against the schema')
+  .option('-f, --fast', 'Stop on first validation error')
+  .option('--no-check', 'Do not try to check the system before bundling')
+  .option('--stack', 'Show stack trace on error')
+  .parse(process.argv)
+  .opts()
 
 const sourceUrl = function() {
-  if (typeof program.url === 'string') {
-    return program.url;
+  if (typeof options.url === 'string') {
+    return options.url;
   } else {
-    return 'file://' + program.args[0];
+    return `file://${program.args[0]}`;
   }
 };
 
@@ -20,15 +31,15 @@ const schemaFile = function() {
 };
 
 const schemaSource = function() {
-  return fs.readFileSync(schemaFile).toString();
+  return fs.readFileSync(schemaFile()).toString();
 };
 
 const world = function() {
   const w = {
     sourceUrl: sourceUrl(),
-    failfast: program.fast
+    failfast: options.fast,
   };
-  if (program.check) {
+  if (options.check) {
     w.check = true;
   }
   return w;
@@ -62,25 +73,25 @@ const errorManager = function(e) {
 
 strategies.push([
   function(e) {
-    return e instanceof Finitio.TypeError;
+    return e instanceof TypeError;
   }, function(e) {
-    if (program.stack) {
+    if (options.stack) {
       return console.log(e.explainTree());
     } else {
       return console.log(e.explain());
     }
-  }
+  },
 ]);
 
 strategies.push([
   function(e) {
     return e.name === 'SyntaxError';
   }, function(e) {
-    console.log('[' + e.line + ':' + e.column + '] ' + e.message);
-    if (program.stack) {
+    console.log(`[${e.line}:${e.column}] ${e.message}`);
+    if (options.stack) {
       return console.log(e.expected);
     }
-  }
+  },
 ]);
 
 strategies.push([
@@ -88,16 +99,17 @@ strategies.push([
     return true;
   }, function(e) {
     console.log(e.message);
-    if (program.stack) {
+    if (options.stack) {
       return console.log(e.stack);
     }
-  }
+  },
 ]);
 
 const actions = {};
 
 actions.bundle = function() {
-  return console.log(Finitio.bundleFile(schemaFile(), world()));
+  const lang = options.lang || 'javascript';
+  return console.log(Finitio.bundleFile(schemaFile(), world(), lang));
 };
 
 actions.validate = function() {
@@ -106,9 +118,9 @@ actions.validate = function() {
 
 try {
   let action;
-  if (program.bundle) {
+  if (options.bundle) {
     action = actions.bundle;
-  } else if (program.validate) {
+  } else if (options.validate) {
     action = actions.validate;
   }
   if (action != null) {

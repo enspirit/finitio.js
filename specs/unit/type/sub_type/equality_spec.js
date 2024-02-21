@@ -1,4 +1,4 @@
-import Constraint from '../../../../src/finitio/support/constraint';
+import {NativeConstraint} from '../../../../src/finitio/support/constraint';
 import SubType from '../../../../src/finitio/type/sub_type';
 import should from 'should';
 import { numType, stringType } from '../../../spec_helpers';
@@ -7,9 +7,9 @@ describe('SubType#equals', () => {
 
   const fn1 = i => i > 0;
   const fn2 = i => i < 255;
-  const c1 = new Constraint.Native('default', fn1);
-  const c2 = new Constraint.Native('anothername', fn1);
-  const c3 = new Constraint.Native('small', fn2);
+  const c1 = new NativeConstraint('default', fn1);
+  const c2 = new NativeConstraint('anothername', fn1);
+  const c3 = new NativeConstraint('small', fn2);
 
   const type = new SubType(numType, [c1]);
   const type2 = new SubType(numType, [c1]);

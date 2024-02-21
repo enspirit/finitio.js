@@ -1,4 +1,4 @@
-import $u from '../../../../src/finitio/support/utils';
+import * as $u from '../../../../src/finitio/support/utils';
 import should from 'should';
 
 describe('Utils.string#capitalize', () => {

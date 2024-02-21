@@ -35,9 +35,6 @@ jobs:
 
       - run: grunt shell || true
 
-      - run: touch src/finitio/stdlib/data.js
-      # (TODO: find ways to remove that need for double builds)
-
       - run: npm run build
 
       - name: Build finitio

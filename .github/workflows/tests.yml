@@ -35,10 +35,6 @@ jobs:
 
       - name: Lint
         run: npm run lint
-      # (TODO: find ways to remove that)
-
-      - run: touch src/finitio/stdlib/data.js
-      # (TODO: find ways to remove that need for double builds)
 
       - run: npm run build
 

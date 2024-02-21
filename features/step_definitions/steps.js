@@ -1,5 +1,5 @@
-const Finitio = require('../../lib/finitio').default;
-const Parser = require('../../lib/finitio/parser');
+const Finitio = require('../../lib/src/finitio').default;
+const Parser = require('../../lib/src/finitio/parser/parser');
 
 const {
   TypeError
@@ -372,8 +372,6 @@ module.exports = function() {
 
   this.Then(/^the result should be a representation for (.*?)$/, function(type,callback) {
     if (error != null) {
-      console.log(system.resolve('Info').type.heading.attributes);
-      console.log(error);
       return callback.fail(error);
     } else {
       if (!system.resolve(type).include(result)) {

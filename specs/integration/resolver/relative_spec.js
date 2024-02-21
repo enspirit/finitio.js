@@ -2,7 +2,7 @@ import { Finitio, should, $u } from '../helpers';
 const {
   System,
 } = Finitio;
-import { Relative } from '../../../src/finitio/resolver';
+import * as Resolver from '../../../src/finitio/resolver';
 
 describe('Resolver.Relative', () => {
 
@@ -10,7 +10,7 @@ describe('Resolver.Relative', () => {
 
   const tests = function() {
     it('works with existing schemas', () => {
-      const s = Relative('./test', world);
+      const s = Resolver.Relative('./test', world);
       should(s[0]).equal('file://specs/integration/fixtures/test');
       should(s[1]).not.be.an.instanceof(System);
       return should(s[1].types).not.equal(undefined);
