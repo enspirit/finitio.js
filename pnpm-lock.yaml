@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@enspirit/ts-gen-dsl':
-    specifier: ^0.0.1
-    version: 0.0.1
+    specifier: ^0.0.2
+    version: 0.0.2
   commander:
     specifier: ^12.0.0
     version: 12.0.0
@@ -1382,8 +1382,8 @@ packages:
       - supports-color
     dev: true
 
-  /@enspirit/ts-gen-dsl@0.0.1:
-    resolution: {integrity: sha512-xwn0Lh7GpF/ul1JxZboOJgqpSVvIyVz5mGSjYYHnCP2zOclHquClkRYaUEoD5Vu2tfcvTbQki+EHRnCiPcAQuw==}
+  /@enspirit/ts-gen-dsl@0.0.2:
+    resolution: {integrity: sha512-wj/i6oo314n0obaLzG6BPpQUZOr6OUW7ghiJ3ahMqePAjZ+9jAkzmsVo5kwETWhl8rYW2fB2n08pC/fV7ZO5zA==}
     dev: false
 
   /@eslint-community/eslint-utils@4.4.0(eslint@7.32.0):
@@ -5838,7 +5838,7 @@ packages:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
     hasBin: true
     dependencies:
-      glob: 7.1.7
+      glob: 7.2.3
     dev: true
 
   /ripemd160@2.0.2:
