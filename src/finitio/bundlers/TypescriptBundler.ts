@@ -37,8 +37,6 @@ const getSystem = (() => {
   };
 })();
 
-export const System = getSystem();
-
 export default getSystem;
 `
 
