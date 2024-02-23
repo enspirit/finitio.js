@@ -5,6 +5,19 @@ describe('Meta (System)', () => {
   const info = {
     types: [
       { name: 'Str', type: { builtin: { jsType: String } } },
+      {
+        name: 'Collection',
+        generics: ['T'],
+        type: {
+          seq: {
+            elmType: {
+              ref: {
+                typeName: 'T'
+              }
+            }
+          }
+        }
+      },
     ],
     imports: [
       { qualifier: 'js', from: 'finitio/js' },

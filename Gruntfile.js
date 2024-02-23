@@ -102,7 +102,7 @@ module.exports = function(grunt) {
 
     shell: {
       peggy: {
-        command: 'peggy src/finitio/parser/parser.pegjs --allowed-start-rules system,type,heading,attribute,contract,constraint,literal,metadata,lambda_expr,type_def,import_def --cache -o src/finitio/parser/parser.js'
+        command: 'peggy src/finitio/parser/parser.pegjs --allowed-start-rules system,type,heading,attribute,contract,constraint,literal,metadata,lambda_expr,type_def,generic_def,import_def,type_instantiate --cache -o src/finitio/parser/parser.js'
       },
       stdlib: {
         command: './bin/finitio-js --bundle --url http://finitio.io/0.4/stdlib/data src/finitio/stdlib/data.fio > src/finitio/stdlib/data.js',

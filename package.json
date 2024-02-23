@@ -41,6 +41,7 @@
     "build": "grunt build",
     "test": "npm run test:unit && npm run test:integration && npm run test:acceptance",
     "test:unit": "ts-mocha specs/unit --extension ts --extension js --recursive",
+    "test:unit:watch": "ts-mocha --watch specs/unit --extension ts --extension js --recursive",
     "test:integration": "ts-mocha specs/integration --extension ts --extension js --recursive",
     "test:acceptance": "grunt test:acceptance",
     "browserify": "grunt browserify",

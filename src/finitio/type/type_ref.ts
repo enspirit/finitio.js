@@ -58,7 +58,12 @@ class TypeRef extends Type {
   }
 
   resolve(system) {
-    return this.target != null ? this.target : (this.target = system.resolve(this.typeName).fetchType());
+    if (this.target != null) {
+      return this.target;
+    }
+
+    this.target = system.resolve(this.typeName).fetchType();
+    return this.target;
   }
 
   resolveProxies(system) {

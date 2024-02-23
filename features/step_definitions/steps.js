@@ -48,7 +48,6 @@ module.exports = function() {
       return callback();
     } catch (e) {
       error = e;
-      console.log(e.explainTree());
       return callback.fail(e);
     }
   });

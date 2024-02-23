@@ -1,6 +1,10 @@
 import Builder from '@enspirit/ts-gen-dsl';
 import AbstractBundler from './AbstractBundler';
-import type { AdTypeAst, BuiltinTypeAst, SeqTypeAst, SetTypeAst, StructTypeAst, SubTypeAst, TupleTypeAst, TypeAst, TypeDefAst, TypeRefTypeAst, UnionTypeAst } from '../parser';
+import type {
+  AdTypeAst, BuiltinTypeAst, SeqTypeAst, SetTypeAst, StructTypeAst,
+  SubTypeAst, TupleTypeAst, TypeAst, TypeDefAst, TypeRefTypeAst, UnionTypeAst,
+  TypeInstantiationAst
+} from '../parser';
 import { Type } from '../parser';
 
 const IGNORE_LIST = ['Date', 'String', 'Boolean'];
@@ -54,18 +58,24 @@ export default getSystem;
     });
 
     const buildTypeDef = (typeDef: TypeDefAst) => {
+      const go = (b: Builder, name: string) => {
+        if (typeDef.generics) {
+          name = b.withGenerics(typeDef.generics, name)
+        }
+
+        b.addToken(
+          builder.typeDef(name, buildType(typeDef.type))
+        )
+      }
+
       const typeDefNameParts = typeDef.name.split('.');
       if (typeDefNameParts.length === 1) {
-        builder.addToken(
-          builder.typeDef(typeDef.name, buildType(typeDef.type))
-        )
+        go(builder, typeDef.name)
       } else {
         // namespacing
         const [typeDefName, ...nsParts] = typeDefNameParts.reverse();
         builder.withinNamespace(nsParts.join('.'), (builder) => {
-          builder.addToken(
-            builder.typeDef(typeDefName, buildType(typeDef.type))
-          )
+          go(builder, typeDefName)
         })
       }
     }
@@ -119,11 +129,15 @@ export default getSystem;
             .candidates.map(buildType);
           return builder.union(...options)
 
-        case Type.TypeDef:
-          throw new Error('This should not happen')
+        case Type.TypeInstantiation:
+          const ti = (type as TypeInstantiationAst).instantiate;
+          return builder.withGenerics(
+            ti.instantiation,
+            ti.typeName
+          )
 
         default:
-          throw new Error(`Unsupported type: ${type}`)
+          throw new Error(`Unsupported type: ${typeType}`)
       }
     }
 

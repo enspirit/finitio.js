@@ -27,6 +27,8 @@ import StructType from '../type/struct_type';
 import SubType from '../type/sub_type';
 import TypeRef from '../type/type_ref';
 import TypeDef from '../type/type_def';
+import GenericDef from '../type/generic_def';
+import TypeInstantiate from '../type/type_instantiate';
 import System from '../system';
 
 const Js: Record<string, Type> = {};
@@ -175,7 +177,10 @@ const type = function(name, jsType, attributes) {
   const factorType = TupleType.info({
     heading: Heading.info({
       attributes: [
-        Attribute.info({ name: name.toLowerCase(), type: adType }),
+        Attribute.info({
+          name: name.toLowerCase(),
+          type: adType
+        }),
       ],
     }),
   });
@@ -397,13 +402,39 @@ Meta.TypeRef = type('Ref', TypeRef, [
   Attribute.info({ name: 'typeName', type: Js.String }),
 ]);
 
+Meta.TypeInstantiate = type('Instantiate', TypeInstantiate, [
+  Attribute.info({ name: 'typeName', type: Js.String }),
+  Attribute.info({
+    name: 'instantiation',
+    type: SeqType.info({
+      elmType: Js.String
+    }),
+    required: false
+  }),
+]);
+
 // ------------------------------------------------------------------ System
 
 Meta.TypeDef = object('TypeDef', TypeDef, [
   Attribute.info({ name: 'name', type: Js.String }),
   Attribute.info({ name: 'type', type: Meta.Type }),
 ]);
-Meta.TypeDefs = SeqType.info({ elmType: Meta.TypeDef });
+
+Meta.GenericDef = type('Generic', GenericDef, [
+  Attribute.info({ name: 'name', type: Js.String }),
+  Attribute.info({ name: 'type', type: Meta.Type }),
+  Attribute.info({
+    name: 'generics',
+    type: SeqType.info({
+      elmType: Js.String
+    }),
+    required: true
+  }),
+]);
+
+Meta.TypeDefs = SeqType.info({ elmType: UnionType.info({
+  candidates: [Meta.TypeDef, Meta.GenericDef],
+}) });
 
 const systemAttrs = [
   Attribute.info({ name: 'types', type: Meta.TypeDefs }),

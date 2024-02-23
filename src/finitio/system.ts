@@ -3,7 +3,10 @@ import * as $u from './support/utils';
 import Fetchable from './support/fetchable';
 import type { Import, World } from '../types';
 import type Type from './type';
+import type { TypeRef } from '../finitio';
 import Finitio, { Meta } from '../finitio'
+
+type ResolveCallback = () => void
 
 //
 // A System is a collection of named Finitio types.
@@ -18,7 +21,7 @@ class System {
     $u.each(this.types, t => { return this[t.name] = t.trueOne(); });
   }
 
-  resolve(ref, callback) {
+  resolve(ref, callback?: ResolveCallback) {
     const match = ref.match(System.REF_RGX);
     if (match[1]) {
       return this._resolveQualified(match, callback);
@@ -58,7 +61,7 @@ class System {
 
   // Private
 
-  _resolveQualified(match, callback) {
+  _resolveQualified(match, callback?: ResolveCallback) {
     let sub;
     if (callback == null) { callback = this._onResolveFailure(match[0]); }
     const imp = $u.find(this.imports, u => u.qualifier === match[1]);
@@ -69,7 +72,7 @@ class System {
     }
   }
 
-  _resolveImported(chain, ref, callback) {
+  _resolveImported(chain, ref, callback?: ResolveCallback) {
     if (callback == null) { callback = this._onResolveFailure(ref); }
     return chain[0].system.fetchPath(ref, () => {
       if (chain.length > 1) {
@@ -84,8 +87,10 @@ class System {
     return system.fetchPath(ref, callback);
   }
 
-  _onResolveFailure(ref) {
-    return function() { throw new Error(`No such type \`${ref}\``); };
+  _onResolveFailure(ref: TypeRef) {
+    return function() {
+      throw new Error(`No such type \`${ref}\``);
+    };
   }
 }
 

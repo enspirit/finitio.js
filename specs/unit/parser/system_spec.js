@@ -25,6 +25,44 @@ describe('Parser#system', () => {
     return should(s).eql(expected);
   });
 
+  it('works with a type instantiation', () => {
+    const s = parse('People = Collection<Person>');
+    const expected = {
+      types: [
+        {
+          name: 'People',
+          type: {
+            instantiate: {
+              typeName: 'Collection',
+              instantiation: ['Person']
+            }
+          }
+        }
+      ],
+    };
+    return should(s).eql(expected);
+  });
+
+  it('works with a generic definition', () => {
+    const s = parse('Collection<T> = [T]');
+    const expected = {
+      types: [
+        {
+          name: 'Collection',
+          generics: ['T'],
+          type: {
+            seq: {
+              elmType: {
+                ref: { typeName: 'T' }
+              }
+            }
+          }
+        }
+      ],
+    };
+    return should(s).eql(expected);
+  });
+
   it('works with an import and a ref', () => {
     const s = parse('@import finitio/data as f\nf.String');
     const expected = {
