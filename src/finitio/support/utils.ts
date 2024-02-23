@@ -617,7 +617,7 @@ export const notImplemented = function(obj, meth) {
 };
 
 export const dressError = function(failure) {
-  throw new TypeError(failure);
+  throw new TypeError(failure);;
 };
 
 export const undressError = function(msg, cause?: unknown, location?: unknown) {

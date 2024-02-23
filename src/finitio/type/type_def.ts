@@ -6,7 +6,11 @@ import type { TypeMetadata } from '../../types';
 
 class TypeDef extends Type {
 
-  constructor(public type: TypeRef, public name: string, metadata?: TypeMetadata) {
+  constructor(
+    public type: TypeRef,
+    public name: string,
+    metadata?: TypeMetadata,
+  ) {
     super(metadata);
 
     if (!this.name) {

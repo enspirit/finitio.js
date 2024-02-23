@@ -53,13 +53,22 @@ import_def =
   }
 
 definitions =
-  head:type_def? tail:(spacing type_def)* {
+  head:a_def? tail:(spacing a_def)* {
     return headTailToArray(head, tail);
   }
+
+a_def =
+  type_def
+/ generic_def
 
 type_def =
   m:metadata? n:type_name spacing '=' spacing t:type {
     return metadatize({ name: n, type: t }, m);
+  }
+
+generic_def =
+  m:metadata? n:type_name g:generics spacing '=' spacing t:type {
+    return metadatize({ name: n, type: t, generics: g }, m);
   }
 
 // TYPES (low priority)
@@ -118,6 +127,18 @@ unnamed_constraint =
     return { native: e.trim() };
   }
 
+generics =
+  '<' head:type_part tail:(opt_comma type_part)* '>' {
+    var ts = headTailToArray(head, tail);
+    return ts;
+  }
+
+instantiation =
+  '<' head:type_name tail:(opt_comma type_name)* '>' {
+    var ts = headTailToArray(head, tail);
+    return ts;
+  }
+
 // TYPES (relational)
 
 rel_type =
@@ -126,8 +147,10 @@ rel_type =
 / collection_type
 
 tuple_type =
-  m:metadata? '{' spacing h:heading spacing '}' {
-    return { tuple: metadatize({ heading: h }, m) };
+  m:metadata? spacing '{' spacing h:heading spacing '}' {
+    return {
+      tuple: metadatize({ heading: h }, m)
+    };
   }
 
 relation_type =
@@ -190,6 +213,7 @@ term_type =
   ad_type
 / builtin_type
 / any_type
+/ type_instantiate
 / type_ref
 
 ad_type =
@@ -254,6 +278,11 @@ builtin_type =
 type_ref =
   p:type_path {
     return { ref: { typeName: p } };
+  }
+
+type_instantiate =
+  p:type_path i:instantiation {
+    return { instantiate: { typeName: p, instantiation: i } };
   }
 
 // EXPRESSIONS

@@ -10,9 +10,14 @@ export const enum Type {
   Struct = 'struct',
   Sub = 'sub',
   Tuple = 'tuple',
-  TypeDef = 'type_def',
   TypeRef = 'ref',
   Union = 'union',
+  TypeInstantiation = 'instantiate',
+}
+
+export const enum TypeDef {
+  Normal,
+  Generic
 }
 
 export type WithMetadata<T> = T & {
@@ -133,13 +138,6 @@ export type TupleTypeAst = {
   }>
 }
 
-export type TypeDefTypeAst = {
-  [Type.TypeDef]: WithMetadata<{
-    name: string,
-    type: TypeAst
-  }>
-}
-
 export type TypeRefTypeAst = {
   [Type.TypeRef]: {
     typeName: string
@@ -150,6 +148,13 @@ export type UnionTypeAst = {
   [Type.Union]: WithMetadata<{
     candidates: Array<TypeAst>
   }>
+}
+
+export type TypeInstantiationAst = {
+  [Type.TypeInstantiation]: {
+    typeName: string
+    instantiation: Array<string>
+  }
 }
 
 export type ImportAst = {
@@ -166,13 +171,14 @@ export type TypeAst =
   StructTypeAst |
   SubTypeAst |
   TupleTypeAst |
-  TypeDefTypeAst |
   TypeRefTypeAst |
-  UnionTypeAst
+  UnionTypeAst |
+  TypeInstantiationAst
 
 export type TypeDefAst = {
   name: string,
-  type: TypeAst
+  type: TypeAst,
+  generics?: Array<string>
 }
 
 export type SystemAst = {
