@@ -1,6 +1,6 @@
 import * as $u from './support/utils';
 import DressMonad from './support/dress_monad';
-import type { TypeMetadata } from '../types';
+import type { TypeMetadata, World } from '../types';
 import { InformationContract } from '../types';
 
 //
@@ -48,7 +48,7 @@ class Type extends InformationContract {
   // @post   this.include(output)
   // @throws `TypeError` if the dressing fails
   //
-  dress<T>(value, world): T {
+  dress<T>(value: unknown, world?: World): T {
     const monad = this.mDress<T>(value, new DressMonad<T>(world));
     if (monad.isSuccess()) {
       return monad.result;

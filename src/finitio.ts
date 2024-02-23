@@ -25,7 +25,7 @@ import SubType from './finitio/type/sub_type';
 import TupleType from './finitio/type/tuple_type';
 import UnionType from './finitio/type/union_type';
 import Meta from './finitio/support/meta';
-import type { World } from './types';
+import type { SystemAst, World } from './types';
 export * from './types';
 
 class Finitio {
@@ -56,25 +56,25 @@ class Finitio {
     return world;
   }
 
-  static parse(source, options = {}) {
+  static parse(source: string, options = {}) {
     return Parser.parse(source, options);
   }
 
-  static system(source, world?: World): System {
+  static system(source: string|SystemAst, world?: World): System {
     if (typeof(source) === 'string') { source = this.parse(source); }
     return Meta.System.dress(source, this.world(world));
   }
 
-  static bundleFile(path, world, lang: TargetLanguage = TargetLanguage.Javascript) {
+  static bundleFile(path: string, world: World, lang: TargetLanguage = TargetLanguage.Javascript) {
     return (getBundler(lang, this.world(world))).addFile(path).flush();
   }
 
-  static bundleSource(source, world, lang: TargetLanguage = TargetLanguage.Javascript) {
+  static bundleSource(source: string, world: World, lang: TargetLanguage = TargetLanguage.Javascript) {
     return (getBundler(lang, this.world(world))).addSource(source).flush();
   }
 }
 
-const extendWorld = (world, ext) => {
+const extendWorld = (world: World, ext: Record<string, unknown>) => {
   const result = [];
   for (const k in ext) {
     const v = ext[k];

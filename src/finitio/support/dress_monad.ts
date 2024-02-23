@@ -3,7 +3,7 @@ import type { World } from '../../types';
 class DressMonad<T> {
 
   constructor(
-    public world: World,
+    public world?: World,
     public result?: T,
     public error?: Error) {
   }
