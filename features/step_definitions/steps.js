@@ -1,5 +1,5 @@
-const Finitio = require('../../lib/src/finitio').default;
-const Parser = require('../../lib/src/finitio/parser/parser');
+const Finitio = require('../../dist/finitio').default;
+const Parser = require('../../dist/finitio').Parser;
 
 const {
   TypeError

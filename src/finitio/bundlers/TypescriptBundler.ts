@@ -7,9 +7,8 @@ const IGNORE_LIST = ['Date', 'String', 'Boolean'];
 export default class TypescriptBundler extends AbstractBundler {
 
   static TEMPLATE = `
-import Finitio from 'finitio';
 import type { World, SystemAst } from 'finitio';
-
+import Finitio from 'finitio';
 TYPEDEFS
 
 const getSystem = (() => {
@@ -30,7 +29,7 @@ const getSystem = (() => {
       }
     };
   };
-  return function(w: World = Finitio.World, options?: any){
+  return function(w: World = Finitio.World, options?: unknown){
     w = w.Finitio.world(w, {
       importResolver: r(w.importResolver)
     });

@@ -2,9 +2,9 @@
 
 const fs = require('fs');
 const { program } = require('commander');
-const TypeError = require('../lib/src/finitio').TypeError;
+const TypeError = require('../dist/finitio').TypeError;
 
-const Finitio = require('../lib/src/finitio').default;
+const Finitio = require('../dist/finitio').default;
 
 const options = program.version(`finitio.js ${Finitio.VERSION} (c) Bernard, Louis Lambeau & the University of Louvain`)
   .usage('[options] SCHEMA.fio [DATA.json]')

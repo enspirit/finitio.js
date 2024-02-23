@@ -18,8 +18,12 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
-    'browserify',
-    'uglify',
+    'shell:peggy',
+    'shell:tsup',
+    'shell:stdlib',
+    'shell:tsup',
+    'shell:tsc',
+    'browserify'
   ]);
 
   grunt.registerTask('compile', [
@@ -63,7 +67,7 @@ module.exports = function(grunt) {
       // Rebuild the parser ASAP
       parser: {
         files: ['src/**/*.pegjs'],
-        tasks: ['peg:build'],
+        tasks: ['shell:peggy'],
       },
       // Rebuild the fixtures ASAP
       fixtures: {
@@ -111,9 +115,18 @@ module.exports = function(grunt) {
     clean: ['build'],
 
     shell: {
-      stdlib: {
-        command: '',
+      peggy: {
+        command: 'peggy src/finitio/parser/parser.pegjs --allowed-start-rules system,type,heading,attribute,contract,constraint,literal,metadata,lambda_expr,type_def,import_def --cache -o src/finitio/parser/parser.js'
       },
+      stdlib: {
+        command: './bin/finitio-js --bundle --url http://finitio.io/0.4/stdlib/data src/finitio/stdlib/data.fio > src/finitio/stdlib/data.js',
+      },
+      tsup: {
+        command: 'tsup',
+      },
+      tsc: {
+        command: 'tsc'
+      }
     },
 
     // Transforms the test fixtures to js files
@@ -134,7 +147,7 @@ module.exports = function(grunt) {
     browserify: {
       main: {
         files: {
-          'dist/finitio.js': ['index.js'],
+          'dist/finitio.global.js': ['index.js'],
         },
         options: {
           ignore:     ['./node_modules/**/*.*'],

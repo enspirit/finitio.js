@@ -1,4 +1,4 @@
-import { default as data } from './stdlib/data';
+import data from './stdlib/data';
 import fs = require('fs');
 import type System from './system';
 

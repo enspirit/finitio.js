@@ -8,8 +8,20 @@
     "type": "git",
     "url": "https://github.com/llambeau/finitio.js"
   },
-  "main": "index.js",
-  "types": "./lib/src/finitio.d.ts",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/finitio.js",
+      "import": "./dist/finitio.mjs",
+      "types": "./dist/finitio.d.ts"
+    }
+  },
+  "main": "./dist/finitio.js",
+  "module": "./dist/finitio.mjs",
+  "types": "./dist/finitio.d.ts",
   "keywords": [
     "finitio",
     "typing",
@@ -17,12 +29,6 @@
     "json",
     "serialization",
     "validation"
-  ],
-  "files": [
-    "src/**/*",
-    "lib/**/*",
-    "dist/**/*",
-    "bin/**/*"
   ],
   "analyze": true,
   "bin": {
@@ -32,12 +38,7 @@
   "scripts": {
     "prepack": "npm run build",
     "prepare": "npm run build",
-    "build": "npm run build:parser && npm run build:ts && npm run build:stdlib && npm run build:old",
-    "build:ts": "tsc",
-    "build:parser": "peggy src/finitio/parser/parser.pegjs --allowed-start-rules system,type,heading,attribute,contract,constraint,literal,metadata,lambda_expr,type_def,import_def --cache -o src/finitio/parser/parser.js",
-    "build:stdlib": "./bin/finitio-js --bundle --url http://finitio.io/0.4/stdlib/data src/finitio/stdlib/data.fio > src/finitio/stdlib/data.js",
-    "build:watch": "tsc --watch",
-    "build:old": "grunt build",
+    "build": "grunt build",
     "test": "npm run test:unit && npm run test:integration && npm run test:acceptance",
     "test:unit": "ts-mocha specs/unit --extension ts --extension js --recursive",
     "test:integration": "ts-mocha specs/integration --extension ts --extension js --recursive",
@@ -85,6 +86,7 @@
     "shelljs": "~0.8.4",
     "should": "~13.2.3",
     "ts-mocha": "^10.0.0",
+    "tsup": "^8.0.2",
     "typescript": "^5.3.3",
     "underscore": "~1.13.1"
   }
