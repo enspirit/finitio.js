@@ -9,7 +9,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-fixtures2js');
-  grunt.loadNpmTasks('grunt-babel');
 
   //##################################################################### Tasks
 
@@ -96,19 +95,6 @@ module.exports = function(grunt) {
       },
     },
 
-    //################################################################### Build
-    babel: {
-      options: {
-        sourceMap: true,
-        presets: ['@babel/preset-env'],
-      },
-      files: {
-        expand: true,
-        cwd: 'src/',
-        src: ['**/*.js'],
-        dest: 'lib/',
-      },
-    },
     //################################################################### Build
 
     // Cleans compilation results
@@ -199,22 +185,6 @@ module.exports = function(grunt) {
     },
 
     //#################################################################### Test
-
-    // Unit testing using mocha
-    mochaTest: {
-      unit: {
-        src: ['specs/unit/**/*.js'],
-        options: {
-          require: '@babel/register',
-        },
-      },
-      integration: {
-        src: ['specs/integration/**/*.js'],
-        options: {
-          require: '@babel/register',
-        },
-      },
-    },
 
     // Acceptance testing with cucumber
     cucumberjs: {
