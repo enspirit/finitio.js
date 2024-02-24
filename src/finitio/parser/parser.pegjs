@@ -84,7 +84,7 @@ union_type =
 / sub_type
 
 sub_type =
-  m:metadata? t:rel_type cs:constraint {
+  m:metadata? t:rel_type spacing cs:constraint {
     return { sub: metadatize({ superType: t, constraints: cs }, m) };
   }
 / rel_type

@@ -1,7 +1,7 @@
 import { ObjectType } from './support/ic';
 import * as $u from './support/utils';
 import Fetchable from './support/fetchable';
-import type { Import, World } from '../types';
+import type { AcceptedInput, DressedType, Import, TypeCollection, World } from '../types';
 import type Type from './type';
 import type { TypeRef } from '../finitio';
 import Finitio, { Meta } from '../finitio'
@@ -11,13 +11,14 @@ type ResolveCallback = () => void
 //
 // A System is a collection of named Finitio types.
 //
-class System {
+// @ts-expect-error TODO fix this
+class System<T extends TypeCollection> implements T {
 
   static REF_RGX = /^(?:([a-z][a-z0-9]*)\.)?(.*?)$/;
 
-  Main?: Type
+  Main!: T['Main']
 
-  constructor(public imports: Array<Import> = [], public types: Array<Type> = []) {
+  constructor(public imports: Array<Import<T>> = [], public types: Array<Type> = []) {
     $u.each(this.types, t => { return this[t.name] = t.trueOne(); });
   }
 
@@ -31,12 +32,12 @@ class System {
     }
   }
 
-  dress<T>(value, world?: World): T {
+  dress(value: AcceptedInput<T['Main']>, world?: World): DressedType<T['Main']> {
     if (!this.Main) {
       throw new Error('No main on System');
     }
 
-    return this.Main.dress<T>(value, world);
+    return this.Main.dress(value, world) as DressedType<T['Main']>;
   }
 
   undress(value: unknown, _world?: World) {

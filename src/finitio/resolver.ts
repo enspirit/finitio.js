@@ -1,8 +1,9 @@
 import data from './stdlib/data';
 import fs = require('fs');
 import type System from './system';
+import type { TypeCollection, World } from '../types';
 
-export type Resolver = (path, world, options) => System
+export type Resolver = <T extends TypeCollection>(path: string, world: World, options) => System<T>
 
 export default (function(): Resolver {
 

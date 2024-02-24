@@ -25,7 +25,7 @@ import SubType from './finitio/type/sub_type';
 import TupleType from './finitio/type/tuple_type';
 import UnionType from './finitio/type/union_type';
 import Meta from './finitio/support/meta';
-import type { SystemAst, World } from './types';
+import type { SystemAst, TypeCollection, World } from './types';
 export * from './types';
 
 class Finitio {
@@ -60,7 +60,7 @@ class Finitio {
     return Parser.parse(source, options);
   }
 
-  static system(source: string|SystemAst, world?: Partial<World>): System {
+  static system<T extends TypeCollection>(source: string|SystemAst, world?: World): System<T> {
     if (typeof(source) === 'string') { source = this.parse(source); }
     return Meta.System.dress(source, this.world(world));
   }
