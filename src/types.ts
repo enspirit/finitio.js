@@ -1,4 +1,3 @@
-import type Finitio from './finitio'
 import type { System, Type } from './finitio'
 import type { Resolver } from './finitio/resolver';
 import { notImplemented } from './finitio/support/utils'
@@ -9,11 +8,10 @@ export type Scalar = boolean|number|string|Date|undefined|null;
 export type TypeMetadata = Record<string, Scalar>
 
 export type World = {
-  Finitio: typeof Finitio
   failfast?: boolean,
   JsTypes?: Record<string, unknown>
   sourceUrl?: string,
-  importResolver: Resolver,
+  importResolver?: Resolver,
   [k: string]: unknown
 }
 

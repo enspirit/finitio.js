@@ -1,3 +1,4 @@
+import Finitio from '../../finitio';
 import { lstatSync, readFileSync } from 'fs';
 import type { World } from '../../types';
 import type { SystemAst } from '../parser';
@@ -30,7 +31,7 @@ export default abstract class AbstractBundler {
 
   addSource(source: string) {
     // recursively resolve every import
-    this._bundle(this.world.Finitio.parse(source), this.world);
+    this._bundle(Finitio.parse(source), this.world);
     return this;
   }
 

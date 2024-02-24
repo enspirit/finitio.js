@@ -48,7 +48,7 @@ class Finitio {
     'importResolver': resolver,
   };
 
-  static world(...args) {
+  static world(...args): World {
     const world = $u.clone(Finitio.World);
     for (const arg of args) {
       if (arg) { extendWorld(world, arg); }
@@ -60,31 +60,29 @@ class Finitio {
     return Parser.parse(source, options);
   }
 
-  static system(source: string|SystemAst, world?: World): System {
+  static system(source: string|SystemAst, world?: Partial<World>): System {
     if (typeof(source) === 'string') { source = this.parse(source); }
     return Meta.System.dress(source, this.world(world));
   }
 
-  static bundleFile(path: string, world: World, lang: TargetLanguage = TargetLanguage.Javascript) {
+  static bundleFile(path: string, world?: Partial<World>, lang: TargetLanguage = TargetLanguage.Javascript) {
     return (getBundler(lang, this.world(world))).addFile(path).flush();
   }
 
-  static bundleSource(source: string, world: World, lang: TargetLanguage = TargetLanguage.Javascript) {
+  static bundleSource(source: string, world?: Partial<World>, lang: TargetLanguage = TargetLanguage.Javascript) {
     return (getBundler(lang, this.world(world))).addSource(source).flush();
   }
 }
 
-const extendWorld = (world: World, ext: Record<string, unknown>) => {
-  const result = [];
+const extendWorld = <K extends keyof World>(world: World, ext: Record<K, World[K]>) => {
   for (const k in ext) {
     const v = ext[k];
     if (k === 'JsTypes') {
-      result.push(world[k] = $u.extend(world[k], v));
+      world[k] = $u.extend(world[k], v);
     } else {
-      result.push(world[k] = v);
+      world[k] = v;
     }
   }
-  return result;
 };
 
 export {

@@ -10,6 +10,7 @@ export default defineConfig({
   dts: true,
   entry: {
     finitio: "src/finitio.ts",
+    cli: "src/cli.ts",
   },
   loader: {
     '.fio': 'copy',

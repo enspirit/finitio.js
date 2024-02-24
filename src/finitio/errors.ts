@@ -51,7 +51,7 @@ class TypeError extends Error {
     return str;
   }
 
-  explainTree(depth) {
+  explainTree(depth?: number) {
     let str = '';
     if (depth == null) { depth = 0; }
     for (let i = 0, end = depth, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {

@@ -11,6 +11,7 @@
     "module": "commonjs"
   },
   "include": [
+    "./bin/*",
     "./src/*",
     "./src/**/*",
     "./specs/*",
