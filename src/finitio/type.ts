@@ -6,7 +6,7 @@ import { InformationContract } from '../types';
 //
 // 'Abstract' class for Finitio types
 //
-class Type extends InformationContract {
+class Type<I = unknown, D = unknown> extends InformationContract {
 
   // TODO
   generator!: string
@@ -36,7 +36,7 @@ class Type extends InformationContract {
     return $u.notImplemented(this, 'include');
   }
 
-  low(): Type {
+  low(): Type<I, D> {
     return $u.notImplemented(this, 'low');
   }
 
@@ -48,8 +48,8 @@ class Type extends InformationContract {
   // @post   this.include(output)
   // @throws `TypeError` if the dressing fails
   //
-  dress<T>(value: unknown, world?: World): T {
-    const monad = this.mDress<T>(value, new DressMonad<T>(world));
+  dress(value: I, world?: World): D {
+    const monad = this.mDress<D>(value, new DressMonad<D>(world));
     if (monad.isSuccess()) {
       return monad.result;
     } else {
@@ -136,7 +136,7 @@ class Type extends InformationContract {
   //
   // Returns the true type to be used in comparisons and hierachy queries
   //
-  trueOne(): Type {
+  trueOne(): Type<I, D> {
     return this;
   }
 
@@ -152,7 +152,7 @@ class Type extends InformationContract {
     return this === other;
   }
 
-  resolveProxies(_system): Type|void {
+  resolveProxies(_system): Type<I, D>|void {
     return $u.notImplemented(this, 'resolveProxies');
   }
 }

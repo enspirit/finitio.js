@@ -15,11 +15,6 @@ export const enum Type {
   TypeInstantiation = 'instantiate',
 }
 
-export const enum TypeDef {
-  Normal,
-  Generic
-}
-
 export type WithMetadata<T> = T & {
   metadata?: Record<string, unknown>
 }
@@ -72,9 +67,7 @@ export type HeadingAst = {
 
 export type RelationTypeAst = {
   [Type.Relation]: WithMetadata<{
-    relation: {
-      heading: HeadingAst
-    }
+    heading: HeadingAst
   }>
 }
 

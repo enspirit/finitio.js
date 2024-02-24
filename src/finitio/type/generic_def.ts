@@ -1,4 +1,4 @@
-import type { TypeMetadata } from '../../types';
+import type { TypeCollection, TypeMetadata } from '../../types';
 import { ObjectType } from '../support/ic';
 import * as $u from '../support/utils';
 import type System from '../system';
@@ -7,7 +7,7 @@ import type TypeRef from './type_ref';
 
 class GenericDef extends TypeDef {
 
-  private system?: System
+  private system?: System<TypeCollection>
 
   constructor(
     public type: TypeRef,
@@ -27,7 +27,7 @@ class GenericDef extends TypeDef {
     return this;
   }
 
-  instantiate(system: System) {
+  instantiate<T extends TypeCollection>(system: System<T>) {
     this.type.resolveProxies(system);
 
     return this;

@@ -1,3 +1,4 @@
+import type { TypeCollection } from '../../types';
 import type System from '../system';
 import type Type from '../type';
 import * as $u from './utils';
@@ -10,7 +11,7 @@ export default function(clazz, plural, singular, extractor) {
     extractor = (name) => this[plural][name];
   }
 
-  clazz.prototype.fetch = function(this: System|Type, name, callback) {
+  clazz.prototype.fetch = function(this: System<TypeCollection>|Type, name, callback) {
     const extracted = extractor.bind(this)(name);
     if (extracted != null) {
       return extracted;

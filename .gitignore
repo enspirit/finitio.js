@@ -26,3 +26,4 @@ src/finitio/stdlib/*.js
 build/*
 pkg
 finitio*.tgz
+

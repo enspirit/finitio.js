@@ -18,5 +18,6 @@
     "./specs/**/*"
   ],
   "exclude": [
+    "node_modules"
   ]
 }
