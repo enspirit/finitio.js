@@ -43,6 +43,7 @@
     "test:unit": "ts-mocha specs/unit --extension ts --extension js --recursive",
     "test:unit:watch": "ts-mocha --watch specs/unit --extension ts --extension js --recursive",
     "test:integration": "ts-mocha specs/integration --extension ts --extension js --recursive",
+    "test:integration:watch": "ts-mocha specs/integration --extension ts --extension js --recursive --watch",
     "test:acceptance": "grunt test:acceptance",
     "browserify": "grunt browserify",
     "lint": "eslint --ext .js,.jsx,.ts src",

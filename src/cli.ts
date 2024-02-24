@@ -1,57 +1,85 @@
 import fs from 'fs';
-import { program } from 'commander';
+import { program, default as Commander } from 'commander';
 import type { World } from './finitio';
 import { TypeError } from './finitio';
 import Finitio from './finitio';
+import { TargetLanguage } from './finitio/bundlers';
 
-const options = program.version(`finitio.js ${Finitio.VERSION} (c) Bernard, Louis Lambeau & the University of Louvain`)
-  .usage('[options] SCHEMA.fio [DATA.json]')
-  .option('-b, --bundle', 'Bundle the input schema as a javascript loader')
-  .option('-l, --lang [lang]', 'The target language for the bundle [typescript, javascript] (defaults to javascript)')
-  .option('--url [url]', 'Specify the bundle global url')
-  .option('-v, --validate', 'Valid input data against the schema')
-  .option('-f, --fast', 'Stop on first validation error')
-  .option('--no-check', 'Do not try to check the system before bundling')
-  .option('--stack', 'Show stack trace on error')
-  .parse(process.argv)
-  .opts()
+const options = program.opts();
 
-const sourceUrl = function() {
-  if (typeof options.url === 'string') {
-    return options.url;
-  } else {
-    return `file://${program.args[0]}`;
-  }
-};
-
-const schemaFile = function() {
-  return program.args[0];
-};
-
-const schemaSource = function() {
-  return fs.readFileSync(schemaFile()).toString();
-};
-
-const world = function() {
+const world = function(sourceUrl: string, extra?: Record<string, unknown>) {
   const w: World = {
-    sourceUrl: sourceUrl(),
     failfast: options.fast,
+    sourceUrl: sourceUrl,
+    check: !!options.fast,
+    ...extra,
   };
-  if (options.check) {
-    w.check = true;
-  }
   return w;
 };
 
-const schema = function() {
-  return Finitio.system(schemaSource(), world());
+const schema = function(path: string) {
+  return Finitio.system(
+    fs.readFileSync(path).toString(),
+    world(path)
+  );
 };
 
-const data = function() {
-  const dataFile = program.args[1];
-  const dataSource = fs.readFileSync(dataFile).toString();
-  return JSON.parse(dataSource);
-};
+program.version(`finitio.js ${Finitio.VERSION} (c) Bernard, Louis Lambeau & the University of Louvain`)
+  .option('-f, --fast', 'Stop on first validation error')
+  .option('--stack', 'Show stack trace on error')
+
+  program.command('bundle')
+  .description('Bundle the input schema as a loader for the specified target language')
+  .option('--url <url>', 'Specify the bundle global url')
+  .option('--no-check', 'Do not try to check the system before bundling')
+  .option('--prelude <path>', 'Path to a file to include as prelude of the generated bundle')
+  .option('--stdlib <path>', 'Set the stdlib path')
+  .addOption(
+    new Commander.Option('-t, --target <language>', 'Set the target language')
+      .default(TargetLanguage.Javascript)
+      .choices(Object.values(TargetLanguage))
+    )
+  .addArgument(
+    new Commander.Argument(
+      '<schema>',
+      'path to a finitio schema',
+    )
+  )
+  .action((path, options) => {
+    const world: World = {
+      failfast: options.fast,
+      check: !!options.fast,
+      sourceUrl: options.url || `file://${path}`,
+      stdlibPath: options.stdlib
+    }
+
+    const bundle = Finitio.bundleFile(path, world, options.target);
+    const prelude = options.prelude ? fs.readFileSync(options.prelude) : ''
+    return console.log(
+      prelude + '\n' + bundle
+    );
+  })
+
+program.command('validate')
+  .description('Validate data against a finitio schema')
+  .addArgument(
+    new Commander.Argument(
+      '<schema>',
+      'path to a finitio schema',
+    )
+  )
+  .addArgument(
+    new Commander.Argument(
+      '<input>',
+      'path to json data',
+    )
+  )
+  .action((schemaPath, inputPath) => {
+    const s = schema(schemaPath);
+    const file = fs.readFileSync(inputPath);
+    const data = JSON.parse(file.toString());
+    console.log(s.dress(data));
+  })
 
 type ErrorMatcher = (err: Error|unknown) => boolean
 type ErrorHandler = (err: Error|unknown) => void
@@ -115,31 +143,8 @@ strategies.push([
   },
 ]);
 
-const actions: Record<string, () => void> = {};
-
-actions.bundle = function() {
-  const lang = options.lang || 'javascript';
-  return console.log(Finitio.bundleFile(schemaFile(), world(), lang));
-};
-
-actions.validate = function() {
-  return console.log(schema().dress(data(), world()));
-};
-
 try {
-  let action;
-  if (options.bundle) {
-    action = actions.bundle;
-  } else if (options.validate) {
-    action = actions.validate;
-  }
-  if (action != null) {
-    action();
-  } else {
-    program.outputHelp();
-  }
-} catch (error) {
-  const e = error;
+  program.parse(process.argv);
+} catch (e) {
   errorManager(e);
 }
-

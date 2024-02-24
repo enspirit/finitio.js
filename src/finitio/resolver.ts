@@ -1,5 +1,6 @@
 import data from './stdlib/data';
 import fs = require('fs');
+import { join } from 'path';
 import type System from './system';
 import type { TypeCollection, World } from '../types';
 
@@ -97,28 +98,35 @@ export default (function(): Resolver {
 
   // --------------------------------------------------- Standard lib resolver
 
-  // Matches finitio/... and resolve it through the standard library either
-  // on disk (if fs is available), or through the web
+  // Matches and resolve finitio/* stdlib systems or files from the stdlib folder
+  // (when set)
   const stdlib = resolver([
     function(_path) { return !!__dirname; },
-  ], (path, world) => {
+  ], (path, world: World) => {
     const match = path.match(/^finitio\/(.*)$/);
-    if (!match) {
-      return null;
+
+    if (match) {
+      // establish the paths
+      const name = match[1];
+
+      if (name !== 'data') {
+        throw new Error(`No such stdlib system: \`${path}\``);
+      }
+
+      try {
+        return data(world, { raw: true });
+      } catch (e) {
+        throw new Error(`No such stdlib system: \`${path}\``);
+      }
     }
 
-    // establish the paths
-    const name = match[1];
+    if (!match && world.stdlibPath) {
+      const url = 'file://' + join(world.stdlibPath, path);
 
-    if (name !== 'data') {
-      throw new Error(`No such stdlib system: \`${path}\``);
+      return world.importResolver(url, world, { raw: true });
     }
 
-    try {
-      return data(world, { raw: true });
-    } catch (e) {
-      throw new Error(`No such stdlib system: \`${path}\``);
-    }
+    return null;
   });
 
   // ------------------------------------------------- Chain of responsibility
