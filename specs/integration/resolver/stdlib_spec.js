@@ -1,4 +1,5 @@
-import { Finitio, should, $u } from '../helpers';
+import should from 'should';
+import { Finitio } from '../helpers';
 const {
   System,
 } = Finitio;
@@ -22,4 +23,6 @@ describe('Resolver.StdLib', () => {
     const lambda = () => Resolver.StdLib('finitio/no-such-one', Finitio.World);
     return should(lambda).throw('No such stdlib system: `finitio/no-such-one`');
   });
+
+  it.skip('it works fine when stdlibPath is set')
 });

@@ -21,6 +21,7 @@ export type World = {
   JsTypes?: Record<string, unknown>
   sourceUrl?: string,
   importResolver?: Resolver,
+  stdlibPath?: string,
   [k: string]: unknown
 }
 

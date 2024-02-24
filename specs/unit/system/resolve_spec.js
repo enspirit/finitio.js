@@ -1,6 +1,4 @@
 import System from '../../../src/finitio/system';
-import TupleType from '../../../src/finitio/type/tuple_type';
-import { numType } from '../../spec_helpers';
 import should from 'should';
 
 describe('System#resolve', () => {
