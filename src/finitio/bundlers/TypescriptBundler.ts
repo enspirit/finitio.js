@@ -9,8 +9,8 @@ export default class TypescriptBundler extends AbstractBundler {
 
 
   static TEMPLATE = `
-import type { World, SystemAst, System, Type } from './finitio';
-import Finitio from './finitio';
+import type { World, SystemAst, System, Type } from 'finitio';
+import Finitio from 'finitio';
 TYPEDEFS
 
 export default (() => {
