@@ -1,5 +1,5 @@
 import data from './stdlib/data';
-import fs = require('fs');
+import fs from 'fs';
 import { join } from 'path';
 import type System from './system';
 import type { TypeCollection, World } from '../types';
