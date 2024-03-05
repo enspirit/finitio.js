@@ -1,6 +1,6 @@
 {
   "name": "finitio",
-  "version": "1.3.7",
+  "version": "2.0.0-rc1",
   "description": "Finitio is a language for capturing information structure.",
   "author": "Louis Lambeau <louislambeau@gmail.com>",
   "license": "MIT",
