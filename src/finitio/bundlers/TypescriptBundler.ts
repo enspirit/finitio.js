@@ -2,7 +2,8 @@ import Builder from '@enspirit/ts-gen-dsl';
 import AbstractBundler from './AbstractBundler';
 import { buildTypeCollection, buildTypeDef, buildTypeDefInput } from '../generators/typescript';
 
-const IGNORE_LIST = ['Date', 'String', 'Boolean'];
+const IGNORE_LIST = ['Date'];
+
 export default class TypescriptBundler extends AbstractBundler {
 
   namespaces: Record<string, Record<string, boolean>> = {}
