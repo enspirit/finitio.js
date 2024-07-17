@@ -101,7 +101,11 @@ export default (function(): Resolver {
   // Matches and resolve finitio/* stdlib systems or files from the stdlib folder
   // (when set)
   const stdlib = resolver([
-    function(_path) { return !!__dirname; },
+    function(path, world) {
+      const match = path.match(/^finitio\/(.*)$/);
+
+      return match || world.stdlibPath;
+    },
   ], (path, world: World) => {
     const match = path.match(/^finitio\/(.*)$/);
 
