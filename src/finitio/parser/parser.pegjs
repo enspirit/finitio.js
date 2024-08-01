@@ -407,7 +407,7 @@ constraint_name =
   $([a-z] [a-zA-Z_]*)
 
 attribute_name =
-  $([a-z$_] [a-zA-Z0-9_]*)
+  $([A-Za-z$_] [a-zA-Z0-9_]*)
 
 type_name =
   $((type_qualifier '.')? type_part ('.' type_part)*)

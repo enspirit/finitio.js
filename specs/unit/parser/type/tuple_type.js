@@ -39,4 +39,22 @@ describe('Parser#tuple_type', () => {
     };
     return should(s).eql(expected);
   });
+
+  it('supports attributes starting with uppercase', () => {
+    const s = parse('/- Foo -/ { Name: . }');
+    const expected = {
+      tuple: {
+        heading: {
+          attributes: [
+            {
+              name: 'Name',
+              type: { any: {} },
+            },
+          ],
+        },
+        metadata: { description: 'Foo' },
+      },
+    };
+    return should(s).eql(expected);
+  });
 });
