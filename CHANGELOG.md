@@ -1,15 +1,4 @@
-# 2.0.0 -- 6 August 2026
-
-Major improvements:
-
-* Support for generic (high-order) types, e.g.
-  `Resource<T,A> = { data: Data<T,A>, links: [String] }` then
-  `People = Resource<People.Type,People.Attrs>`
-* The whole library is written in TypeScript and ships its own type
-  definitions
-* The distribution provides both a CommonJS and an ESM build
-* The typescript generator has been considerably improved and is now exposed
-  as a bundler target
+# 2.1.0 -- unreleased
 
 Broken APIs:
 
@@ -27,6 +16,47 @@ Broken APIs:
   relying on `...` to carry data through must now declare what those
   attributes are — individually, or with a typed `...: T` — or read them from
   the input document rather than from the dressed value.
+
+Bug fixes:
+
+* A generic instantiated more than once in the same system no longer reuses
+  the arguments of its first instantiation. Given `Page<T> = { items: [T] }`,
+  `{ a: Page<Person>, b: Page<Product> }` validated `b` against `Person`.
+  Binding a generic's parameters resolves the proxies in its body, and a
+  resolved proxy stays resolved, so each instantiation now binds its own copy
+  of the definition.
+
+# 2.0.1 -- unreleased
+
+Published as release candidates only, `2.0.1-rc1` (March 2024) through
+`2.0.1-rc6` (August 2025). `latest` on npm currently points at `rc6`.
+
+Bug fixes:
+
+* The standard library resolver no longer gates on `__dirname`, so
+  `@import finitio/data` resolves from an ESM entry point instead of failing
+* Heading attributes may start with an uppercase letter
+* Fix an incorrect `require` in the import resolver
+
+Minor changes:
+
+* The typescript bundler generates type aliases for `String` and `Boolean`
+* `System#resolve()` is properly typed
+
+# 2.0.0 -- 5 March 2024
+
+Major improvements:
+
+* Support for generic (high-order) types, e.g.
+  `Resource<T,A> = { data: Data<T,A>, links: [String] }` then
+  `People = Resource<People.Type,People.Attrs>`
+* The whole library is written in TypeScript and ships its own type
+  definitions
+* The distribution provides both a CommonJS and an ESM build
+* The typescript generator has been considerably improved and is now exposed
+  as a bundler target
+
+Broken APIs:
 
 * Node.js >= 22.12.0 is now required
 * The package now exposes an `exports` map and ships `dist/` only. `main`
@@ -51,12 +81,6 @@ Minor changes:
 
 Bug fixes:
 
-* A generic instantiated more than once in the same system no longer reuses
-  the arguments of its first instantiation. Given `Page<T> = { items: [T] }`,
-  `{ a: Page<Person>, b: Page<Product> }` validated `b` against `Person`.
-  Binding a generic's parameters resolves the proxies in its body, and a
-  resolved proxy stays resolved, so each instantiation now binds its own copy
-  of the definition.
 * A `null` inside a sequence or a set now raises a validation error instead
   of a native JavaScript `TypeError`
 * A comma nested inside `()`, `{}`, `[]` or a string literal no longer ends a
