@@ -44,7 +44,7 @@ describe('SetType#dress', () => {
     it('has the expected root cause', () => should(subject.rootCause.message).eql('Invalid value (not byte): `-12`'));
   });
 
-  return describe('with an array with duplicates', () => {
+  describe('with an array with duplicates', () => {
     const subject =
       (() => { try {
         return type.dress([2, 4, 2]);
@@ -58,5 +58,23 @@ describe('SetType#dress', () => {
     });
 
     it('should raise an error', () => should(subject.rootCause.message).equal('Duplicate value: `2`'));
+  });
+
+  describe('with an array holding a null element', () => {
+    const subject =
+      (() => { try {
+        return type.dress([2, null, 4]);
+      } catch (e) {
+        return e;
+      } })();
+
+    // A null element is invalid data, not a bug: it must surface as a Finitio
+    // validation error rather than a native JavaScript TypeError.
+    it('raises a Finitio error', () => {
+      should(subject).be.an.instanceof(TypeError);
+      return should(subject.message).equal('Invalid Set');
+    });
+
+    it('locates the offending element', () => should(subject.rootCause.location).equal(1));
   });
 });

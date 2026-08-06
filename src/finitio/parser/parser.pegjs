@@ -293,13 +293,28 @@ lambda_expr =
   }
 
 expression =
-  $((paren_expression / any_expression)+)
+  $((group_expression / string_expression / any_expression)+)
 
-paren_expression =
-  $('()' / '(' expression ')')
-
+// At the top level a comma separates constraints, so it ends the expression.
 any_expression =
-  $((![(,)] .)+)
+  $([^(){}\[\]'",]+)
+
+group_expression =
+  $('(' nested_expression ')')
+/ $('{' nested_expression '}')
+/ $('[' nested_expression ']')
+
+// Within brackets a comma belongs to the expression itself: argument lists,
+// regexp quantifiers such as {1,64}, array and object literals, ...
+nested_expression =
+  $((group_expression / string_expression / nested_any_expression)*)
+
+nested_any_expression =
+  $([^(){}\[\]'"]+)
+
+string_expression =
+  $('"' ('\\' . / [^"])* '"')
+/ $("'" ('\\' . / [^'])* "'")
 
 // METADATA
 
