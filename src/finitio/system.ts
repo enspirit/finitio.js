@@ -22,7 +22,7 @@ class System<T extends TypeCollection> implements T {
     $u.each(this.types, t => { return this[t.name] = t.trueOne(); });
   }
 
-  resolve(ref, callback?: ResolveCallback) {
+  resolve<T extends Type<I, D>, I, D>(ref, callback?: ResolveCallback): T {
     const match = ref.match(System.REF_RGX);
     if (match[1]) {
       return this._resolveQualified(match, callback);

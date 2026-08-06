@@ -1,5 +1,5 @@
 import data from './stdlib/data';
-import * as fs from 'fs';
+import fs from 'fs';
 import { join } from 'path';
 import type System from './system';
 import type { TypeCollection, World } from '../types';
@@ -101,7 +101,11 @@ export default (function(): Resolver {
   // Matches and resolve finitio/* stdlib systems or files from the stdlib folder
   // (when set)
   const stdlib = resolver([
-    function(_path) { return !!__dirname; },
+    function(path, world) {
+      const match = path.match(/^finitio\/(.*)$/);
+
+      return match || world.stdlibPath;
+    },
   ], (path, world: World) => {
     const match = path.match(/^finitio\/(.*)$/);
 
