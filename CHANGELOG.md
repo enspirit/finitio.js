@@ -51,6 +51,12 @@ Minor changes:
 
 Bug fixes:
 
+* A generic instantiated more than once in the same system no longer reuses
+  the arguments of its first instantiation. Given `Page<T> = { items: [T] }`,
+  `{ a: Page<Person>, b: Page<Product> }` validated `b` against `Person`.
+  Binding a generic's parameters resolves the proxies in its body, and a
+  resolved proxy stays resolved, so each instantiation now binds its own copy
+  of the definition.
 * A `null` inside a sequence or a set now raises a validation error instead
   of a native JavaScript `TypeError`
 * A comma nested inside `()`, `{}`, `[]` or a string literal no longer ends a

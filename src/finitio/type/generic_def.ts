@@ -1,13 +1,12 @@
 import type { TypeCollection, TypeMetadata } from '../../types';
 import { ObjectType } from '../support/ic';
 import * as $u from '../support/utils';
+import copy from '../support/copy';
 import type System from '../system';
 import TypeDef from './type_def';
 import type TypeRef from './type_ref';
 
 class GenericDef extends TypeDef {
-
-  private system?: System<TypeCollection>
 
   constructor(
     public type: TypeRef,
@@ -27,10 +26,21 @@ class GenericDef extends TypeDef {
     return this;
   }
 
+  // Binds the parameters, in `system`, of a fresh copy of this definition.
+  //
+  // The copy matters: binding resolves the proxies in the body, and a
+  // resolved proxy stays resolved. Instantiating the shared definition would
+  // make `Page<Product>` reuse whatever `Page<Person>` bound first.
   instantiate<T extends TypeCollection>(system: System<T>) {
-    this.type.resolveProxies(system);
+    const instance = new GenericDef(
+      copy(this.type),
+      this.name,
+      this.generics,
+      this.metadata,
+    );
+    instance.type.resolveProxies(system);
 
-    return this;
+    return instance;
   }
 
   toString() {
