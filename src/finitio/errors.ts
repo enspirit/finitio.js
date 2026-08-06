@@ -4,8 +4,8 @@ class TypeError extends Error {
 
   location?: number
   rootCausesCache?: unknown
-  causesCache?: unknown
-  children?: unknown
+  causesCache?: Array<TypeError>
+  children?: Array<unknown>
 
   constructor(info) {
     super(computeMessage(info));
@@ -21,7 +21,6 @@ class TypeError extends Error {
   }
 
   get causes(): Array<TypeError> {
-    // @ts-expect-error refactor
     return this.causesCache != null
       ? this.causesCache
       : (this.causesCache = this.children && computeCauses(this));

@@ -1,3 +1,5 @@
+const { Before, Given, When, Then } = require('@cucumber/cucumber');
+
 const Finitio = require('../../dist/finitio').default;
 const Parser = require('../../dist/finitio').Parser;
 
@@ -20,505 +22,444 @@ let type = null;
 let error = null;
 const systems = {};
 
+// Replaces cucumber 0.x's `callback.fail`: fails the current step immediately.
+const fail = function(reason) {
+  throw (reason instanceof Error) ? reason : new Error(reason);
+};
+
 Finitio.World.importResolver.tests = function(path) {
   if (systems[path]) { return [path, systems[path]]; }
 };
 
-module.exports = function() {
+Before(function() {
+  system = (TestSystem = Finitio.system('@import finitio/data'));
+});
 
-  this.Before(function(callback) {
-    system = (TestSystem = Finitio.system('@import finitio/data'));
-    return callback();
-  });
+Given(/^the World is$/, function(source) {
+  world = new Function('return ' + source + ';');
+  world = world();
+});
 
-  this.Given(/^the World is$/, function(source, callback) {
-    try {
-      world = new Function('return ' + source + ';');
-      world = world();
-      return callback();
-    } catch (e) {
-      return callback.fail(e);
+Given(/^the System is$/, function(source) {
+  try {
+    system = Finitio.system('@import finitio/data\n\n' + source, world);
+    if (system.Main) { type = system.Main.trueOne(); }
+  } catch (e) {
+    error = e;
+    fail(e);
+  }
+});
+
+Given(/^the type under test is (.*?)$/, function(typeName) {
+  type = system.resolve(typeName);
+});
+
+// Language
+
+Then(/^it compiles fine$/, function() {
+  if (!(system instanceof System)) {
+    fail(`${system} is not an finitio system`);
+  }
+});
+
+Then(/^it compiles to a tuple type$/, function() {
+  if (!(system instanceof System)) {
+    fail(`${system} is not an finitio system`);
+  }
+
+  should(type).be.an.instanceOf(Finitio.TupleType);
+});
+
+Then(/^it compiles to a relation type$/, function() {
+  if (!(system instanceof System)) {
+    fail(`${system} is not an finitio system`);
+  }
+
+  should(type).be.an.instanceOf(Finitio.RelationType);
+});
+
+Then(/^it compiles to a sub type of (.*?)$/, function(parent) {
+  if (!(system instanceof System)) {
+    fail(`${system} is not an finitio system`);
+  }
+
+  should(type).be.an.instanceOf(Finitio.SubType);
+  should(system.resolve(parent).isSuperTypeOf(type)).equal(true);
+});
+
+Then(/^it includes a type named (.*?)$/, function(name) {
+  try {
+    should(system.resolve(name)).be.an.instanceof(Finitio.Type);
+  } catch (e) {
+    error = e;
+    fail(e);
+  }
+});
+
+Then(/^it does not include a type named (.*?)$/, function(name) {
+  try {
+    system.resolve(name);
+  } catch (e) {
+    error = e;
+    return;
+  }
+  fail(new Error('Expected a system fetch failure'));
+});
+
+Then(/^`(.*?)` and `(.*?)` are mandatory$/, function(a1, a2) {
+  if (type.heading === undefined) {
+    fail(`Heading based type expected, got \`${type}\``);
+  } else if (type.heading.getAttr(a1) === undefined) {
+    fail(`\`${a1}\` attribute expected, got \`${type.heading.toName()}\``);
+  } else if (type.heading.getAttr(a2) === undefined) {
+    fail(`\`${a2}\` attribute expected, got \`${type.heading.toName()}\``);
+  } else {
+    should(type.heading.getAttr(a1).required).be.true;
+    should(type.heading.getAttr(a2).required).be.true;
+  }
+});
+
+Then(/^`(.*?)` is mandatory, but `(.*?)` is optional$/, function(a1, a2) {
+  if (type.heading === undefined) {
+    fail(`Heading based type expected, got \`${type}\``);
+  } else if (type.heading.getAttr(a1) === undefined) {
+    fail(`\`${a1}\` attribute expected, got \`${type.heading.toName()}\``);
+  } else if (type.heading.getAttr(a2) === undefined) {
+    fail(`\`${a2}\` attribute expected, got \`${type.heading.toName()}\``);
+  } else {
+    should(type.heading.getAttr(a1).required).be.true;
+    should(type.heading.getAttr(a2).required).be.false;
+  }
+});
+
+Then(/^`(.*?)` is mandatory$/, function(a1) {
+  if (type.heading === undefined) {
+    fail(`Heading based type expected, got \`${type}\``);
+  } else if (type.heading.getAttr(a1) === undefined) {
+    fail(`\`${a1}\` attribute expected, got \`${type.heading.toName()}\``);
+  } else {
+    should(type.heading.getAttr(a1).required).be.true;
+  }
+});
+
+Then(/^it allows extra attributes$/, function() {
+  if (type.heading === undefined) {
+    fail(`Heading based type expected, got \`${type}\``);
+  } else {
+    should(type.heading.allowExtra()).be.true;
+  }
+});
+
+Then(/^it allows extra attributes of type (.*)$/, function(name) {
+  if (type.heading === undefined) {
+    fail(`Heading based type expected, got \`${type}\``);
+  } else {
+    const extraType = system.resolve(name);
+    should(type.heading.allowExtra(extraType)).be.true;
+  }
+});
+
+Then(/^it does not allow extra attributes$/, function() {
+  if (type.heading === undefined) {
+    fail(`Heading based type expected, got \`${type}\``);
+  } else {
+    should(type.heading.allowExtra()).be.false;
+  }
+});
+
+Then(/^metadata at (.*) should be as follows$/, function(path, table) {
+  should(table.hashes().length).equal(1);
+  const expected = table.hashes()[0];
+  const victim = system.fetchPath(path);
+  if (!_.isEqual(victim.metadata, expected)) {
+    fail(`Expected ${JSON.stringify(expected)}, got ${victim.metadata}`);
+  }
+});
+
+// Hierarchy
+
+Then(/^(.*?) is (not )?a super type of (.*?)$/, function(source, neg, target) {
+  try {
+    let left;
+    const s = system.resolve(source);
+    const t = system.resolve(target);
+    neg = ((left = (neg != null)) != null ? left : { true : false });
+    const isIt = s.isSuperTypeOf(t);
+    if (isIt === neg) {
+      fail(`Expected ${source}${(neg ? ' not' : '')} to be a super type of ${target}`);
     }
-  });
+  } catch (e) {
+    error = e;
+    fail(e);
+  }
+});
 
-  this.Given(/^the System is$/, function(source, callback) {
-    try {
-      system = Finitio.system('@import finitio/data\n\n' + source, world);
-      if (system.Main) { type = system.Main.trueOne(); }
-      return callback();
-    } catch (e) {
-      error = e;
-      return callback.fail(e);
+// Dressing
+
+Given(/^I dress JSON's '(.*?)'$/, function(jsonValue) {
+  try {
+    error = null;
+    const json = JSON.parse(jsonValue);
+    result = type.dress(json);
+  } catch (e) {
+    error = e;
+    result = e;
+  }
+});
+
+Given(/^I dress JSON's '(.*?)' with (.*?)$/, function(jsonValue, typename) {
+  try {
+    error = null;
+    const json = JSON.parse(jsonValue);
+    result = system.resolve(typename).dress(json);
+  } catch (e) {
+    error = e;
+    result = e;
+  }
+});
+
+Given(/^I dress the following JSON document:$/, function(doc) {
+  try {
+    error = null;
+    const json = JSON.parse(doc);
+    result = system.dress(json);
+  } catch (e) {
+    error = e;
+    result = e;
+  }
+});
+
+Given(/^I dress the following JSON document with (.*?):$/, function(type, doc) {
+  try {
+    error = null;
+    const json = JSON.parse(doc);
+    result = system.resolve(type).dress(json);
+  } catch (e) {
+    error = e;
+    result = e;
+  }
+});
+
+Given(/^I validate the following JSON data against (.*?)$/, function(type, json) {
+  type = system.resolve(type);
+
+  try {
+    error = null;
+    json = JSON.parse(json);
+    result = types.dress(json);
+  } catch (e) {
+    error = e;
+    result = e;
+  }
+});
+
+// Undressing
+
+Given(/^I undress JSON's '(.*?)' from (.*?) to (.*?)$/, function(json, from, to) {
+  try {
+    error = null;
+    from = system.resolve(from);
+    to = system.resolve(to);
+    json = JSON.parse(json);
+    const value = from.dress(json);
+    result = from.undress(value, to);
+  } catch (e) {
+    error = e;
+    result = e;
+  }
+});
+
+When(/^I undress the result from (.*?) to (.*?)$/, function(from, to) {
+  try {
+    error = null;
+    from = system.resolve(from);
+    to = system.resolve(to);
+    result = from.undress(result, to);
+  } catch (e) {
+    error = e;
+    result = e;
+  }
+});
+
+// Result
+
+Then(/^it should be a success$/, function() {
+  if (error != null) { fail(error); }
+});
+
+Then(/^the result should be a Tuple representation$/, function() {
+  if (error != null) { fail(error); }
+
+  if (!(result instanceof Object)) {
+    fail(`${result} is not an object`);
+  }
+});
+
+Then(/^its '(.*)' attribute should be a String representation$/, function(attr) {
+  if (error != null) { fail(error); }
+
+  if (typeof(result[attr]) !== 'string') {
+    fail(`attribute is not a String, got ${result[attr]}`);
+  }
+});
+
+Then(/^its '(.*)' attribute should be a Date representation$/, function(attr) {
+  if (error != null) { fail(error); }
+
+  if (!(result[attr] instanceof Date)) {
+    fail(`attribute is not a Date, got ${result[attr]}`);
+  }
+});
+
+Then(/^its '(.*)' attribute should be a Time representation$/, function(attr) {
+  if (error != null) { fail(error); }
+
+  if (!(result[attr] instanceof Date)) {
+    fail(`attribute is not a Time, got ${result[attr]}`);
+  }
+});
+
+Then(/^the result should be a representation for Nil$/, function() {
+  if (error != null) {
+    fail(error);
+  } else {
+    if (result !== null) {
+      fail(`${result} is not a representation for Nil`);
     }
-  });
+  }
+});
 
-  this.Given(/^the type under test is (.*?)$/, function(typeName, callback) {
-    type = system.resolve(typeName);
-    return callback();
-  });
-
-  // Language
-
-  this.Then(/^it compiles fine$/, function(callback) {
-    if (!(system instanceof System)) {
-      callback.fail(`${system} is not an finitio system`);
+// The `Nil` case is handled by the more specific step above; cucumber requires
+// this one to explicitly not match it rather than relying on definition order.
+Then(/^the result should be a representation for (?!Nil$)(.*?)$/, function(type) {
+  if (error != null) {
+    fail(error);
+  } else {
+    if (!system.resolve(type).include(result)) {
+      fail(`${result} is not a representation for ${type}`);
     }
-    return callback();
-  });
+  }
+});
 
-  this.Then(/^it compiles to a tuple type$/, function(callback) {
-    if (!(system instanceof System)) {
-      callback.fail(`${system} is not an finitio system`);
+Then(/^it should be a TypeError$/, function() {
+  if (!(result instanceof TypeError)) {
+    fail(`TypeError expected, got \`${result}\` (${result.constructor.name})`);
+  }
+});
+
+Then(/^it should be a UndressError$/, function() {
+  if (!(result instanceof Error)) {
+    fail(`UndressError expected, got \`${result}\` (${result.constructor.name})`);
+  }
+});
+
+Then(/^it should be a TypeError as:$/, function(table) {
+  if (!(result instanceof TypeError)) {
+    fail(result);
+  }
+
+  const object = table.hashes()[0];
+  for (const k in object) {
+    const v = object[k];
+    if (result[k] !== v) {
+      fail(`TypeError#${k}: \`${v}\` expected, got \`${result[k]}\``);
     }
+  }
+});
 
-    should(type).be.an.instanceOf(Finitio.TupleType);
-
-    return callback();
-  });
-
-  this.Then(/^it compiles to a relation type$/, function(callback) {
-    if (!(system instanceof System)) {
-      callback.fail(`${system} is not an finitio system`);
-    }
-
-    should(type).be.an.instanceOf(Finitio.RelationType);
-
-    return callback();
-  });
-
-  this.Then(/^it compiles to a sub type of (.*?)$/, function(parent, callback) {
-    if (!(system instanceof System)) {
-      callback.fail(`${system} is not an finitio system`);
-    }
-
-    should(type).be.an.instanceOf(Finitio.SubType);
-    should(system.resolve(parent).isSuperTypeOf(type)).equal(true);
-
-    return callback();
-  });
-
-  this.Then(/^it includes a type named (.*?)$/, function(name, callback) {
-    try {
-      should(system.resolve(name)).be.an.instanceof(Finitio.Type);
-    } catch (e) {
-      error = e;
-      callback.fail(e);
-    }
-    return callback();
-  });
-
-  this.Then(/^it does not include a type named (.*?)$/, function(name, callback) {
-    try {
-      system.resolve(name);
-      return callback.fail(new Error('Expected a system fetch failure'));
-    } catch (e) {
-      error = e;
-      return callback();
-    }
-  });
-
-  this.Then(/^`(.*?)` and `(.*?)` are mandatory$/, function(a1, a2, callback) {
-    if (type.heading === undefined) {
-      callback.fail(`Heading based type expected, got \`${type}\``);
-    } else if (type.heading.getAttr(a1) === undefined) {
-      callback.fail(`\`${a1}\` attribute expected, got \`${type.heading.toName()}\``);
-    } else if (type.heading.getAttr(a2) === undefined) {
-      callback.fail(`\`${a2}\` attribute expected, got \`${type.heading.toName()}\``);
-    } else {
-      should(type.heading.getAttr(a1).required).be.true;
-      should(type.heading.getAttr(a2).required).be.true;
-    }
-    return callback();
-  });
-
-  this.Then(/^`(.*?)` is mandatory, but `(.*?)` is optional$/, function(a1, a2, callback) {
-    if (type.heading === undefined) {
-      callback.fail(`Heading based type expected, got \`${type}\``);
-    } else if (type.heading.getAttr(a1) === undefined) {
-      callback.fail(`\`${a1}\` attribute expected, got \`${type.heading.toName()}\``);
-    } else if (type.heading.getAttr(a2) === undefined) {
-      callback.fail(`\`${a2}\` attribute expected, got \`${type.heading.toName()}\``);
-    } else {
-      should(type.heading.getAttr(a1).required).be.true;
-      should(type.heading.getAttr(a2).required).be.false;
-    }
-    return callback();
-  });
-
-  this.Then(/^`(.*?)` is mandatory$/, function(a1, callback) {
-    if (type.heading === undefined) {
-      callback.fail(`Heading based type expected, got \`${type}\``);
-    } else if (type.heading.getAttr(a1) === undefined) {
-      callback.fail(`\`${a1}\` attribute expected, got \`${type.heading.toName()}\``);
-    } else {
-      should(type.heading.getAttr(a1).required).be.true;
-    }
-    return callback();
-  });
-
-  this.Then(/^it allows extra attributes$/, function(callback) {
-    if (type.heading === undefined) {
-      callback.fail(`Heading based type expected, got \`${type}\``);
-    } else {
-      should(type.heading.allowExtra()).be.true;
-    }
-    return callback();
-  });
-
-  this.Then(/^it allows extra attributes of type (.*)$/, function(name, callback) {
-    if (type.heading === undefined) {
-      callback.fail(`Heading based type expected, got \`${type}\``);
-    } else {
-      const extraType = system.resolve(name);
-      should(type.heading.allowExtra(extraType)).be.true;
-    }
-    return callback();
-  });
-
-  this.Then(/^it does not allow extra attributes$/, function(callback) {
-    if (type.heading === undefined) {
-      callback.fail(`Heading based type expected, got \`${type}\``);
-    } else {
-      should(type.heading.allowExtra()).be.false;
-    }
-    return callback();
-  });
-
-  this.Then(/^metadata at (.*) should be as follows$/, function(path, table, callback) {
-    should(table.hashes().length).equal(1);
-    const expected = table.hashes()[0];
-    const victim = system.fetchPath(path);
-    if (!_.isEqual(victim.metadata, expected)) {
-      return callback.fail(`Expected ${JSON.stringify(expected)}, got ${victim.metadata}`);
-    } else {
-      return callback();
-    }
-  });
-
-  // Hierarchy
-
-  this.Then(/^(.*?) is (not )?a super type of (.*?)$/, function(source, neg, target, callback) {
-    try {
-      let left;
-      const s = system.resolve(source);
-      const t = system.resolve(target);
-      neg = ((left = (neg != null)) != null ? left : { true : false });
-      const isIt = s.isSuperTypeOf(t);
-      if (isIt === neg) {
-        callback.fail(`Expected ${source}${(neg ? ' not' : '')} to be a super type of ${target}`);
-      }
-    } catch (e) {
-      error = e;
-      callback.fail(e);
-    }
-    return callback();
-  });
-
-  // Dressing
-
-  this.Given(/^I dress JSON's '(.*?)'$/, function(jsonValue, callback) {
-    try {
-      error = null;
-      const json = JSON.parse(jsonValue);
-      result = type.dress(json);
-    } catch (e) {
-      error = e;
-      result = e;
-    }
-
-    return callback();
-  });
-
-  this.Given(/^I dress JSON's '(.*?)' with (.*?)$/, function(jsonValue, typename, callback) {
-    try {
-      error = null;
-      const json = JSON.parse(jsonValue);
-      result = system.resolve(typename).dress(json);
-    } catch (e) {
-      error = e;
-      result = e;
-    }
-
-    return callback();
-  });
-
-  this.Given(/^I dress the following JSON document:$/, function(doc, callback) {
-    try {
-      error = null;
-      const json = JSON.parse(doc);
-      result = system.dress(json);
-    } catch (e) {
-      error = e;
-      result = e;
-    }
-
-    return callback();
-  });
-
-  this.Given(/^I dress the following JSON document with (.*?):$/, function(type, doc, callback) {
-    try {
-      error = null;
-      const json = JSON.parse(doc);
-      result = system.resolve(type).dress(json);
-    } catch (e) {
-      error = e;
-      result = e;
-    }
-
-    return callback();
-  });
-
-  this.Given(/^I validate the following JSON data against (.*?)$/, function(type, json, callback) {
-    type = system.resolve(type);
-
-    try {
-      error = null;
-      json = JSON.parse(json);
-      result = types.dress(json);
-    } catch (e) {
-      error = e;
-      result = e;
-    }
-
-    return callback();
-  });
-
-  // Undressing
-
-  this.Given(/^I undress JSON's '(.*?)' from (.*?) to (.*?)$/, function(json, from, to, callback) {
-    try {
-      error = null;
-      from = system.resolve(from);
-      to = system.resolve(to);
-      json = JSON.parse(json);
-      const value = from.dress(json);
-      result = from.undress(value, to);
-    } catch (e) {
-      error = e;
-      result = e;
-    }
-
-    return callback();
-  });
-
-  this.When(/^I undress the result from (.*?) to (.*?)$/, function(from, to, callback) {
-    try {
-      error = null;
-      from = system.resolve(from);
-      to = system.resolve(to);
-      result = from.undress(result, to);
-    } catch (e) {
-      error = e;
-      result = e;
-    }
-
-    return callback();
-  });
-
-  // Result
-
-  this.Then(/^it should be a success$/, function(callback) {
-    if (error != null) { callback.fail(error); }
-    return callback();
-  });
-
-  this.Then(/^the result should be a Tuple representation$/, function(callback) {
-    if (error != null) { callback.fail(error); }
-
-    if (!(result instanceof Object)) {
-      callback.fail(`${result} is not an object`);
-    }
-    return callback();
-  });
-
-  this.Then(/^its '(.*)' attribute should be a String representation$/, function(attr, callback) {
-    if (error != null) { callback.fail(error); }
-
-    if (typeof(result[attr]) !== 'string') {
-      callback.fail(`attribute is not a String, got ${result[attr]}`);
-    }
-    return callback();
-  });
-
-  this.Then(/^its '(.*)' attribute should be a Date representation$/, function(attr, callback) {
-    if (error != null) { callback.fail(error); }
-
-    if (!(result[attr] instanceof Date)) {
-      callback.fail(`attribute is not a Date, got ${result[attr]}`);
-    }
-    return callback();
-  });
-
-  this.Then(/^its '(.*)' attribute should be a Time representation$/, function(attr, callback) {
-    if (error != null) { callback.fail(error); }
-
-    if (!(result[attr] instanceof Date)) {
-      callback.fail(`attribute is not a Time, got ${result[attr]}`);
-    }
-    return callback();
-  });
-
-  this.Then(/^the result should be a representation for Nil$/, function(callback) {
-    if (error != null) {
-      return callback.fail(error);
-    } else {
-      if (result !== null) {
-        callback.fail(`${result} is not a representation for Nil`);
-      }
-      return callback();
-    }
-  });
-
-  this.Then(/^the result should be a representation for (.*?)$/, function(type,callback) {
-    if (error != null) {
-      return callback.fail(error);
-    } else {
-      if (!system.resolve(type).include(result)) {
-        callback.fail(`${result} is not a representation for ${type}`);
-      }
-      return callback();
-    }
-  });
-
-  this.Then(/^it should be a TypeError$/, function(callback) {
-    if (!(result instanceof TypeError)) {
-      callback.fail(`TypeError expected, got \`${result}\` (${result.constructor.name})`);
-    }
-    return callback();
-  });
-
-  this.Then(/^it should be a UndressError$/, function(callback) {
-    if (!(result instanceof Error)) {
-      callback.fail(`UndressError expected, got \`${result}\` (${result.constructor.name})`);
-    }
-    return callback();
-  });
-
-  this.Then(/^it should be a TypeError as:$/, function(table, callback) {
-    if (!(result instanceof TypeError)) {
-      callback.fail(result);
-    }
-
+Then(/^its root cause should be:$/, function(table) {
+  if (result instanceof TypeError) {
+    const rc = result.rootCause;
     const object = table.hashes()[0];
     for (const k in object) {
       const v = object[k];
-      if (result[k] !== v) {
-        callback.fail(`TypeError#${k}: \`${v}\` expected, got \`${result[k]}\``);
+      if (rc[k] !== v) {
+        fail(`TypeError#${k}: \`${v}\` expected, got \`${rc[k]}\``);
       }
     }
+  } else {
+    fail(new Error('Type error expected'));
+  }
+});
 
-    return callback();
-  });
+Then(/^the result should be the integer (\d+)$/, function(expected) {
+  if (result !== parseInt(expected)) {
+    fail(`${result} <> ${expected}`);
+  }
+});
 
-  this.Then(/^its root cause should be:$/, function(table, callback) {
-    if (result instanceof TypeError) {
-      const rc = result.rootCause;
-      const object = table.hashes()[0];
-      for (const k in object) {
-        const v = object[k];
-        if (rc[k] !== v) {
-          callback.fail(`TypeError#${k}: \`${v}\` expected, got \`${rc[k]}\``);
-          return;
-        }
-      }
-      return callback();
-    } else {
-      return callback.fail(new Error('Type error expected'));
-    }
-  });
+Then(/^the result should be the Boolean true$/, function() {
+  if (result !== true) {
+    fail(`${result} <> true`);
+  }
+});
 
-  this.Then(/^the result should be the integer (\d+)$/, function(expected, callback) {
-    if (result !== parseInt(expected)) {
-      callback.fail(`${result} <> ${expected}`);
-    }
-    return callback();
-  });
+Then(/^the result should be the Boolean false$/, function() {
+  if (result !== false) {
+    fail(`${result} <> false`);
+  }
+});
 
-  this.Then(/^the result should be the Boolean true$/, function(callback) {
-    if (result !== true) {
-      callback.fail(`${result} <> true`);
-    }
-    return callback();
-  });
+Then(/^the result should be the real (\d+\.\d+)$/, function(expected) {
+  if (result !== parseFloat(expected)) {
+    fail(`${result} <> ${expected}`);
+  }
+});
 
-  this.Then(/^the result should be the Boolean false$/, function(callback) {
-    if (result !== false) {
-      callback.fail(`${result} <> false`);
-    }
-    return callback();
-  });
+Then(/^the result should be the string '(.*)'$/, function(expected) {
+  if (result !== expected) {
+    fail(`${result} <> ${expected}`);
+  }
+});
 
-  this.Then(/^the result should be the real (\d+\.\d+)$/, function(expected, callback) {
-    if (result !== parseFloat(expected)) {
-      callback.fail(`${result} <> ${expected}`);
-    }
-    return callback();
-  });
+Then(/^the result should be the 13st of March 2014$/, function() {
+  const expected = new Date('2014-03-13');
+  if ((!(result instanceof Date)) || (result.toISOString() !== expected.toISOString())) {
+    fail(`${result} <> 13st of March 2014`);
+  }
+});
 
-  this.Then(/^the result should be the string '(.*)'$/, function(expected, callback) {
-    if (result !== expected) {
-      callback.fail(`${result} <> ${expected}`);
-    }
-    return callback();
-  });
+Then(/^the result should be the 13st of March 2014 at 08:30$/, function() {
+  const expected = new Date('2014-03-13T08:30:00');
+  if ((!(result instanceof Date)) || (result.toISOString() !== expected.toISOString())) {
+    fail(`${result} <> 13st of March 2014 at 08:30`);
+  }
+});
 
-  this.Then(/^the result should be the 13st of March 2014$/, function(callback) {
-    const expected = new Date('2014-03-13');
-    if ((!(result instanceof Date)) || (result.toISOString() !== expected.toISOString())) {
-      callback.fail(`${result} <> 13st of March 2014`);
-    }
-    return callback();
-  });
+Then(/^the result should not have a '(.*?)' attribute$/, function(name) {
+  if (error != null) {
+    fail(error);
+  }
+  if (result[name] != null) {
+    fail(`Unexpected attribute \`${name}\`, got it.`);
+  }
+});
 
-  this.Then(/^the result should be the 13st of March 2014 at 08:30$/, function(callback) {
-    const expected = new Date('2014-03-13T08:30:00');
-    if ((!(result instanceof Date)) || (result.toISOString() !== expected.toISOString())) {
-      callback.fail(`${result} <> 13st of March 2014 at 08:30`);
-    }
-    return callback();
-  });
+// Grammar rules
 
-  this.Then(/^the result should not have a '(.*?)' attribute$/, function(name, callback) {
-    if (error != null) {
-      callback.fail(error);
-    }
-    if (result[name] != null) {
-      callback.fail(`Unexpected attribute \`${name}\`, got it.`);
-    }
-    return callback();
-  });
+Given(/^the grammar rule is (.*?)$/, function(rulename) {
+  this.grammarRule = rulename;
+});
 
-  // Grammar rules
+Given(/^the source is$/, function(src) {
+  this.parsing_source = src;
+});
 
-  this.Given(/^the grammar rule is (.*?)$/, function(rulename, callback) {
-    this.grammarRule = rulename;
-    return callback();
-  });
+Then(/^it evaluates to a (.*)$/, function(type) {
+  const t = system.resolve(type);
+  const r = Parser.parse(this.parsing_source, { startRule: this.grammarRule });
+  if (!t.include(r)) {
+    fail(`Expected ${this.parsing_source} to evaluate to ${type}`);
+  }
+});
 
-  this.Given(/^the source is$/, function(src, callback) {
-    this.parsing_source = src;
-    return callback();
-  });
+// Import
 
-  this.Then(/^it evaluates to a (.*)$/, function(type, callback) {
-
-    const t = system.resolve(type);
-    const r = Parser.parse(this.parsing_source, { startRule: this.grammarRule });
-    if (!t.include(r)) {
-      callback.fail(`Expected ${this.parsing_source} to evaluate to ${type}`);
-    }
-    return callback();
-  });
-
-  // Import
-
-  return this.Given(/^the following system is known as '(.*)'$/, function(name, src, callback) {
-    try {
-      systems[name] = Finitio.parse(src);
-      return callback();
-    } catch (e) {
-      error = e;
-      return callback.fail(e);
-    }
-  });
-};
+Given(/^the following system is known as '(.*)'$/, function(name, src) {
+  try {
+    systems[name] = Finitio.parse(src);
+  } catch (e) {
+    error = e;
+    fail(e);
+  }
+});

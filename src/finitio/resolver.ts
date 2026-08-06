@@ -1,5 +1,5 @@
 import data from './stdlib/data';
-import fs = require('fs');
+import * as fs from 'fs';
 import { join } from 'path';
 import type System from './system';
 import type { TypeCollection, World } from '../types';
@@ -27,7 +27,7 @@ export default (function(): Resolver {
       const extended = origin + (extension || '');
       fs.statSync(extended);
       return [extended, extension || extended.match(/(\.[a-z]{3,4})$/)[1]];
-    } catch (e) {
+    } catch (_e) {
       if (candidates.length === 0) {
         throw new Error(`No such file: \`${origin}\``);
       } else {
@@ -115,7 +115,7 @@ export default (function(): Resolver {
 
       try {
         return data(world, { raw: true });
-      } catch (e) {
+      } catch (_e) {
         throw new Error(`No such stdlib system: \`${path}\``);
       }
     }
