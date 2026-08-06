@@ -4,7 +4,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-shell');
-  grunt.loadNpmTasks('grunt-cucumber');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -44,7 +43,7 @@ module.exports = function(grunt) {
     'mochaTest:integration',
   ]);
   grunt.registerTask('test:acceptance', [
-    'cucumberjs',
+    'shell:cucumber',
   ]);
 
   grunt.registerTask('travis', [
@@ -112,6 +111,9 @@ module.exports = function(grunt) {
       },
       tsc: {
         command: 'tsc'
+      },
+      cucumber: {
+        command: 'cucumber-js',
       }
     },
 
@@ -150,6 +152,9 @@ module.exports = function(grunt) {
         },
         options: {
           extensions: ['.js'],
+          // Some test dependencies (chai, sinon-chai) ship ESM only, which
+          // browserify cannot parse on its own.
+          plugin: ['esmify'],
         },
       },
     },
@@ -185,15 +190,6 @@ module.exports = function(grunt) {
     },
 
     //#################################################################### Test
-
-    // Acceptance testing with cucumber
-    cucumberjs: {
-      src: './features',
-
-      options: {
-        steps: 'features/step_definitions',
-        format: 'progress',
-      },
-    },
+    // Acceptance testing runs through the cucumber-js CLI (see cucumber.json)
   });
 };
