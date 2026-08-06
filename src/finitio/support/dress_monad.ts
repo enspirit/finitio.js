@@ -88,7 +88,10 @@ class DressMonad<T> {
 }
 
 const setErrorLocation = function(error, element, index) {
-  let loc = element.name;
+  // `element` is arbitrary input data: it may be null, undefined or a
+  // primitive. Falling back to the index keeps invalid data reported as a
+  // validation error instead of raising a native TypeError.
+  let loc = element == null ? null : element.name;
   if (loc == null) { loc = index; }
   return error.location = loc;
 };

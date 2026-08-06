@@ -59,6 +59,48 @@ describe('Parser#sub_type', () => {
     return should(s).eql(expected);
   });
 
+  // A comma only separates constraints at the top level. Commas nested inside
+  // a native expression (regexp quantifiers, argument lists, ...) belong to
+  // that expression and must not split it.
+  it('works with a regexp quantifier holding a comma', () => {
+    const s = parse('.( s | /^[A-Za-z0-9_-]{1,64}$/.test(s) )');
+    const expected = {
+      sub: {
+        superType: { any: {} },
+        constraints: [
+          { native: ['s', '/^[A-Za-z0-9_-]{1,64}$/.test(s)'] },
+        ],
+      },
+    };
+    return should(s).eql(expected);
+  });
+
+  it('works with an open ended regexp quantifier', () => {
+    const s = parse('.( s | /^a{2,}$/.test(s) )');
+    const expected = {
+      sub: {
+        superType: { any: {} },
+        constraints: [
+          { native: ['s', '/^a{2,}$/.test(s)'] },
+        ],
+      },
+    };
+    return should(s).eql(expected);
+  });
+
+  it('works with a comma inside a function call', () => {
+    const s = parse('.( s | s.slice(0,2) === "ab" )');
+    const expected = {
+      sub: {
+        superType: { any: {} },
+        constraints: [
+          { native: ['s', 's.slice(0,2) === "ab"'] },
+        ],
+      },
+    };
+    return should(s).eql(expected);
+  });
+
   it('works with a regexp constraint shortcut', () => {
     const s = parse('. :: /[a-z]+/');
     const expected = {

@@ -46,4 +46,20 @@ describe('SeqType#dress', () => {
       return should(e.rootCause.message).eql('Invalid value (not byte): `-12`');
     }
   });
+
+  it('with an array holding a null element', () => {
+    const lambda = () => subject([2, null, 4]);
+
+    should(lambda).throw();
+
+    try {
+      return lambda();
+    } catch (e) {
+      // A null element is invalid data, not a bug: it must surface as a
+      // Finitio validation error rather than a native JavaScript TypeError.
+      should(e).be.an.instanceof(TypeError);
+      should(e.message).equal('Invalid Sequence');
+      return should(e.rootCause.location).equal(1);
+    }
+  });
 });
