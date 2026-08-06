@@ -39,9 +39,8 @@ class Constraint<T> extends InformationContract {
   }
 }
 
-export type Native = {
-  finitioSourceCode: string
-} & ((arg: unknown) => boolean)
+export type Native = (arg: unknown) => boolean
+
 class NativeConstraint extends Constraint<Native> {
   get kind() {
     return 'native';
@@ -51,8 +50,10 @@ class NativeConstraint extends Constraint<Native> {
     return this.native(arg);
   }
 
+  // A native constraint is a compiled function: it carries no printable
+  // Finitio source, so it renders as an ellipsis.
   nativeToString() {
-    return this.native.finitioSourceCode || '...';
+    return '...';
   }
 }
 
