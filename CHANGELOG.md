@@ -13,6 +13,21 @@ Major improvements:
 
 Broken APIs:
 
+* Dressing no longer keeps extra attributes that carry no type guarantee.
+  A heading with an untyped `...` accepts extra attributes but constrains
+  them in no way, so Finitio can vouch for nothing about them; they are now
+  dropped from the dressed value instead of being carried through unchecked.
+  A typed `...: Age` does guarantee their type, and keeps them as before.
+  The same applies to relations, and to an explicit `...: .`, which states no
+  more than a bare `...` does.
+
+  This aligns finitio.js with finitio-rb, which has always behaved this way.
+  Note that the change is silent: such schemas keep dressing successfully,
+  but attributes that used to reach the dressed value no longer do. Code
+  relying on `...` to carry data through must now declare what those
+  attributes are — individually, or with a typed `...: T` — or read them from
+  the input document rather than from the dressed value.
+
 * Node.js >= 22.12.0 is now required
 * The package now exposes an `exports` map and ships `dist/` only. `main`
   moved from `index.js` to `./dist/finitio.js`, `import` resolves to

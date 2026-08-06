@@ -89,6 +89,16 @@ class Heading extends InformationContract {
     return this.options.allowExtra;
   }
 
+  // Whether extra attributes come with a type guarantee.
+  //
+  // An untyped `...` lets extra attributes through without constraining them,
+  // so Finitio can say nothing about their values. A typed `...: Age` does
+  // constrain them. Only the latter is information Finitio vouches for, which
+  // is why only the latter survives dressing.
+  guaranteesExtra() {
+    return this.allowExtra() && !(this.getExtraType() instanceof AnyType);
+  }
+
   multi() {
     return this.allowExtra() || $u.any(this.attributes, a => !a.required);
   }

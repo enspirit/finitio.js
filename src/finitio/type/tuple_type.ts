@@ -73,10 +73,22 @@ export default class TupleType extends Type {
           return m;
         });
 
-      // Extra attribute on a heading that allows extra, for instance
+      // Extra attribute allowed but left unconstrained, for instance
+      // { name: String, ... }
+      // { "name": "Finitio", "age": 42 }
+      //
+      // Finitio exists to give guarantees about data. An untyped `...` states
+      // none, so the attribute is dropped rather than carried through
+      // unchecked.
+      } else if ((attr == null) && !this.heading.guaranteesExtra()) {
+        return success;
+
+      // Extra attribute whose type *is* guaranteed, for instance
       // { name: String, ...: Integer }
       // { "name": "Finitio", "age": 42 }
-      } else if ((attr == null) && this.heading.allowExtra()) {
+      //
+      // It is dressed and kept, like any declared attribute.
+      } else if (attr == null) {
         const extraType = this.heading.getExtraType();
         subm = extraType.mDress(attrValue, Monad);
         subm.onFailure((error) => {

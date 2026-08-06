@@ -295,6 +295,14 @@ Then(/^the result should be a Tuple representation$/, function() {
   }
 });
 
+// Asserts the dressed value exactly, which `be a representation for X` cannot:
+// a value that dropped attributes is still a valid representation of its type.
+Then(/^the result should equal JSON's '(.*)'$/, function(json) {
+  if (error != null) { fail(error); }
+
+  should(result).eql(JSON.parse(json));
+});
+
 Then(/^its '(.*)' attribute should be a String representation$/, function(attr) {
   if (error != null) { fail(error); }
 
