@@ -1,4 +1,4 @@
-# 2.1.0 -- unreleased
+# 2.1.0 -- 6 August 2026
 
 Broken APIs:
 
@@ -26,10 +26,12 @@ Bug fixes:
   resolved proxy stays resolved, so each instantiation now binds its own copy
   of the definition.
 
-# 2.0.1 -- unreleased
+# 2.0.1 -- release candidates only
 
-Published as release candidates only, `2.0.1-rc1` (March 2024) through
-`2.0.1-rc6` (August 2025). `latest` on npm currently points at `rc6`.
+Never released as such: published only as `2.0.1-rc1` (March 2024) through
+`2.0.1-rc6` (August 2025), which is where the `latest` tag sat until 2.1.0.
+The changes below therefore reach a stable release for the first time in
+2.1.0, and are listed separately only because they predate it.
 
 Bug fixes:
 
