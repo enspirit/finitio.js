@@ -1,0 +1,21 @@
+@import finitio/data
+
+/- Someone the system knows about -/
+Person = {
+  /- Their full name, as they write it -/
+  name : String
+
+  /- How old they are, in years -/
+  age  :? Integer
+
+  nick : String
+}
+
+/- description: "An opaque identifier", ts: "`${string}-${string}`" -/
+Id = String
+
+Main = {
+  /- Who this is about -/
+  who : Person
+  id  : Id
+}

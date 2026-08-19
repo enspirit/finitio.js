@@ -1,4 +1,6 @@
-import type { AdTypeAst, RelationTypeAst, StructTypeAst, TupleTypeAst, TypeAst } from '../../../src/types'
+import type {
+  AdTypeAst, RelationTypeAst, SeqTypeAst, StructTypeAst, TupleTypeAst, TypeAst,
+} from '../../../src/types'
 
 export const struct: StructTypeAst = {
   struct: {
@@ -63,5 +65,26 @@ export const adt: AdTypeAst = {
   }
 }
 
-export const collectionTDate: TypeAst = {'tuple':{'heading':{'attributes':[{'name':'items','type':{'seq':{'elmType':{'ref':{'typeName':'T'}}}}},{'name':'lastUpdate','type':{'ref':{'typeName':'Date'}}}]}}}
+// An ADT over a JS class the generator cannot name by itself.
+export const opaqueAdt: AdTypeAst = {
+  adt: {
+    jsType: 'Field',
+    contracts: [{
+      name: 'raw',
+      identity: {},
+      infoType: {
+        builtin: { jsType: 'String' }
+      }
+    }]
+  }
+}
 
+export const seqOfGeneric: SeqTypeAst = {
+  seq: {
+    elmType: {
+      ref: { typeName: 'T' }
+    }
+  }
+}
+
+export const collectionTDate: TypeAst = {'tuple':{'heading':{'attributes':[{'name':'items','type':{'seq':{'elmType':{'ref':{'typeName':'T'}}}}},{'name':'lastUpdate','type':{'ref':{'typeName':'Date'}}}]}}}

@@ -4,10 +4,10 @@ import * as $u from '../support/utils';
 import type TypeRef from './type_ref';
 import type { TypeMetadata } from '../../types';
 
-class TypeDef extends Type {
+class TypeDef<I = unknown, D = unknown> extends Type<I, D> {
 
   constructor(
-    public type: TypeRef,
+    public type: TypeRef<I, D>,
     public name: string,
     metadata?: TypeMetadata,
   ) {

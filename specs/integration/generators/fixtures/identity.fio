@@ -1,0 +1,13 @@
+@import finitio/data
+
+/- An ADT with no `.JsType` preamble: every contract is an identity, and the
+   value is simply its information type -/
+Coord = <pair> <.Number,.Number>
+
+/- Several identity contracts make a union -/
+Either = <text> String, <number> Numeric
+
+Main = {
+  c : Coord
+  e : Either
+}

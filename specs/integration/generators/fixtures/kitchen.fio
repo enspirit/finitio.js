@@ -1,0 +1,28 @@
+@import finitio/data
+
+Person = {
+  name : String
+  age  :? Integer
+  tags : {String}
+  nick : String|Nil
+}
+
+Color = String :: {"red", "blue"}
+
+Score = Integer :: 0..100
+
+Point = <.Number,.Number>
+
+Team = {{ name: String, lead: String }}
+
+Node = .Field
+  <raw> { id: String, children:? [Node] }
+
+Main = {
+  person : Person
+  colors : [Color]
+  score  : Score
+  point  : Point
+  team   : Team
+  root   : Node
+}

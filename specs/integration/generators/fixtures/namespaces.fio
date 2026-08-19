@@ -1,0 +1,11 @@
+@import finitio/data
+@import ./people as people
+
+Contact.Email = String
+Contact.Phone = String
+
+Main = {
+  email   : Contact.Email
+  phone   :? Contact.Phone
+  address : people.Address
+}

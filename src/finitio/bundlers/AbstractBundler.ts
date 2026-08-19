@@ -3,6 +3,27 @@ import { lstatSync, readFileSync } from 'fs';
 import type { World } from '../../types';
 import type { SystemAst } from '../parser';
 
+//
+// Fills the placeholders of a bundle template, in one pass.
+//
+// One pass matters twice over. A second `replace` would scan what the first
+// one injected, so a schema naming a type `URL` -- or merely describing one --
+// used to have its own text substituted and leave the loader pointing at a
+// placeholder. And a replacer function keeps `$` literal, where a replacement
+// *string* reads `$&` and `$$` as directives and eats them.
+//
+export const fill = (template: string, values: Record<string, string>): string => {
+  const names = Object.keys(values);
+  // An empty alternation matches the empty string at every word boundary, and
+  // would splice `undefined` in at both ends.
+  if (names.length === 0) { return template; }
+
+  const keys = names.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const rgx = new RegExp(`\\b(?:${keys.join('|')})\\b`, 'g');
+
+  return template.replace(rgx, m => values[m]);
+};
+
 export default abstract class AbstractBundler {
 
   // To be implemented

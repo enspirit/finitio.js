@@ -6,10 +6,10 @@ import type System from '../system';
 import TypeDef from './type_def';
 import type TypeRef from './type_ref';
 
-class GenericDef extends TypeDef {
+class GenericDef<I = unknown, D = unknown> extends TypeDef<I, D> {
 
   constructor(
-    public type: TypeRef,
+    public type: TypeRef<I, D>,
     public name: string,
     public generics: Array<string>,
     metadata?: TypeMetadata,

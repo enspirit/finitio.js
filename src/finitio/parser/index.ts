@@ -19,32 +19,38 @@ export type WithMetadata<T> = T & {
   metadata?: Record<string, unknown>
 }
 
-export type InfoTypeAst = {
-  builtin: {
-    jsType: string,
-  }
-}
+// The information type a contract is defined over. Any type is allowed here:
+// `recursive.fio` defines a contract over a tuple, for instance.
+export type InfoTypeAst = TypeAst
 
+// `.` carries nothing but its metadata. `Record<string, never>` would make
+// that metadata itself untypeable, its index signature swallowing the key.
 export type AnyAst = {
-  [Type.Any]: WithMetadata<Record<string, never>>
+  [Type.Any]: WithMetadata<Record<never, never>>
 }
 
 export type AdTypeAst = {
   [Type.Ad]: WithMetadata<{
-    jsType: string,
-    contracts: Array<WithMetadata<{
-      name: string,
-      infoType: InfoTypeAst
-      identity: unknown,
-      internal?: string
-      external?: string
-      explicit?: {
-        dress: [string, string]
-        undress: [string, string]
-      }
-    }>>
+    // Absent when the ADT carries no `.JsType` preamble, in which case the
+    // parser makes every one of its contracts an identity.
+    jsType?: string,
+    contracts: Array<ContractAst>
   }>
 }
+
+// The parser emits exactly one of `identity`, `internal`, `external` or
+// `explicit`, depending on how the contract is written.
+export type ContractAst = WithMetadata<{
+  name: string,
+  infoType: InfoTypeAst
+  identity?: unknown,
+  internal?: string
+  external?: string
+  explicit?: {
+    dress: [string, string]
+    undress: [string, string]
+  }
+}>
 
 export type BuiltinTypeAst = {
   [Type.Builtin]: WithMetadata<{
@@ -105,11 +111,15 @@ export type SetConstraint = BaseConstraintAst & {
   set: Array<unknown>
 }
 
-export type RangeConstraintAst = BaseConstraintAst & {
+export type RangeAst = {
   min: number,
-  max: number,
+  max?: number,
   min_inclusive?: boolean
   max_inclusive?: boolean
+}
+
+export type RangeConstraintAst = BaseConstraintAst & {
+  range: RangeAst
 }
 
 export type ConstraintAst =
@@ -152,6 +162,7 @@ export type TypeInstantiationAst = {
 
 export type ImportAst = {
   from: string
+  qualifier?: string
 }
 
 export type TypeAst =
@@ -168,11 +179,11 @@ export type TypeAst =
   UnionTypeAst |
   TypeInstantiationAst
 
-export type TypeDefAst = {
+export type TypeDefAst = WithMetadata<{
   name: string,
   type: TypeAst,
   generics?: Array<string>
-}
+}>
 
 export type SystemAst = {
   imports?: Array<ImportAst>

@@ -1,0 +1,6 @@
+@import finitio/data
+
+Address = {
+  street : String
+  city   : String
+}

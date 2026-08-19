@@ -1,0 +1,8 @@
+@import finitio/data
+
+/- A released piece of software -/
+Main = {
+  name       : String
+  version    : String
+  releasedAt : Date
+}

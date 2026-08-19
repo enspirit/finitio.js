@@ -1,0 +1,19 @@
+@import finitio/data
+
+/- A schema is free to use the words a bundle template happens to reserve.
+   `TYPEDEFS`, `JSONDATA` and `URL` are placeholders of that template, and
+   used to be substituted here -- in the schema's own text -- leaving the
+   loader itself pointing at a placeholder. -/
+Doc = String
+
+/- A type may be named after a placeholder too. -/
+URL = String
+
+/- description: "A `$` is literal, where a replacement string reads `$$` and `$&` as directives", ts: "`$${number}`" -/
+Price = String :: /^[0-9]+$/
+
+Main = {
+  doc   : Doc
+  home  : URL
+  price : Price
+}

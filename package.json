@@ -42,15 +42,15 @@
     "test": "npm run test:unit && npm run test:integration && npm run test:acceptance",
     "test:unit": "ts-mocha specs/unit --extension ts --extension js --recursive",
     "test:unit:watch": "ts-mocha --watch specs/unit --extension ts --extension js --recursive",
-    "test:integration": "ts-mocha specs/integration --extension ts --extension js --recursive",
-    "test:integration:watch": "ts-mocha specs/integration --extension ts --extension js --recursive --watch",
+    "test:integration": "ts-mocha specs/integration --extension ts --extension js --recursive --ignore 'specs/integration/generators/expected/**' --ignore 'specs/integration/generators/assertions/**' --ignore 'specs/integration/generators/.generated/**'",
+    "test:integration:watch": "ts-mocha --watch specs/integration --extension ts --extension js --recursive --ignore 'specs/integration/generators/expected/**' --ignore 'specs/integration/generators/assertions/**' --ignore 'specs/integration/generators/.generated/**'",
     "test:acceptance": "grunt test:acceptance",
     "browserify": "grunt browserify",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src"
   },
   "dependencies": {
-    "@enspirit/ts-gen-dsl": "^0.0.3",
+    "@enspirit/ts-gen-dsl": "^0.1.0",
     "commander": "^15.0.0"
   },
   "devDependencies": {

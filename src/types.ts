@@ -1,4 +1,5 @@
 import type { System, Type } from './finitio'
+import type { GeneratorOptions } from './finitio/generators/typescript';
 import type { Resolver } from './finitio/resolver';
 import { notImplemented } from './finitio/support/utils'
 export * from './finitio/parser';
@@ -22,6 +23,8 @@ export type World = {
   sourceUrl?: string,
   importResolver?: Resolver,
   stdlibPath?: string,
+  // Options of the typescript generator, when bundling for that target.
+  typescript?: Partial<GeneratorOptions>,
   [k: string]: unknown
 }
 

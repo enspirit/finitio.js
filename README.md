@@ -36,7 +36,8 @@ Finitio.js is a stable and mature implementation conforming to
 [Finitio 0.4](http://www.finitio.io/reference/0.4.x/). It also comes with the
 following tooling:
 
-* A `finitio-js` command line for validating data from a shell
+* A `finitio` command line for validating data from a shell
+* A TypeScript generator, for typing your data against your schema
 * A bundler for preparing schemas and systems for use in a browser
 * Nice error management strategy with understandable messages & stacks
 * Try it online, at [http://finitio.io/try](finitio.io/try)
@@ -46,21 +47,27 @@ following tooling:
 
 ## Getting started in Shell
 
-* Validating data against as schema and showing all errors
+* Validating data against a schema and showing all errors
 
-    `finitio-js -v schema.fio data.json`
+    `finitio validate schema.fio data.json`
 
 * Better understanding where validation errors come from
 
-    `finitio-js --stack -v schema.fio data.json`
+    `finitio --stack validate schema.fio data.json`
 
 * Fail fast option (stop on first validation error)
 
-    `finitio-js --stack --fast -v schema.fio data.json`
+    `finitio --stack --fast validate schema.fio data.json`
 
-* Compiling a schema for the browser
+* Generating TypeScript declarations for a schema
 
-    `finitio-js -c schema.fio`
+    `finitio types schema.fio -o schema.fio.d.ts`
+
+* Bundling a schema for the browser
+
+    `finitio bundle schema.fio`
+
+A failing command exits non-zero, so any of these can gate a build.
 
 ## Getting started in JavaScript
 
@@ -131,12 +138,14 @@ bundling can be used for:
 * Making your schema ready in the browser, in particular not dependent of the
   file system (for relative imports).
 
-Bundling can be done from a shell, as follows (the --fast option is just used
-to stop on the first schema error):
+Bundling can be done from a shell, as follows:
 
 ```shell
-finitio-js --fast --bundle schema.fio
+finitio bundle schema.fio > generated-finitio-bundle.js
 ```
+
+The schema is checked before being bundled; pass `--no-check` to skip that,
+and `--fast` to stop on the first error.
 
 This will generate a javascript bunch of code. This code, when evaluated
 returns a function that can be injected with the world to obtain the
@@ -152,6 +161,104 @@ In the scenario above, the schemaCompiler will require finitio by itself.
 In some situations, such as when you use external javascript references,
 however, you will need to pass a world instance for it to work properly.
 This is explained in the next section.
+
+## TypeScript
+
+Finitio generates TypeScript types from a schema. Every Finitio type yields
+two of them, mirroring the dress/undress duality:
+
+* the **dressed** type -- what `dress()` gives back (`Date`, class instances);
+* the **input** type -- what may be fed in, under a `FinitioInputs` namespace
+  (`Date | string | number`).
+
+There are two ways to use them.
+
+### Declarations alongside your schema
+
+```shell
+finitio types schema.fio -o schema.fio.d.ts
+finitio types schema.fio -o schema.fio.d.ts --watch   # regenerate on change
+```
+
+This emits the types alone -- no loader, no inlined schema -- so the output is
+a plain `.d.ts` you can commit and review. Load the schema yourself, and name
+the generated collection to type everything:
+
+```typescript
+import fs from 'fs';
+import Finitio from 'finitio';
+import type { Main, System0 } from './schema.fio.d';
+
+const system = Finitio.system<System0>(fs.readFileSync('schema.fio').toString());
+
+const data: Main = system.dress(json);   // fully typed, no cast
+```
+
+### A self-contained bundle
+
+```shell
+finitio bundle -t typescript schema.fio > schema.ts
+```
+
+This emits the same types *plus* a loader and the parsed schema, so nothing
+is read at runtime and nothing resolves imports. Useful in the browser, or
+wherever the `.fio` files are not around:
+
+```typescript
+import load from './schema';
+
+const system = load();
+const data = system.dress(json);
+```
+
+### What a schema states, and what comes out
+
+| Finitio | dressed | input |
+|---|---|---|
+| `String`, `Integer` | `string`, `number` | idem |
+| `Date` | `Date` | `Date \| string \| number` |
+| `[T]` , `{T}` | `Array<T>` | `Array<T>` |
+| `{{ a: T }}` | `Array<{ a: T }>` | idem |
+| `<A,B>` | `[A, B]` | idem |
+| `A\|B` | `A \| B` | idem |
+| `String :: {"a","b"}` | `'a' \| 'b'` | idem |
+| `Integer( i \| i > 0 )` | `number` | `number` |
+| `{ a: T, ...: U }` | `{ a: T } & { [k: string]: U }` | idem |
+| `{ a: T, ... }` | `{ a: T }` | `{ a: T } & { [k: string]: unknown }` |
+
+A `/- description -/` becomes TSDoc. Namespaced type names (`People.Adult`)
+become TypeScript namespaces, and imported schemas land under
+`FinitioImports`, named after their source rather than their position, so
+that adding an import does not churn the whole file.
+
+Two options, on both commands:
+
+* `--brands` makes constrained sub types nominal, so a `Positive` cannot be
+  confused with the `number` it refines. Brands compose and keep the sub
+  typing direction; inputs are never branded.
+* `--any-as unknown` maps Finitio's `Any` onto `unknown` rather than `any`.
+
+For what the generator cannot infer -- an ADT over one of your classes, a
+string shape -- a schema can name its TypeScript type itself:
+
+```finitio
+/- description: "A UUID", ts: "`${string}-${string}`" -/
+Uuid = String :: /^[0-9a-f-]+$/
+```
+
+ADTs over classes finitio cannot name go through a generated
+`FinitioJsTypes` interface, which you refine by declaration merging.
+
+Note that a shell has no way to hand those classes to the checker. A schema
+with an ADT over one of your own classes therefore cannot be checked from the
+command line, and needs `--no-check`:
+
+```shell
+finitio types --no-check schema.fio -o schema.fio.d.ts
+```
+
+Generation itself is unaffected -- only the check that runs before it. Use
+`Finitio.typesFile(path, { JsTypes: { ... } })` to keep the check.
 
 ## Advanced scenarios and the World concept
 

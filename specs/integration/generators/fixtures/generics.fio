@@ -1,0 +1,25 @@
+@import finitio/data
+
+Person = {
+  name : String
+  age  :? Integer
+}
+
+Page<T> = {
+  items : [T]
+  total : Integer
+}
+
+Pair<A,B> = <A,B>
+
+/- The type parameter shadows the stdlib Date -/
+Boxed<Date> = {
+  value : Date
+}
+
+Main = {
+  people  : Page<Person>
+  dates   : Page<Date>
+  labelled: Pair<String,Integer>
+  boxed   : Boxed<String>
+}

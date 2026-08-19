@@ -1,75 +1,63 @@
-import Builder from '@enspirit/ts-gen-dsl';
-import AbstractBundler from './AbstractBundler';
-import { buildTypeCollection, buildTypeDef, buildTypeDefInput } from '../generators/typescript';
-
-const IGNORE_LIST = ['Date'];
+import AbstractBundler, { fill } from './AbstractBundler';
+import type { GeneratorOptions } from '../generators/typescript';
+import { generateTypes } from '../generators/typescript';
 
 export default class TypescriptBundler extends AbstractBundler {
 
-  namespaces: Record<string, Record<string, boolean>> = {}
-
-
   static TEMPLATE = `
-import type { World, SystemAst, System, Type } from 'finitio';
-import Finitio from 'finitio';
+// Everything this file introduces of its own is prefixed Finitio, so that a
+// schema stays free to name a type Type, System or World.
+import type * as FinitioTypes from 'finitio';
+import FinitioRuntime from 'finitio';
+
 TYPEDEFS
 
 export default (() => {
-  const ss: Record<string, SystemAst> = JSONDATA;
-  const r = (fallback: (path: string, w: World, options?: unknown) => unknown) => {
-    return function(path: string, w: World, options?: { raw: boolean }){
+  const ss: Record<string, FinitioTypes.SystemAst> = JSONDATA;
+  const r = (fallback?: FinitioTypes.World['importResolver']) => {
+    return function(path: string, w: FinitioTypes.World, options?: { raw?: boolean }){
       const s = ss[path];
       if (s) {
         if (options?.raw){
           return [ path, s ];
         } else {
-          return Finitio.system(s, w);
+          return FinitioRuntime.system(s, w);
         }
       } else if (fallback) {
         return fallback(path, w, options);
       } else {
         throw new Error('Unable to resolve: \`' + path + '\`');
       }
-    };
+    } as unknown as NonNullable<FinitioTypes.World['importResolver']>;
   };
-  return (w: World = Finitio.World, options?: unknown): System<System0> => {
-    w = Finitio.world(w, {
+  return (
+    w: FinitioTypes.World = FinitioRuntime.World,
+    options?: unknown
+  ): FinitioTypes.System<System0> => {
+    const world = FinitioRuntime.world(w, {
       importResolver: r(w.importResolver)
     });
-    return w.importResolver('URL', w, options);
+    return world.importResolver!('URL', world, options) as unknown as FinitioTypes.System<System0>;
   };
 })();
 `
 
+  // Generator options travel through the world, which is what every bundler
+  // is handed.
+  options(): Partial<GeneratorOptions> {
+    return (this.world.typescript as Partial<GeneratorOptions>) || {};
+  }
+
   flush(): string {
-    return TypescriptBundler.TEMPLATE
-      .replace('TYPEDEFS', this.typeDefs())
-      .replace(/JSONDATA/, JSON.stringify(this.systems))
-      .replace(/URL/, this.world.sourceUrl);
+    return fill(TypescriptBundler.TEMPLATE, {
+      TYPEDEFS: this.typeDefs(),
+      JSONDATA: JSON.stringify(this.systems),
+      URL: this.world.sourceUrl as string,
+    });
   }
 
   typeDefs(): string {
-    const builder = new Builder({
-      exportNamespaces: true,
-      exportTypes: true
-    });
-
-    Object.values(this.systems).forEach((system, i) => {
-
-      buildTypeCollection(builder, system.types, `System${i}`)
-
-      for (const typeDef of system.types) {
-        buildTypeDefInput(builder, typeDef);
-
-        if (IGNORE_LIST.includes(typeDef.name)) {
-          continue;
-        }
-
-        buildTypeDef(builder, typeDef);
-      }
-    });
-
-    return builder.flush()
+    return generateTypes(this.systems, this.options());
   }
 
 }
