@@ -11,6 +11,7 @@ import Heading from './finitio/support/heading';
 import Constraint from './finitio/support/constraint';
 import System from './finitio/system';
 import { TargetLanguage, getBundler } from './finitio/bundlers';
+import { generateTypes } from './finitio/generators/typescript';
 import Type from './finitio/type';
 import TypeDef from './finitio/type/type_def';
 import TypeRef from './finitio/type/type_ref';
@@ -72,6 +73,23 @@ class Finitio {
   static bundleSource(source: string, world?: Partial<World>, lang: TargetLanguage = TargetLanguage.Javascript) {
     return (getBundler(lang, this.world(world))).addSource(source).flush();
   }
+
+  //
+  // Generates the TypeScript declarations of a schema: the types alone, with
+  // neither a loader nor an inlined AST.
+  //
+  // Consume them with `Finitio.system<System0>(source)`, which types dressing
+  // without a cast.
+  //
+  static typesFile(path: string, world?: Partial<World>) {
+    const bundler = getBundler(TargetLanguage.Typescript, this.world(world));
+    return generateTypes(bundler.addFile(path).systems, (world || {}).typescript);
+  }
+
+  static typesSource(source: string, world?: Partial<World>) {
+    const bundler = getBundler(TargetLanguage.Typescript, this.world(world));
+    return generateTypes(bundler.addSource(source).systems, (world || {}).typescript);
+  }
 }
 
 const extendWorld = <K extends keyof World>(world: World, ext: Record<K, World[K]>) => {
@@ -88,6 +106,7 @@ const extendWorld = <K extends keyof World>(world: World, ext: Record<K, World[K
 export {
   TypeError,
   Utils,
+  generateTypes,
   Parser,
   Contracts,
   Attribute,

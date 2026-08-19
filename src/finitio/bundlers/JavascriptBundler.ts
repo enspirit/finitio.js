@@ -1,4 +1,4 @@
-import AbstractBundler from './AbstractBundler';
+import AbstractBundler, { fill } from './AbstractBundler';
 
 export default class JavascriptBundler extends AbstractBundler {
 
@@ -33,8 +33,9 @@ export default class JavascriptBundler extends AbstractBundler {
   `;
 
   flush() {
-    return JavascriptBundler.TEMPLATE.replace(/^[ ]{4}/, '')
-      .replace(/JSONDATA/, JSON.stringify(this.systems))
-      .replace(/URL/, this.world.sourceUrl);
+    return fill(JavascriptBundler.TEMPLATE.replace(/^[ ]{4}/, ''), {
+      JSONDATA: JSON.stringify(this.systems),
+      URL: this.world.sourceUrl as string,
+    });
   }
 }

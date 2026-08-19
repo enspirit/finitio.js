@@ -1,0 +1,22 @@
+@import finitio/data
+
+/- The colours we support -/
+Colour = String :: {"red", "green", "blue"}
+
+Priority = Integer :: {0, 1, 2}
+
+Flag = Boolean :: {true}
+
+/- Falsy members are members like any other -/
+Falsy = Any :: {0, false, ""}
+
+/- A set of non scalars stays its super type -/
+Ranged = Integer :: 0..100
+
+Main = {
+  colour   : Colour
+  priority : Priority
+  flag     : Flag
+  falsy    : Falsy
+  ranged   : Ranged
+}

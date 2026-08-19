@@ -1,0 +1,19 @@
+@import finitio/data
+
+/- Every one of these is a name the generated file uses for itself -/
+Type = String
+
+System = String
+
+World = String
+
+Array = String
+
+Main = {
+  t  : Type
+  s  : System
+  w  : World
+  a  : Array
+  xs : [Integer]
+  set: {Integer}
+}

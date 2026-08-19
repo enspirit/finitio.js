@@ -1,0 +1,34 @@
+@import finitio/data
+
+/- Only strictly positive -/
+Positive = Integer( i | i > 0 )
+
+/- A brand composes with the one it refines -/
+Small = Positive( i | i < 10 )
+
+/- A set constraint is precise already, and is not branded -/
+Colour = String :: {"red", "blue"}
+
+/- A sub type of Any is not branded: the intersection would collapse the other
+   way round and let any object through -/
+Whatever = .( v | v !== undefined )
+
+/- Reached through a reference rather than inline, which the mapper cannot
+   follow: the brand helper has to decline it on its own -/
+Defined = Any( v | v !== undefined )
+
+Plain = {
+  name : String
+}
+
+Main = {
+  positive : Positive
+  small    : Small
+  colour   : Colour
+  whatever : Whatever
+  defined  : Defined
+  plain    : Plain
+  /- Nil states its own TypeScript type, and is not branded: `null` cannot
+     carry a brand, and a branded null would drop out of this union -/
+  nick     :  String|Nil
+}

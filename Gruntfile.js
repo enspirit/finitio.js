@@ -148,7 +148,12 @@ module.exports = function(grunt) {
 
       tests: {
         files: {
-          'dist/finitio.tests.js': ['lib/specs/**/*.js'],
+          'dist/finitio.tests.js': [
+            'lib/specs/**/*.js',
+            // The generator specs drive the TypeScript compiler, which has no
+            // place in -- and no meaning for -- a browser bundle.
+            '!lib/specs/integration/generators/**/*.js',
+          ],
         },
         options: {
           extensions: ['.js'],

@@ -1,16 +1,16 @@
 /- Recognizes everything -/
 Any = .
 
-/- Recognizes JavaScript's null -/
+/- description: "Recognizes JavaScript's null", ts: "null" -/
 Nil = .( v | v === null )
 
 /- Recognizes true and false -/
 Boolean = .Boolean
 
-/- Only true -/
+/- description: "Only true", ts: "true" -/
 True = .Boolean( b | b === true )
 
-/- Only false -/
+/- description: "Only false", ts: "false" -/
 False = .Boolean( b | b === false )
 
 /- Recognizes any number -/

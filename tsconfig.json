@@ -18,6 +18,9 @@
     "./specs/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./specs/integration/generators/.generated",
+    "./specs/integration/generators/expected",
+    "./specs/integration/generators/assertions"
   ]
 }

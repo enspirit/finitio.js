@@ -3,9 +3,9 @@ import { TypeType } from '../support/ic';
 import * as $u from '../support/utils';
 import Type from '../type';
 
-class TypeRef extends Type {
+class TypeRef<I = unknown, D = unknown> extends Type<I, D> {
 
-  constructor(public typeName: string, metadata?: TypeMetadata, public target?: Type) {
+  constructor(public typeName: string, metadata?: TypeMetadata, public target?: Type<I, D>) {
     super(metadata);
 
     if (!this.typeName) {

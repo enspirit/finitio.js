@@ -3,6 +3,7 @@ import * as $u from './support/utils';
 import Fetchable from './support/fetchable';
 import type { AcceptedInput, DressedType, Import, TypeCollection, World } from '../types';
 import type Type from './type';
+import type TypeDef from './type/type_def';
 import type { TypeRef } from '../finitio';
 import Finitio, { Meta } from '../finitio'
 
@@ -22,7 +23,19 @@ class System<T extends TypeCollection> implements T {
     $u.each(this.types, t => { return this[t.name] = t.trueOne(); });
   }
 
-  resolve<T extends Type<I, D>, I, D>(ref, callback?: ResolveCallback): T {
+  //
+  // Resolves a type name against this system and its imports.
+  //
+  // Naming one of the collection's types -- which the generated collection
+  // keys by the very name the system indexes it under -- types the definition
+  // that comes back, and therefore what dressing through it returns.
+  //
+  resolve<K extends keyof T & string>(ref: K, callback?: ResolveCallback):
+    TypeDef<AcceptedInput<T[K]>, DressedType<T[K]>>
+  // The escape hatch, for a name that is not known statically.
+  resolve(ref: string, callback?: ResolveCallback): TypeDef
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  resolve(ref: string, callback?: ResolveCallback): any {
     const match = ref.match(System.REF_RGX);
     if (match[1]) {
       return this._resolveQualified(match, callback);

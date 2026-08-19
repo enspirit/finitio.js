@@ -1,0 +1,12 @@
+@import finitio/data
+
+/- Shadows the stdlib Integer on purpose -/
+Integer = .String
+
+/- Shadows the stdlib Date on purpose -/
+Date = .Number
+
+Main = {
+  id   : Integer
+  when : Date
+}

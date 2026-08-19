@@ -1,0 +1,26 @@
+@import finitio/data
+
+/- A typed `...` guarantees the extra attributes, which survive dressing -/
+Typed = {
+  name : String
+  ...  : Integer
+}
+
+/- A bare `...` guarantees nothing: extras are accepted, then dropped -/
+Loose = {
+  name : String
+  ...
+}
+
+Closed = {
+  name : String
+}
+
+Relational = {{ name: String, ...: String }}
+
+Main = {
+  typed      : Typed
+  loose      : Loose
+  closed     : Closed
+  relational : Relational
+}

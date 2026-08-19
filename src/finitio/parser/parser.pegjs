@@ -1,10 +1,14 @@
 /* eslint-disable */
 {
   // Converts head:X tail(... X)* to an array of Xs
+  //
+  // `head` is absent -- null -- when the rule makes it optional, which is not
+  // the same as it having matched a falsy literal: `{0, 1}` and `[false]` both
+  // have a head worth keeping.
   function headTailToArray(head, tail) {
-    var result = (head ? [ head ] : []);
+    var result = (head === null || head === undefined) ? [] : [ head ];
     for (var i = 0; i < tail.length; i++) {
-      result[i+1] = tail[i][tail[i].length-1];
+      result.push(tail[i][tail[i].length-1]);
     }
     return result;
   }
